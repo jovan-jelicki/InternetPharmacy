@@ -1,10 +1,58 @@
 package app.model;
+
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
 public class MedicationOrder {
-   private java.util.Date deadline;
-   private Long adminId;
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
+
+//   private java.util.Date deadline;
+
+   @ManyToOne
+   @JoinColumn
+   private PharmacyAdmin pharmacyAdmin;
+
+   @Enumerated(EnumType.ORDINAL)
    private MedicationOrderStatus status;
-   
-   private java.util.List<MedicationQuantity> medicationQuantity;
 
+   @ManyToMany
+   private List<MedicationQuantity> medicationQuantity;
 
+   public MedicationOrder() {
+   }
+
+   public Long getId() {
+      return id;
+   }
+
+   public void setId(Long id) {
+      this.id = id;
+   }
+
+   public PharmacyAdmin getPharmacyAdmin() {
+      return pharmacyAdmin;
+   }
+
+   public void setPharmacyAdmin(PharmacyAdmin pharmacyAdmin) {
+      this.pharmacyAdmin = pharmacyAdmin;
+   }
+
+   public MedicationOrderStatus getStatus() {
+      return status;
+   }
+
+   public void setStatus(MedicationOrderStatus status) {
+      this.status = status;
+   }
+
+   public List<MedicationQuantity> getMedicationQuantity() {
+      return medicationQuantity;
+   }
+
+   public void setMedicationQuantity(List<MedicationQuantity> medicationQuantity) {
+      this.medicationQuantity = medicationQuantity;
+   }
 }
