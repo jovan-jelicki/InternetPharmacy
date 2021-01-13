@@ -9,8 +9,9 @@ public class MedicationQuantity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String medicationId;
+    @ManyToOne
+    @JoinColumn
+    private Medication medication;
 
     @Column
     private int quantity;
@@ -26,12 +27,12 @@ public class MedicationQuantity {
         this.id = id;
     }
 
-    public String getMedicationId() {
-        return medicationId;
+    public Medication getMedication() {
+        return medication;
     }
 
-    public void setMedicationId(String medicationId) {
-        this.medicationId = medicationId;
+    public void setMedication(Medication medication) {
+        this.medication = medication;
     }
 
     public int getQuantity() {

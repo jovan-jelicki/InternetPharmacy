@@ -1,7 +1,5 @@
 package app.model;
 
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 
 import static javax.persistence.InheritanceType.TABLE_PER_CLASS;
@@ -21,13 +19,19 @@ public abstract class User {
     @Column(nullable = false)
     private String lastName;
 
-    @JoinColumn(unique = true)
-    @OneToOne(cascade = CascadeType.ALL)
-    private Credentials credencials;
+//    @JoinTable
+//    @OrderColumn
+//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn
+    @OneToOne
+    private Credentials credentials;
 
     @JoinColumn
     @OneToOne(cascade = CascadeType.ALL)
     private Contact contact;
+
+    @Enumerated(EnumType.ORDINAL)
+    private UserType userType;
 
     public User() {}
 
@@ -55,12 +59,12 @@ public abstract class User {
         this.lastName = lastName;
     }
 
-    public Credentials getCredencials() {
-        return credencials;
+    public Credentials getCredentials() {
+        return credentials;
     }
 
-    public void setCredencials(Credentials credencials) {
-        this.credencials = credencials;
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
     }
 
     public Contact getContact() {
@@ -69,5 +73,13 @@ public abstract class User {
 
     public void setContact(Contact contact) {
         this.contact = contact;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 }

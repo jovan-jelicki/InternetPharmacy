@@ -4,5 +4,4 @@ public enum ComplaintType {
     pharmacist,
     dermatologist,
     pharmacy
-
 }

@@ -3,12 +3,12 @@ package app.model;
 import javax.persistence.*;
 import java.sql.Date;
 
-@Entity
+@Embeddable
 public class Period {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long proba;
 
 //    @Column
 //    @Temporal(TemporalType.TIMESTAMP)
@@ -21,11 +21,11 @@ public class Period {
     public Period() {}
 
     public Long getId() {
-        return id;
+        return proba;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long proba) {
+        this.proba = proba;
     }
 
 //    public Date getStart() {

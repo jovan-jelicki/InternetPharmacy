@@ -9,8 +9,8 @@ public class WorkingHours {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn
-    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn
+//    @ManyToOne(cascade = CascadeType.ALL)
     private Period period;
 
     @Column

@@ -1,18 +1,47 @@
 package app.model;
 
+import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
+
+@Entity
 public class Medication {
-   private String code;
+
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
+
+   @Column
    private String name;
+
+   @Enumerated(EnumType.ORDINAL)
    private MedicationType type;
+
+   @Column
    private int dose;
+
+   @Column
    private int loyaltyPoints;
+
+   @Enumerated(EnumType.ORDINAL)
    private MedicationShape medicationShape;
+
+   @Column
    private String manufacturer;
+
+   @Column
    private MedicationIssue medicationIssue;
+
+   @Column
    private String note;
-   
-   private java.util.List<Ingredient> ingredient;
-   private java.util.Collection<SideEffect> sideEffect;
-   private java.util.Collection<Medication> alternatives;
+
+   @ManyToMany
+   private List<Ingredient> ingredient;
+
+   @ManyToMany
+   private List<SideEffect> sideEffect;
+
+   @ManyToMany
+   private List<Medication> alternatives;
 
 }
