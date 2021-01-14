@@ -9,8 +9,6 @@ public class Promotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @JoinColumn
-//    @ManyToOne
     private Period period;
 
     @Column

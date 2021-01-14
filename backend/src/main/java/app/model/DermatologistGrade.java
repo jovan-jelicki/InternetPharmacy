@@ -11,11 +11,11 @@ public class DermatologistGrade {
 
     @ManyToOne
     @JoinColumn
-    private Dermatologist dermatologistId;
+    private Dermatologist dermatologist;
 
     @ManyToOne
     @JoinColumn
-    private Patient patientId;
+    private Patient patient;
 
     @Column
     private int grade;
@@ -31,20 +31,20 @@ public class DermatologistGrade {
         this.id = id;
     }
 
-    public Dermatologist getDermatologistId() {
-        return dermatologistId;
+    public Dermatologist getDermatologist() {
+        return dermatologist;
     }
 
-    public void setDermatologistId(Dermatologist dermatologistId) {
-        this.dermatologistId = dermatologistId;
+    public void setDermatologist(Dermatologist dermatologistId) {
+        this.dermatologist = dermatologistId;
     }
 
-    public Patient getPatientId() {
-        return patientId;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPatientId(Patient patientId) {
-        this.patientId = patientId;
+    public void setPatient(Patient patientId) {
+        this.patient = patientId;
     }
 
     public int getGrade() {
