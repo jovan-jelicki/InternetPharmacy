@@ -4,10 +4,12 @@ import app.model.User;
 import app.repository.UserRepository;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
 
+@Service
 public class UserServiceImpl<T extends User> implements UserService<T> {
     
     private UserRepository<T> userRepository;
@@ -35,5 +37,10 @@ public class UserServiceImpl<T extends User> implements UserService<T> {
     @Override
     public void delete(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
     }
 }
