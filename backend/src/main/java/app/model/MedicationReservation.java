@@ -1,6 +1,7 @@
 package app.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class MedicationReservation {
@@ -13,7 +14,8 @@ public class MedicationReservation {
    @ManyToOne
    private MedicationQuantity medicationQuantity;
 
-//   private java.util.Date pickUpDate;
+   @Column
+   private LocalDateTime pickUpDate;
 
    @JoinColumn
    @ManyToOne
@@ -55,5 +57,13 @@ public class MedicationReservation {
 
    public void setStatus(MedicationReservationStatus status) {
       this.status = status;
+   }
+
+   public LocalDateTime getPickUpDate() {
+      return pickUpDate;
+   }
+
+   public void setPickUpDate(LocalDateTime pickUpDate) {
+      this.pickUpDate = pickUpDate;
    }
 }

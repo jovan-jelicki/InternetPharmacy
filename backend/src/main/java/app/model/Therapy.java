@@ -13,8 +13,6 @@ public class Therapy {
     @JoinColumn
     private Medication medication;
 
-//    @ManyToOne
-//    @JoinColumn
     private Period period;
 
     public Therapy() {

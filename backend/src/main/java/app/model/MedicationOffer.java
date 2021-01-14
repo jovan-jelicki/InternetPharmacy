@@ -1,6 +1,7 @@
 package app.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class MedicationOffer {
@@ -10,7 +11,10 @@ public class MedicationOffer {
 
    @Column
    private double cost;
-//   private java.util.Date shippingDate;
+
+   @Column
+   private LocalDateTime shippingDate;
+
    @ManyToOne
    private MedicationOrder medicationOrder;
 
@@ -50,5 +54,13 @@ public class MedicationOffer {
 
    public void setStatus(MedicationOfferStatus status) {
       this.status = status;
+   }
+
+   public LocalDateTime getShippingDate() {
+      return shippingDate;
+   }
+
+   public void setShippingDate(LocalDateTime shippingDate) {
+      this.shippingDate = shippingDate;
    }
 }

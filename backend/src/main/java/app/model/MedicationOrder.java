@@ -1,6 +1,7 @@
 package app.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -9,7 +10,8 @@ public class MedicationOrder {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-//   private java.util.Date deadline;
+   @Column
+   private LocalDateTime deadline;
 
    @ManyToOne
    @JoinColumn
@@ -54,5 +56,13 @@ public class MedicationOrder {
 
    public void setMedicationQuantity(List<MedicationQuantity> medicationQuantity) {
       this.medicationQuantity = medicationQuantity;
+   }
+
+   public LocalDateTime getDeadline() {
+      return deadline;
+   }
+
+   public void setDeadline(LocalDateTime deadline) {
+      this.deadline = deadline;
    }
 }

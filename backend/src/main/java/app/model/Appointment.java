@@ -1,6 +1,7 @@
 package app.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Appointment {
