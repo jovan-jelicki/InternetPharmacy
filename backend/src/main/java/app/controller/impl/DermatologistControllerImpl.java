@@ -2,6 +2,8 @@ package app.controller.impl;
 
 import app.controller.DermatologistController;
 import app.model.Dermatologist;
+import app.model.Pharmacist;
+import app.model.WorkingHours;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,5 +56,11 @@ public class DermatologistControllerImpl implements DermatologistController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         dermatologistUserService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Collection<WorkingHours>> getDermatologistsWorkingHours(long id) {
+        Dermatologist dermatologist = dermatologistUserService.read(id).get();
+        return new ResponseEntity<>(dermatologist.getWorkingHours(), HttpStatus.OK);
     }
 }

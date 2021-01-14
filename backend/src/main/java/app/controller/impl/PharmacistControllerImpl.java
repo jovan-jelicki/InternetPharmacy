@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.controller.PharmacistController;
 import app.model.Pharmacist;
+import app.model.WorkingHours;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,5 +56,12 @@ public class PharmacistControllerImpl implements PharmacistController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         pharmacistUserService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    @GetMapping(value = "getWorkingHours/{id}")
+    public ResponseEntity<Collection<WorkingHours>> getPharmacistsWorkingHours(Long id) {
+        Pharmacist pharmacist = pharmacistUserService.read(id).get();
+        return new ResponseEntity<>(pharmacist.getWorkingHours(), HttpStatus.OK);
     }
 }

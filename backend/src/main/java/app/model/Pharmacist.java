@@ -1,22 +1,22 @@
 package app.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Pharmacist extends User {
 
-    @JoinColumn
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private WorkingHours workingHours;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<WorkingHours> workingHours;
 
     public Pharmacist() {
     }
 
-    public WorkingHours getWorkingHours() {
+    public List<WorkingHours> getWorkingHours() {
         return workingHours;
     }
 
-    public void setWorkingHours(WorkingHours workingHours) {
+    public void setWorkingHours(List<WorkingHours> workingHours) {
         this.workingHours = workingHours;
     }
 }
