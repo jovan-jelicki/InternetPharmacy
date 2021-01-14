@@ -38,4 +38,9 @@ public class UserServiceImpl<T extends User> implements UserService<T> {
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
 }
