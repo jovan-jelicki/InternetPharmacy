@@ -1,6 +1,7 @@
 import React from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import IndexPage from "./pages/IndexPage";
+import PatientProfilePage from "./pages/PatientProfilePage";
 
 
 export default class App extends React.Component {
@@ -17,7 +18,8 @@ export default class App extends React.Component {
     return (
         <BrowserRouter>
           <Switch>
-            <Route path="/"  component={IndexPage} role={role}/>
+            <Route exact path="/"  component={IndexPage} role={role}/>
+            <Route path="/patient-profile" component={PatientProfilePage} role={role}/>
           </Switch>
         </BrowserRouter>
     );
