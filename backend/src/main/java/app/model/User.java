@@ -23,7 +23,7 @@ public abstract class User {
 //    @OrderColumn
 //    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Credentials credentials;
 
     @JoinColumn
