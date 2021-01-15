@@ -1,6 +1,8 @@
 import React from "react";
 import {Col, Container, Nav, Row, Button} from "react-bootstrap";
 import UserInfo from "../components/UserInfo";
+import AllergyPatientListing from "../components/AllergyPatientListing";
+import AddAllergy from "../components/AddAllergy";
 
 export default class PatientProfilePage extends React.Component {
     constructor(props) {
@@ -27,7 +29,7 @@ export default class PatientProfilePage extends React.Component {
             'town' : 'Sirig',
             'country' : 'Serbia',
             'phoneNumber' : '+381604648117',
-            'allergies' : ['a1', 'a2'],
+            'allergies' : ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'],
             'editMode' : false
         })
 
@@ -39,7 +41,7 @@ export default class PatientProfilePage extends React.Component {
             'town' : 'Sirig',
             'country' : 'Serbia',
             'phoneNumber' : '+381604648117',
-            'allergies' : ['a1', 'a2'],
+            'allergies' : ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'],
         }
     }
 
@@ -69,6 +71,19 @@ export default class PatientProfilePage extends React.Component {
         })
     }
 
+    addAllergy = (allergy) => {
+        if(!this.state.allergies.includes(allergy))
+            this.setState({
+                'allergies' : [...this.state.allergies, allergy]
+            })
+    }
+
+    removeAllergy = (allergy) => {
+        this.setState({
+            'allergies' : [...this.state.allergies.filter(a => a != allergy)]
+        })
+    }
+
     render() {
         return (
             <Container fluid>
@@ -84,11 +99,12 @@ export default class PatientProfilePage extends React.Component {
                     </Col>
                     <Col>
                         <UserInfo user={this.state} edit={this.state.editMode} onChange={this.handleInputChange}/>
+                        <h2 className="pt-4 pb-3">Allergies</h2>
+                        {this.state.editMode && <AddAllergy addAllergy={this.addAllergy}/>}
+                        <AllergyPatientListing allergies={this.state.allergies} removeAllergy={this.removeAllergy}/>
                     </Col>
                 </Row>
-                <Row>
-                    
-                </Row>
+
             </Container>
         );
     }
