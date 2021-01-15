@@ -1,6 +1,8 @@
 package app.controller.impl;
 
 import app.controller.PatientController;
+import app.dto.UserPasswordDTO;
+import app.model.Ingredient;
 import app.model.Patient;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "api/patients")
 public class PatientControllerImpl implements PatientController {
-    private UserService<Patient> patientUserService;
+    private final UserService<Patient> patientUserService;
 
     @Autowired
     public PatientControllerImpl(UserService<Patient> patientUserService) {
@@ -53,6 +55,30 @@ public class PatientControllerImpl implements PatientController {
         if(!patientUserService.existsById(id))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         patientUserService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    @GetMapping(value = "/allergies/{id}")
+    public ResponseEntity<Collection<Ingredient>> getPatientAllergies(@PathVariable Long id) {
+        Optional<Patient> patient = patientUserService.read(id);
+        if(patient.isPresent())
+            return new ResponseEntity<>(patient.get().getAllergies(), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    @PutMapping(value = "/pass")
+    public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
+        try {
+            patientUserService.changePassword(passwordKit);
+        }
+        catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
