@@ -81,7 +81,7 @@ export default class PatientProfilePage extends React.Component {
 
     removeAllergy = (allergy) => {
         this.setState({
-            'allergies' : [...this.state.allergies.filter(a => a != allergy)]
+            'allergies' : [...this.state.allergies.filter(a => a !== allergy)]
         })
     }
 

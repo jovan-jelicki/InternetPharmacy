@@ -8,6 +8,7 @@ import VacationRequest from "./pages/VacationRequest";
 import DermatologistHomePage from "./pages/DermatologistHomePage";
 import PharmacistProfilePage from "./pages/PharmacistProfilePage";
 import PharmacistHomePage from "./pages/PharmacistHomePage";
+import PharmacistWorkingHours from "./pages/PharmacistWorkingHours";
 
 
 export default class App extends React.Component {
