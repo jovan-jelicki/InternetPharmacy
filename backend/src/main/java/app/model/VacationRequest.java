@@ -10,7 +10,7 @@ public class VacationRequest {
    private Long id;
 
    @Column
-   private Long empoyeeId;
+   private Long employeeId;
 
    private Period period;
 
@@ -23,10 +23,21 @@ public class VacationRequest {
    @Column
    private String rejectionNote;
 
+   @Column
+   private String vacationNote;
+
    @Enumerated(EnumType.ORDINAL)
    private EmployeeType employeeType;
 
    public VacationRequest() {
+   }
+
+   public String getVacationNote() {
+      return vacationNote;
+   }
+
+   public void setVacationNote(String vacationNote) {
+      this.vacationNote = vacationNote;
    }
 
    public Long getId() {
@@ -37,12 +48,12 @@ public class VacationRequest {
       this.id = id;
    }
 
-   public Long getEmpoyeeId() {
-      return empoyeeId;
+   public Long getEmployeeId() {
+      return employeeId;
    }
 
-   public void setEmpoyeeId(Long empoyeeId) {
-      this.empoyeeId = empoyeeId;
+   public void setEmployeeId(Long empoyeeId) {
+      this.employeeId = empoyeeId;
    }
 
    public Period getPeriod() {

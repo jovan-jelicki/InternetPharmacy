@@ -10,8 +10,10 @@
     "google-maps-react": "^2.0.6",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
+    "react-datepicker": "^3.4.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
+    "rsuite": "^4.8.8",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
