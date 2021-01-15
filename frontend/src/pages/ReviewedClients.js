@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Container, Nav, Row, Button, Table} from "react-bootstrap";
+import {Col, Container,Row, Button, Table} from "react-bootstrap";
 
 export default class ReviewedClients extends React.Component {
     constructor(props) {

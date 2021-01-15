@@ -1,7 +1,8 @@
 import React from "react";
-import {Col, Container, Nav, Row, Button, Table} from "react-bootstrap";
+import { Container, Button} from "react-bootstrap";
 import ReviewedClients from "./ReviewedClients";
 import VacationRequest from "./VacationRequest";
+import DermatologistsProfilePage from "./DermatologistsProfilePage";
 
 export default class DermatologistHomePage extends React.Component {
     constructor(props) {
@@ -59,6 +60,10 @@ export default class DermatologistHomePage extends React.Component {
         else if (this.state.navbar === "vacationRequest")
             return (
                 <VacationRequest Id = {this.state.id} role = {this.state.role} />
+            );
+        else if (this.state.navbar === "profile")
+            return (
+                <DermatologistsProfilePage Id = {this.state.id} role = {this.state.role} />
             );
         else
             return (
