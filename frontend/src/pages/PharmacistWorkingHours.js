@@ -30,15 +30,15 @@ export default class PharmacistWorkingHours extends React.Component {
                 title: 'All Day Event',
             },
         ];
-        let allViews = Object.keys(Views).map(k => Views[k])
         const MyCalendar = (
             <div >
                 <Calendar
                     localizer={momentLocalizer(moment)}
                     events={dummyEvents}
                     popup = {false}
-                    views={allViews}
-                    step={60}
+                    views={Object.keys(Views).map(k => Views[k])}
+                    step={20}
+                    timeslots={2}
                     showMultiDayTimes={true}
                     components={{
                         timeSlotWrapper: this.ColoredDateCellWrapper,
