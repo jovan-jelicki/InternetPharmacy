@@ -14,8 +14,7 @@ public class Pharmacy {
     @Column
     private String name;
 
-    @Column
-    private String address;
+    private Address address;
 
     @Column
     private String description;
@@ -51,11 +50,11 @@ public class Pharmacy {
         this.name = name;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 
