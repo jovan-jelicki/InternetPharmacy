@@ -14,8 +14,8 @@ public class VacationRequest {
 
    private Period period;
 
-   @Column
-   private boolean isApproved;
+   @Enumerated(EnumType.ORDINAL)
+   private VacationRequestStatus vacationRequestStatus;
 
    @ManyToOne
    private Pharmacy pharmacy;
@@ -64,12 +64,12 @@ public class VacationRequest {
       this.period = period;
    }
 
-   public boolean isApproved() {
-      return isApproved;
+   public VacationRequestStatus getVacationRequestStatus() {
+      return vacationRequestStatus;
    }
 
-   public void setApproved(boolean approved) {
-      isApproved = approved;
+   public void setVacationRequestStatus(VacationRequestStatus vacationRequestStatus) {
+      this.vacationRequestStatus = vacationRequestStatus;
    }
 
    public Pharmacy getPharmacy() {
