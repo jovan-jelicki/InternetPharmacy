@@ -14,8 +14,9 @@ public class Promotion {
     @Column
     private String content;
 
-    @Column
-    private Long pharmacyId;
+    @ManyToOne
+    @JoinColumn
+    private Pharmacy pharmacy;
 
     public Promotion() { }
 
@@ -35,11 +36,19 @@ public class Promotion {
         this.content = content;
     }
 
-    public Long getPharmacyId() {
-        return pharmacyId;
+    public Long getId() {
+        return id;
     }
 
-    public void setPharmacyId(Long pharmacyId) {
-        this.pharmacyId = pharmacyId;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Pharmacy getPharmacy() {
+        return pharmacy;
+    }
+
+    public void setPharmacy(Pharmacy pharmacy) {
+        this.pharmacy = pharmacy;
     }
 }
