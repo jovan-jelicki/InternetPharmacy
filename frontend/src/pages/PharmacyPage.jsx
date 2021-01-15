@@ -181,7 +181,7 @@ export class PharmacyPage extends React.Component{
             );
         else if (this.state.navbar === "employees")
             return (
-                <PharmacyEmployees/>
+                <PharmacyEmployees pharmacyId = {this.state.pharmacy.id}/>
             );
         else if (this.state.navbar === "medications")
             return (
