@@ -15,15 +15,11 @@ class AllergyPatientListing extends React.Component {
         const allergies = this.props.allergies.map((allergy, index) => {
             return (
                 <Col xs={3} >
-                    <Card bg='primary' key={index} text='white' className="m-2" style={{ height: '5rem' }}>
-                        <Card.Body>
-                            <Card.Text>
-                                <Button variant="primary" className="mr-3"
-                                        onClick={this.removeAllergy.bind(this, allergy)}>X</Button>
-                                {allergy}
-                            </Card.Text>
-                        </Card.Body>
-                    </Card>
+                    <div className="m-2 bg-primary p-2" style={{ height: '3rem' }}>
+                        {this.props.edit && <Button variant="primary" className="mr-3 p-0" style={{width: '1rem'}}
+                                 onClick={this.removeAllergy.bind(this, allergy)}>X</Button>}
+                        {allergy}
+                    </div>
                 </Col>
             )
         })

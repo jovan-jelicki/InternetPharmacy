@@ -3,6 +3,7 @@ import {Col, Container, Nav, Row, Button} from "react-bootstrap";
 import UserInfo from "../components/UserInfo";
 import AllergyPatientListing from "../components/AllergyPatientListing";
 import AddAllergy from "../components/AddAllergy";
+import ChangePassword from "../components/ChangePassword";
 
 export default class PatientProfilePage extends React.Component {
     constructor(props) {
@@ -101,7 +102,9 @@ export default class PatientProfilePage extends React.Component {
                         <UserInfo user={this.state} edit={this.state.editMode} onChange={this.handleInputChange}/>
                         <h2 className="pt-4 pb-3">Allergies</h2>
                         {this.state.editMode && <AddAllergy addAllergy={this.addAllergy}/>}
-                        <AllergyPatientListing allergies={this.state.allergies} removeAllergy={this.removeAllergy}/>
+                        <AllergyPatientListing edit={this.state.editMode}
+                            allergies={this.state.allergies} removeAllergy={this.removeAllergy}/>
+                        {this.state.editMode && <ChangePassword/>}
                     </Col>
                 </Row>
 
