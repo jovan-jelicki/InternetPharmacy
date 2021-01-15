@@ -1,15 +1,12 @@
 package app.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class PharmacyAdmin extends User {
 
     @JoinColumn
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Pharmacy pharmacy;
 
     public PharmacyAdmin() {
