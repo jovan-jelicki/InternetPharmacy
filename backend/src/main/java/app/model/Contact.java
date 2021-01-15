@@ -9,14 +9,7 @@ public class Contact {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-   @Column
-   private String address;
-
-   @Column
-   private String town;
-
-   @Column
-   private String country;
+   private Address address;
 
    @Column
    private String phoneNumber;
@@ -31,28 +24,12 @@ public class Contact {
       this.id = id;
    }
 
-   public String getAddress() {
+   public Address getAddress() {
       return address;
    }
 
-   public void setAddress(String address) {
+   public void setAddress(Address address) {
       this.address = address;
-   }
-
-   public String getTown() {
-      return town;
-   }
-
-   public void setTown(String town) {
-      this.town = town;
-   }
-
-   public String getCountry() {
-      return country;
-   }
-
-   public void setCountry(String country) {
-      this.country = country;
    }
 
    public String getPhoneNumber() {

@@ -11,8 +11,9 @@ public class WorkingHours {
 
     private Period period;
 
-    @Column
-    private Long pharmacyId;
+    @ManyToOne
+    @JoinColumn
+    private Pharmacy pharmacy;
 
     public Long getId() {
         return id;
@@ -30,11 +31,11 @@ public class WorkingHours {
         this.period = period;
     }
 
-    public Long getPharmacyId() {
-        return pharmacyId;
+    public Pharmacy getPharmacy() {
+        return pharmacy;
     }
 
-    public void setPharmacyId(Long pharmacyId) {
-        this.pharmacyId = pharmacyId;
+    public void setPharmacy(Pharmacy pharmacy) {
+        this.pharmacy = pharmacy;
     }
 }

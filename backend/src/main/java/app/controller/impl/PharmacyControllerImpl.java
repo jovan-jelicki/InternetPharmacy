@@ -1,4 +1,4 @@
-package app.controller;
+package app.controller.impl;
 
 import app.model.Pharmacy;
 import app.service.PharmacyService;
@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping(value = "api/pharmacy")
-public class PharmacyController {
+public class PharmacyControllerImpl {
 
     private final PharmacyService pharmacyService;
 
     @Autowired
-    public PharmacyController(PharmacyService pharmacyService) {
+    public PharmacyControllerImpl(PharmacyService pharmacyService) {
         this.pharmacyService = pharmacyService;
     }
 

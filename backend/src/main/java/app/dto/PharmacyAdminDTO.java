@@ -1,27 +1,33 @@
 package app.dto;
 
+
 import app.model.Address;
+import app.model.PharmacyAdmin;
 import app.model.SystemAdmin;
 import app.model.UserType;
 
-public class SystemAdminDTO {
+public class PharmacyAdminDTO {
     private Long id;
     private String firstName;
     private String lastName;
     private Address address;
+    private String town;
+    private String country;
     private String phoneNumber;
     private UserType userType;
+    private Long pharmacyId;
 
-    public SystemAdminDTO() {
+    public PharmacyAdminDTO() {
     }
 
-    public SystemAdminDTO(SystemAdmin systemAdmin) {
-        this.id = systemAdmin.getId();
-        this.firstName = systemAdmin.getFirstName();
-        this.lastName = systemAdmin.getLastName();
-        this.address = systemAdmin.getContact().getAddress();
-        this.phoneNumber = systemAdmin.getContact().getPhoneNumber();
-        this.userType = systemAdmin.getUserType();
+    public PharmacyAdminDTO(PharmacyAdmin pharmacyAdmin) {
+        this.id = pharmacyAdmin.getId();
+        this.firstName = pharmacyAdmin.getFirstName();
+        this.lastName = pharmacyAdmin.getLastName();
+        this.address = pharmacyAdmin.getContact().getAddress();
+        this.phoneNumber = pharmacyAdmin.getContact().getPhoneNumber();
+        this.userType = pharmacyAdmin.getUserType();
+        this.pharmacyId = pharmacyAdmin.getPharmacy().getId();
     }
 
     public Long getId() {
@@ -56,6 +62,22 @@ public class SystemAdminDTO {
         this.address = address;
     }
 
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -70,5 +92,13 @@ public class SystemAdminDTO {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public Long getPharmacyId() {
+        return pharmacyId;
+    }
+
+    public void setPharmacyId(Long pharmacyId) {
+        this.pharmacyId = pharmacyId;
     }
 }
