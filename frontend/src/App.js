@@ -5,6 +5,7 @@ import PatientProfilePage from "./pages/PatientProfilePage";
 import PharmacyPage from "./pages/PharmacyPage";
 import ReviewedClients from "./pages/ReviewedClients";
 import VacationRequest from "./pages/VacationRequest";
+import DermatologistHomePage from "./pages/DermatologistHomePage";
 
 
 export default class App extends React.Component {
@@ -23,11 +24,12 @@ export default class App extends React.Component {
     return (
         <BrowserRouter>
           <Switch>
-            <Route exact path="/"  component={IndexPage} role={role}/>
-            <Route path="/patient-profile" component={PatientProfilePage} role={role}/>
+            <Route exact path="/"  render={(props) => <IndexPage {...props} role={role} /> } />
+            <Route path="/patient-profile" render={(props) => <PatientProfilePage {...props} role={role} /> } />
             <Route path="/pharmacy"  component={PharmacyPage} role={role}/>
-            <Route path="/reviewClients"  component={ReviewedClients} role={role}/>
-            <Route path="/vacationRequest"  component={VacationRequest} role={role} Id={Id}/>
+            <Route path="/reviewClients"  render={(props) => <ReviewedClients {...props} role={role} Id={Id}/> } />
+            <Route path="/vacationRequest" render={(props) => <VacationRequest {...props} role={role} Id={Id}/> } />
+            <Route path="/dermatologistHomePage"  render={(props) => <DermatologistHomePage {...props} role={role} Id={Id}/> } />
           </Switch>
         </BrowserRouter>
     );

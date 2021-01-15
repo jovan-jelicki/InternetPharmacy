@@ -29,6 +29,7 @@ export default class VacationRequest extends React.Component {
         );
         return (
             <Container>
+                <br/>
                 <h2> Create request for vacation or absence</h2>
                 <br/>
                 <Row>

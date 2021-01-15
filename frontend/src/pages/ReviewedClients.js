@@ -5,6 +5,8 @@ export default class ReviewedClients extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            role : props.role,
+            Id : props.Id,
             clients : [],
             sortType : "desc"
         }
@@ -36,7 +38,9 @@ export default class ReviewedClients extends React.Component {
             </tr>
         );
         return (
+
             <Container>
+                <br/>
                 <Row>
                     <Col  xs={12} md={8}>
                         <Button onClick={this.sortByFirstName} type="button" className="btn btn-secondary"> Sort by first name</Button>
