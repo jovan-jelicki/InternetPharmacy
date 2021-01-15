@@ -56,6 +56,8 @@ export default class PharmacyEmployees extends React.Component{
            <div>
                <br/><br/>
                <h1>Dermatolozi</h1>
+               
+               <Button variant="success">Dodaj dermatologa</Button>
 
                <Navbar bg="light" expand="lg">
                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -107,6 +109,7 @@ export default class PharmacyEmployees extends React.Component{
 
                <br/><br/>
                <h1>Farmaceuti</h1>
+               <Button variant="success">Kreiraj farmaceuta</Button>
                <Navbar bg="light" expand="lg">
                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
                    <Navbar.Collapse id="basic-navbar-nav">
