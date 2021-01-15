@@ -3,7 +3,8 @@ import {Container, Row, Col, Nav, Button} from "react-bootstrap";
 import UserInfo from "../components/UserInfo";
 import ChangePassword from "../components/ChangePassword";
 
-export default class DermatologistsProfilePage extends React.Component {
+//TODO Za sada namerno postoje dve iste stranice za profil dermatologa i farmaceuta, u toku rada uvideti da li je to zaista potrebno
+export default class PharmacistProfilePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
