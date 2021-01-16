@@ -1,11 +1,9 @@
 package app.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
 public class Supplier extends User {
 
     @Id
@@ -15,7 +13,7 @@ public class Supplier extends User {
     @ManyToMany
     private List<MedicationQuantity> medicationQuantity;
 
-    @ManyToMany
+    @OneToMany
     private List<MedicationOffer> medicationOffer;
 
     public Supplier() {
