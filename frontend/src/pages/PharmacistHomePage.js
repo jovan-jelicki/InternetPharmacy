@@ -4,6 +4,7 @@ import ReviewedClients from "./ReviewedClients";
 import VacationRequest from "./VacationRequest";
 import PharmacistProfilePage from "./PharmacistProfilePage";
 import PharmacistWorkingHours from "./PharmacistWorkingHours";
+import PharmacistConsultationStart from "./PharmacistConsultationStart";
 
 export default class PharmacistHomePage extends React.Component {
     constructor(props) {
@@ -69,6 +70,10 @@ export default class PharmacistHomePage extends React.Component {
         else if (this.state.navbar === "workHours")
             return (
                 <PharmacistWorkingHours Id = {this.state.id} role = {this.state.role} />
+            );
+        else if (this.state.navbar === "startAppointment")
+            return (
+                <PharmacistConsultationStart Id = {this.state.id} role = {this.state.role} />
             );
         else
             return (
