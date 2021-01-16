@@ -15,6 +15,9 @@ export default class DermatologistsProfilePage extends React.Component {
             'country': '',
             'phoneNumber': '',
             'allergies': [],
+            'oldPass' : '',
+            'newPass' : '',
+            'repPass' : '',
             'editMode': false
         }
     }
@@ -43,6 +46,8 @@ export default class DermatologistsProfilePage extends React.Component {
     }
 
     render() {
+        const {oldPass, newPass, repPass} = this.state;
+        const passwords = [oldPass, newPass, repPass]
         return (
             <Container fluid>
                 <Row className="pt-5">
@@ -57,7 +62,7 @@ export default class DermatologistsProfilePage extends React.Component {
                     </Col>
                     <Col>
                         <UserInfo user={this.state} edit={this.state.editMode} onChange={this.handleInputChange}/>
-                        {this.state.editMode && <ChangePassword/>}
+                        {this.state.editMode && <ChangePassword pass={passwords}/>}
                     </Col>
                 </Row>
 
