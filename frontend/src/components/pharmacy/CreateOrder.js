@@ -13,7 +13,7 @@ export default class CreateOrder extends React.Component{
                     name : "Xantil"
                 },
                 {
-                    id:2,
+                    id: 2,
                     name : "Brufen"
                 }
             ],
@@ -69,8 +69,9 @@ export default class CreateOrder extends React.Component{
             return (
                 <tr key={key}>
                     <td>
-                        <select  name="medicationId" onChange={this.handleInputChange} value={medicationId}>
-                            {this.state.medications.map((medication) => <option key={medication.id} value={medication.id} >{medication.name}</option>)}
+                        <select  name="medicationId" onChange={this.handleInputChange}>
+                            <option disabled={true} selected="selected">select</option>
+                            {this.state.medications.map((medication) => <option key={medication.id} value={medication.id}>{medication.name}</option>)}
                         </select>
                     </td>
                     <td onChange={this.handleInputChange}>
@@ -84,19 +85,32 @@ export default class CreateOrder extends React.Component{
         });
     }
 
-    incrementNumberOfRows = () => {
-        // console.log(this.state.inputOrder);
-        this.setState({
+    incrementNumberOfRows = async () => {
+
+        if (this.state.inputOrder.medicationId === 0) {
+            alert('Please select medication!')
+            return;
+        }
+
+        console.log(this.state.inputOrder);
+        await this.setState({
             numberOfRows : this.state.numberOfRows+1
         })
 
-        this.setState({
+        await this.setState({
             medicationOrder : {
-                // deadLine : this.state.date,
                 ...this.state.medicationOrder,
                 medicationQuantity : this.state.medicationOrder.medicationQuantity.concat(this.state.inputOrder)
             }
         })
+
+        await this.setState({
+            inputOrder : {
+                medicationId : 0,
+                quantity : 0
+            }
+        })
+
     }
 
     changeDatePicker = (date) => {
