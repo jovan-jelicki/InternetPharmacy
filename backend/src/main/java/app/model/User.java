@@ -19,15 +19,8 @@ public abstract class User {
     @Column(nullable = false)
     private String lastName;
 
-//    @JoinTable
-//    @OrderColumn
-//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn
-    @OneToOne(cascade = CascadeType.ALL)
     private Credentials credentials;
 
-    @JoinColumn
-    @OneToOne(cascade = CascadeType.ALL)
     private Contact contact;
 
     @Enumerated(EnumType.ORDINAL)
