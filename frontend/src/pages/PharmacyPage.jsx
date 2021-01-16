@@ -3,7 +3,7 @@ import { Map, GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react';
 import Promotions from "../components/Promotions";
 import PharmacyEmployees from "../components/PharmacyEmployees";
 import PharmacyMedications from "../components/PharmacyMedications";
-import VacationsRequests from "../components/VacationsRequests";
+import PharmacyVacationsRequests from "../components/PharmacyVacationsRequests";
 import PharmacyMedicationOrders from "../components/PharmacyMedicationOrders";
 import PharmacyMedicationQueries from "../components/PharmacyMedicationQueries";
 
@@ -202,7 +202,7 @@ export class PharmacyPage extends React.Component{
             );
         else if (this.state.navbar === 'vacationRequests')
             return (
-              <VacationsRequests />
+              <PharmacyVacationsRequests />
             );
         else if (this.state.navbar === 'medicationOrders')
             return (
