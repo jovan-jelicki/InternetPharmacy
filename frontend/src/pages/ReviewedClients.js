@@ -64,7 +64,7 @@ export default class ReviewedClients extends React.Component {
     }
 
     sortByFirstName = () => {
-        if(this.state.sortType == "desc")
+        if(this.state.sortType === "desc")
             this.setState({
                 clients: this.state.clients.sort((a, b) => (a.firstName > b.firstName) ? -1 : 1),
                 sortType : "asc"
@@ -76,7 +76,7 @@ export default class ReviewedClients extends React.Component {
             })
     }
     sortByLastName = () => {
-        if(this.state.sortType == "desc")
+        if(this.state.sortType === "desc")
             this.setState({
                 clients: this.state.clients.sort((a, b) => (a.lastName > b.lastName) ? -1 : 1),
                 sortType : "asc"
@@ -88,7 +88,7 @@ export default class ReviewedClients extends React.Component {
             })
     }
     sortByDateOfAppointment = () => {
-        if(this.state.sortType == "desc")
+        if(this.state.sortType === "desc")
             this.setState({
                 clients: this.state.clients.sort((a, b) => (a.dateOfAppointment > b.dateOfAppointment) ? -1 : 1),
                 sortType : "asc"

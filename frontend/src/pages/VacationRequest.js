@@ -2,7 +2,6 @@ import React from "react";
 import {Col, Container,  Row, Button} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { DateRangePicker } from 'rsuite';
 
 
 export default class VacationRequest extends React.Component {
