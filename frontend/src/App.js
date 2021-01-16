@@ -10,6 +10,7 @@ import PharmacistProfilePage from "./pages/PharmacistProfilePage";
 import PharmacistHomePage from "./pages/PharmacistHomePage";
 import PharmacistWorkingHours from "./pages/PharmacistWorkingHours";
 import Registration from "./pages/Registration";
+import {ISAdminHomePage} from "./pages/ISAdminHomePage";
 
 
 export default class App extends React.Component {
@@ -36,6 +37,7 @@ export default class App extends React.Component {
             <Route path="/dermatologistHomePage"  render={(props) => <DermatologistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/pharmacistHomePage"  render={(props) => <PharmacistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/registration"  component={Registration} role={role}/>
+            <Route path="/pharmacyAdmin"  component={ISAdminHomePage} role={role}/>
 
           </Switch>
         </BrowserRouter>
