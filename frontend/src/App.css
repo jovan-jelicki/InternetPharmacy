@@ -27,6 +27,29 @@
 .App-link {
   color: #61dafb;
 }
+.rightPanel {
+  padding:50px;
+  margin: 10px;
+  float: right;
+  width: 100%;
+  /* height: 90vh; */
+  overflow: auto;
+  margin-bottom: 25px;
+}
+.col-form-label {
+  text-align: right;
+}
+header {
+  min-height: 8vh;
+  margin-bottom: 10px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  color: #282c34;
+  /* background-image: linear-gradient(#daf5ff, transparent, transparent); */
+  background-color: #daf5ff;
+  border-bottom: 1px solid #daf5ff;
+}
 
 @keyframes App-logo-spin {
   from {

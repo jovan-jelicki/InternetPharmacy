@@ -4,6 +4,7 @@ import UserInfo from "../components/UserInfo";
 import AllergyPatientListing from "../components/AllergyPatientListing";
 import AddAllergy from "../components/AddAllergy";
 import ChangePassword from "../components/ChangePassword";
+import axios from "axios"
 
 export default class PatientProfilePage extends React.Component {
     constructor(props) {
@@ -26,6 +27,10 @@ export default class PatientProfilePage extends React.Component {
     }
 
     componentDidMount() {
+        axios
+        .get('http://localhost:8080/api/patients')
+        .then(res => console.log(res.data));
+
         this.setState({
             'firstName' : 'Ilija',
             'lastName' : 'Brdar',
@@ -103,7 +108,7 @@ export default class PatientProfilePage extends React.Component {
 
     removeAllergy = (allergy) => {
         this.setState({
-            'allergies' : [...this.state.allergies.filter(a => a != allergy)]
+            'allergies' : [...this.state.allergies.filter(a => a !== allergy)]
         })
     }
 
