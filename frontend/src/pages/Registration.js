@@ -50,10 +50,10 @@ export default class Registration extends React.Component {
 
     render() {
         return (
-            <div className="rightPanel">
+            <div className="rightPanel" >
                 <header>User - Registration</header>
 
-                <div className="row">
+                <div className="row" >
                     <label className="col-sm-2 col-form-label">Name</label>
                     <div className="col-sm-3 mb-2">
                         <input type="text" value={this.state.user.firstName} name="firstName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="First Name" />
