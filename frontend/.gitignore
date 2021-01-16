@@ -658,5 +658,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-
+.eslintcache
 # End of https://www.toptal.com/developers/gitignore/api/webstorm,maven,react,java,eclipse,java-web,visualstudio,visualstudiocode,intellij

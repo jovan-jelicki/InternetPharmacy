@@ -1,5 +1,7 @@
 package app.service.impl;
 
+import app.dto.UserPasswordDTO;
+import app.model.Patient;
 import app.model.User;
 import app.repository.UserRepository;
 import app.service.UserService;
@@ -42,5 +44,24 @@ public class UserServiceImpl<T extends User> implements UserService<T> {
     @Override
     public boolean existsById(Long id) {
         return userRepository.existsById(id);
+    }
+
+    @Override
+    public void changePassword(UserPasswordDTO passwordKit) {
+        Optional<T> _user = userRepository.findById(passwordKit.getUserId());
+        if(_user.isEmpty())
+            throw new NullPointerException("User not found");
+        T user = _user.get();
+        validatePassword(passwordKit, user);
+        user.getCredentials().setPassword(passwordKit.getNewPassword());
+        save(user);
+    }
+
+    private void validatePassword(UserPasswordDTO passwordKit, T user) {
+        String password = user.getCredentials().getPassword();
+        if(!password.equals(passwordKit.getOldPassword()))
+            throw new IllegalArgumentException("Wrong password");
+        else if(!passwordKit.getNewPassword().equals(passwordKit.getRepeatedPassword()))
+            throw new IllegalArgumentException("Entered passwords doesn't match");
     }
 }

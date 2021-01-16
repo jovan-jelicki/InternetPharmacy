@@ -38,4 +38,9 @@ public class PharmacyServiceImpl implements PharmacyService {
     public void delete(Long id) {
         pharmacyRepository.deleteById(id);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return pharmacyRepository.existsById(id);
+    }
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import {Button} from "react-bootstrap";
+import Login from "../components/Login";
 
 export default class IndexPage extends React.Component{
     constructor() {
@@ -9,7 +10,7 @@ export default class IndexPage extends React.Component{
     render() {
         return (
             <div className="App">
-                <Button type="button" className="btn btn-secondary">Secondary</Button>
+                <Login/>
             </div>
         );
     }
