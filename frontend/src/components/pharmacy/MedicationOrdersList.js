@@ -57,7 +57,7 @@ export default class MedicationOrdersList extends React.Component {
                 <h1>Narudzbenice</h1>
 
                 <br/>
-                <Button variant="success">Create order</Button>
+                <Button variant="success" onClick={this.createOrder}>Create order</Button>
                 <br/><br/>
 
                 <b>Filter by :</b>
@@ -143,5 +143,9 @@ export default class MedicationOrdersList extends React.Component {
 
     showOffersButtonClick = () => {
         this.props.showOffers('showOffers');
+    }
+
+    createOrder = () => {
+        this.props.showOffers('showCreateOrder');
     }
 }
