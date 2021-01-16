@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Container, Nav, Row, Button} from "react-bootstrap";
+import {Col, Container, Nav, Row, Button, Toast} from "react-bootstrap";
 import UserInfo from "../components/UserInfo";
 import AllergyPatientListing from "../components/AllergyPatientListing";
 import AddAllergy from "../components/AddAllergy";
@@ -32,28 +32,22 @@ export default class PatientProfilePage extends React.Component {
             .get('http://localhost:8080/api/patients/1')
             .then(res => {
                 let patient = res.data;
+                console.log(patient)
                 this.setState({
                     'id' : patient.id,
                     'firstName' : patient.firstName,
                     'lastName' : patient.lastName,
-                    'email' : 'ilija_brdar@yahoo.com',
+                    'email' : patient.credentials.email,
+                    'password' : patient.credentials.password,
                     'penaltyCount' : patient.penaltyCount,
                     'userType' : patient.userType,
                     'editMode' : false,
-                    'changePasswordMode' : false
+                    'changePasswordMode' : false,
+                    'address' : patient.contact.address.street,
+                    'town' : patient.contact.address.town,
+                    'country' : patient.contact.address.country,
+                    'phoneNumber' : patient.contact.phoneNumber
                 })
-            });
-
-        await axios
-            .get('http://localhost:8080/api/patients/address/1')
-            .then(res => {
-                let contact = res.data;
-                this.setState({
-                    'address' : contact.address.street,
-                    'town' : contact.address.town,
-                    'country' : contact.address.country,
-                    'phoneNumber' : contact.phoneNumber
-                }) 
             });
 
         await axios
@@ -78,6 +72,11 @@ export default class PatientProfilePage extends React.Component {
             'phoneNumber' : this.state.phoneNumber,
             'allergies' : [...this.state.allergies]
         }
+
+        this.setState({
+            'editMode' : false,
+            'changePasswordMode' : false
+        })
     }
 
     activateUpdateMode = () => {
@@ -96,6 +95,22 @@ export default class PatientProfilePage extends React.Component {
             'newPass' : '',
             'repPass' : ''
         })
+    }
+
+    changePass = () => {
+        axios
+        .put('http://localhost:8080/api/patients/pass', {
+            'userId' : this.state.id,
+            'oldPassword' : this.state.oldPass,
+            'newPassword' : this.state.newPass,
+            'repeatedPassword' : this.state.repPass
+        })
+        .then(res => {
+            this.setState({
+                'password' : this.state.newPass
+            })
+        })
+        .catch(e => alert('Nisam pijana i nece moci!!!'));
     }
 
     handleInputChange = (event) => {
@@ -137,17 +152,32 @@ export default class PatientProfilePage extends React.Component {
     }
 
     save = () => {
-        
         axios
-        .post('http://localhost:8080/patients', {
+        .put('http://localhost:8080/api/patients', {
             'id' : this.state.id,
             'firstName' : this.state.firstName,
             'lastName' : this.state.lastName,
             'userType' : this.state.userType,
-            'allergies' : this.state.allergies
+            'allergies' : this.state.allergies,
+            'credentials' : {
+                'email' : this.state.email,
+                'password' : this.state.password
+            },
+            'penaltyCount' : this.state.penaltyCount,
+            'userType' : this.state.userType,
+            'contact' : {
+                'phoneNumber' : this.state.phoneNumber,
+                'address' : {
+                    'street' : this.state.address,
+                    'town' : this.state.town,
+                    'country' : this.state.country
+                }
+            }
         })
         .then(res => {
-            this.createBackupUser()
+            if(this.state.changePasswordMode)
+                this.changePass();
+            this.createBackupUser();
         });
         
     }
