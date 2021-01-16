@@ -1,6 +1,7 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
+import app.model.Address;
 import app.model.Patient;
 import app.model.User;
 import app.repository.UserRepository;

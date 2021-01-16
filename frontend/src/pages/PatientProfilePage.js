@@ -26,33 +26,57 @@ export default class PatientProfilePage extends React.Component {
         }
     }
 
-    componentDidMount() {
-        axios
-        .get('http://localhost:8080/api/patients')
-        .then(res => console.log(res.data));
+    async componentDidMount() {
 
-        this.setState({
-            'firstName' : 'Ilija',
-            'lastName' : 'Brdar',
-            'email' : 'ilija_brdar@yahoo.com',
-            'address' : 'Vuka Karadzica 18',
-            'town' : 'Sirig',
-            'country' : 'Serbia',
-            'phoneNumber' : '+381604648117',
-            'allergies' : ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'],
-            'editMode' : false,
-            'changePasswordMode' : false
-        })
+        await axios
+            .get('http://localhost:8080/api/patients/1')
+            .then(res => {
+                let patient = res.data;
+                this.setState({
+                    'id' : patient.id,
+                    'firstName' : patient.firstName,
+                    'lastName' : patient.lastName,
+                    'email' : 'ilija_brdar@yahoo.com',
+                    'penaltyCount' : patient.penaltyCount,
+                    'userType' : patient.userType,
+                    'editMode' : false,
+                    'changePasswordMode' : false
+                })
+            });
 
+        await axios
+            .get('http://localhost:8080/api/patients/address/1')
+            .then(res => {
+                let contact = res.data;
+                this.setState({
+                    'address' : contact.address.street,
+                    'town' : contact.address.town,
+                    'country' : contact.address.country,
+                    'phoneNumber' : contact.phoneNumber
+                }) 
+            });
+
+        await axios
+            .get('http://localhost:8080/api/patients/allergies/1')
+            .then(res => {
+                this.setState({
+                    'allergies' : res.data
+                })
+            });
+
+        this.createBackupUser();
+    }
+
+    createBackupUser = () => {
         this.user = {
-            'firstName' : 'Ilija',
-            'lastName' : 'Brdar',
-            'email' : 'ilija_brdar@yahoo.com',
-            'address' : 'Vuka Karadzica 18',
-            'town' : 'Sirig',
-            'country' : 'Serbia',
-            'phoneNumber' : '+381604648117',
-            'allergies' : ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'],
+            'firstName' : this.state.firstName,
+            'lastName' : this.state.lastName,
+            'email' : this.state.email,
+            'address' : this.state.address,
+            'town' : this.state.town,
+            'country' : this.state.country,
+            'phoneNumber' : this.state.phoneNumber,
+            'allergies' : [...this.state.allergies]
         }
     }
 
@@ -100,7 +124,7 @@ export default class PatientProfilePage extends React.Component {
     }
 
     addAllergy = (allergy) => {
-        if(!this.state.allergies.includes(allergy))
+        if(!this.state.allergies.map(a => a.id).includes(allergy.id))
             this.setState({
                 'allergies' : [...this.state.allergies, allergy]
             })
@@ -108,8 +132,24 @@ export default class PatientProfilePage extends React.Component {
 
     removeAllergy = (allergy) => {
         this.setState({
-            'allergies' : [...this.state.allergies.filter(a => a != allergy)]
+            'allergies' : [...this.state.allergies.filter(a => a.id != allergy)]
         })
+    }
+
+    save = () => {
+        
+        axios
+        .post('http://localhost:8080/patients', {
+            'id' : this.state.id,
+            'firstName' : this.state.firstName,
+            'lastName' : this.state.lastName,
+            'userType' : this.state.userType,
+            'allergies' : this.state.allergies
+        })
+        .then(res => {
+            this.createBackupUser()
+        });
+        
     }
 
     render() {
@@ -129,7 +169,8 @@ export default class PatientProfilePage extends React.Component {
                             {this.state.editMode && <Button variant="primary mt-2"
                                                             onClick={this.activateChangePasswordMode}>
                                 Change Password</Button>}
-                            {this.state.editMode && <Button variant="success mt-2" disabled={this.state.saveDisabled}>Save</Button>}
+                            {this.state.editMode && <Button variant="success mt-2" 
+                            disabled={this.state.saveDisabled} onClick={this.save}>Save</Button>}
                         </Nav>
                     </Col>
                     <Col>
