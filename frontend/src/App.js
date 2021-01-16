@@ -6,6 +6,7 @@ import PharmacyPage from "./pages/PharmacyPage";
 import ReviewedClients from "./pages/ReviewedClients";
 import VacationRequest from "./pages/VacationRequest";
 import DermatologistHomePage from "./pages/DermatologistHomePage";
+import Registration from "./pages/Registration";
 
 
 export default class App extends React.Component {
@@ -30,6 +31,8 @@ export default class App extends React.Component {
             <Route path="/reviewClients"  render={(props) => <ReviewedClients {...props} role={role} Id={Id}/> } />
             <Route path="/vacationRequest" render={(props) => <VacationRequest {...props} role={role} Id={Id}/> } />
             <Route path="/dermatologistHomePage"  render={(props) => <DermatologistHomePage {...props} role={role} Id={Id}/> } />
+            <Route path="/registration"  component={Registration} role={role}/>
+
           </Switch>
         </BrowserRouter>
     );
