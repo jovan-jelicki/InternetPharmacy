@@ -86,17 +86,17 @@ export default class PharmacyEmployees extends React.Component{
                        <td>{dermatologist.firstName}</td>
                        <td>{dermatologist.lastName}</td>
                        <td>{dermatologist.grade}</td>
-                       <td style={this.state.userType === 'patient' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                       <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="primary" onClick={this.handleModal}>
                                 Zakazi pregled
                            </Button>
                        </td >
-                       <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                       <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="warning" onClick={this.handleModal}>
                                Definisi slobodne termine
                            </Button>
                        </td>
-                       <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                       <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="danger" onClick={this.handleModal}>
                                Izbrisi dermatologa
                            </Button>
@@ -136,17 +136,17 @@ export default class PharmacyEmployees extends React.Component{
                            <td>{dermatologist.firstName}</td>
                            <td>{dermatologist.lastName}</td>
                            <td>{dermatologist.grade}</td>
-                           <td style={this.state.userType === 'patient' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                           <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="primary" onClick={this.handleModal}>
                                    Zakazi savetovanje
                                </Button>
                            </td >
-                           <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                           <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="warning" onClick={this.handleModal}>
                                    Definisi slobodne termine
                                </Button>
                            </td>
-                           <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                           <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="danger" onClick={this.handleModal}>
                                    Izbrisi farmaceuta
                                </Button>

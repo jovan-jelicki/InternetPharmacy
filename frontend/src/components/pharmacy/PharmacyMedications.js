@@ -137,22 +137,22 @@ export default class PharmacyMedications extends React.Component{
                             <td>{medication.grade}</td>
                             <td>{medication.quantity}</td>
                             <td>{medication.price}</td>
-                            <td style={this.state.userType === 'patient' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                            <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                 <Button variant="primary" onClick={this.handleModal}>
                                     Rezervisi
                                 </Button>
                             </td >
-                            <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                            <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                 <Button variant="warning" onClick={this.handleModal}>
                                     Sastojci
                                 </Button>
                             </td>
-                            <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                            <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                 <Button variant="info" onClick={this.handleModal}>
                                     Alternative
                                 </Button>
                             </td>
-                            <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                            <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                 <Button variant="danger" onClick={this.handleModal}>
                                     Delete
                                 </Button>

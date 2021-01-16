@@ -1,5 +1,6 @@
 import React from "react";
 import {Button, Modal} from "react-bootstrap";
+import {ButtonGroup, Input} from "rsuite";
 
 export default class MedicationOrdersList extends React.Component {
     constructor() {
@@ -8,7 +9,10 @@ export default class MedicationOrdersList extends React.Component {
             userType : 'pharmacyAdmin',
             medicationOrders : [],
             showModal : false,
-            showContent : 'listOrders'
+            showContent : 'listOrders',
+            radioAll : '1',
+            radioPending : '2',
+            radioProcessed : '3'
         }
     }
 
@@ -46,6 +50,7 @@ export default class MedicationOrdersList extends React.Component {
     }
 
     render() {
+
         return (
             <div className="container-fluid">
 
@@ -55,7 +60,19 @@ export default class MedicationOrdersList extends React.Component {
                 <Button variant="success">Create order</Button>
                 <br/><br/>
 
-
+                <b>Filter by :</b>
+                <ButtonGroup>
+                    <Button>All
+                        <Input ref="input1" type="radio" name="radioButtonSet" value='input1' standalone defaultChecked/>
+                    </Button>
+                    <Button>Pending
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
+                    </Button>
+                    <Button>Processed
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
+                    </Button>
+                </ButtonGroup>
+                <br/>
                 <table className="table table-hover">
                     <thead>
                     <tr>
