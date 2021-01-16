@@ -1,18 +1,14 @@
 import React from 'react';
-import { Map, GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react';
 import Promotions from "../components/pharmacy/Promotions";
 import PharmacyEmployees from "../components/pharmacy/PharmacyEmployees";
 import PharmacyMedications from "../components/pharmacy/PharmacyMedications";
 import PharmacyVacationsRequests from "../components/pharmacy/PharmacyVacationsRequests";
 import PharmacyMedicationOrders from "../components/pharmacy/PharmacyMedicationOrders";
 import PharmacyMedicationQueries from "../components/pharmacy/PharmacyMedicationQueries";
+import PharmacyDescription from "../components/pharmacy/PharmacyDescription";
 
-const mapStyles = {
-    width: '50%',
-    height: '50%'
-};
 
-export class PharmacyPage extends React.Component{
+export default class PharmacyPage extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -33,11 +29,7 @@ export class PharmacyPage extends React.Component{
                 medicationReservation : [],
                 grade : 0
             },
-
-            showingInfoWindow: false,  // Hides or shows the InfoWindow
-            activeMarker: {},          // Shows the active marker upon click
-            selectedPlace: {},
-            navbar : "",
+            navbar : "description",
             userType : "pharmacyAdmin"
 
         }
@@ -51,7 +43,9 @@ export class PharmacyPage extends React.Component{
             address: {
                 street: "Gunduliceva 1A",
                 town: "Novi Sad",
-                country: "Serbia"
+                country: "Serbia",
+                longitude: -0.118092,
+                latitude: 51.509865
             },
             description: "Apoteka za sve!",
             dermatologist: [
@@ -87,34 +81,12 @@ export class PharmacyPage extends React.Component{
                     <p className="lead">{this.state.pharmacy.description}</p>
                     <p className="lead">{'ocena apoteke : '+ this.state.pharmacy.grade}</p>
                 </div>
-                {/*<Map*/}
-                {/*    google={this.props.google}*/}
-                {/*    zoom={14}*/}
-                {/*    style={mapStyles}*/}
-                {/*    initialCenter={*/}
-                {/*        {*/}
-                {/*            lat: this.state.pharmacy.address.latitude,*/}
-                {/*            lng: this.state.pharmacy.address.longitude*/}
-                {/*        }*/}
-                {/*    }*/}
-                {/*>*/}
-                {/*    <Marker*/}
-                {/*        onClick={this.onMarkerClick}*/}
-                {/*        name={this.state.pharmacy.address.street}*/}
-                {/*    />*/}
-                {/*    <InfoWindow*/}
-                {/*        marker={this.state.activeMarker}*/}
-                {/*        visible={this.state.showingInfoWindow}*/}
-                {/*        onClose={this.onClose}*/}
-                {/*     >*/}
-                {/*        <div>*/}
-                {/*            <h4>{this.state.selectedPlace.name}</h4>*/}
-                {/*        </div>*/}
-                {/*    </InfoWindow>*/}
-                {/*</Map>*/}
 
 
                 <ul className="nav justify-content-center">
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="description" onClick={this.handleChange}>Description</a>
+                    </li>
                     <li className="nav-item">
                         <a className="nav-link active" href='#' onClick={this.handleChange} name="employees">Dermatolozi & farmaceuti</a>
                     </li>
@@ -139,44 +111,6 @@ export class PharmacyPage extends React.Component{
         );
     }
 
-    onMarkerClick = (props, marker, e) =>
-        this.setState({
-            selectedPlace: props,
-            activeMarker: marker,
-            showingInfoWindow: true
-        });
-
-    onClose = props => {
-        if (this.state.showingInfoWindow) {
-            this.setState({
-                showingInfoWindow: false,
-                activeMarker: null
-            });
-        }
-    };
-
-    renderEmployees = (event) => {
-        event.preventDefault();
-        this.setState({
-            navbar : "employees"
-        })
-    }
-
-
-    renderMedications = (event) => {
-        event.preventDefault();
-        this.setState({
-            navbar : "medications"
-        })
-    }
-
-
-    renderAppoinments = (event) => {
-        event.preventDefault();
-        this.setState({
-            navbar : "appointments"
-        })
-    }
 
     handleChange = (event) => {
         const target = event.target;
@@ -192,6 +126,10 @@ export class PharmacyPage extends React.Component{
             return (
                 <Promotions/>
             );
+        else if (this.state.navbar === 'description')
+            return (
+                <PharmacyDescription pharmacy = {this.state.pharmacy } />
+            )
         else if (this.state.navbar === "employees")
             return (
                 <PharmacyEmployees pharmacyId = {this.state.pharmacy.id}/>
@@ -214,7 +152,3 @@ export class PharmacyPage extends React.Component{
             );
     }
 }
-
-export default GoogleApiWrapper({
-    apiKey: 'AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY'
-})(PharmacyPage)
