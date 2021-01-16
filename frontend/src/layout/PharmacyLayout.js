@@ -1,85 +1,18 @@
 import React from 'react';
-import { Map, GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react';
-import Promotions from "../components/Promotions";
-import PharmacyEmployees from "../components/PharmacyEmployees";
-import PharmacyMedications from "../components/PharmacyMedications";
-import PharmacyVacationsRequests from "../components/PharmacyVacationsRequests";
-import PharmacyMedicationOrders from "../components/PharmacyMedicationOrders";
-import PharmacyMedicationQueries from "../components/PharmacyMedicationQueries";
+import Promotions from "../components/pharmacy/Promotions";
+import PharmacyEmployees from "../components/pharmacy/PharmacyEmployees";
+import PharmacyMedications from "../components/pharmacy/PharmacyMedications";
+import PharmacyVacationsRequests from "../components/pharmacy/PharmacyVacationsRequests";
+import PharmacyMedicationOrders from "../components/pharmacy/PharmacyMedicationOrders";
+import PharmacyMedicationQueries from "../components/pharmacy/PharmacyMedicationQueries";
+import {GoogleApiWrapper} from "google-maps-react";
+import {PharmacyPage} from "../pages/PharmacyPage";
 
-const mapStyles = {
-    width: '50%',
-    height: '50%'
-};
-
-export class PharmacyPage extends React.Component{
-    constructor(props) {
-        super(props);
-        this.state = {
-            pharmacy : {
-                id : 0,
-                name : "",
-                address : {
-                    street : "",
-                    town : "",
-                    country : "",
-                    latitude : 51.507351,
-                    longitude : -0.127758
-                },
-                description : "",
-                dermatologist : [],
-                pharmacist : [],
-                medicationQuantity : [],
-                medicationReservation : [],
-                grade : 0
-            },
-
-            showingInfoWindow: false,  // Hides or shows the InfoWindow
-            activeMarker: {},          // Shows the active marker upon click
-            selectedPlace: {},
-            navbar : "",
-            userType : "pharmacyAdmin"
-
-        }
-    }
-
-    componentDidMount() {
-        let pharmacy = {
-            id: 0,
-            name: "Jankovic",
-            grade : 3.89,
-            address: {
-                street: "Gunduliceva 1A",
-                town: "Novi Sad",
-                country: "Serbia"
-            },
-            description: "Apoteka za sve!",
-            dermatologist: [
-                {
-                    id: 0,
-                    firstName: "Marko",
-                    lastName: "Markovic",
-                    userType: "dermatologist"
-                }
-            ],
-            pharmacist: [
-                {
-                    id: 0,
-                    firstName: "Dragana",
-                    lastName: "Markovic",
-                    userType: "dermatologist"
-                }
-            ],
-        }
-        this.setState({
-            pharmacy : pharmacy
-        })
-    }
-
-
-
+export class  PharmacyLayout extends React.Component {
 
     render() {
+        const Page = () => this.props.children;
+
         return (
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
@@ -135,6 +68,7 @@ export class PharmacyPage extends React.Component{
                     </li>
                 </ul>
                 {this.renderNavbar()}
+                <Page/>
             </div>
         );
     }
@@ -202,7 +136,7 @@ export class PharmacyPage extends React.Component{
             );
         else if (this.state.navbar === 'vacationRequests')
             return (
-              <PharmacyVacationsRequests />
+                <PharmacyVacationsRequests />
             );
         else if (this.state.navbar === 'medicationOrders')
             return (
@@ -217,4 +151,4 @@ export class PharmacyPage extends React.Component{
 
 export default GoogleApiWrapper({
     apiKey: 'AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY'
-})(PharmacyPage)
+})(PharmacyLayout)

@@ -103,7 +103,8 @@ export default class PharmacyMedications extends React.Component{
                 <h1>Lekovi</h1>
 
                 <br/><br/>
-                <Button variant="success">Proveri dostupnost preko eRecepta</Button>
+                <Button variant="success">Dodaj lek</Button>
+                <Button variant="primary">Proveri dostupnost preko eRecepta</Button>
                 <br/><br/>
 
                 <Navbar bg="light" expand="lg">
@@ -147,8 +148,13 @@ export default class PharmacyMedications extends React.Component{
                                 </Button>
                             </td>
                             <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
-                                <Button variant="danger" onClick={this.handleModal}>
+                                <Button variant="info" onClick={this.handleModal}>
                                     Alternative
+                                </Button>
+                            </td>
+                            <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                                <Button variant="danger" onClick={this.handleModal}>
+                                    Delete
                                 </Button>
                             </td>
                         </tr>
