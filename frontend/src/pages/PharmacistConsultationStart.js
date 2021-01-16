@@ -1,6 +1,7 @@
 import React from "react";
 
 import ScheduledConsultations from "../components/ScheduledConsultations";
+import Consultation from "../components/Consultation";
 
 
 export default class PharmacistConsultationStart extends React.Component {
@@ -43,13 +44,14 @@ export default class PharmacistConsultationStart extends React.Component {
         if(!this.state.startedConsultation)
             return ( <ScheduledConsultations renderParent={this.renderParent} role={this.props.role} Id={this.props.Id} events={this.state.pharmacistEvents}/>)
         else if(this.state.startedConsultation)
-            return (<div>AAAAA</div>)
+            return (<Consultation appointment={this.state.appointment} renderParent={this.renderParent}/>)
 
     }
 
     renderParent = (content) => {
         this.setState({
-            startedConsultation : content
+            startedConsultation : content,
+            appointment : !!localStorage.getItem("appointment") ? JSON.parse(localStorage.getItem("appointment")) : {}
         })
     }
 }
