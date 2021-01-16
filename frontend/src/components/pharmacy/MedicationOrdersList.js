@@ -1,13 +1,14 @@
-import React from 'react';
-import {Button, Modal, FormControl, Navbar} from "react-bootstrap";
+import React from "react";
+import {Button, Modal} from "react-bootstrap";
 
-export default class PharmacyMedicationOrders extends React.Component{
+export default class MedicationOrdersList extends React.Component {
     constructor() {
         super();
         this.state = {
             userType : 'pharmacyAdmin',
             medicationOrders : [],
-            showModal : false
+            showModal : false,
+            showContent : 'listOrders'
         }
     }
 
@@ -47,8 +48,12 @@ export default class PharmacyMedicationOrders extends React.Component{
     render() {
         return (
             <div className="container-fluid">
-                <br/><br/>
+
                 <h1>Narudzbenice</h1>
+
+                <br/>
+                <Button variant="success">Create order</Button>
+                <br/><br/>
 
 
                 <table className="table table-hover">
@@ -76,8 +81,18 @@ export default class PharmacyMedicationOrders extends React.Component{
                             </td>
                             <td>{medicationOrder.status}</td>
                             <td>
-                                <Button variant="primary" onClick={this.handleModal}>
+                                <Button variant="primary" onClick={this.showOffersButtonClick}>
                                     Pregledaj ponude
+                                </Button>
+                            </td>
+                            <td>
+                                <Button variant="info" >
+                                    Izmeni
+                                </Button>
+                            </td>
+                            <td>
+                                <Button variant="danger" >
+                                    Obrisi
                                 </Button>
                             </td>
                         </tr>
@@ -107,5 +122,9 @@ export default class PharmacyMedicationOrders extends React.Component{
         this.setState({
             showModal : !this.state.showModal
         });
+    }
+
+    showOffersButtonClick = () => {
+        this.props.showOffers('showOffers');
     }
 }

@@ -22,7 +22,7 @@ export default class PharmacistProfilePage extends React.Component {
 
     componentDidMount() {
         this.setState({
-            'firstName': 'Ilija',
+            'firstName': 'ILIJA',
             'lastName': 'Brdar',
             'email': 'ilija_brdar@yahoo.com',
             'address': 'Vuka Karadzica 18',
@@ -33,7 +33,7 @@ export default class PharmacistProfilePage extends React.Component {
             'editMode': false
         })
         this.user = {
-            'firstName': 'Ilija',
+            'firstName': 'ILIJA',
             'lastName': 'Brdar',
             'email': 'ilija_brdar@yahoo.com',
             'address': 'Vuka Karadzica 18',
