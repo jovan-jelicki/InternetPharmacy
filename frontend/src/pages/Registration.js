@@ -15,6 +15,7 @@ export default class Registration extends React.Component {
                 'country': '',
                 'city': '',
                 'telephone': '',
+                'rePassword' : ''
             },
             errors:{
                 user: {
@@ -25,30 +26,26 @@ export default class Registration extends React.Component {
                     'country': 'Enter Country',
                     'city': 'Enter City',
                     'telephone': 'Enter Telephone',
+                    'rePassword' : 'Repeat password'
                 }
             },
             validForm: false,
             submitted: false,
-            'rePassword' : ''
+
 
         }
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.validatePassword = this.validatePassword.bind(this);
+        this.isValidPassword = this.isValidPassword.bind(this);
 
     }
 
     handleInputChange = (event) => {
-        let telphone = ''
         const { name, value } = event.target;
         const user = this.state.user;
         user[name] = value;
 
         this.setState({ user });
         this.validationErrorMessage(event);
-    }
-
-    validatePassword(event) {
-
     }
 
     render() {
@@ -60,7 +57,7 @@ export default class Registration extends React.Component {
                     <label className="col-sm-2 col-form-label">Name</label>
                     <div className="col-sm-3 mb-2">
                         <input type="text" value={this.state.user.firstName} name="firstName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="First Name" />
-                        { this.state.submitted && this.state.errors.user.firstName.length > 0 &&  <span class="text-danger">{this.state.errors.user.firstName}</span>}
+                        { this.state.submitted && this.state.errors.user.firstName.length > 0 &&  <span className="text-danger">{this.state.errors.user.firstName}</span>}
 
                     </div>
                     <div className="col-sm-3 mb-2">
@@ -125,8 +122,9 @@ export default class Registration extends React.Component {
                 <div className="row">
                     <label  className="col-sm-2 col-form-label">Repeat password</label>
                     <div className="col-sm-6 mb-2">
-                        <FormControl name="password2" type="password" placeholder="Repeat new Password"
-                                     value={this.state.rePassword} onChange={(e) => { this.handleInputChange(e)} }/>
+                        <FormControl name="rePassword" type="password" placeholder="Repeat new Password" value={this.state.user.rePassword} onChange={(e) => { this.handleInputChange(e)} }/>
+                        { this.state.submitted && this.state.errors.user.rePassword.length > 0 &&  <span className="text-danger">{this.state.errors.user.rePassword}</span>}
+
                     </div>
                     <div className="col-sm-4">
                     </div>
@@ -180,6 +178,9 @@ export default class Registration extends React.Component {
             case 'password':
                 errors.user.password = value.length < 1 ? 'Enter Password' : '';
                 break;
+            case 'rePassword':
+                errors.user.rePassword = this.isValidPassword(value) ? '' : 'This password must match the previous';
+                break;
             default:
                 break;
         }
@@ -201,6 +202,13 @@ export default class Registration extends React.Component {
 
     isValidTelephone = (value) => {
         return !(value && /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[0-9]{2,3}[-\s\./0-9]*$/i.test(value))
+    }
 
+    isValidPassword = (value) => {
+            if(this.state.user.password !== this.state.user.rePassword) {
+                return false;
+            }else{
+                return  true
+            }
     }
 }

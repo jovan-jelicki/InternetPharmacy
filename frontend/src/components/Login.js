@@ -9,8 +9,8 @@ export default class Login extends React.Component {
             'password': '',
             'email': '',
             errors: {
-                'email': 'Enter Email!',
-                'password': 'Enter Password!'
+                'email': 'Enter Email.',
+                'password': 'Enter Password.'
             },
             submitted: false
         }
@@ -80,7 +80,7 @@ export default class Login extends React.Component {
         let errors = this.state.errors;
         switch (name) {
             case 'email':
-                errors.email = this.isValidEmail(value) ? '' : 'Email is not valid!';
+                errors.email = this.isValidEmail(value) ? '' : 'Wrong email format. Please check and try again.';
                 break;
             case 'password':
                 errors.password = value.length < 1 ? 'Enter Password' : '';
