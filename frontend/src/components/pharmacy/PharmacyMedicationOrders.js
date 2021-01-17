@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Modal, FormControl, Navbar} from "react-bootstrap";
 import MedicationOrdersList from "./MedicationOrdersList";
 import MedicationOffers from "./MedicationOffers";
+import CreateOrder from "./CreateOrder";
 
 export default class PharmacyMedicationOrders extends React.Component{
     constructor(props) {
@@ -16,6 +17,10 @@ export default class PharmacyMedicationOrders extends React.Component{
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         if (this.state.showContent === 'showOffers' && nextState.showContent === 'showOffers') //when clicking on navbar st default behaviour to listOrders
+            this.setState({
+                showContent : 'listOrders'
+            })
+        else if (this.state.showContent === 'showCreateOrder' && nextState.showContent === 'showCreateOrder') //when clicking on navbar st default behaviour to listOrders
             this.setState({
                 showContent : 'listOrders'
             })
@@ -69,11 +74,15 @@ export default class PharmacyMedicationOrders extends React.Component{
     handleContent = () => {
         if (this.state.showContent === 'listOrders')
             return (
-                <MedicationOrdersList showOffers={this.changeContent} />
+                <MedicationOrdersList showOffers={this.changeContent} showCreateOrder={this.changeContent}/>
             );
         else if (this.state.showContent === 'showOffers')
             return (
               <MedicationOffers order = {this.state.medicationOrders[0]}  />
+            );
+        else if (this.state.showContent === 'showCreateOrder')
+            return (
+              <CreateOrder />
             );
     }
 
