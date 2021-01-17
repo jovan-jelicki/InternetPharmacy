@@ -111,9 +111,6 @@ export default class PharmacyRegistration extends React.Component {
 
     handlePlaceSelect = () => {
         const addressObject = this.street.getPlace();
-
-        var lat = addressObject.geometry.location.lat();
-        var lng = addressObject.geometry.location.lng();
         try {
             console.log( addressObject.address_components)
 
@@ -127,8 +124,8 @@ export default class PharmacyRegistration extends React.Component {
                             street: address[1].long_name + " " + address[0].long_name,
                             town: address[2].long_name,
                             country: address[address.length-1].long_name,
-                            latitude:lat,
-                            longitude: lng
+                            latitude:addressObject.geometry.location.lat(),
+                            longitude: addressObject.geometry.location.lng()
                         },
                     }
                 );
@@ -145,8 +142,6 @@ export default class PharmacyRegistration extends React.Component {
 
     render() {
         const { selectedOption } = this.state;
-        var message='You selected '+this.state.pharmacy.pharmacyAdmin;
-
         return (
             <div>
                 <h3 style={({ marginTop: '5rem', textAlignVertical: "center",textAlign: "center"})}>Pharmacy registration</h3>
@@ -167,18 +162,6 @@ export default class PharmacyRegistration extends React.Component {
 
                         { this.state.submitted && this.state.errors.pharmacy.address.street.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.address.street}</span>}
                     </div>
-{/*
-                    <label >Town</label>
-                    <div className="col-sm-3 mb-2">
-                        <input type="text" value={this.state.pharmacy.address.town} name="town" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Enter Town" />
-                        { this.state.submitted && this.state.errors.pharmacy.address.town.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.address.town}</span>}
-                    </div>
-                    <label >Country</label>
-                    <div className="col-sm-3 mb-2">
-                        <input type="text" value={this.state.pharmacy.address.country} name="country" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Enter Country" />
-                        { this.state.submitted && this.state.errors.pharmacy.address.country.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.address.country}</span>}
-                    </div>
-                    */}
                 </div>
                 <div className="row" style={({ marginTop: '1rem' })} >
                     <label className="col-sm-2 col-form-label">Description</label>
@@ -219,18 +202,6 @@ export default class PharmacyRegistration extends React.Component {
                     </div>
                 </div>
 
-
-
-
-
-                <div className="row" style={({ marginTop: '1rem' })} >
-                    <div  className="col-sm-2 col-form-label">
-                        <Script type="text/javascript"url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
-
-                        <input type="text" id="autocomplete" placeholder="Search City" value={this.state.query}
-                        />
-                    </div>
-                </div>
                 <div className="row" style={({ marginTop: '1rem' })} >
                     <div className="row">
                         <div className="col-sm-5 mb-2">
