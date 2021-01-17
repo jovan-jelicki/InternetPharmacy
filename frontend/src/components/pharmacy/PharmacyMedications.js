@@ -106,13 +106,13 @@ export default class PharmacyMedications extends React.Component{
 
     render() {
         return (
-            <div>
+            <div style={({ marginLeft: '1rem' })}>
                 <br/><br/>
                 <h1>Lekovi</h1>
 
-                <br/><br/>
-                <Button variant="success" onClick={this.handleModal}>Dodaj lek</Button>
-                <Button variant="primary">Proveri dostupnost preko eRecepta</Button>
+
+                <Button variant="success" onClick={this.handleModal} >Dodaj lek</Button>
+                <Button variant="primary" style={({ marginLeft: '1rem' })}>Proveri dostupnost preko eRecepta</Button>
                 <br/><br/>
 
                 <Navbar bg="light" expand="lg">
