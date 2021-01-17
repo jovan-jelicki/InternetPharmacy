@@ -1,5 +1,13 @@
 import React from "react";
-import {Navbar, Form, Button} from "react-bootstrap";
+import {Button} from "react-bootstrap";
+import Script from 'react-load-script';
+import Select from "react-select";
+
+const options = [
+    { value: 'Marko', label: 'Marko Markovic' },
+    { value: 'Zoran', label: 'Zoran Petrovic' },
+    { value: 'Ana', label: 'Ana Matic' },
+];
 
 export default class PharmacyRegistration extends React.Component {
     constructor() {
@@ -7,6 +15,9 @@ export default class PharmacyRegistration extends React.Component {
         this.state = {
             pharmacy: {
                 name: '',
+                description: '',
+                dermatologist : [],
+                pharmacist : [],
                 address : {
                     street : "",
                     town : "",
@@ -14,33 +25,128 @@ export default class PharmacyRegistration extends React.Component {
                     latitude : 51.507351,
                     longitude : -0.127758
                 },
-                description: '',
-                dermatologist : [],
-                pharmacist : [],
-                medicationQuantity : [
-                    {
-                        medication:'',
-                        quantity:''
-                    }
-                ],
                 medicationReservation : [],
-                grade : 0
-            }
+                grade : 0,
+                pharmacyAdmin: [],
 
+            },
+            selectedOption: null,
+            numberOfRows : 1,
+            address2 : {
+                street : "",
+                town : "",
+                country : "",
+                latitude :"",
+                longitude : ""
+            },
         }
         this.handleInputChange = this.handleInputChange.bind(this);
 
     }
+    handleDermatologistChange = selectedOption => {
+        const newitems = this.state.pharmacy.dermatologist
+        newitems.push(selectedOption)
+
+        this.setState({
+            dermatologist:newitems
+        });
+        console.log(`dermatologist selected`, selectedOption);
+    };
+
+    handlePharmacistChange = selectedOption => {
+        const newitems = this.state.pharmacy.pharmacist
+        newitems.push(selectedOption)
+
+        this.setState({
+            pharmacist:newitems
+        });
+        console.log(`Option selected:`, selectedOption);
+    };
+    handleAdminChange = selectedOption => {
+        const newitems = this.state.pharmacy.pharmacyAdmin
+        newitems.push(selectedOption)
+
+        this.setState({
+            pharmacyAdmin:newitems
+        });
+        console.log(`Option selected:`, selectedOption);
+    };
 
     handleInputChange = (event) => {
+
         const { name, value } = event.target;
+        //console.log(name);
+        const address = this.state.pharmacy.address;
+        const medicationQuantity = this.state.pharmacy.medicationQuantity;
+
+        if(name=="medication"){
+            medicationQuantity[name]=value;
+        }else if(name=="quantity"){
+            medicationQuantity[name]=value;
+        }
         const pharmacy = this.state.pharmacy;
         pharmacy[name] = value;
-
+        pharmacy[address]=address;
+        pharmacy[medicationQuantity]=address;
+        console.log(this.state.pharmacy)
         this.setState({ pharmacy });
     }
 
+
+    handleSubmit = () => {
+        console.log(this.state.medicationOrder);
+    }
+//, componentRestrictions: { country: "rs" }
+    //                        <input type="text" value={this.state.pharmacy.address.street} name="street" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Enter Street" />
+    handleScriptLoad = () => {
+        var input = document.getElementById('street');
+        var options = {
+            types: ['geocode'] //this should work !
+        };
+        const google = window.google
+
+        this.street = new google.maps.places.Autocomplete(input, options);
+        this.street.addListener('place_changed', this.handlePlaceSelect);
+    }
+
+    handlePlaceSelect = () => {
+        const addressObject = this.street.getPlace();
+
+        var lat = addressObject.geometry.location.lat();
+        var lng = addressObject.geometry.location.lng();
+        try {
+            console.log( addressObject.address_components)
+
+            const address = addressObject.address_components;
+
+            if (address) {
+                this.setState(
+                    {
+                        //query: addressObject.formatted_address,
+                        address2: {
+                            street: address[1].long_name + " " + address[0].long_name,
+                            town: address[2].long_name,
+                            country: address[address.length-1].long_name,
+                            latitude:lat,
+                            longitude: lng
+                        },
+                    }
+                );
+            }
+            this.state.pharmacy.address=this.state.address2;
+
+        }
+        catch{
+        //treba da printa gresku
+        }
+    }
+
+
+
     render() {
+        const { selectedOption } = this.state;
+        var message='You selected '+this.state.pharmacy.pharmacyAdmin;
+
         return (
             <div>
                 <h3 style={({ marginTop: '5rem', textAlignVertical: "center",textAlign: "center"})}>Pharmacy registration</h3>
@@ -55,9 +161,13 @@ export default class PharmacyRegistration extends React.Component {
                 <div className="row" style={({ marginTop: '1rem' })} >
                     <label className="col-sm-2 col-form-label">Street</label>
                     <div className="col-sm-3 mb-2">
-                        <input type="text" value={this.state.pharmacy.address.street} name="street" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Enter Street" />
+                        <Script type="text/javascript"url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
+                        <input type="text" id="street" placeholder="Enter Street" value={this.query}/>
+
+
                         { this.state.submitted && this.state.errors.pharmacy.address.street.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.address.street}</span>}
                     </div>
+{/*
                     <label >Town</label>
                     <div className="col-sm-3 mb-2">
                         <input type="text" value={this.state.pharmacy.address.town} name="town" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Enter Town" />
@@ -68,54 +178,71 @@ export default class PharmacyRegistration extends React.Component {
                         <input type="text" value={this.state.pharmacy.address.country} name="country" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Enter Country" />
                         { this.state.submitted && this.state.errors.pharmacy.address.country.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.address.country}</span>}
                     </div>
+                    */}
                 </div>
                 <div className="row" style={({ marginTop: '1rem' })} >
                     <label className="col-sm-2 col-form-label">Description</label>
                     <div className="col-sm-3 mb-2">
-                        <input type="text" value={this.state.pharmacy.description} name="name" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Description" />
+                        <input type="text" value={this.state.pharmacy.description} name="description" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Description" />
                         { this.state.submitted && this.state.errors.pharmacy.description.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.description}</span>}
                     </div>
                 </div>
+
                 <div className="row" style={({ marginTop: '1rem' })} >
                     <label className="col-sm-2 col-form-label">Dermatologist</label>
                     <div className="col-sm-3 mb-2">
-                        <select className="custom-select" value={this.state.pharmacy.dermatologist} name="dermatologist" id="inlineFormCustomSelect" onChange={this.inputChange}>
-
-                        </select>
+                        <Select isMulti isSearchable placeholder="Choose..." value={selectedOption}
+                            onChange={this.handleDermatologistChange}
+                            options={options}
+                        />
                         { this.state.submitted && this.state.errors.pharmacy.description.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.description}</span>}
                     </div>
                 </div>
                 <div className="row" style={({ marginTop: '1rem' })} >
                     <label className="col-sm-2 col-form-label">Pharmacist</label>
                     <div className="col-sm-3 mb-2">
-                        <select className="custom-select" value={this.state.pharmacy.pharmacist} name="pharmacist" id="inlineFormCustomSelect" onChange={this.inputChange}>
-
-                        </select>
+                        <Select isMulti isSearchable placeholder="Choose..." value={selectedOption}
+                            onChange={this.handlePharmacistChange}
+                            options={options}
+                        />
                         { this.state.submitted && this.state.errors.pharmacy.pharmacist.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.pharmacist}</span>}
                     </div>
                 </div>
                 <div className="row" style={({ marginTop: '1rem' })} >
-                    <label className="col-sm-2 col-form-label">Add Medications</label>
+                    <label className="col-sm-2 col-form-label">Pharmacy admin</label>
                     <div className="col-sm-3 mb-2">
-                        <select className="custom-select" value={this.state.pharmacy.medicationQuantity.medication} name="medication"  onChange={this.inputChange}>
-                        </select>
-                        { this.state.submitted && this.state.errors.pharmacy.medicationQuantity.medication.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.medicationQuantity.medication}</span>}
-                    </div>
-                    <div className="col-sm-3 mb-2">
-                        <input type="number" value={this.state.pharmacy.medicationQuantity.quantity} name="quantity" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Quantity" />
-
-                        { this.state.submitted && this.state.errors.pharmacy.medicationQuantity.quantity.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.medicationQuantity.quantity}</span>}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-sm-5 mb-2">
-                    </div>
-                    <div className="col-sm-4">
-                        <Button variant="primary" onClick={this.submitForm} >Done</Button>
+                        <Select isMulti isSearchable placeholder="Choose..." value={selectedOption}
+                                onChange={this.handleAdminChange}
+                            options={options}
+                        />
+                        { this.state.submitted && this.state.errors.pharmacy.pharmacyAdmin.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.pharmacyAdmin}</span>}
                     </div>
                 </div>
 
+
+
+
+
+                <div className="row" style={({ marginTop: '1rem' })} >
+                    <div  className="col-sm-2 col-form-label">
+                        <Script type="text/javascript"url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
+
+                        <input type="text" id="autocomplete" placeholder="Search City" value={this.state.query}
+                        />
+                    </div>
+                </div>
+                <div className="row" style={({ marginTop: '1rem' })} >
+                    <div className="row">
+                        <div className="col-sm-5 mb-2">
+                        </div>
+                        <div className="col-sm-4">
+                            <Button variant="primary" onClick={this.submitForm} >Done</Button>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
+
+
 }
