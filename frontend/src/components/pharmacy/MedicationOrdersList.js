@@ -1,6 +1,12 @@
 import React from "react";
 import {Button, Modal} from "react-bootstrap";
 import {ButtonGroup, Input} from "rsuite";
+import Dropdown from "react-dropdown";
+
+const options = [
+    'Xanax | 3', 'Brufen | 4', 'Linex | 100'
+];
+const defaultOption = options[0];
 
 export default class MedicationOrdersList extends React.Component {
     constructor() {
@@ -92,9 +98,7 @@ export default class MedicationOrdersList extends React.Component {
                             <td>{medicationOrder.pharmacyAdmin.firstName + ' ' + medicationOrder.pharmacyAdmin.lastName}</td>
                             <td>{medicationOrder.deadLine}</td>
                             <td>
-                                <Button variant="primary" onClick={this.handleModal}>
-                                    Lista lekova
-                                </Button>
+                                <Dropdown options={options}  value={defaultOption} />
                             </td>
                             <td>{medicationOrder.status}</td>
                             <td>
@@ -108,7 +112,7 @@ export default class MedicationOrdersList extends React.Component {
                                 </Button>
                             </td>
                             <td>
-                                <Button variant="danger" >
+                                <Button variant="danger" onClick={() => this.deleteOrder(medicationOrder)}>
                                     Obrisi
                                 </Button>
                             </td>
@@ -147,5 +151,9 @@ export default class MedicationOrdersList extends React.Component {
 
     createOrder = () => {
         this.props.showOffers('showCreateOrder');
+    }
+
+    deleteOrder = (order) => {
+        let isBoss = window.confirm('Are you sure you want to delete the order from your order list?');
     }
 }

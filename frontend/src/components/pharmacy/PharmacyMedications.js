@@ -161,7 +161,7 @@ export default class PharmacyMedications extends React.Component{
                             </td >
 
                             <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                                <Button variant="danger" onClick={this.handleModal}>
+                                <Button variant="danger" onClick={() => this.deleteMedication(medication)}>
                                     Delete
                                 </Button>
                             </td>
@@ -208,5 +208,9 @@ export default class PharmacyMedications extends React.Component{
         this.setState({
             showModal : !this.state.showModal
         });
+    }
+
+    deleteMedication = (medication) => {
+        let isBoss = window.confirm('Are you sure you want to delete ' + medication.name + ' from your medications list?');
     }
 }
