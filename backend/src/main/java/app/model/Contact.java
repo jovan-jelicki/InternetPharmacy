@@ -2,27 +2,14 @@ package app.model;
 
 import javax.persistence.*;
 
-@Entity
+@Embeddable
 public class Contact {
-
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private Long id;
-
    private Address address;
 
    @Column
    private String phoneNumber;
 
    public Contact() {}
-
-   public Long getId() {
-      return id;
-   }
-
-   public void setId(Long id) {
-      this.id = id;
-   }
 
    public Address getAddress() {
       return address;

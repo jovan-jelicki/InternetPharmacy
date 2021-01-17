@@ -16,6 +16,7 @@
     "react-datepicker": "^3.4.1",
     "react-dom": "^17.0.1",
     "react-loadscript": "^1.0.2",
+    "react-dropdown": "^1.9.1",
     "react-scripts": "4.0.1",
     "react-select": "^3.2.0",
     "rsuite": "^4.8.8",
@@ -47,6 +48,9 @@
   },
   "devDependencies": {
     "react-load-script": "0.0.6",
+=======
+    "axios": "^0.21.1",
+>>>>>>> develop
     "react-router-dom": "^5.2.0"
   }
 }
