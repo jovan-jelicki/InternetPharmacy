@@ -32,13 +32,19 @@ export default class PharmacyRegistration extends React.Component {
             },
             selectedOption: null,
             numberOfRows : 1,
-            address2 : {
-                street : "",
-                town : "",
-                country : "",
-                latitude :"",
-                longitude : ""
-            },
+            streetP:"",
+            townP : "",
+            countryP : "",
+            errors: {
+                pharmacy: {
+                    name: 'Enter name',
+                    description: 'Enter description',
+                    dermatologist: 'Select dermatologist',
+                    pharmacist: 'Select pharmacist',
+                    address: 'Choose address',
+                    pharmacyAdmin: 'Select admin',
+                },
+            }
         }
         this.handleInputChange = this.handleInputChange.bind(this);
 
@@ -51,6 +57,7 @@ export default class PharmacyRegistration extends React.Component {
             dermatologist:newitems
         });
         console.log(`dermatologist selected`, selectedOption);
+        this.selectErrors(selectedOption,"dermatologist")
     };
 
     handlePharmacistChange = selectedOption => {
@@ -61,6 +68,7 @@ export default class PharmacyRegistration extends React.Component {
             pharmacist:newitems
         });
         console.log(`Option selected:`, selectedOption);
+        this.selectErrors(selectedOption,"pharmacist")
     };
     handleAdminChange = selectedOption => {
         const newitems = this.state.pharmacy.pharmacyAdmin
@@ -70,6 +78,8 @@ export default class PharmacyRegistration extends React.Component {
             pharmacyAdmin:newitems
         });
         console.log(`Option selected:`, selectedOption);
+        this.selectErrors(selectedOption,"pharmacyAdmin")
+
     };
 
     handleInputChange = (event) => {
@@ -90,6 +100,8 @@ export default class PharmacyRegistration extends React.Component {
         pharmacy[medicationQuantity]=address;
         console.log(this.state.pharmacy)
         this.setState({ pharmacy });
+        this.validationErrorMessage(event);
+
     }
 
 
@@ -112,30 +124,68 @@ export default class PharmacyRegistration extends React.Component {
     handlePlaceSelect = () => {
         const addressObject = this.street.getPlace();
         try {
-            console.log( addressObject.address_components)
-
+            //console.log( addressObject.address_components)
             const address = addressObject.address_components;
-
             if (address) {
-                this.setState(
-                    {
-                        //query: addressObject.formatted_address,
-                        address2: {
-                            street: address[1].long_name + " " + address[0].long_name,
-                            town: address[2].long_name,
-                            country: address[address.length-1].long_name,
-                            latitude:addressObject.geometry.location.lat(),
-                            longitude: addressObject.geometry.location.lng()
-                        },
-                    }
-                );
+                if(this.setAddressParams(address)) {
+                    this.setState(
+                        {
+                            //query: addressObject.formatted_address,
+                            pharmacy: {
+                                address: {
+                                    street: this.state.streetP,
+                                    town: this.state.townP,
+                                    country: this.state.countryP,
+                                    latitude: addressObject.geometry.location.lat(),
+                                    longitude: addressObject.geometry.location.lng()
+                                }
+                            },
+                        }
+                    );
+                }
+            }else{
+                this.addressErrors(false)
             }
-            this.state.pharmacy.address=this.state.address2;
-
+            console.log("ispisi")
+            console.log(this.state.pharmacy)
         }
         catch{
         //treba da printa gresku
+            this.addressErrors(false)
         }
+    }
+
+    setAddressParams(address) {
+        var street, number, city, country,completeAddress,i;
+        for( i=0;i<address.length;i++) {
+            if (address[i].types == "route") {
+                street = address[i].long_name;
+            }else if(address[i].types == "street_numbe") {
+                number = address[i].long_name;
+            }else  if(address[i].types[0] == "locality") {
+                city = address[i].long_name;
+            }else  if(address[i].types[0] == "country") {
+                country = address[i].long_name;
+            }
+        }
+        completeAddress=street+" "+number+" "+city+" "+country;
+        console.log("ADRESA"+completeAddress)
+
+        if(street==undefined || street=="" || city==undefined || city=="" || country==undefined || country==""){
+            console.log("NESTO NE VALJA")
+                this.addressErrors(false)
+                return false;
+        }else{
+            console.log("PROSAO")
+            this.addressErrors(true)
+            this.state.townP=city;
+            this.state.countryP=country;
+            if(number==undefined)
+                this.state.streetP=street;
+            else
+                this.state.streetP=street+number;
+        }
+        return  true;
     }
 
 
@@ -158,9 +208,7 @@ export default class PharmacyRegistration extends React.Component {
                     <div className="col-sm-3 mb-2">
                         <Script type="text/javascript"url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
                         <input type="text" id="street" placeholder="Enter Street" value={this.query}/>
-
-
-                        { this.state.submitted && this.state.errors.pharmacy.address.street.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.address.street}</span>}
+                        { this.state.submitted && this.state.errors.pharmacy.address.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.address}</span>}
                     </div>
                 </div>
                 <div className="row" style={({ marginTop: '1rem' })} >
@@ -178,7 +226,8 @@ export default class PharmacyRegistration extends React.Component {
                             onChange={this.handleDermatologistChange}
                             options={options}
                         />
-                        { this.state.submitted && this.state.errors.pharmacy.description.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.description}</span>}
+
+                        { this.state.submitted && this.state.errors.pharmacy.dermatologist.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.dermatologist}</span>}
                     </div>
                 </div>
                 <div className="row" style={({ marginTop: '1rem' })} >
@@ -213,6 +262,73 @@ export default class PharmacyRegistration extends React.Component {
                 </div>
             </div>
         );
+    }
+
+    submitForm = async (event) => {
+        this.setState({ submitted: true });
+        const pharmacy = this.state.pharmacy;
+        event.preventDefault();
+        if (this.validateForm(this.state.errors)) {
+            console.info('Valid Form')
+        } else {
+            console.log('Invalid Form')
+        }
+    }
+    validateForm = (errors) => {
+        let valid = true;
+        Object.entries(errors.pharmacy).forEach(item => {
+            console.log(item)
+            item && item[1].length > 0 && (valid = false)
+        })
+        return valid;
+    }
+
+    selectErrors(value,role){
+        let errors = this.state.errors;
+        switch (role){
+            case 'dermatologist':
+                errors.pharmacy.dermatologist = value.length < 1 ? 'Select dermatolgistttt' : '';
+                break;
+            case 'pharmacist':
+                errors.pharmacy.pharmacist = value.length < 1 ? 'Select pharmacist' : '';
+                break;
+            case 'pharmacyAdmin':
+                errors.pharmacy.pharmacyAdmin = value.length < 1 ?  'Select pharmacy admin' : '';
+                break;
+        }
+        this.setState({ errors });
+    }
+    addressErrors(bool) {
+        let errors = this.state.errors;
+        if(bool==false) {
+            //.log("Nisam dobro prosla")
+            errors.pharmacy.address = 'Please choose valid address';
+        }else{
+            //console.log("DObro sam prosla ");
+            errors.pharmacy.address = ' ';
+        }
+            this.setState({ errors });
+    }
+
+    validationErrorMessage = (event) => {
+        const { name, value } = event.target;
+        let errors = this.state.errors;
+        switch (name) {
+            case 'name':
+                errors.pharmacy.name = value.length < 1 ? 'Enter Name' : '';
+                break;
+            case 'description':
+                errors.pharmacy.description = value.length < 1 ? 'Enter Description' : '';
+                break;
+           //case 'address':
+            //    errors.pharmacy.address = this.isAddressValid(value) ?  'Enter Address' : '';
+             //   break;
+
+            default:
+                break;
+        }
+
+        this.setState({ errors });
     }
 
 
