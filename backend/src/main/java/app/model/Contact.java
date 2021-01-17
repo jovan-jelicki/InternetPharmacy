@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 @Embeddable
 public class Contact {
+
    private Address address;
 
    @Column
