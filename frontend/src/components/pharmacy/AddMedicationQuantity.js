@@ -61,7 +61,7 @@ export default class AddMedicationQuantity extends React.Component{
     addQuantity = async () => {
         console.log(this.state.inputOrder);
 
-        if (this.state.inputOrder.medication === 'select medication' || this.state.inputOrder.quantity == 0)
+        if (this.state.inputOrder.medication === 'select medication' || isNaN(this.state.inputOrder.quantity) || parseInt(this.state.inputOrder.quantity) <= 0)
             return;
         await this.props.addQuantity(this.state.inputOrder);
         this.setState({
