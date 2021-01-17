@@ -2,12 +2,98 @@ import React from 'react'
 import {Card, Col, Row} from "react-bootstrap";
 
 export default class MedicationListing extends React.Component {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super();
+        this.state = {
+            medications : []
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            medications : [
+                {
+                    name: "Xanax",
+                    type: "antihistamine",
+                    dose: 2,
+                    loyaltyPoints: 3,
+                    medicationShape: "pill",
+                    manufacturer: "ABC",
+                    medicationIssue: "withPrescription",
+                    note: "take when hungry",
+                    quantity : 10,
+                    price : 400.00,
+                    grade : 4,
+                    ingredient: [
+                        {
+                            name: "brufen"
+                        },
+                        {
+                            name: "linex"
+                        }
+    
+                    ],
+                    sideEffect: [
+                        {
+                            name: "nausea"
+                        },
+                        {
+                            name: "blindness"
+                        }
+                    ],
+                    alternatives: [
+                        {
+                            name: "brufen"
+                        },
+                        {
+                            name: "linex"
+                        }
+                    ]
+                },
+                {
+                    name: "Linex",
+                    type: "antihistamine",
+                    dose: 2,
+                    grade : 4,
+                    loyaltyPoints: 3,
+                    medicationShape: "pill",
+                    manufacturer: "ABC",
+                    quantity : 10,
+                    price : 1300,
+                    medicationIssue: "withPrescription",
+                    note: "take when hungry",
+                    ingredient: [
+                        {
+                            name: "brufen"
+                        },
+                        {
+                            name: "linex"
+                        }
+    
+                    ],
+                    sideEffect: [
+                        {
+                            name: "nausea"
+                        },
+                        {
+                            name: "blindness"
+                        }
+                    ],
+                    alternatives: [
+                        {
+                            name: "brufen"
+                        },
+                        {
+                            name: "linex"
+                        }
+                    ]
+                }
+            ]
+        })
     }
 
     render() {
-        const medications = this.props.medications.map((medication, index) => {
+        const medications = this.state.medications.map((medication, index) => {
             let ingredients = ''
             medication.ingredient.forEach(i => ingredients += i.name)
             return (
