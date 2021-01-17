@@ -1,9 +1,11 @@
 import React from 'react';
-import {Button} from "react-bootstrap";
+import {Button, Col} from "react-bootstrap";
 import {Modal} from "react-bootstrap";
 import {Navbar} from "react-bootstrap";
 import {Form} from "react-bootstrap";
-import {FormControl} from "react-bootstrap";
+import {FormControl, Row} from "react-bootstrap";
+import moment from 'moment';
+import TimePicker from 'react-time-picker';
 
 
 
@@ -52,12 +54,14 @@ export default class PharmacyEmployees extends React.Component{
     }
 
     render() {
+        const format = "HH:mm"
         return (
-           <div>
+           <div style={({ marginLeft: '1rem' })}>
                <br/><br/>
                <h1>Dermatolozi</h1>
                
-               <Button variant="success">Dodaj dermatologa</Button>
+               <Button variant="success" onClick={this.handleModal}>Dodaj dermatologa</Button>
+               <br/><br/>
 
                <Navbar bg="light" expand="lg">
                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -110,6 +114,7 @@ export default class PharmacyEmployees extends React.Component{
                <br/><br/>
                <h1>Farmaceuti</h1>
                <Button variant="success">Kreiraj farmaceuta</Button>
+               <br/><br/>
                <Navbar bg="light" expand="lg">
                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
                    <Navbar.Collapse id="basic-navbar-nav">
@@ -159,9 +164,54 @@ export default class PharmacyEmployees extends React.Component{
 
                <Modal show={this.state.showModal} onHide={this.handleModal}>
                    <Modal.Header closeButton>
-                       <Modal.Title>Modal heading</Modal.Title>
+                       <Modal.Title>Add Dermatologist</Modal.Title>
                    </Modal.Header>
-                   <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                   <Modal.Body>
+                       <Form>
+                           <Form.Row>
+                               <Col>
+                                   <Form.Control placeholder="Medication" as={"select"} >
+                                       <option disabled={true} selected="selected">Choose...</option>
+                                       <option >...</option>
+                                   </Form.Control>
+                               </Col>
+                           </Form.Row>
+                           <br/>
+                           <Form.Row>
+                               <div style={({ marginLeft: '1rem' })}>
+                                   <label style={({ marginRight: '1rem' })}>Select start of work time : </label>
+                                   <TimePicker />
+
+                               </div>
+                           </Form.Row>
+                           <br/>
+                           <Form.Row>
+                               <div style={({ marginLeft: '1rem' })}>
+                                   <label style={({ marginRight: '1rem' })}>Select end of work time : </label>
+                                   <TimePicker/>
+                               </div>
+                           </Form.Row>
+
+                           <br/>
+                           <h3>Work time in other pharmacies</h3>
+                           <table class="table table-sm">
+                               <thead>
+                               <tr>
+                                   <th scope="col">#</th>
+                                   <th scope="col">Start</th>
+                                   <th scope="col">End</th>
+                               </tr>
+                               </thead>
+                               <tbody>
+                               <tr>
+                                   <td>1</td>
+                                   <td>{"11:00"}</td>
+                                   <td>{"13:00"}</td>
+                               </tr>
+                               </tbody>
+                           </table>
+                       </Form>
+                   </Modal.Body>
                    <Modal.Footer>
                        <Button variant="secondary" onClick={this.handleModal}>
                            Close
