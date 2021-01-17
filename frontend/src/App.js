@@ -25,6 +25,7 @@ export default class App extends React.Component {
   render() {
     const role = "Admin";
     const Id = this.state.Id;
+    document.title = "Internet Pharmacy"
     return (
         <BrowserRouter>
           <Switch>

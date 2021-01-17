@@ -89,12 +89,12 @@ export default class MedicationOffers extends React.Component {
                             <td>{medicationOffer.price}</td>
                             <td>{medicationOffer.shippingDate}</td>
                             <td>{medicationOffer.status}</td>
-                            <td style={medicationOffer.status === 'pending' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                            <td style={medicationOffer.status === 'pending' ? {display : 'inline-block'} : {display : 'none'}}>
                                 <Button variant="outline-success" onClick={this.handleModal}>
                                     Accept
                                 </Button>
                             </td >
-                            <td style={medicationOffer.status === 'pending' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                            <td style={medicationOffer.status === 'pending' ? {display : 'inline-block'} : {display : 'none'}}>
                                 <Button variant="outline-danger" onClick={this.handleModal}>
                                     Reject
                                 </Button>
