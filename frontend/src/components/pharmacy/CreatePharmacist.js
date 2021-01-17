@@ -162,7 +162,7 @@ export default class CreatePharmacist extends React.Component {
 
 
                 <hr className="mt-2 mb-3"/>
-                
+
                 <br/>
                 <div className="row">
                     <div className="col-sm-5 mb-2">

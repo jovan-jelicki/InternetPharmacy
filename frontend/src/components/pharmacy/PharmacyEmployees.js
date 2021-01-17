@@ -104,7 +104,7 @@ export default class PharmacyEmployees extends React.Component{
                            </Button>
                        </td>
                        <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                           <Button variant="danger" onClick={this.handleModalAddDermatologist}>
+                           <Button variant="danger" onClick={() => this.deleteDermatologist(dermatologist)}>
                                Izbrisi dermatologa
                            </Button>
                        </td>
@@ -138,12 +138,12 @@ export default class PharmacyEmployees extends React.Component{
                    </tr>
                    </thead>
                    <tbody>
-                   {this.state.pharmacists.map((dermatologist, index) => (
+                   {this.state.pharmacists.map((pharmacist, index) => (
                        <tr>
                            <th scope="row">{index+1}</th>
-                           <td>{dermatologist.firstName}</td>
-                           <td>{dermatologist.lastName}</td>
-                           <td>{dermatologist.grade}</td>
+                           <td>{pharmacist.firstName}</td>
+                           <td>{pharmacist.lastName}</td>
+                           <td>{pharmacist.grade}</td>
                            <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="primary" onClick={this.handleModalAddDermatologist}>
                                    Zakazi savetovanje
@@ -155,7 +155,7 @@ export default class PharmacyEmployees extends React.Component{
                                </Button>
                            </td>
                            <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                               <Button variant="danger" onClick={this.handleModalAddDermatologist}>
+                               <Button variant="danger" onClick={() => this.deletePharmacist(pharmacist)}>
                                    Izbrisi farmaceuta
                                </Button>
                            </td>
@@ -258,5 +258,15 @@ export default class PharmacyEmployees extends React.Component{
         this.setState({
             showModalCreatePharmacist : !this.state.showModalCreatePharmacist
         });
+    }
+
+    deleteDermatologist = (dermatologist) => {
+        let isBoss = window.confirm('Are you sure you want to delete ' + dermatologist.firstName + ' ' + dermatologist.lastName + ' from your employees list?');
+        alert( isBoss ); // true if OK is pressed
+    }
+
+    deletePharmacist = (dermatologist) => {
+        let isBoss = window.confirm('Are you sure you want to delete ' + dermatologist.firstName + ' ' + dermatologist.lastName + ' from your employees list?');
+        alert( isBoss ); // true if OK is pressed
     }
 }
