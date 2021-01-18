@@ -86,13 +86,13 @@ export default class PharmacyVacationsRequests extends React.Component{
                                 <td>{vacationRequest.vacationRequestStatus}</td>
 
                                 <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
-                                    <Button variant="outline-success" onClick={this.handleModal}>
-                                        Odobri
+                                    <Button variant="outline-success" onClick={() => this.acceptVacationRequest(vacationRequest)}>
+                                        Accept
                                     </Button>
                                 </td >
                                 <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
                                     <Button variant="outline-danger" onClick={this.handleModal}>
-                                        Otkazi
+                                        Reject
                                     </Button>
                                 </td >
                                 <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
@@ -110,13 +110,18 @@ export default class PharmacyVacationsRequests extends React.Component{
                         <Modal.Header closeButton>
                             <Modal.Title>Modal heading</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                        <Modal.Body>
+                            <Form.Group controlId="exampleForm.ControlTextarea1">
+                                <Form.Label>Please enter a reason of declining the vacation request</Form.Label>
+                                <Form.Control as="textarea" rows={3} />
+                            </Form.Group>
+                        </Modal.Body>
                         <Modal.Footer>
                             <Button variant="secondary" onClick={this.handleModal}>
                                 Close
                             </Button>
                             <Button variant="primary" onClick={this.handleModal}>
-                                Save Changes
+                                Confirm
                             </Button>
                         </Modal.Footer>
                     </Modal>
@@ -129,5 +134,9 @@ export default class PharmacyVacationsRequests extends React.Component{
         this.setState({
             showModal : !this.state.showModal
         });
+    }
+
+    acceptVacationRequest = (vacationRequest) => {
+        window.confirm('Are you sure you want to accept the vacation request from ' + vacationRequest.employeeFirstName + '?');
     }
 }

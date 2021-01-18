@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Container, Nav, Row, Button} from "react-bootstrap";
+import {Col, Container, Nav, Row, Button, Toast} from "react-bootstrap";
 import UserInfo from "../components/UserInfo";
 import AllergyPatientListing from "../components/AllergyPatientListing";
 import AddAllergy from "../components/AddAllergy";
@@ -26,34 +26,57 @@ export default class PatientProfilePage extends React.Component {
         }
     }
 
-    componentDidMount() {
-        axios
-        .get('http://localhost:8080/api/patients')
-        .then(res => console.log(res.data));
+    async componentDidMount() {
+
+        await axios
+            .get('http://localhost:8080/api/patients/1')
+            .then(res => {
+                let patient = res.data;
+                console.log(patient)
+                this.setState({
+                    'id' : patient.id,
+                    'firstName' : patient.firstName,
+                    'lastName' : patient.lastName,
+                    'email' : patient.credentials.email,
+                    'password' : patient.credentials.password,
+                    'penaltyCount' : patient.penaltyCount,
+                    'userType' : patient.userType,
+                    'editMode' : false,
+                    'changePasswordMode' : false,
+                    'address' : patient.contact.address.street,
+                    'town' : patient.contact.address.town,
+                    'country' : patient.contact.address.country,
+                    'phoneNumber' : patient.contact.phoneNumber
+                })
+            });
+
+        await axios
+            .get('http://localhost:8080/api/patients/allergies/1')
+            .then(res => {
+                this.setState({
+                    'allergies' : res.data
+                })
+            });
+
+        this.createBackupUser();
+    }
+
+    createBackupUser = () => {
+        this.user = {
+            'firstName' : this.state.firstName,
+            'lastName' : this.state.lastName,
+            'email' : this.state.email,
+            'address' : this.state.address,
+            'town' : this.state.town,
+            'country' : this.state.country,
+            'phoneNumber' : this.state.phoneNumber,
+            'allergies' : [...this.state.allergies]
+        }
 
         this.setState({
-            'firstName' : 'Ilija',
-            'lastName' : 'Brdar',
-            'email' : 'ilija_brdar@yahoo.com',
-            'address' : 'Vuka Karadzica 18',
-            'town' : 'Sirig',
-            'country' : 'Serbia',
-            'phoneNumber' : '+381604648117',
-            'allergies' : ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'],
             'editMode' : false,
             'changePasswordMode' : false
         })
-
-        this.user = {
-            'firstName' : 'Ilija',
-            'lastName' : 'Brdar',
-            'email' : 'ilija_brdar@yahoo.com',
-            'address' : 'Vuka Karadzica 18',
-            'town' : 'Sirig',
-            'country' : 'Serbia',
-            'phoneNumber' : '+381604648117',
-            'allergies' : ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'],
-        }
     }
 
     activateUpdateMode = () => {
@@ -72,6 +95,22 @@ export default class PatientProfilePage extends React.Component {
             'newPass' : '',
             'repPass' : ''
         })
+    }
+
+    changePass = () => {
+        axios
+        .put('http://localhost:8080/api/patients/pass', {
+            'userId' : this.state.id,
+            'oldPassword' : this.state.oldPass,
+            'newPassword' : this.state.newPass,
+            'repeatedPassword' : this.state.repPass
+        })
+        .then(res => {
+            this.setState({
+                'password' : this.state.newPass
+            })
+        })
+        .catch(e => alert('Nisam pijana i nece moci!!!'));
     }
 
     handleInputChange = (event) => {
@@ -100,7 +139,7 @@ export default class PatientProfilePage extends React.Component {
     }
 
     addAllergy = (allergy) => {
-        if(!this.state.allergies.includes(allergy))
+        if(!this.state.allergies.map(a => a.id).includes(allergy.id))
             this.setState({
                 'allergies' : [...this.state.allergies, allergy]
             })
@@ -108,8 +147,38 @@ export default class PatientProfilePage extends React.Component {
 
     removeAllergy = (allergy) => {
         this.setState({
-            'allergies' : [...this.state.allergies.filter(a => a !== allergy)]
+            'allergies' : [...this.state.allergies.filter(a => a.id != allergy)]
         })
+    }
+
+    save = () => {
+        axios
+        .put('http://localhost:8080/api/patients', {
+            'id' : this.state.id,
+            'firstName' : this.state.firstName,
+            'lastName' : this.state.lastName,
+            'userType' : this.state.userType,
+            'allergies' : this.state.allergies,
+            'credentials' : {
+                'email' : this.state.email,
+                'password' : this.state.password
+            },
+            'penaltyCount' : this.state.penaltyCount,
+            'contact' : {
+                'phoneNumber' : this.state.phoneNumber,
+                'address' : {
+                    'street' : this.state.address,
+                    'town' : this.state.town,
+                    'country' : this.state.country
+                }
+            }
+        })
+        .then(res => {
+            if(this.state.changePasswordMode)
+                this.changePass();
+            this.createBackupUser();
+        });
+        
     }
 
     render() {
@@ -129,7 +198,8 @@ export default class PatientProfilePage extends React.Component {
                             {this.state.editMode && <Button variant="primary mt-2"
                                                             onClick={this.activateChangePasswordMode}>
                                 Change Password</Button>}
-                            {this.state.editMode && <Button variant="success mt-2" disabled={this.state.saveDisabled}>Save</Button>}
+                            {this.state.editMode && <Button variant="success mt-2" 
+                            disabled={this.state.saveDisabled} onClick={this.save}>Save</Button>}
                         </Nav>
                     </Col>
                     <Col>
