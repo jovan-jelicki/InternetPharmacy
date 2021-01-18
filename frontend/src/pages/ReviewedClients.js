@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Container,Row, Button, Table} from "react-bootstrap";
+import {Col, Container, Row, Button, Table, FormControl, FormGroup} from "react-bootstrap";
 
 export default class ReviewedClients extends React.Component {
     constructor(props) {
@@ -7,30 +7,30 @@ export default class ReviewedClients extends React.Component {
         this.state = {
             role : props.role,
             Id : props.Id,
-            clients : [],
+            clients : [{
+            firstName: "Aovan",
+            lastName: "Jelicki",
+            dateOfAppointment: "20.01.2021."
+            },
+             {
+            firstName: "Pera",
+            lastName: "Peric",
+            dateOfAppointment: "10.01.2021."
+            }],
+            searchClients : [],
+            query : "",
             sortType : "desc"
         }
     }
 
     componentDidMount() {
-        let client = {
-            firstName: "Aovan",
-            lastName: "Jelicki",
-            dateOfAppointment: "20.01.2021."
-        }
-        let client2 = {
-            firstName: "Pera",
-            lastName: "Peric",
-            dateOfAppointment: "10.01.2021."
-        }
-        let list = [client, client2]
         this.setState({
-            clients: list
+            searchClients : this.state.clients
         })
     }
 
     render() {
-        const Clients = this.state.clients.map((client, key) =>
+        const Clients = this.state.searchClients.map((client, key) =>
             <tr>
                 <td>{client.firstName}</td>
                 <td>{client.lastName}</td>
@@ -41,13 +41,12 @@ export default class ReviewedClients extends React.Component {
 
             <Container>
                 <br/>
-                <Row>
-                    <Col  xs={12} md={8}>
-                        <Button onClick={this.sortByFirstName} type="button" className="btn btn-secondary"> Sort by first name</Button>
-                        <Button onClick={this.sortByLastName} type="button" className="btn btn-secondary"> Sort by last name</Button>
-                        <Button onClick={this.sortByDateOfAppointment} type="button" className="btn btn-secondary"> Sort by date of appointment</Button>
-                    </Col>
-                </Row>
+                <FormGroup as={Row} >
+                    <Button onClick={this.sortByFirstName} style={{height : 40}}  type="button" className="btn btn-secondary"> Sort by first name</Button>
+                    <Button onClick={this.sortByLastName} style={{height : 40}} type="button" className="btn btn-secondary"> Sort by last name</Button>
+                    <Button onClick={this.sortByDateOfAppointment} style={{height : 40}} type="button" className="btn btn-secondary"> Sort by date of appointment</Button>
+                    <FormControl className="mt-2 mb-2" style={{width : 200, marginLeft : 200}} value={this.state.query} placeholder={"Search clients..."} onChange={this.handleInputChange} />
+                </FormGroup>
                 <Table style={{"borderWidth":"1px", 'borderColor':"#aaaaaa", 'borderStyle':'solid'}} striped hover>
                     <tbody>
                         <tr>
@@ -60,42 +59,57 @@ export default class ReviewedClients extends React.Component {
                 </Table>
             </Container>
 
-        )
+        );
+    }
+
+    handleInputChange = (event) => {
+        const query = event.target.value;
+        const clients = this.state.clients;
+        if (query !== "" && query)
+            this.setState({
+                searchClients : clients.filter(c => (c.firstName + c.lastName).toLowerCase().includes(query.toLowerCase().replace(/\s/g, ''))),
+                query : query
+            })
+        else
+            this.setState(({
+                searchClients : this.state.clients,
+                query : query
+            }))
     }
 
     sortByFirstName = () => {
         if(this.state.sortType === "desc")
             this.setState({
-                clients: this.state.clients.sort((a, b) => (a.firstName > b.firstName) ? -1 : 1),
+                searchClients: this.state.searchClients.sort((a, b) => (a.firstName > b.firstName) ? -1 : 1),
                 sortType : "asc"
             })
         else
             this.setState({
-                clients: this.state.clients.sort((a, b) => (a.firstName > b.firstName) ? 1 : -1),
+                searchClients: this.state.searchClients.sort((a, b) => (a.firstName > b.firstName) ? 1 : -1),
                 sortType : "desc"
             })
     }
     sortByLastName = () => {
         if(this.state.sortType === "desc")
             this.setState({
-                clients: this.state.clients.sort((a, b) => (a.lastName > b.lastName) ? -1 : 1),
+                ssearchClients: this.state.searchClients.sort((a, b) => (a.lastName > b.lastName) ? -1 : 1),
                 sortType : "asc"
             })
         else
             this.setState({
-                clients: this.state.clients.sort((a, b) => (a.lastName > b.lastName) ? 1 : -1),
+                searchClients: this.state.searchClients.sort((a, b) => (a.lastName > b.lastName) ? 1 : -1),
                 sortType : "desc"
             })
     }
     sortByDateOfAppointment = () => {
         if(this.state.sortType === "desc")
             this.setState({
-                clients: this.state.clients.sort((a, b) => (a.dateOfAppointment > b.dateOfAppointment) ? -1 : 1),
+                searchClients: this.state.searchClients.sort((a, b) => (a.dateOfAppointment > b.dateOfAppointment) ? -1 : 1),
                 sortType : "asc"
             })
         else
             this.setState({
-                clients: this.state.clients.sort((a, b) => (a.dateOfAppointment > b.dateOfAppointment) ? 1 : -1),
+                searchClients: this.state.searchClients.sort((a, b) => (a.dateOfAppointment > b.dateOfAppointment) ? 1 : -1),
                 sortType : "desc"
             })
     }
