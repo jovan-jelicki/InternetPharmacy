@@ -1,5 +1,11 @@
-package app.model;
+package app.model.pharmacy;
 
+
+import app.model.medication.MedicationQuantity;
+import app.model.medication.MedicationReservation;
+import app.model.user.Address;
+import app.model.user.Dermatologist;
+import app.model.user.Pharmacist;
 
 import javax.persistence.*;
 import java.util.List;

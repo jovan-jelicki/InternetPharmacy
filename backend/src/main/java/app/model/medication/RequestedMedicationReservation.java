@@ -1,4 +1,4 @@
-package app.model;
+package app.model.medication;
 
 public class RequestedMedicationReservation {
     private Long reservationId;

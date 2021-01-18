@@ -1,4 +1,8 @@
-package app.model;
+package app.model.user;
+
+import app.model.medication.MedicationOffer;
+import app.model.medication.MedicationQuantity;
+import app.model.user.User;
 
 import javax.persistence.*;
 import java.util.List;

@@ -1,9 +1,11 @@
 
-package app.model;
+package app.model.medication;
+
+import app.model.medication.MedicationQuantity;
+import app.model.user.Patient;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity

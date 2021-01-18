@@ -1,4 +1,6 @@
-package app.model;
+package app.model.complaint;
+
+import app.model.user.Patient;
 
 import javax.persistence.*;
 
