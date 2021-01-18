@@ -1,31 +1,23 @@
 package app.dto;
 
 
-import app.model.Address;
-import app.model.PharmacyAdmin;
-import app.model.SystemAdmin;
-import app.model.UserType;
+import app.model.*;
 
 public class PharmacyAdminDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private Address address;
-    private String town;
-    private String country;
-    private String phoneNumber;
+    private String email;
+    private Contact contact;
     private UserType userType;
     private Long pharmacyId;
 
-    public PharmacyAdminDTO() {
-    }
-
     public PharmacyAdminDTO(PharmacyAdmin pharmacyAdmin) {
         this.id = pharmacyAdmin.getId();
+        this.email = pharmacyAdmin.getCredentials().getEmail();;
         this.firstName = pharmacyAdmin.getFirstName();
         this.lastName = pharmacyAdmin.getLastName();
-        this.address = pharmacyAdmin.getContact().getAddress();
-        this.phoneNumber = pharmacyAdmin.getContact().getPhoneNumber();
+        this.contact = pharmacyAdmin.getContact();
         this.userType = pharmacyAdmin.getUserType();
         this.pharmacyId = pharmacyAdmin.getPharmacy().getId();
     }
@@ -54,36 +46,12 @@ public class PharmacyAdminDTO {
         this.lastName = lastName;
     }
 
-    public Address getAddress() {
-        return address;
+    public Contact getContact() {
+        return contact;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public String getTown() {
-        return town;
-    }
-
-    public void setTown(String town) {
-        this.town = town;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 
     public UserType getUserType() {
@@ -100,5 +68,13 @@ public class PharmacyAdminDTO {
 
     public void setPharmacyId(Long pharmacyId) {
         this.pharmacyId = pharmacyId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
