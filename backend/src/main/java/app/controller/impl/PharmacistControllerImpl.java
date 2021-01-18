@@ -1,8 +1,8 @@
 package app.controller.impl;
 
 import app.controller.PharmacistController;
-import app.model.Pharmacist;
-import app.model.WorkingHours;
+import app.model.user.Pharmacist;
+import app.model.time.WorkingHours;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

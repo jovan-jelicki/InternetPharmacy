@@ -1,4 +1,7 @@
-package app.model;
+package app.model.medication;
+
+import app.model.time.Period;
+import app.model.pharmacy.Pharmacy;
 
 import javax.persistence.*;
 

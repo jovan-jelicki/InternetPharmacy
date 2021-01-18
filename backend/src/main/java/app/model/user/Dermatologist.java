@@ -1,4 +1,6 @@
-package app.model;
+package app.model.user;
+
+import app.model.time.WorkingHours;
 
 import javax.persistence.*;
 import java.util.List;

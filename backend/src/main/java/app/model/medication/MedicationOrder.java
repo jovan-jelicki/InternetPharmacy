@@ -1,4 +1,6 @@
-package app.model;
+package app.model.medication;
+
+import app.model.user.PharmacyAdmin;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

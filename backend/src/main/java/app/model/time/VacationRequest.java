@@ -1,4 +1,7 @@
-package app.model;
+package app.model.time;
+
+import app.model.pharmacy.Pharmacy;
+import app.model.user.EmployeeType;
 
 import javax.persistence.*;
 

@@ -1,5 +1,8 @@
 
-package app.model;
+package app.model.user;
+
+import app.model.medication.Ingredient;
+import app.model.pharmacy.Promotion;
 
 import javax.persistence.*;
 import java.util.List;

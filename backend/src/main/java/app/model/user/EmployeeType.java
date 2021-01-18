@@ -1,4 +1,4 @@
-package app.model;
+package app.model.user;
 
 public enum EmployeeType {
     dermatologist,

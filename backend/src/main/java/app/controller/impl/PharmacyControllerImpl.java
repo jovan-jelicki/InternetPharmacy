@@ -1,6 +1,6 @@
 package app.controller.impl;
 
-import app.model.Pharmacy;
+import app.model.pharmacy.Pharmacy;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

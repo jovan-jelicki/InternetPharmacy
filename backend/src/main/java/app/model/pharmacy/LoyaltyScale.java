@@ -1,4 +1,4 @@
-package app.model;
+package app.model.pharmacy;
 
 import javax.persistence.*;
 

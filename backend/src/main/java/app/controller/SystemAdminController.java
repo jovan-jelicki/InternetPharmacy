@@ -1,7 +1,6 @@
 package app.controller;
 
-import app.model.Patient;
-import app.model.SystemAdmin;
+import app.model.user.SystemAdmin;
 
 public interface SystemAdminController extends CRUDController<SystemAdmin>{
 }

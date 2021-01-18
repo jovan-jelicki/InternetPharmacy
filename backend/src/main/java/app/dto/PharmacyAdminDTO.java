@@ -1,10 +1,9 @@
 package app.dto;
 
 
-import app.model.Address;
-import app.model.PharmacyAdmin;
-import app.model.SystemAdmin;
-import app.model.UserType;
+import app.model.user.Address;
+import app.model.user.PharmacyAdmin;
+import app.model.user.UserType;
 
 public class PharmacyAdminDTO {
     private Long id;

@@ -1,8 +1,8 @@
 package app.dto;
 
-import app.model.Address;
-import app.model.SystemAdmin;
-import app.model.UserType;
+import app.model.user.Address;
+import app.model.user.SystemAdmin;
+import app.model.user.UserType;
 
 public class SystemAdminDTO {
     private Long id;

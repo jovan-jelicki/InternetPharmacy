@@ -1,6 +1,6 @@
 package app.controller;
 
-import app.model.Ingredient;
+import app.model.medication.Ingredient;
 
 public interface IngredientController extends CRUDController<Ingredient> {
 }
