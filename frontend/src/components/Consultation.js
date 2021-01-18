@@ -1,5 +1,6 @@
 import React from "react";
 import {Button, Col, Container, FormControl, Row} from "react-bootstrap";
+import ChooseTherapy from "./ChooseTherapy";
 
 export default class Consultation extends React.Component {
     constructor(props) {
@@ -7,8 +8,8 @@ export default class Consultation extends React.Component {
         this.state = {
             report : "",
             medication : { name :  "Choose medication ..." },
-            dateStartTherapy : {},
-            dateEndTherapy : {},
+            dateStartTherapy : "",
+            dateEndTherapy : "",
             medications : [{
                 Id: 0,
                 name: "aspirin",
@@ -64,32 +65,36 @@ export default class Consultation extends React.Component {
               {this.getPatientsInfo()}
               <br/>
               <label  style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}}> Report </label>
-              <textarea className="form-control"  rows="5" cols="10" placeholder={"Type report..."} name="report" onChange={this.handleInputChange} value={this.state.report} ></textarea>
+              <textarea className="form-control"  rows="5" cols="10" placeholder={"Type report..."} name="report" onChange={this.handleInputChange} value={this.state.report} />
               <br/>
-              <label style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}}> Choose medication </label>
+              <label style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}}> Choose therapy </label>
 
-              {this.drugs()}
+              {<ChooseTherapy dateEndTherapy={this.state.dateEndTherapy} dateStartTherapy={this.state.dateStartTherapy}  setStartDate={this.setStartDate} setEndDate={this.setEndDate} medications={this.state.medications} medication={this.state.medication} chooseMedication={this.chooseMedication} removeMedication={this.removeMedication}/>}
               <Button onClick={() => this.finishAppointment()}> Finish </Button>
           </Container>
         );
     }
 
-    drugs = () => {
-        const Drugs = this.state.medications.map((medication, index) =>
-             <option value={medication.name} key={index}> {medication.name} </option>
-        );
-        return(
-            <div>
-                <select value={this.state.medication.name}  onChange={this.chooseMedication}>
-                    <option disabled> Choose medication ...</option>
-                    {Drugs}
-                </select>
-            </div>
-        )
+    setStartDate = (date) => {
+        this.setState({
+            dateStartTherapy : date
+        })
     }
+    setEndDate = (date) => {
+        this.setState({
+            dateEndTherapy : date
+        })
+    }
+
     chooseMedication = (event) => {
         this.setState({
             medication: this.state.medications.filter(m => m.name === event.target.value)[0]
+        })
+    }
+
+    removeMedication = () => {
+        this.setState({
+            medication : {}
         })
     }
     handleInputChange = (event) => {
