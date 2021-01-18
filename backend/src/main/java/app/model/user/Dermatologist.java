@@ -2,7 +2,10 @@ package app.model.user;
 
 import app.model.time.WorkingHours;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import java.util.List;
 
 @Entity

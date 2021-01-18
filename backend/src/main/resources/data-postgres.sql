@@ -28,6 +28,11 @@ INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, desc
 INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description) VALUES
                      (2, 'AstraZeneca', 'GB', 51, 0, 'First Ave', 'London', 'AstraZeneca plc is a British-Swedish multinational pharmaceutical and biopharmaceutical company with its headquarters in Cambridge, England. AstraZeneca has a portfolio of products for major disease areas including cancer, cardiovascular, gastrointestinal, infection, respiratory and inflammation.');
 
+INSERT INTO pharmacy (id, country, latitude, longitude, street, town, description, name) VALUES
+                     (4, 'Portugal', 43,3,'Sui gue peauqe', 'Lisbon', 'All purpose pharmacy!', 'Suei Mei');
+
+
+
 INSERT INTO medication (id, name, type, dose, loyalty_points, medication_shape, manufacturer, medication_issue, note) VALUES
                        (0, 'Xanax', 1, 2, 2, 1, 'Ivancic i sinovi', 0, 'Take when tired of life...');
 INSERT INTO medication (id, name, type, dose, loyalty_points, medication_shape, manufacturer, medication_issue, note) VALUES
@@ -38,3 +43,8 @@ INSERT INTO medication (id, name, type, dose, loyalty_points, medication_shape, 
                        (3, 'Ditenzin', 0, 1, 10, 3, 'Ivancic i sinovi', 0, 'Take when pressure is 200/100...');
 INSERT INTO medication (id, name, type, dose, loyalty_points, medication_shape, manufacturer, medication_issue, note) VALUES
                        (4, 'Bromazepan', 1, 6, 20, 4, 'BioFarm', 1, 'Take while studying PSW');
+
+
+
+INSERT INTO pharmacy_admin (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, pharmacy_id)
+VALUES (1, 'Jovan', 'Brokovich', 2, 'brokovich@gmail.com', 'broka', '0605435487', 'SRB', 41, 87, 'Avenue 3rd', 'Belgrade',1);
