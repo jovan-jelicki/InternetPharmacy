@@ -9,15 +9,19 @@ export default class Registration extends React.Component {
         super(props);
         this.state = {
             user: {
-                'email': '',
-                'password': '',
-                'firstName': '',
-                'lastName': '',
-                'country': '',
-                'city': '',
-                'street':'',
-                'telephone': '',
-                'rePassword' : ''
+                email: '',
+                password: '',
+                firstName: '',
+                lastName: '',
+                address: {
+                    street: "",
+                    town: "",
+                    country: "",
+                    latitude: 51.507351,
+                    longitude: -0.127758
+                },
+                telephone: '',
+                rePassword : ''
             },
             errors:{
                 user: {

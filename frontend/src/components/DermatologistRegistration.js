@@ -1,5 +1,6 @@
 import React from "react";
 import {Button, Container, FormControl} from "react-bootstrap";
+import Script from "react-load-script";
 
 export default class DermatologistRegistration extends React.Component {
     constructor(props) {
@@ -10,8 +11,13 @@ export default class DermatologistRegistration extends React.Component {
                     password: '',
                     firstName: '',
                     lastName: '',
-                    country: '',
-                    city: '',
+                    address: {
+                        street: "",
+                        town: "",
+                        country: "",
+                        latitude: 51.507351,
+                        longitude: -0.127758
+                    },
                     telephone: '',
                     rePassword : '',
                     workingHours:''
@@ -22,11 +28,9 @@ export default class DermatologistRegistration extends React.Component {
                         password: 'Enter password',
                         firstName: 'Enter First name',
                         lastName: 'Enter Last name',
-                        country: 'Enter Country',
-                        city :'Enter City',
+                        address:'Enter address',
                         telephone: 'Enter Telephone',
-                        rePassword : 'Repeat password',
-                        workingHours:'Working hours error'
+                        rePassword : 'Repeat password'
 
                     }
                 },
@@ -43,17 +47,95 @@ export default class DermatologistRegistration extends React.Component {
         this.setState({ dermatologist });
         this.validationErrorMessage(event);
     }
+    handleScriptLoad = () => {
+        var input = document.getElementById('street');
+        var options = {
+            types: ['geocode'] //this should work !
+        };
+        const google = window.google
+
+        this.street = new google.maps.places.Autocomplete(input, options);
+        this.street.addListener('place_changed', this.handlePlaceSelect);
+    }
+
+    handlePlaceSelect = () => {
+        const addressObject = this.street.getPlace();
+        try {
+            //console.log( addressObject.address_components)
+            const address = addressObject.address_components;
+            if (address) {
+                if (this.setAddressParams(address)) {
+                    this.setState(
+                        {
+                            dermatologist: {
+                                address: {
+                                    street: this.state.streetP,
+                                    town: this.state.townP,
+                                    country: this.state.countryP,
+                                    latitude: addressObject.geometry.location.lat(),
+                                    longitude: addressObject.geometry.location.lng()
+                                }
+                            },
+                        }
+                    );
+                }
+            } else {
+                this.addressErrors(false)
+            }
+        } catch {
+            this.addressErrors(false)
+        }
+    }
+
+    setAddressParams = (address) => {
+        var street, number, city, country, completeAddress, i;
+        for (i = 0; i < address.length; i++) {
+            if (address[i].types == "route") {
+                street = address[i].long_name;
+            } else if (address[i].types == "street_numbe") {
+                number = address[i].long_name;
+            } else if (address[i].types[0] == "locality") {
+                city = address[i].long_name;
+            } else if (address[i].types[0] == "country") {
+                country = address[i].long_name;
+            }
+        }
+        completeAddress = street + " " + number + " " + city + " " + country;
+
+        if (street == undefined || street == "" || city == undefined || city == "" || country == undefined || country == "") {
+            this.addressErrors(false)
+            return false;
+        } else {
+            this.addressErrors(true)
+            this.state.townP = city;
+            this.state.countryP = country;
+            if (number == undefined)
+                this.state.streetP = street;
+            else
+                this.state.streetP = street + number;
+        }
+        return true;
+    }
+
+    addressErrors = (bool) => {
+        let errors = this.state.errors;
+        if (bool == false) {
+            //.log("Nisam dobro prosla")
+            errors.dermatologist.address = 'Please choose valid address';
+        } else {
+            //console.log("DObro sam prosla ");
+            errors.dermatologist.address = "";
+        }
+        this.setState({errors});
+    }
+
 
 
     render() {
         return (
-            <Container style={{
-                background: 'rgb(232, 244, 248 )',
-                color: 'rgb(0, 92, 230)',
-
-            }}>
+            <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
                 <div className="container">
-                    <h1 style={({ textAlignVertical: "center", textAlign: "center"})} className="display-4">Dermatologist registration</h1>
+                    <h1 style={({marginTop: '0.1rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">Dermatologist registration</h1>
                 </div>
 
                 <div className="row" style={{marginTop: '3rem', marginLeft:'20rem',display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
@@ -90,22 +172,13 @@ export default class DermatologistRegistration extends React.Component {
                     <div className="col-sm-4">
                     </div>
                 </div>
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
-                    <label  className="col-sm-2 col-form-label">Country</label>
-                    <div className="col-sm-6 mb-2">
-                        <input type="text" value={this.state.dermatologist.country} name="country" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="country" placeholder="Enter country" />
-                        { this.state.submitted && this.state.errors.dermatologist.country.length > 0 &&  <span className="text-danger">{this.state.errors.dermatologist.country}</span>}
 
-                    </div>
-                    <div className="col-sm-4">
-                    </div>
-                </div>
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
-                    <label  className="col-sm-2 col-form-label">City</label>
+                    <label  className="col-sm-2 col-form-label">Address</label>
                     <div className="col-sm-6 mb-2">
-                        <input type="text" value={this.state.dermatologist.city} name="city" onChange={(e) => { this.handleInputChange(e)} } className="form-control" id="city" placeholder="Enter city" />
-                        { this.state.submitted && this.state.errors.dermatologist.city.length > 0 &&  <span className="text-danger">{this.state.errors.dermatologist.city}</span>}
-
+                        <Script type="text/javascript" url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
+                        <input type="text" id="street" placeholder="Enter Address" value={this.query}/>
+                        {this.state.submitted && this.state.errors.dermatologist.address.length > 0 &&  <span className="text-danger">{this.state.errors.dermatologist.address}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
@@ -132,6 +205,7 @@ export default class DermatologistRegistration extends React.Component {
                     <div className="col-sm-4">
                     </div>
                 </div>
+                <h1>Working hours</h1>
 
                 <div className="row"style={{marginTop: '1rem'}}>
                     <div className="col-sm-5 mb-2">
@@ -141,13 +215,13 @@ export default class DermatologistRegistration extends React.Component {
                     </div>
                 </div>
 
-            </Container>
+            </div>
         );
     }
 
     submitForm = async (event) => {
         this.setState({ submitted: true });
-        const user = this.state.user;
+        const dermatologist = this.state.dermatologist;
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form')
@@ -162,28 +236,22 @@ export default class DermatologistRegistration extends React.Component {
 
         switch (name) {
             case 'firstName':
-                errors.user.firstName = value.length < 1 ? 'Enter First Name' : '';
+                errors.dermatologist.firstName = value.length < 1 ? 'Enter First Name' : '';
                 break;
             case 'lastName':
-                errors.user.lastName = value.length < 1 ? 'Enter Last Name' : '';
+                errors.dermatologist.lastName = value.length < 1 ? 'Enter Last Name' : '';
                 break;
             case 'email':
-                errors.user.email = this.isValidEmail(value) ? '' : 'Email is not valid!';
+                errors.dermatologist.email = this.isValidEmail(value) ? '' : 'Email is not valid!';
                 break;
             case 'telephone':
-                errors.user.telephone = this.isValidTelephone(value) ? 'Enter valid telephone number' : '';
-                break;
-            case 'country':
-                errors.user.country = value.length < 1 ?  'Enter Country' : '';
-                break;
-            case 'city':
-                errors.user.city = value.length < 1 ?  'Enter City' : '';
+                errors.dermatologist.telephone = this.isValidTelephone(value) ? 'Enter valid telephone number' : '';
                 break;
             case 'password':
-                errors.user.password = value.length < 1 ? 'Enter Password' : '';
+                errors.dermatologist.password = value.length < 1 ? 'Enter Password' : '';
                 break;
             case 'rePassword':
-                errors.user.rePassword = this.isValidPassword(value) ? '' : 'This password must match the previous';
+                errors.dermatologist.rePassword = this.isValidPassword(value) ? '' : 'This password must match the previous';
                 break;
             default:
                 break;
@@ -194,7 +262,7 @@ export default class DermatologistRegistration extends React.Component {
 
     validateForm = (errors) => {
         let valid = true;
-        Object.entries(errors.user).forEach(item => {
+        Object.entries(errors.dermatologist).forEach(item => {
             console.log(item)
             item && item[1].length > 0 && (valid = false)
         })
@@ -209,7 +277,7 @@ export default class DermatologistRegistration extends React.Component {
     }
 
     isValidPassword = (value) => {
-        if(this.state.user.password !== this.state.user.rePassword) {
+        if(this.state.dermatologist.password !== this.state.dermatologist.rePassword) {
             return false;
         }else{
             return  true
