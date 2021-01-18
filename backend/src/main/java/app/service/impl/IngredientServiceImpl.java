@@ -1,6 +1,6 @@
 package app.service.impl;
 
-import app.model.Ingredient;
+import app.model.medication.Ingredient;
 import app.repository.IngredientRepository;
 import app.service.IngredientService;
 import org.springframework.stereotype.Service;
