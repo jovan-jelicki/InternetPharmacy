@@ -1,8 +1,7 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
-import app.model.Dermatologist;
-import app.model.Pharmacist;
+import app.model.user.Pharmacist;
 import app.repository.PharmacistRepository;
 import app.service.PharmacistService;
 import org.springframework.stereotype.Service;
