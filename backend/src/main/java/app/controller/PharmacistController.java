@@ -1,7 +1,7 @@
 package app.controller;
 
-import app.model.Pharmacist;
-import app.model.WorkingHours;
+import app.model.time.WorkingHours;
+import app.model.user.Pharmacist;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;

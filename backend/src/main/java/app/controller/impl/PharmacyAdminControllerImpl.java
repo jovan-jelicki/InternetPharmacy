@@ -1,14 +1,10 @@
 package app.controller.impl;
 
 import app.dto.PharmacyAdminDTO;
-import app.dto.SystemAdminDTO;
 import app.dto.UserPasswordDTO;
-import app.model.Patient;
-import app.model.Pharmacy;
-import app.model.PharmacyAdmin;
-import app.model.SystemAdmin;
+import app.model.pharmacy.Pharmacy;
+import app.model.user.PharmacyAdmin;
 import app.service.PharmacyAdminService;
-import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

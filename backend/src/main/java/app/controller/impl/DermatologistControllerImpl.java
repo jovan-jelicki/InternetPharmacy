@@ -1,9 +1,8 @@
 package app.controller.impl;
 
 import app.controller.DermatologistController;
-import app.model.Dermatologist;
-import app.model.Pharmacist;
-import app.model.WorkingHours;
+import app.model.time.WorkingHours;
+import app.model.user.Dermatologist;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

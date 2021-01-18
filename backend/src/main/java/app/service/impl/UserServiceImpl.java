@@ -1,7 +1,7 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
-import app.model.User;
+import app.model.user.User;
 import app.repository.UserRepository;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

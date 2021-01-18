@@ -1,9 +1,8 @@
 package app.controller;
 
 import app.dto.UserPasswordDTO;
-import app.model.Contact;
-import app.model.Ingredient;
-import app.model.Patient;
+import app.model.medication.Ingredient;
+import app.model.user.Patient;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;

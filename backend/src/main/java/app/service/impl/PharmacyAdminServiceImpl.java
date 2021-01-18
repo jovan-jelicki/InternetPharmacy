@@ -1,8 +1,7 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
-import app.model.PharmacyAdmin;
-import app.repository.IngredientRepository;
+import app.model.user.PharmacyAdmin;
 import app.repository.PharmacyAdminRepository;
 import app.service.PharmacyAdminService;
 import org.springframework.stereotype.Service;

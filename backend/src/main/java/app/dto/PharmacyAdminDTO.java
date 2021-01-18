@@ -1,7 +1,9 @@
 package app.dto;
 
 
-import app.model.*;
+import app.model.user.Contact;
+import app.model.user.PharmacyAdmin;
+import app.model.user.UserType;
 
 public class PharmacyAdminDTO {
     private Long id;
