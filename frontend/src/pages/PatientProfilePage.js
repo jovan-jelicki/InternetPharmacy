@@ -157,7 +157,7 @@ export default class PatientProfilePage extends React.Component {
             'id' : this.state.id,
             'firstName' : this.state.firstName,
             'lastName' : this.state.lastName,
-            'userType' : this.state.userType,
+            //'userType' : this.state.userType,
             'allergies' : this.state.allergies,
             'credentials' : {
                 'email' : this.state.email,
