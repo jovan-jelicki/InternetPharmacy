@@ -49,7 +49,7 @@ INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 3);
 INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (2, 0);
 INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (3, 5);
 INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (4, 1);
-INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 2);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 0);
 INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 4);
 INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 0);
 INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (2, 3);
