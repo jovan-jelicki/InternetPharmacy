@@ -15,3 +15,12 @@ INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (1, 2);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (1, 5);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (2, 2);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (2, 1);
+
+
+-- add additional tables when needed
+INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description) VALUES
+                     (0, 'Pfizer', 'USA', 41, 87, 'Fifth Ave', 'Chicago', 'Pfizer Inc. is an American multinational pharmaceutical corporation. Pfizer is one of the world''s largest pharmaceutical companies, and was ranked 64th on the 2020 Fortune 500 list of the largest U.S. corporations by total revenue, at $51.75 billion');
+INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description, description) VALUES
+                     (0, 'Moderna', 'USA', 42, 71, 'Sixth Ave', 'Boston', 'Moderna is an American pharmaceutical and biotechnology company based in Cambridge, Massachusetts. It focuses on drug discovery, drug development, and vaccine technologies based exclusively on messenger RNA (mRNA).');
+INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description, description) VALUES
+                     (0, 'AstraZeneca', 'GB', 51, 0, 'First Ave', 'London', 'AstraZeneca plc is a British-Swedish multinational pharmaceutical and biopharmaceutical company with its headquarters in Cambridge, England. AstraZeneca has a portfolio of products for major disease areas including cancer, cardiovascular, gastrointestinal, infection, respiratory and inflammation.');

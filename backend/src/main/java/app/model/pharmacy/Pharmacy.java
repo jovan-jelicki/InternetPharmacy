@@ -25,16 +25,16 @@ public class Pharmacy {
     @Column
     private String description;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Dermatologist> dermatologist;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Pharmacist> pharmacist;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MedicationQuantity> medicationQuantity;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MedicationReservation> medicationReservation;
 
     public Pharmacy() {
