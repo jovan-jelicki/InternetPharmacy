@@ -1,5 +1,13 @@
 import React from 'react';
-import {Button, Form, FormControl, Modal, Navbar} from "react-bootstrap";
+import {Button, Form, FormControl, Modal, Navbar, Col} from "react-bootstrap";
+import DropdownItem from "react-bootstrap/DropdownItem";
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
+
+const options = [
+    'one', 'two', 'three'
+];
+const defaultOption = options[0];
 
 export default class PharmacyMedications extends React.Component{
     constructor() {
@@ -98,13 +106,13 @@ export default class PharmacyMedications extends React.Component{
 
     render() {
         return (
-            <div>
+            <div style={({ marginLeft: '1rem' })}>
                 <br/><br/>
                 <h1>Lekovi</h1>
 
-                <br/><br/>
-                <Button variant="success">Dodaj lek</Button>
-                <Button variant="primary">Proveri dostupnost preko eRecepta</Button>
+
+                <Button variant="success" onClick={this.handleModal} >Dodaj lek</Button>
+                <Button variant="primary" style={({ marginLeft: '1rem' })}>Proveri dostupnost preko eRecepta</Button>
                 <br/><br/>
 
                 <Navbar bg="light" expand="lg">
@@ -126,6 +134,9 @@ export default class PharmacyMedications extends React.Component{
                         <th scope="col">Ocena</th>
                         <th scope="col">Kolicina</th>
                         <th scope="col">Cena</th>
+                        <th scope="col">Sastojci</th>
+                        <th scope="col">Alternative</th>
+
                     </tr>
                     </thead>
                     <tbody>
@@ -137,23 +148,20 @@ export default class PharmacyMedications extends React.Component{
                             <td>{medication.grade}</td>
                             <td>{medication.quantity}</td>
                             <td>{medication.price}</td>
-                            <td style={this.state.userType === 'patient' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
+                            <td>
+                                <Dropdown options={options}  value={defaultOption} />
+                            </td>
+                            <td>
+                                <Dropdown options={options}  value={defaultOption} />
+                            </td>
+                            <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                 <Button variant="primary" onClick={this.handleModal}>
                                     Rezervisi
                                 </Button>
                             </td >
-                            <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
-                                <Button variant="warning" onClick={this.handleModal}>
-                                    Sastojci
-                                </Button>
-                            </td>
-                            <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
-                                <Button variant="info" onClick={this.handleModal}>
-                                    Alternative
-                                </Button>
-                            </td>
-                            <td style={this.state.userType === 'pharmacyAdmin' ? {visibility : 'visible'} : {visibility : 'hidden'}}>
-                                <Button variant="danger" onClick={this.handleModal}>
+
+                            <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                                <Button variant="danger" onClick={() => this.deleteMedication(medication)}>
                                     Delete
                                 </Button>
                             </td>
@@ -166,9 +174,24 @@ export default class PharmacyMedications extends React.Component{
 
                 <Modal show={this.state.showModal} onHide={this.handleModal}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
+                        <Modal.Title>Dodavanje leka</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Row>
+                                <Col>
+                                    <Form.Control placeholder="Medication" as={"select"} >
+                                        <option disabled={true} selected="selected">Choose...</option>
+                                        <option >...</option>
+                                    </Form.Control>
+                                </Col>
+                                <Col>
+                                    <Form.Control placeholder="Quantity"  />
+                                </Col>
+                            </Form.Row>
+                        </Form>
+
+                    </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.handleModal}>
                             Close
@@ -185,5 +208,9 @@ export default class PharmacyMedications extends React.Component{
         this.setState({
             showModal : !this.state.showModal
         });
+    }
+
+    deleteMedication = (medication) => {
+        let isBoss = window.confirm('Are you sure you want to delete ' + medication.name + ' from your medications list?');
     }
 }

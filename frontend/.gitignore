@@ -2,6 +2,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/webstorm,maven,react,java,eclipse,java-web,visualstudio,visualstudiocode,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=webstorm,maven,react,java,eclipse,java-web,visualstudio,visualstudiocode,intellij
 
+.env
+
 ### Eclipse ###
 .metadata
 bin/
@@ -14,6 +16,8 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+
+.eslintcache
 
 # External tool builders
 .externalToolBuilders/

@@ -1,5 +1,12 @@
 import React from "react";
 import {Button, Modal} from "react-bootstrap";
+import {ButtonGroup, Input} from "rsuite";
+import Dropdown from "react-dropdown";
+
+const options = [
+    'Xanax | 3', 'Brufen | 4', 'Linex | 100'
+];
+const defaultOption = options[0];
 
 export default class MedicationOrdersList extends React.Component {
     constructor() {
@@ -8,7 +15,10 @@ export default class MedicationOrdersList extends React.Component {
             userType : 'pharmacyAdmin',
             medicationOrders : [],
             showModal : false,
-            showContent : 'listOrders'
+            showContent : 'listOrders',
+            radioAll : '1',
+            radioPending : '2',
+            radioProcessed : '3'
         }
     }
 
@@ -46,16 +56,29 @@ export default class MedicationOrdersList extends React.Component {
     }
 
     render() {
+
         return (
             <div className="container-fluid">
 
                 <h1>Narudzbenice</h1>
 
                 <br/>
-                <Button variant="success">Create order</Button>
+                <Button variant="success" onClick={this.createOrder}>Create order</Button>
                 <br/><br/>
 
-
+                <b>Filter by :</b>
+                <ButtonGroup>
+                    <Button>All
+                        <Input ref="input1" type="radio" name="radioButtonSet" value='input1' standalone defaultChecked/>
+                    </Button>
+                    <Button>Pending
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
+                    </Button>
+                    <Button>Processed
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
+                    </Button>
+                </ButtonGroup>
+                <br/>
                 <table className="table table-hover">
                     <thead>
                     <tr>
@@ -75,9 +98,7 @@ export default class MedicationOrdersList extends React.Component {
                             <td>{medicationOrder.pharmacyAdmin.firstName + ' ' + medicationOrder.pharmacyAdmin.lastName}</td>
                             <td>{medicationOrder.deadLine}</td>
                             <td>
-                                <Button variant="primary" onClick={this.handleModal}>
-                                    Lista lekova
-                                </Button>
+                                <Dropdown options={options}  value={defaultOption} />
                             </td>
                             <td>{medicationOrder.status}</td>
                             <td>
@@ -91,7 +112,7 @@ export default class MedicationOrdersList extends React.Component {
                                 </Button>
                             </td>
                             <td>
-                                <Button variant="danger" >
+                                <Button variant="danger" onClick={() => this.deleteOrder(medicationOrder)}>
                                     Obrisi
                                 </Button>
                             </td>
@@ -126,5 +147,13 @@ export default class MedicationOrdersList extends React.Component {
 
     showOffersButtonClick = () => {
         this.props.showOffers('showOffers');
+    }
+
+    createOrder = () => {
+        this.props.showOffers('showCreateOrder');
+    }
+
+    deleteOrder = (order) => {
+        let isBoss = window.confirm('Are you sure you want to delete the order from your order list?');
     }
 }

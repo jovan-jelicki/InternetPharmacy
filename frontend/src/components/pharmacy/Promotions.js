@@ -31,12 +31,11 @@ export default class Promotions extends React.Component{
 
     render() {
         return (
-            <div className="container-fluid">
+            <div className="container-fluid" style={({ marginLeft: '1rem' })}>
                 <div className="row">
                     <div>
-                        <h3>
-                            Akcije & promocije
-                        </h3>
+                        <br/><br/>
+                        <h1>Akcije & Promocije</h1>
 
                         <button type="button" class="btn btn-info">Kreiraj promociju</button>
                         <div className="row">
@@ -44,8 +43,10 @@ export default class Promotions extends React.Component{
 
 
 
+
                         {this.state.promotions.map((promotion, index) => (
                             <div className="row">
+
                                 <div className="col-md-4">
                                     <div className="card">
                                         <img className="card-img-top" alt="Bootstrap Thumbnail First"

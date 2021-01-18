@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.controller.PatientController;
 import app.dto.UserPasswordDTO;
+import app.model.Contact;
 import app.model.Ingredient;
 import app.model.Patient;
 import app.service.UserService;
