@@ -16,8 +16,6 @@ INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (1, 5);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (2, 2);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (2, 1);
 
-
--- add additional tables when needed
 INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description) VALUES
                      (0, 'Pfizer', 'USA', 41, 87, 'Fifth Ave', 'Chicago', 'Pfizer Inc. is an American multinational pharmaceutical corporation. Pfizer is one of the world''s largest pharmaceutical companies, and was ranked 64th on the 2020 Fortune 500 list of the largest U.S. corporations by total revenue, at $51.75 billion');
 INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description) VALUES
@@ -35,3 +33,24 @@ INSERT INTO medication (id, name, type, dose, loyalty_points, medication_shape, 
                        (3, 'Ditenzin', 0, 1, 10, 3, 'Ivancic i sinovi', 0, 'Take when pressure is 200/100...');
 INSERT INTO medication (id, name, type, dose, loyalty_points, medication_shape, manufacturer, medication_issue, note) VALUES
                        (4, 'Bromazepan', 1, 6, 20, 4, 'BioFarm', 1, 'Take while studying PSW');
+
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 1);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 2);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (2, 4);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (3, 2);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (4, 3);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 5);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 5);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (2, 5);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (3, 0);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (4, 0);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 2);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 3);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (2, 0);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (3, 5);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (4, 1);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 2);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 4);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 0);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (2, 3);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 4);
