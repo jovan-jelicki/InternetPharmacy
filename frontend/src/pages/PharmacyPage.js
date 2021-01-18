@@ -6,6 +6,8 @@ import PharmacyVacationsRequests from "../components/pharmacy/PharmacyVacationsR
 import PharmacyMedicationOrders from "../components/pharmacy/PharmacyMedicationOrders";
 import PharmacyMedicationQueries from "../components/pharmacy/PharmacyMedicationQueries";
 import PharmacyDescription from "../components/pharmacy/PharmacyDescription";
+import PriceList from "../components/pharmacy/PriceList";
+import PharmacyReports from "../components/pharmacy/PharmacyReports";
 
 
 export default class PharmacyPage extends React.Component{
@@ -78,10 +80,8 @@ export default class PharmacyPage extends React.Component{
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
                     <h1 className="display-4">{this.state.pharmacy.name}</h1>
-                    <p className="lead">{this.state.pharmacy.description}</p>
-                    <p className="lead">{'ocena apoteke : '+ this.state.pharmacy.grade}</p>
                 </div>
-
+                <br/>
 
                 <ul className="nav justify-content-center">
                     <li className="nav-item">
@@ -104,6 +104,12 @@ export default class PharmacyPage extends React.Component{
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="medicationQueries" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Upiti nad lekovima</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="priceList" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Price list</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="reports" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Reports</a>
                     </li>
                 </ul>
                 {this.renderNavbar()}
@@ -129,6 +135,14 @@ export default class PharmacyPage extends React.Component{
         else if (this.state.navbar === 'description')
             return (
                 <PharmacyDescription pharmacy = {this.state.pharmacy } />
+            )
+        else if (this.state.navbar === 'reports')
+            return (
+                <PharmacyReports pharmacy = {this.state.pharmacy } />
+            )
+        else if (this.state.navbar === 'priceList')
+            return (
+                <PriceList pharmacy = {this.state.pharmacy } />
             )
         else if (this.state.navbar === "employees")
             return (

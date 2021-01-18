@@ -12,13 +12,14 @@ class AllergyPatientListing extends React.Component {
     }
 
     render() {
+        
         const allergies = this.props.allergies.map((allergy, index) => {
             return (
-                <Col xs={3} >
+                <Col xs={3}>
                     <div className="m-2 bg-primary p-2" style={{ height: '3rem' }}>
                         {this.props.edit && <Button variant="primary" className="mr-3 p-0" style={{width: '1rem'}}
-                                 onClick={this.removeAllergy.bind(this, allergy)}>X</Button>}
-                        {allergy}
+                                 onClick={this.removeAllergy.bind(this, allergy.id)}>X</Button>}
+                        <label className='text-light'>{allergy.name}</label>
                     </div>
                 </Col>
             )

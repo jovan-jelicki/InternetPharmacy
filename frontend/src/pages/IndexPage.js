@@ -1,16 +1,21 @@
 import React from 'react';
 import {Button} from "react-bootstrap";
-import Login from "../components/Login";
+import UnregisteredLayout from "../layout/UnregisteredLayout"
+import PharmacyListing from "../components/pharmacy/PharmacyListing"
+import MedicationListing from "../components/MedicationListing"
 
 export default class IndexPage extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props)
     }
 
     render() {
         return (
             <div className="App">
-                <Login/>
+                <UnregisteredLayout>
+                    <PharmacyListing/>
+                    <MedicationListing/>
+                </UnregisteredLayout>
             </div>
         );
     }

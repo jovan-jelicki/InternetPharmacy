@@ -1,9 +1,11 @@
 import React from "react";
-import {Button, FormControl} from "react-bootstrap";
-import "../App.css";
+import {Button, Col, Form, Modal, Table, Grid, FormControl, Row} from "react-bootstrap";
+import "../../App.css";
+import TimePicker from "react-time-picker";
 
 
-export default class Registration extends React.Component {
+
+export default class CreatePharmacist extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,6 +16,7 @@ export default class Registration extends React.Component {
                 'lastName': '',
                 'country': '',
                 'city': '',
+                'street' : '',
                 'telephone': '',
                 'rePassword' : ''
             },
@@ -25,6 +28,7 @@ export default class Registration extends React.Component {
                     'lastName': 'Enter Last name',
                     'country': 'Enter Country',
                     'city': 'Enter City',
+                    'street' : 'Enter Street',
                     'telephone': 'Enter Telephone',
                     'rePassword' : 'Repeat password'
                 }
@@ -50,9 +54,7 @@ export default class Registration extends React.Component {
 
     render() {
         return (
-            <div className="rightPanel">
-                <header>User - Registration</header>
-
+            <div >
                 <div className="row">
                     <label className="col-sm-2 col-form-label">Name</label>
                     <div className="col-sm-3 mb-2">
@@ -88,10 +90,10 @@ export default class Registration extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <label  className="col-sm-2 col-form-label">Country</label>
+                    <label  className="col-sm-2 col-form-label">Street</label>
                     <div className="col-sm-6 mb-2">
-                        <input type="text" value={this.state.user.country} name="country" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="country" placeholder="Enter country" />
-                        { this.state.submitted && this.state.errors.user.country.length > 0 &&  <span className="text-danger">{this.state.errors.user.country}</span>}
+                        <input type="text" value={this.state.user.street} name="street" onChange={(e) => { this.handleInputChange(e)} } className="form-control" id="street" placeholder="Enter street" />
+                        { this.state.submitted && this.state.errors.user.street.length > 0 &&  <span className="text-danger">{this.state.errors.user.street}</span>}
 
                     </div>
                     <div className="col-sm-4">
@@ -107,6 +109,17 @@ export default class Registration extends React.Component {
                     <div className="col-sm-4">
                     </div>
                 </div>
+                <div className="row">
+                    <label  className="col-sm-2 col-form-label">Country</label>
+                    <div className="col-sm-6 mb-2">
+                        <input type="text" value={this.state.user.country} name="country" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="country" placeholder="Enter country" />
+                        { this.state.submitted && this.state.errors.user.country.length > 0 &&  <span className="text-danger">{this.state.errors.user.country}</span>}
+
+                    </div>
+                    <div className="col-sm-4">
+                    </div>
+                </div>
+
 
                 <div className="row">
                     <label className="col-sm-2 col-form-label">Password</label>
@@ -130,11 +143,34 @@ export default class Registration extends React.Component {
                     </div>
                 </div>
 
+                <hr className="mt-2 mb-3"/>
+
+                <div className="row">
+                    <div style={({ marginLeft: '1rem' })}>
+                        <label style={({ marginRight: '1rem' })}>Select start of work time : </label>
+                        <TimePicker />
+
+                    </div>
+                </div>
+                <div className="row">
+                    <div style={({ marginLeft: '1rem' })}>
+                        <label style={({ marginRight: '1rem' })}>Select end of work time : </label>
+                        <TimePicker />
+
+                    </div>
+                </div>
+
+
+                <hr className="mt-2 mb-3"/>
+
+                <br/>
                 <div className="row">
                     <div className="col-sm-5 mb-2">
                     </div>
-                    <div className="col-sm-4">
-                        <Button variant="primary" onClick={this.submitForm} >Submit</Button>
+                    <div >
+                        <Button variant="primary" onClick={this.submitForm} style={({ marginRight: '1rem' })}>Submit</Button>
+                        <Button variant="secondary" onClick={this.closeModal} >Close</Button>
+
                     </div>
                 </div>
 
@@ -146,7 +182,8 @@ export default class Registration extends React.Component {
         const user = this.state.user;
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
-            console.info('Valid Form')
+            console.info('Valid Form');
+            this.closeModal();
         } else {
             console.log('Invalid Form')
         }
@@ -174,6 +211,9 @@ export default class Registration extends React.Component {
                 break;
             case 'city':
                 errors.user.city = value.length < 1 ?  'Enter City' : '';
+                break;
+            case 'street':
+                errors.user.street = value.length < 1 ?  'Enter Street' : '';
                 break;
             case 'password':
                 errors.user.password = value.length < 1 ? 'Enter Password' : '';
@@ -205,10 +245,10 @@ export default class Registration extends React.Component {
     }
 
     isValidPassword = (value) => {
-            if(this.state.user.password !== this.state.user.rePassword) {
-                return false;
-            }else{
-                return  true
-            }
+        return this.state.user.password === this.state.user.rePassword;
+    }
+
+    closeModal = () => {
+        this.props.closeModal();
     }
 }
