@@ -1,6 +1,7 @@
 package app.controller.impl;
 
 import app.controller.PharmacistController;
+import app.dto.UserPasswordDTO;
 import app.model.Pharmacist;
 import app.model.WorkingHours;
 import app.service.PharmacistService;
@@ -36,6 +37,22 @@ public class PharmacistControllerImpl implements PharmacistController {
         if(!pharmacistService.existsById(entity.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(pharmacistService.save(entity), HttpStatus.CREATED);
+    }
+
+
+    @Override
+    @PutMapping(value = "/pass")
+    public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
+        try {
+            pharmacistService.changePassword(passwordKit);
+        }
+        catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
