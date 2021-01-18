@@ -22,7 +22,7 @@ public class Pharmacy {
 
     private Address address;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

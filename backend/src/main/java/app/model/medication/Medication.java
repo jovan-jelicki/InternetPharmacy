@@ -17,7 +17,7 @@ public class Medication {
    private MedicationType type;
 
    @Column
-   private int dose;
+   private double dose;
 
    @Column
    private int loyaltyPoints;
@@ -31,7 +31,7 @@ public class Medication {
    @Column
    private MedicationIssue medicationIssue;
 
-   @Column
+   @Column(columnDefinition = "TEXT")
    private String note;
 
    @ManyToMany
@@ -70,11 +70,11 @@ public class Medication {
       this.type = type;
    }
 
-   public int getDose() {
+   public double getDose() {
       return dose;
    }
 
-   public void setDose(int dose) {
+   public void setDose(double dose) {
       this.dose = dose;
    }
 
