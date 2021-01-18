@@ -15,7 +15,7 @@ class UserInfo extends React.Component {
         let {user, edit} = this.props;
 
         return (
-            <Table striped hover>
+            <Table striped hover variant={'dark'}>
                 <tbody>
                 <tr>
                     <td>First Name</td>
