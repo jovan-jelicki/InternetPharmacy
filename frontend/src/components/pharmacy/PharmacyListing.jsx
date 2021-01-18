@@ -1,6 +1,7 @@
 import React from 'react';
 import {Card, Col, Row, Badge} from "react-bootstrap";
 import PharmacySearch from './PharmacySearch';
+import axios from 'axios';
 
 export default class PharmacyListing extends React.Component {
     constructor() {
@@ -14,19 +15,12 @@ export default class PharmacyListing extends React.Component {
     }
 
     async componentDidMount() {
-        await this.setState({
-            pharmacies : [
-                {
-                    name : 'Jankovic',
-                    address : 'Narodnog Fronta 5, Novi Sad, Serbia',
-                    description : 'Fabulozna apoteka za svaciji ukus i svaku priliku :*'
-                },
-                {
-                    name : 'Biljana i Luka',
-                    address : 'Bulevar Oslobodjenja 5, Novi Sad, Serbia',
-                    description : 'Mi smo biljana i luka ;;;))))'
-                }
-            ]
+        axios
+        .get('http://localhost:8080/api/pharmacy')
+        .then((res) => {
+            this.setState({
+                pharmacies : res.data
+            })
         })
 
         this.pharmaciesBackup = [...this.state.pharmacies]
@@ -61,12 +55,13 @@ export default class PharmacyListing extends React.Component {
 
     render() {
         const pharmacies = this.state.pharmacies.map((pharmacy, index) => {
+            const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country 
             return (
-                <Col xs={3} >
-                <Card bg={'dark'} key={index} text={'white'} style={{ width: '18rem', height: '18rem' }} className="mb-2">
+                <Col xs={4} >
+                <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '20rem' }} className="mb-2">
                     <Card.Body>
                     <Card.Title>{pharmacy.name}</Card.Title>
-                        <Card.Subtitle className="mb-5 mt-2 text-muted">{pharmacy.address}</Card.Subtitle>
+                        <Card.Subtitle className="mb-5 mt-2 text-muted">{address}</Card.Subtitle>
                         <Card.Text>
                         {pharmacy.description}
                         </Card.Text>

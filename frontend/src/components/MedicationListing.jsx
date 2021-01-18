@@ -1,5 +1,6 @@
 import React from 'react'
 import {Card, Col, Row} from "react-bootstrap";
+import axios from 'axios';
 
 export default class MedicationListing extends React.Component {
     constructor() {
@@ -10,99 +11,26 @@ export default class MedicationListing extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({
-            medications : [
-                {
-                    name: "Xanax",
-                    type: "antihistamine",
-                    dose: 2,
-                    loyaltyPoints: 3,
-                    medicationShape: "pill",
-                    manufacturer: "ABC",
-                    medicationIssue: "withPrescription",
-                    note: "take when hungry",
-                    quantity : 10,
-                    price : 400.00,
-                    grade : 4,
-                    ingredient: [
-                        {
-                            name: "brufen"
-                        },
-                        {
-                            name: "linex"
-                        }
-    
-                    ],
-                    sideEffect: [
-                        {
-                            name: "nausea"
-                        },
-                        {
-                            name: "blindness"
-                        }
-                    ],
-                    alternatives: [
-                        {
-                            name: "brufen"
-                        },
-                        {
-                            name: "linex"
-                        }
-                    ]
-                },
-                {
-                    name: "Linex",
-                    type: "antihistamine",
-                    dose: 2,
-                    grade : 4,
-                    loyaltyPoints: 3,
-                    medicationShape: "pill",
-                    manufacturer: "ABC",
-                    quantity : 10,
-                    price : 1300,
-                    medicationIssue: "withPrescription",
-                    note: "take when hungry",
-                    ingredient: [
-                        {
-                            name: "brufen"
-                        },
-                        {
-                            name: "linex"
-                        }
-    
-                    ],
-                    sideEffect: [
-                        {
-                            name: "nausea"
-                        },
-                        {
-                            name: "blindness"
-                        }
-                    ],
-                    alternatives: [
-                        {
-                            name: "brufen"
-                        },
-                        {
-                            name: "linex"
-                        }
-                    ]
-                }
-            ]
+        axios
+        .get('http://localhost:8080/api/medications')
+        .then((res) => {
+            this.setState({
+                medications : res.data
+            })
         })
     }
 
     render() {
         const medications = this.state.medications.map((medication, index) => {
-            let ingredients = ''
-            medication.ingredient.forEach(i => ingredients += i.name)
+            let ingredients = 'to be continued'
+            //medication.ingredient.forEach(i => ingredients += i.name)
             return (
-                <Col xs={3} key={index}>
+                <Col xs={4} key={index}>
                 <Card 
                     bg={'dark'}
                     key={index}
                     text={'white'}
-                    style={{ width: '18rem', height: '18rem' }}
+                    style={{ width: '25rem', height: '20rem' }}
                     className="mb-2"
                 >
                     <Card.Body>
@@ -116,6 +44,7 @@ export default class MedicationListing extends React.Component {
                 </Col>
             )
         })
+
         return (
             <div>
                 <Row>
