@@ -1,11 +1,13 @@
 import React from "react";
 import {Button, Col, Container, FormControl, Row} from "react-bootstrap";
 import ChooseTherapy from "./ChooseTherapy";
+import ScheduleByDateTime from "./ScheduleByDateTime";
 
 export default class Consultation extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            scheduleNewAppointment : false,
             report : "",
             medication : { name :  "Choose medication ..." },
             dateStartTherapy : "",
@@ -59,10 +61,22 @@ export default class Consultation extends React.Component {
     }
 
     render() {
+        const ButtonSchedule = "Schedule new appointment";
         return (
           <Container>
               <br/>
-              {this.getPatientsInfo()}
+
+              <Row >
+                <Col>
+                  {this.getPatientsInfo()}
+                </Col>
+                <Col>
+                    <Button variant="primary" onClick={this.showScheduling} style={{ height : 40, marginTop : 10, float : "right"}} > {ButtonSchedule} </Button> <br/>
+                    <br/>
+                      {this.state.scheduleNewAppointment && <ScheduleByDateTime appointment={this.props.appointment}/>}
+                </Col>
+              </Row>
+
               <br/>
               <label  style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}}> Report </label>
               <textarea className="form-control"  rows="5" cols="10" placeholder={"Type report..."} name="report" onChange={this.handleInputChange} value={this.state.report} />
@@ -70,9 +84,38 @@ export default class Consultation extends React.Component {
               <label style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}}> Choose therapy </label>
 
               {<ChooseTherapy dateEndTherapy={this.state.dateEndTherapy} dateStartTherapy={this.state.dateStartTherapy}  setStartDate={this.setStartDate} setEndDate={this.setEndDate} medications={this.state.medications} medication={this.state.medication} chooseMedication={this.chooseMedication} removeMedication={this.removeMedication}/>}
-              <Button onClick={() => this.finishAppointment()}> Finish </Button>
+
+              <Button onClick={() => this.finishAppointment()}> Finish appointment </Button>
           </Container>
         );
+    }
+
+    getPatientsInfo = () => {
+        return (
+            <div>
+                <label style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}} > Information about patient :  </label>
+                <Row>
+                    <label style={{fontSize : 20}} >  <b> First name: </b></label>
+                    <label style={{fontSize : 20 , marginLeft: 40}} > {this.props.appointment.patient.firstName} </label>
+                </Row>
+                <Row>
+                    <label style={{fontSize : 20}} >  <b> Last name: </b></label>
+                    <label style={{fontSize : 20, marginLeft: 40}} > {this.props.appointment.patient.lastName} </label>
+                </Row>
+            </div>
+        )
+    }
+
+
+    setTimeForNewAppointment = (date) => {
+        this.setState({
+            timeForScheduling : new Date(date)
+        })
+    }
+    showScheduling =() => {
+        this.setState({
+            scheduleNewAppointment : !this.state.scheduleNewAppointment
+        })
     }
 
     setStartDate = (date) => {
@@ -104,21 +147,7 @@ export default class Consultation extends React.Component {
         })
     }
 
-    getPatientsInfo = () => {
-        return (
-            <div>
-                <label style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}} > Information about patient :  </label>
-                <Row>
-                    <label style={{fontSize : 20}} className="col-sm-2 col-form-label">  <b> First name: </b></label>
-                    <label style={{fontSize : 20}} className="col-sm-2 col-form-label"> {this.props.appointment.patient.firstName} </label>
-                </Row>
-                <Row>
-                    <label style={{fontSize : 20}} className="col-sm-2 col-form-label">  <b> Last name: </b></label>
-                    <label style={{fontSize : 20}} className="col-sm-2 col-form-label"> {this.props.appointment.patient.lastName} </label>
-                </Row>
-            </div>
-    )
-    }
+
 
     finishAppointment = () => {
         this.props.renderParent(false);

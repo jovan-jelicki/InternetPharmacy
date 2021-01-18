@@ -34,7 +34,7 @@ export default class ChooseTherapy extends React.Component {
                             <Button onClick={this.removeMedication} variant="primary" className="mr-3 p-0" style={{width: '1rem'}} >X</Button>
                             <label  className='text-light'>{this.props.medication.name}</label>
                         </div>
-                        <Button style={{width: 120, height : 40, marginTop : 10}} onClick={this.handleModal} variant="secondary"> Information </Button>
+                        <Button style={{height : 40, marginTop : 10}} onClick={this.handleModal} variant="secondary"> Information </Button>
                         <Button style={{width: 120, height : 40, marginTop : 10, marginLeft : 2}} variant="secondary"> Prescribe </Button>
                     </div>
                     : <div>Nema leka</div>}
