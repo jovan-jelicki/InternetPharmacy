@@ -1,11 +1,15 @@
 package app.model;
 
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+
 import javax.persistence.*;
 
 @Entity
 public class PharmacyAdmin extends User {
 
     @JoinColumn
+    @LazyToOne(LazyToOneOption.FALSE)
     @ManyToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Pharmacy pharmacy;
 
