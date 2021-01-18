@@ -1,10 +1,9 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
-import app.model.Dermatologist;
+import app.model.user.Dermatologist;
 import app.repository.DermatologistRepository;
 import app.service.DermatologistService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

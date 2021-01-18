@@ -1,8 +1,8 @@
 package app.controller;
 
 import app.dto.UserPasswordDTO;
-import app.model.Dermatologist;
-import app.model.WorkingHours;
+import app.model.time.WorkingHours;
+import app.model.user.Dermatologist;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
