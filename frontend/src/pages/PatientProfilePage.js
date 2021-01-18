@@ -164,7 +164,6 @@ export default class PatientProfilePage extends React.Component {
                 'password' : this.state.password
             },
             'penaltyCount' : this.state.penaltyCount,
-            'userType' : this.state.userType,
             'contact' : {
                 'phoneNumber' : this.state.phoneNumber,
                 'address' : {

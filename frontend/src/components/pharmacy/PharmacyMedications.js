@@ -106,13 +106,13 @@ export default class PharmacyMedications extends React.Component{
 
     render() {
         return (
-            <div>
+            <div style={({ marginLeft: '1rem' })}>
                 <br/><br/>
                 <h1>Lekovi</h1>
 
-                <br/><br/>
-                <Button variant="success" onClick={this.handleModal}>Dodaj lek</Button>
-                <Button variant="primary">Proveri dostupnost preko eRecepta</Button>
+
+                <Button variant="success" onClick={this.handleModal} >Dodaj lek</Button>
+                <Button variant="primary" style={({ marginLeft: '1rem' })}>Proveri dostupnost preko eRecepta</Button>
                 <br/><br/>
 
                 <Navbar bg="light" expand="lg">
@@ -161,7 +161,7 @@ export default class PharmacyMedications extends React.Component{
                             </td >
 
                             <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                                <Button variant="danger" onClick={this.handleModal}>
+                                <Button variant="danger" onClick={() => this.deleteMedication(medication)}>
                                     Delete
                                 </Button>
                             </td>
@@ -208,5 +208,9 @@ export default class PharmacyMedications extends React.Component{
         this.setState({
             showModal : !this.state.showModal
         });
+    }
+
+    deleteMedication = (medication) => {
+        let isBoss = window.confirm('Are you sure you want to delete ' + medication.name + ' from your medications list?');
     }
 }
