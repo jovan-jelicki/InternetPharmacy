@@ -1,7 +1,7 @@
 package app.controller;
 
-import app.model.user.Dermatologist;
 import app.model.time.WorkingHours;
+import app.model.user.Dermatologist;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;

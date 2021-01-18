@@ -1,7 +1,7 @@
 package app.model.appointment;
 
-import app.model.time.Period;
 import app.model.medication.Medication;
+import app.model.time.Period;
 
 import javax.persistence.*;
 

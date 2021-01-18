@@ -1,6 +1,6 @@
 package app.model.time;
 
-import javax.persistence.*;
+import javax.persistence.Embeddable;
 import java.time.LocalDateTime;
 
 @Embeddable

@@ -1,7 +1,7 @@
 package app.model.appointment;
 
-import app.model.time.Period;
 import app.model.pharmacy.Pharmacy;
+import app.model.time.Period;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
 import app.model.user.User;

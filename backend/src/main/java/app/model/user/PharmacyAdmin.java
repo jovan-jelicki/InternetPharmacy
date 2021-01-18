@@ -1,6 +1,8 @@
 package app.model.user;
 
 import app.model.pharmacy.Pharmacy;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 
@@ -8,6 +10,7 @@ import javax.persistence.*;
 public class PharmacyAdmin extends User {
 
     @JoinColumn
+    @LazyToOne(LazyToOneOption.FALSE)
     @ManyToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Pharmacy pharmacy;
 
