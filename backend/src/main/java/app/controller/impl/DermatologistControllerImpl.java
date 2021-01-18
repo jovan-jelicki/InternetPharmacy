@@ -1,9 +1,10 @@
 package app.controller.impl;
 
 import app.controller.DermatologistController;
-import app.model.time.WorkingHours;
-import app.model.user.Dermatologist;
-import app.service.UserService;
+import app.dto.UserPasswordDTO;
+import app.model.Dermatologist;
+import app.model.WorkingHours;
+import app.service.DermatologistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,51 +16,65 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "api/dermatologists")
 public class DermatologistControllerImpl implements DermatologistController {
-    private UserService<Dermatologist> dermatologistUserService;
+    private final DermatologistService dermatologistService;
 
     @Autowired
-    public DermatologistControllerImpl(UserService<Dermatologist> dermatologistUserService) {
-        this.dermatologistUserService = dermatologistUserService;
+    public DermatologistControllerImpl(DermatologistService dermatologistService) {
+        this.dermatologistService = dermatologistService;
     }
 
     @Override
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<Dermatologist> save(Dermatologist entity) {
-        return new ResponseEntity<>(dermatologistUserService.save(entity), HttpStatus.CREATED);
+    public ResponseEntity<Dermatologist> save(@RequestBody Dermatologist entity) {
+        return new ResponseEntity<>(dermatologistService.save(entity), HttpStatus.CREATED);
     }
 
     @Override
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<Dermatologist> update(Dermatologist entity) {
-        if(!dermatologistUserService.existsById(entity.getId()))
+    public ResponseEntity<Dermatologist> update(@RequestBody Dermatologist entity) {
+        if(!dermatologistService.existsById(entity.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(dermatologistUserService.save(entity), HttpStatus.CREATED);
+        return new ResponseEntity<>(dermatologistService.save(entity), HttpStatus.CREATED);
     }
 
     @Override
     @GetMapping
     public ResponseEntity<Collection<Dermatologist>> read() {
-        return new ResponseEntity<>(dermatologistUserService.read(), HttpStatus.OK);
+        return new ResponseEntity<>(dermatologistService.read(), HttpStatus.OK);
     }
 
     @Override
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Optional<Dermatologist>> read(Long id) {
-        return new ResponseEntity<>(dermatologistUserService.read(id), HttpStatus.OK);
+    public ResponseEntity<Optional<Dermatologist>> read(@PathVariable Long id) {
+        return new ResponseEntity<>(dermatologistService.read(id), HttpStatus.OK);
     }
 
     @Override
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(Long id) {
-        if(!dermatologistUserService.existsById(id))
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        if(!dermatologistService.existsById(id))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        dermatologistUserService.delete(id);
+        dermatologistService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
+    @PutMapping(value = "/pass")
+    public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
+        try {
+            dermatologistService.changePassword(passwordKit);
+        }
+        catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @Override
     public ResponseEntity<Collection<WorkingHours>> getDermatologistsWorkingHours(long id) {
-        Dermatologist dermatologist = dermatologistUserService.read(id).get();
+        Dermatologist dermatologist = dermatologistService.read(id).get();
         return new ResponseEntity<>(dermatologist.getWorkingHours(), HttpStatus.OK);
     }
 }

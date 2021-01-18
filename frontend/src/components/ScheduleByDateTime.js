@@ -27,4 +27,9 @@ export default class ScheduleByDateTime extends React.Component {
             </div>
         )
     }
+    setTimeForNewAppointment = (date) => {
+        this.setState({
+            timeForScheduling : new Date(date)
+        })
+    }
 }
