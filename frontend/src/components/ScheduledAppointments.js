@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment";
 import {Button, Container, Table} from "react-bootstrap";
 
-export default class ScheduledConsultations extends React.Component {
+export default class ScheduledAppointments extends React.Component {
     constructor(props) {
         super(props);
     }
