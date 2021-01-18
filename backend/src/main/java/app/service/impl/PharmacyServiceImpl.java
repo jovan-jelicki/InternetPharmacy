@@ -1,6 +1,6 @@
 package app.service.impl;
 
-import app.model.Pharmacy;
+import app.model.pharmacy.Pharmacy;
 import app.repository.PharmacyRepository;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;

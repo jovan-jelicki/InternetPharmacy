@@ -1,9 +1,7 @@
 package app.controller.impl;
 
 import app.dto.PharmacyAdminDTO;
-import app.dto.SystemAdminDTO;
-import app.model.PharmacyAdmin;
-import app.model.SystemAdmin;
+import app.model.user.PharmacyAdmin;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
