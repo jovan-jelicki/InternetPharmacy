@@ -19,7 +19,6 @@
     "react-datepicker": "^3.4.1",
     "react-dom": "^17.0.1",
     "react-dropdown": "^1.9.1",
-    "react-loadscript": "^1.0.2",
     "react-scripts": "4.0.1",
     "react-select": "^3.2.0",
     "react-time-picker": "^4.1.2",
@@ -51,10 +50,7 @@
     ]
   },
   "devDependencies": {
-    "react-load-script": "0.0.6",
-=======
     "@material-ui/pickers": "^3.2.10",
->>>>>>> develop
     "axios": "^0.21.1",
     "react-load-script": "0.0.6",
     "react-router-dom": "^5.2.0"
