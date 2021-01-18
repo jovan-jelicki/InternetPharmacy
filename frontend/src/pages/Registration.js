@@ -1,6 +1,7 @@
 import React from "react";
-import {Button, FormControl} from "react-bootstrap";
+import {Button, Container, FormControl} from "react-bootstrap";
 import "../App.css";
+import Script from "react-load-script";
 
 
 export default class Registration extends React.Component {
@@ -14,6 +15,7 @@ export default class Registration extends React.Component {
                 'lastName': '',
                 'country': '',
                 'city': '',
+                'street':'',
                 'telephone': '',
                 'rePassword' : ''
             },
@@ -23,8 +25,7 @@ export default class Registration extends React.Component {
                     'password': 'Enter password',
                     'firstName': 'Enter First name',
                     'lastName': 'Enter Last name',
-                    'country': 'Enter Country',
-                    'city': 'Enter City',
+                    'address':'Enter address',
                     'telephone': 'Enter Telephone',
                     'rePassword' : 'Repeat password'
                 }
@@ -48,19 +49,103 @@ export default class Registration extends React.Component {
         this.validationErrorMessage(event);
     }
 
+    handleScriptLoad = () => {
+        var input = document.getElementById('street');
+        var options = {
+            types: ['geocode'] //this should work !
+        };
+        const google = window.google
+
+        this.street = new google.maps.places.Autocomplete(input, options);
+        this.street.addListener('place_changed', this.handlePlaceSelect);
+    }
+
+    handlePlaceSelect = () => {
+        const addressObject = this.street.getPlace();
+        try {
+            //console.log( addressObject.address_components)
+            const address = addressObject.address_components;
+            if (address) {
+                if (this.setAddressParams(address)) {
+                    this.setState(
+                        {
+                            user: {
+                                address: {
+                                    street: this.state.streetP,
+                                    town: this.state.townP,
+                                    country: this.state.countryP,
+                                    latitude: addressObject.geometry.location.lat(),
+                                    longitude: addressObject.geometry.location.lng()
+                                }
+                            },
+                        }
+                    );
+                }
+            } else {
+                this.addressErrors(false)
+            }
+        } catch {
+            this.addressErrors(false)
+        }
+    }
+
+    setAddressParams = (address) => {
+        var street, number, city, country, completeAddress, i;
+        for (i = 0; i < address.length; i++) {
+            if (address[i].types == "route") {
+                street = address[i].long_name;
+            } else if (address[i].types == "street_numbe") {
+                number = address[i].long_name;
+            } else if (address[i].types[0] == "locality") {
+                city = address[i].long_name;
+            } else if (address[i].types[0] == "country") {
+                country = address[i].long_name;
+            }
+        }
+        completeAddress = street + " " + number + " " + city + " " + country;
+
+        if (street == undefined || street == "" || city == undefined || city == "" || country == undefined || country == "") {
+            this.addressErrors(false)
+            return false;
+        } else {
+            this.addressErrors(true)
+            this.state.townP = city;
+            this.state.countryP = country;
+            if (number == undefined)
+                this.state.streetP = street;
+            else
+                this.state.streetP = street + number;
+        }
+        return true;
+    }
+
+    addressErrors = (bool) => {
+        let errors = this.state.errors;
+        if (bool == false) {
+            //.log("Nisam dobro prosla")
+            errors.user.address = 'Please choose valid address';
+        } else {
+            //console.log("DObro sam prosla ");
+            errors.user.address = "";
+        }
+        this.setState({errors});
+    }
     render() {
         return (
-            <div className="rightPanel" >
-                <header>User - Registration</header>
 
-                <div className="row" >
+            <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
+                <div className="container">
+                    <h1 style={({marginTop: '5rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
+                </div>
+
+                <div className="row" style={{marginTop: '3rem', marginLeft:'20rem',display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
                     <label className="col-sm-2 col-form-label">Name</label>
                     <div className="col-sm-3 mb-2">
                         <input type="text" value={this.state.user.firstName} name="firstName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="First Name" />
                         { this.state.submitted && this.state.errors.user.firstName.length > 0 &&  <span className="text-danger">{this.state.errors.user.firstName}</span>}
 
                     </div>
-                    <div className="col-sm-3 mb-2">
+                    <div className="col-sm-3 mb-2" >
                         <input type="text" value={this.state.lastName} name="lastName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Last Name" />
                         { this.state.submitted && this.state.errors.user.lastName.length > 0 &&  <span className="text-danger">{this.state.errors.user.lastName}</span>}
 
@@ -68,7 +153,7 @@ export default class Registration extends React.Component {
                     <div className="col-sm-4">
                     </div>
                 </div>
-                <div className="row">
+                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Email</label>
                     <div className="col-sm-6 mb-2">
                         <input type="email" value={this.state.user.email} name="email" onChange={(e) => { this.handleInputChange(e)} }className="form-control" id="email" placeholder="example@gmail.com" />
@@ -78,7 +163,7 @@ export default class Registration extends React.Component {
                     <div className="col-sm-4">
                     </div>
                 </div>
-                <div className="row">
+                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Tel</label>
                     <div className="col-sm-6 mb-2">
                         <input type="text" value={this.state.user.telephone} name="telephone" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="telephone" placeholder="+3810640333489" />
@@ -87,28 +172,19 @@ export default class Registration extends React.Component {
                     <div className="col-sm-4">
                     </div>
                 </div>
-                <div className="row">
-                    <label  className="col-sm-2 col-form-label">Country</label>
-                    <div className="col-sm-6 mb-2">
-                        <input type="text" value={this.state.user.country} name="country" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="country" placeholder="Enter country" />
-                        { this.state.submitted && this.state.errors.user.country.length > 0 &&  <span className="text-danger">{this.state.errors.user.country}</span>}
 
-                    </div>
-                    <div className="col-sm-4">
-                    </div>
-                </div>
-                <div className="row">
-                    <label  className="col-sm-2 col-form-label">City</label>
+                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <label  className="col-sm-2 col-form-label">Address</label>
                     <div className="col-sm-6 mb-2">
-                        <input type="text" value={this.state.user.city} name="city" onChange={(e) => { this.handleInputChange(e)} } className="form-control" id="city" placeholder="Enter city" />
-                        { this.state.submitted && this.state.errors.user.city.length > 0 &&  <span className="text-danger">{this.state.errors.user.city}</span>}
-
+                        <Script type="text/javascript" url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
+                        <input type="text" id="street" placeholder="Enter Address" value={this.query}/>
+                        {this.state.submitted && this.state.errors.user.address.length > 0 &&  <span className="text-danger">{this.state.errors.user.address}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
                 </div>
 
-                <div className="row">
+                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label className="col-sm-2 col-form-label">Password</label>
                     <div className="col-sm-6 mb-2">
                         <FormControl name="password" type="password" placeholder="Password"  value={this.state.user.password} onChange={(e) => { this.handleInputChange(e)} }/>
@@ -119,7 +195,7 @@ export default class Registration extends React.Component {
                     </div>
                 </div>
 
-                <div className="row">
+                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Repeat password</label>
                     <div className="col-sm-6 mb-2">
                         <FormControl name="rePassword" type="password" placeholder="Repeat new Password" value={this.state.user.rePassword} onChange={(e) => { this.handleInputChange(e)} }/>
@@ -130,7 +206,7 @@ export default class Registration extends React.Component {
                     </div>
                 </div>
 
-                <div className="row">
+                <div className="row"style={{marginTop: '1rem'}}>
                     <div className="col-sm-5 mb-2">
                     </div>
                     <div className="col-sm-4">

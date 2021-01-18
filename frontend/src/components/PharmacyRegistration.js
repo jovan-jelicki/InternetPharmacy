@@ -194,7 +194,6 @@ export default class PharmacyRegistration extends React.Component {
             <Container style={{
                 background: 'rgb(232, 244, 248 )',
                 color: 'rgb(0, 92, 230)',
-                border: '2px solid rgba(0, 255, 128)'
             }}>
                 <h3 style={({marginTop: '5rem', textAlignVertical: "center", textAlign: "center"})}>Pharmacy
                     registration</h3>
@@ -208,10 +207,10 @@ export default class PharmacyRegistration extends React.Component {
 
                 </div>
                 <div className="row" style={{margin: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <label className="col-sm-2 col-form-label">Street</label>
+                    <label className="col-sm-2 col-form-label">Address</label>
                     <div className="col-sm-3 mb-2">
                         <Script type="text/javascript" url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
-                        <input type="text" id="street" placeholder="Enter Street" value={this.query}/>
+                        <input type="text" id="street" placeholder="Enter Address" value={this.query}/>
                         {this.state.submitted && this.state.errors.pharmacy.address.length > 0 &&  <span className="text-danger">{this.state.errors.pharmacy.address}</span>}
                     </div>
                 </div>
