@@ -10,20 +10,28 @@ export default class MedicationListing extends React.Component {
         }
     }
 
-    componentDidMount() {
-        axios
+    async componentDidMount() {
+        await axios
         .get('http://localhost:8080/api/medications')
         .then((res) => {
             this.setState({
                 medications : res.data
             })
         })
+
+        this.state.medications.forEach(m => {
+            axios
+            .get('http://localhost:8080/api/medications/ingredients/' + m.id)
+            .then(res => {
+                    m.ingredients = res.data
+            })
+        })
     }
 
     render() {
         const medications = this.state.medications.map((medication, index) => {
-            let ingredients = 'to be continued'
-            //medication.ingredient.forEach(i => ingredients += i.name)
+            let ingredients = ''
+            medication.ingredient.forEach(i => ingredients += ' ' + i.name)
             return (
                 <Col xs={4} key={index}>
                 <Card 
