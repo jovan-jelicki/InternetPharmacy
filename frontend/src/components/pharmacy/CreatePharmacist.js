@@ -2,6 +2,7 @@ import React from "react";
 import {Button, Col, Form, Modal, Table, Grid, FormControl, Row} from "react-bootstrap";
 import "../../App.css";
 import TimePicker from "react-time-picker";
+import axios from "axios";
 
 
 
@@ -18,7 +19,9 @@ export default class CreatePharmacist extends React.Component {
                 'city': '',
                 'street' : '',
                 'telephone': '',
-                'rePassword' : ''
+                'rePassword' : '',
+                'startShift' : '',
+                'endShift' : ''
             },
             errors:{
                 user: {
@@ -148,14 +151,14 @@ export default class CreatePharmacist extends React.Component {
                 <div className="row">
                     <div style={({ marginLeft: '1rem' })}>
                         <label style={({ marginRight: '1rem' })}>Select start of work time : </label>
-                        <TimePicker />
+                        <TimePicker  name="startShift" value={this.state.user.startShift} onChange={this.setStartShift}/>
 
                     </div>
                 </div>
                 <div className="row">
                     <div style={({ marginLeft: '1rem' })}>
                         <label style={({ marginRight: '1rem' })}>Select end of work time : </label>
-                        <TimePicker />
+                        <TimePicker  name="endShift" value={this.state.user.endShift} onChange={this.setEndShift}/>
 
                     </div>
                 </div>
@@ -183,6 +186,36 @@ export default class CreatePharmacist extends React.Component {
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form');
+            console.log(this.state.user);
+
+            await axios.post('http://localhost:8080/api/pharmacist', {
+                firstName: this.state.user.firstName,
+                lastName: this.state.user.lastName,
+                userType : 0,
+                credentials: {
+                    email: this.state.user.email,
+                    password: this.state.user.password
+                },
+                contact: {
+                    phoneNumber: this.state.user.telephone,
+                    address: {
+                        town: this.state.user.city,
+                        street: this.state.user.street,
+                        country: this.state.user.country,
+                        latitude: 42,
+                        longitude: 34
+                    }
+                },
+                workingHours: [
+                    {
+                        period: {
+                            periodStart: '2017-01-13T' + this.state.user.startShift,
+                            periodEnd: '2017-01-13T' + this.state.user.endShift
+                        }
+                    }
+                ]
+            });
+
             this.closeModal();
         } else {
             console.log('Invalid Form')
@@ -250,5 +283,17 @@ export default class CreatePharmacist extends React.Component {
 
     closeModal = () => {
         this.props.closeModal();
+    }
+
+    setStartShift =(date) => {
+        const user = this.state.user;
+        user['startShift'] = date;
+        this.setState({ user });
+    }
+
+    setEndShift =(date) => {
+        const user = this.state.user;
+        user['endShift'] = date;
+        this.setState({ user });
     }
 }
