@@ -49,7 +49,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     @Override
     public Collection<Pharmacy> searchByNameAndAddress(PharmacySearchDTO pharmacySearchDTO) {
         ArrayList<Pharmacy> pharmacies = new ArrayList<>();
-        pharmacies.forEach(p -> {
+        read().forEach(p -> {
             if(p.isEqual(pharmacySearchDTO))
                 pharmacies.add(p);
         });

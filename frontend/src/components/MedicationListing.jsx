@@ -18,14 +18,6 @@ export default class MedicationListing extends React.Component {
                 medications : res.data
             })
         })
-
-        this.state.medications.forEach(m => {
-            axios
-            .get('http://localhost:8080/api/medications/ingredients/' + m.id)
-            .then(res => {
-                    m.ingredients = res.data
-            })
-        })
     }
 
     render() {
@@ -45,6 +37,8 @@ export default class MedicationListing extends React.Component {
                     <Card.Title>{medication.name}</Card.Title>
                         <Card.Subtitle className="mb-5 mt-2 text-muted">{medication.manufacturer}</Card.Subtitle>
                         <Card.Text>
+                        {medication.note}
+                        <hr style={{'background-color' : 'gray'}}/>
                         {ingredients}
                         </Card.Text>
                     </Card.Body>

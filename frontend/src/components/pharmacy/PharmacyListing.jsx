@@ -11,11 +11,10 @@ export default class PharmacyListing extends React.Component {
         }
         this.search = this.search.bind(this)
         this.cancel = this.cancel.bind(this)
-        this.searchValidation = this.searchValidation.bind(this)
     }
 
     async componentDidMount() {
-        axios
+        await axios
         .get('http://localhost:8080/api/pharmacy')
         .then((res) => {
             this.setState({
@@ -34,22 +33,19 @@ export default class PharmacyListing extends React.Component {
     }
 
     search({name, location}) {
-        this.setState({
-            pharmacies : this.state.pharmacies.filter(p => this.searchValidation(p, name, location))
+        console.log(name, location)
+        axios
+        .post('http://localhost:8080/api/pharmacy/search', {
+            'name' : name,
+            'street' : location.street,
+            'town' : location.town,
+            'country': location.country
         })
-    }
-
-    searchValidation(pharmacy, name, location) {
-        console.log(location)
-        if(name !== '' && !pharmacy.name.toLowerCase().includes(name.toLowerCase()))
-            return false
-        if(location.street !== '' && !pharmacy.address.toLowerCase().includes(location.street.toLowerCase()))
-            return false
-        if(location.town !== '' && !pharmacy.address.toLowerCase().includes(location.town.toLowerCase()))
-            return false
-        if(location.country !== '' && !pharmacy.address.toLowerCase().includes(location.country.toLowerCase()))
-            return false    
-        return true
+        .then((res) => {
+            this.setState({
+                pharmacies : res.data
+            })
+        })
     }
 
 
