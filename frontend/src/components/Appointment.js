@@ -3,7 +3,7 @@ import {Button, Col, Container, FormControl, Row} from "react-bootstrap";
 import ChooseTherapy from "./ChooseTherapy";
 import ScheduleByDateTime from "./ScheduleByDateTime";
 
-export default class Consultation extends React.Component {
+export default class Appointment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -107,11 +107,7 @@ export default class Consultation extends React.Component {
     }
 
 
-    setTimeForNewAppointment = (date) => {
-        this.setState({
-            timeForScheduling : new Date(date)
-        })
-    }
+
     showScheduling =() => {
         this.setState({
             scheduleNewAppointment : !this.state.scheduleNewAppointment

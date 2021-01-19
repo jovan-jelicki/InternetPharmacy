@@ -1,11 +1,12 @@
 import React from "react";
-import {Container, Row, Col, Nav, Button} from "react-bootstrap";
+import {Col, Container, Nav, Row, Button, Toast} from "react-bootstrap";
 import UserInfo from "../components/UserInfo";
 import ChangePassword from "../components/ChangePassword";
-import axios from "axios";
+import axios from "axios"
+import PatientLayout from "../layout/PatientLayout";
+import PharmacyAdminLayout from "../layout/PharmacyAdminLayout";
 
-//TODO Za sada namerno postoje dve iste stranice za profil dermatologa i farmaceuta, u toku rada uvideti da li je to zaista potrebno
-export default class PharmacistProfilePage extends React.Component {
+export default class PharmacyAdminProfilePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -16,8 +17,6 @@ export default class PharmacistProfilePage extends React.Component {
             'town' : '',
             'country' : '',
             'phoneNumber' : '',
-            'longitude' : '',
-            'latitude' : '',
             'oldPass' : '',
             'newPass' : '',
             'repPass' : '',
@@ -29,25 +28,22 @@ export default class PharmacistProfilePage extends React.Component {
     async componentDidMount() {
 
         await axios
-            .get('http://localhost:8080/api/pharmacist/1')
+            .get('http://localhost:8080/api/pharmacyAdmin/1')
             .then(res => {
-                let patient = res.data;
-                console.log(patient)
+                let pharmacyAdmin = res.data;
+                console.log(pharmacyAdmin)
                 this.setState({
-                    'id' : patient.id,
-                    'firstName' : patient.firstName,
-                    'lastName' : patient.lastName,
-                    'email' : patient.credentials.email,
-                    'password' : patient.credentials.password,
-                    'userType' : patient.userType,
+                    'id' : pharmacyAdmin.id,
+                    'firstName' : pharmacyAdmin.firstName,
+                    'lastName' : pharmacyAdmin.lastName,
+                    'email' : pharmacyAdmin.email,
+                    'userType' : pharmacyAdmin.userType,
                     'editMode' : false,
                     'changePasswordMode' : false,
-                    'address' : patient.contact.address.street,
-                    'longitude' : patient.contact.address.longitude,
-                    'latitude' : patient.contact.address.latitude,
-                    'town' : patient.contact.address.town,
-                    'country' : patient.contact.address.country,
-                    'phoneNumber' : patient.contact.phoneNumber
+                    'address' : pharmacyAdmin.contact.address.street,
+                    'town' : pharmacyAdmin.contact.address.town,
+                    'country' : pharmacyAdmin.contact.address.country,
+                    'phoneNumber' : pharmacyAdmin.contact.phoneNumber
                 })
             });
 
@@ -62,7 +58,7 @@ export default class PharmacistProfilePage extends React.Component {
             'address' : this.state.address,
             'town' : this.state.town,
             'country' : this.state.country,
-            'phoneNumber' : this.state.phoneNumber
+            'phoneNumber' : this.state.phoneNumber,
         }
 
         this.setState({
@@ -91,7 +87,7 @@ export default class PharmacistProfilePage extends React.Component {
 
     changePass = () => {
         axios
-            .put('http://localhost:8080/api/pharmacist/pass', {
+            .put('http://localhost:8080/api/pharmacyAdmin/pass', {
                 'userId' : this.state.id,
                 'oldPassword' : this.state.oldPass,
                 'newPassword' : this.state.newPass,
@@ -119,7 +115,7 @@ export default class PharmacistProfilePage extends React.Component {
             'address' : this.user.address,
             'town' : this.user.town,
             'country' : this.user.country,
-            'phoneNumber' : this.user.phoneNumber
+            'phoneNumber' : this.user.phoneNumber,
         })
     }
 
@@ -130,9 +126,10 @@ export default class PharmacistProfilePage extends React.Component {
     }
 
 
+
     save = () => {
         axios
-            .put('http://localhost:8080/api/pharmacist', {
+            .put('http://localhost:8080/api/pharmacyAdmin', {
                 'id' : this.state.id,
                 'firstName' : this.state.firstName,
                 'lastName' : this.state.lastName,
@@ -141,15 +138,12 @@ export default class PharmacistProfilePage extends React.Component {
                     'email' : this.state.email,
                     'password' : this.state.password
                 },
-                'penaltyCount' : this.state.penaltyCount,
                 'contact' : {
                     'phoneNumber' : this.state.phoneNumber,
                     'address' : {
                         'street' : this.state.address,
                         'town' : this.state.town,
-                        'country' : this.state.country,
-                        'latitude' : this.state.latitude,
-                        'longitude' : this.state.longitude
+                        'country' : this.state.country
                     }
                 }
             })
@@ -167,26 +161,28 @@ export default class PharmacistProfilePage extends React.Component {
         const passwords = [oldPass, newPass, repPass]
 
         return (
-            <Row className="pt-5">
-                <Col xs={2}>
-                    <Nav defaultActiveKey="/home" className="flex-column">
-                        {!this.state.editMode
-                            ? <Button variant="dark" onClick={this.activateUpdateMode}>Edit</Button>
-                            : <Button variant="outline-secondary" onClick={this.activateUpdateMode}>Cancel</Button>
-                        }
-                        {this.state.editMode && <Button variant="primary mt-2"
-                                                        onClick={this.activateChangePasswordMode}>
-                            Change Password</Button>}
-                        {this.state.editMode && <Button variant="success mt-2"
-                                                        disabled={this.state.saveDisabled} onClick={this.save}>Save</Button>}
-                    </Nav>
-                </Col>
-                <Col>
-                    <UserInfo user={this.state} edit={this.state.editMode} onChange={this.handleInputChange}/>
-                    {this.state.changePasswordMode &&
-                    <ChangePassword pass={passwords} onChange={this.handleInputChange} disable={this.disableSave}/>}
-                </Col>
-            </Row>
+            <PharmacyAdminLayout>
+                <Row className="pt-5">
+                    <Col xs={2}>
+                        <Nav defaultActiveKey="/home" className="flex-column">
+                            {!this.state.editMode
+                                ? <Button variant="dark" onClick={this.activateUpdateMode}>Edit</Button>
+                                : <Button variant="outline-secondary" onClick={this.activateUpdateMode}>Cancel</Button>
+                            }
+                            {this.state.editMode && <Button variant="primary mt-2"
+                                                            onClick={this.activateChangePasswordMode}>
+                                Change Password</Button>}
+                            {this.state.editMode && <Button variant="success mt-2"
+                                                            disabled={this.state.saveDisabled} onClick={this.save}>Save</Button>}
+                        </Nav>
+                    </Col>
+                    <Col>
+                        <UserInfo user={this.state} edit={this.state.editMode} onChange={this.handleInputChange}/>
+
+                        {this.state.changePasswordMode && <ChangePassword pass={passwords} onChange={this.handleInputChange} disable={this.disableSave}/>}
+                    </Col>
+                </Row>
+            </PharmacyAdminLayout>
         );
     }
 }
