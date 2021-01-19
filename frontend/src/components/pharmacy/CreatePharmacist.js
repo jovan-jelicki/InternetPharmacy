@@ -211,12 +211,16 @@ export default class CreatePharmacist extends React.Component {
                         period: {
                             periodStart: '2017-01-13T' + this.state.user.startShift,
                             periodEnd: '2017-01-13T' + this.state.user.endShift
+                        },
+                        pharmacy : {
+                            id : 1
                         }
                     }
                 ]
             });
 
             this.closeModal();
+            this.props.fetchPharmacists();
         } else {
             console.log('Invalid Form')
         }
