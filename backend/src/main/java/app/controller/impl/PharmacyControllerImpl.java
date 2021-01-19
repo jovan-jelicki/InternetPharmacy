@@ -1,5 +1,6 @@
 package app.controller.impl;
 
+import app.dto.PharmacySearchDTO;
 import app.model.pharmacy.Pharmacy;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,11 @@ public class PharmacyControllerImpl {
     @GetMapping(value = "/{id}")
     public ResponseEntity<Optional<Pharmacy>> read(@PathVariable Long id) {
         return new ResponseEntity<>(pharmacyService.read(id), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/search")
+    public ResponseEntity<Collection<Pharmacy>> search(@RequestBody PharmacySearchDTO pharmacySearchDTO) {
+        return new ResponseEntity<>(pharmacyService.searchByNameAndAddress(pharmacySearchDTO), HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json")

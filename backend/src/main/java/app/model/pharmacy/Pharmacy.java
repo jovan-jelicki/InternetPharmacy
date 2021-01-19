@@ -1,6 +1,7 @@
 package app.model.pharmacy;
 
 
+import app.dto.PharmacySearchDTO;
 import app.model.medication.MedicationQuantity;
 import app.model.medication.MedicationReservation;
 import app.model.user.Address;
@@ -102,5 +103,19 @@ public class Pharmacy {
 
     public void setMedicationReservation(List<MedicationReservation> medicationReservation) {
         this.medicationReservation = medicationReservation;
+    }
+
+    public boolean isEqual(PharmacySearchDTO pharmacySearchDTO) {
+        return searchCondition(pharmacySearchDTO.getName(), name)
+                && searchCondition(pharmacySearchDTO.getCountry(), address.getCountry())
+                && searchCondition(pharmacySearchDTO.getTown(), address.getTown())
+                && searchCondition(pharmacySearchDTO.getStreet(), address.getStreet());
+    }
+
+    private boolean searchCondition(String searched, String actual) {
+        if(searched.trim().isEmpty())
+            return true;
+        else
+            return actual.toLowerCase().contains(searched.toLowerCase());
     }
 }
