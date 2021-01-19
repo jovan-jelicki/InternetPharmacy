@@ -2,6 +2,7 @@ package app.model.medication;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Medication {
@@ -34,14 +35,14 @@ public class Medication {
    @Column(columnDefinition = "TEXT")
    private String note;
 
-   @ManyToMany
-   private List<Ingredient> ingredient;
+   @ManyToMany(fetch = FetchType.EAGER)
+   private Set<Ingredient> ingredient;
 
-   @ManyToMany
-   private List<SideEffect> sideEffect;
+   @ManyToMany(fetch = FetchType.EAGER)
+   private Set<SideEffect> sideEffect;
 
-   @ManyToMany
-   private List<Medication> alternatives;
+   @ManyToMany(fetch = FetchType.LAZY)
+   private Set<Medication> alternatives;
 
    public Medication() {
    }
@@ -118,27 +119,27 @@ public class Medication {
       this.note = note;
    }
 
-   public List<Ingredient> getIngredient() {
+   public Set<Ingredient> getIngredient() {
       return ingredient;
    }
 
-   public void setIngredient(List<Ingredient> ingredient) {
+   public void setIngredient(Set<Ingredient> ingredient) {
       this.ingredient = ingredient;
    }
 
-   public List<SideEffect> getSideEffect() {
+   public Set<SideEffect> getSideEffect() {
       return sideEffect;
    }
 
-   public void setSideEffect(List<SideEffect> sideEffect) {
+   public void setSideEffect(Set<SideEffect> sideEffect) {
       this.sideEffect = sideEffect;
    }
 
-   public List<Medication> getAlternatives() {
+   public Set<Medication> getAlternatives() {
       return alternatives;
    }
 
-   public void setAlternatives(List<Medication> alternatives) {
+   public void setAlternatives(Set<Medication> alternatives) {
       this.alternatives = alternatives;
    }
 }

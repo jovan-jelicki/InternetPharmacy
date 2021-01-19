@@ -51,22 +51,6 @@ public class MedicationServiceImpl implements MedicationService {
     }
 
     @Override
-    public Collection<Ingredient> fetchMedicationIngredients(Long id) {
-        Optional<Medication> patient = medicationRepository.findById(id);
-        if(patient.isPresent())
-            return patient.get().getIngredient();
-        return new ArrayList<>();
-    }
-
-    @Override
-    public Collection<SideEffect> fetchMedicationSideEffects(Long id) {
-        Optional<Medication> patient = medicationRepository.findById(id);
-        if(patient.isPresent())
-            return patient.get().getSideEffect();
-        return new ArrayList<>();
-    }
-
-    @Override
     public Collection<Medication> fetchMedicationAlternatives(Long id) {
         Optional<Medication> patient = medicationRepository.findById(id);
         if(patient.isPresent())

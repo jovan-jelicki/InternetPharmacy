@@ -52,16 +52,6 @@ public class MedicationControllerImpl {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/ingredients/{id}")
-    public ResponseEntity<Collection<Ingredient>> getMedicationIngredients(@PathVariable Long id) {
-        return new ResponseEntity<>(medicationService.fetchMedicationIngredients(id), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/sideeffects/{id}")
-    public ResponseEntity<Collection<SideEffect>> getMedicationSideEffects(@PathVariable Long id) {
-        return new ResponseEntity<>(medicationService.fetchMedicationSideEffects(id), HttpStatus.OK);
-    }
-
     @GetMapping(value = "/alternatives/{id}")
     public ResponseEntity<Collection<Medication>> getMedicationAlternatives(@PathVariable Long id) {
         return new ResponseEntity<>(medicationService.fetchMedicationAlternatives(id), HttpStatus.OK);
