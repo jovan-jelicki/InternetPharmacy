@@ -133,7 +133,7 @@ export default class SupplierRegistration extends React.Component {
         return (
             <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
                 <div className="container">
-                    <h1 style={({marginTop: '0.1rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">Supplier registration</h1>
+                    <h3 style={({ textAlignVertical: "center", textAlign: "center"})}>Supplier registration</h3>
                 </div>
 
                 <div className="row" style={{marginTop: '3rem', marginLeft:'20rem',display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
