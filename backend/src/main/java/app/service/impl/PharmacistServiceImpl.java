@@ -4,6 +4,7 @@ import app.dto.UserPasswordDTO;
 import app.model.user.Pharmacist;
 import app.repository.PharmacistRepository;
 import app.service.PharmacistService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.Optional;
 public class PharmacistServiceImpl implements PharmacistService {
     private final PharmacistRepository pharmacistRepository;
 
+    @Autowired
     public PharmacistServiceImpl(PharmacistRepository pharmacistRepository) {
         this.pharmacistRepository = pharmacistRepository;
     }

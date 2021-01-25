@@ -2,17 +2,16 @@ import React from "react";
 import {Col, Container,  Row, Button} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
 
 
 export default class VacationRequest extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeId : props.Id,
             startDate : "",
             endDate : "",
             pharmacy : "",
-            employeeType : props.role,
             vacationNote : ""
         }
         this.handleChange = this.handleChange.bind(this);
@@ -22,9 +21,9 @@ export default class VacationRequest extends React.Component {
         this.setState({value: event.target.value});
     }
     render() {
-        let pharmacies = ["hemofarm", "jankovic"];
+        let pharmacies = [{name : "hemofarm"}, {name : "jankovic"} ];
         const  PharmaciesTag = pharmacies.map((pharmacy, key) =>
-            <option value={pharmacy}> {pharmacy} </option>
+            <option value={pharmacy.name}> {pharmacy.name} </option>
         );
         return (
             <Container>
@@ -58,6 +57,21 @@ export default class VacationRequest extends React.Component {
 
 
     sendData = () => {
-        alert(this.state.vacationNote.toString())
+        axios
+            .post( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/vacationRequest', {
+                'period' : {
+                    periodStart: this.state.startDate,
+                    periodEnd: this.state.endDate
+                },
+                'employeeType' : 0, //props.role
+                'employeeId' : 1, //props.Id
+                'vacationNote' : this.state.vacationNote,
+                'vacationRequestStatus' : 0
+            })
+            .then(res => {
+                alert('You have successfully submitted the request!');
+            })
+            .catch(e => alert('Something\'s gona wrong!'));
+
     }
 }

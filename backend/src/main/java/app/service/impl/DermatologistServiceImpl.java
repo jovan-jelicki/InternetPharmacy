@@ -4,6 +4,7 @@ import app.dto.UserPasswordDTO;
 import app.model.user.Dermatologist;
 import app.repository.DermatologistRepository;
 import app.service.DermatologistService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.Optional;
 public class DermatologistServiceImpl implements DermatologistService {
     private DermatologistRepository dermatologistRepository;
 
+    @Autowired
     public DermatologistServiceImpl(DermatologistRepository dermatologistRepository) {
         this.dermatologistRepository = dermatologistRepository;
     }
