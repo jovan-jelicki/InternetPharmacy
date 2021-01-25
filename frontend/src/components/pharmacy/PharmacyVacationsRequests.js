@@ -1,5 +1,6 @@
 import React from 'react';
 import {Button, Form, FormControl, Modal, Navbar} from "react-bootstrap";
+import axios from "axios";
 
 export default class PharmacyVacationsRequests extends React.Component{
     constructor() {
@@ -45,9 +46,17 @@ export default class PharmacyVacationsRequests extends React.Component{
             }
         ];
 
-        this.setState({
-            vacationRequests : vacationRequests
-        })
+        axios
+            .get('http://localhost:8080/api/vacationRequest/findByPharmacyAndEmployeeType/1/pharmacist') //todo change pharmacyId
+            .then(res => {
+                this.setState({
+                    vacationRequests : res.data
+                })
+            });
+
+        // this.setState({
+        //     vacationRequests : vacationRequests
+        // })
     }
 
     render() {
@@ -81,8 +90,8 @@ export default class PharmacyVacationsRequests extends React.Component{
                                 <td>{vacationRequest.employeeLastName}</td>
                                 <td>{vacationRequest.employeeType}</td>
                                 <td>{vacationRequest.vacationNote}</td>
-                                <td>{vacationRequest.periodStart}</td>
-                                <td>{vacationRequest.periodEnd}</td>
+                                <td>{vacationRequest.period.periodStart}</td>
+                                <td>{vacationRequest.period.periodEnd}</td>
                                 <td>{vacationRequest.vacationRequestStatus}</td>
 
                                 <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
