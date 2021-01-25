@@ -8,6 +8,7 @@ import moment from 'moment';
 import TimePicker from 'react-time-picker';
 import Registration from "../../pages/Registration";
 import CreatePharmacist from "./CreatePharmacist";
+import axios from "axios";
 
 
 
@@ -20,11 +21,16 @@ export default class PharmacyEmployees extends React.Component{
             pharmacists: [],
             showModalAddDermatologist : false,
             showModalCreatePharmacist : false,
-            userType : "pharmacyAdmin"
+            userType : "pharmacyAdmin",
+            searchPharmacist : {
+                firstName : '',
+                lastName : ''
+            },
+            backupPharmacists : []
         }
     }
 // definise slobodne termine,pretražuje, kreira i uklanja farmaceute/dermatologe
-    componentDidMount() {
+    async componentDidMount() {
         let dermatologists = [
             {
                 firstName : "Mirko",
@@ -50,10 +56,20 @@ export default class PharmacyEmployees extends React.Component{
             }
         ];
 
-        this.setState({
-            dermatologists : dermatologists,
-            pharmacists : pharmacists
-        });
+        await axios
+            .get('http://localhost:8080/api/pharmacist/getByPharmacy/1')
+            .then(res => {
+                this.setState({
+                    pharmacists : res.data,
+                    backupPharmacists : res.data
+                })
+            });
+
+        console.log(this.state.pharmacists);
+        // this.setState({
+        //     dermatologists : dermatologists,
+        //     pharmacists : pharmacists
+        // });
     }
 
     render() {
@@ -122,9 +138,11 @@ export default class PharmacyEmployees extends React.Component{
                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
                    <Navbar.Collapse id="basic-navbar-nav">
                        <Form inline>
-                           <FormControl type="text" placeholder="Search by first name" className="mr-sm-2" />
-                           <FormControl type="text" placeholder="Search by last name" className="mr-sm-2" />
-                           <Button variant="outline-success">Search</Button>
+                           <FormControl type="text" placeholder="Search by first name" className="mr-sm-2" name={'firstName'} value={this.state.searchPharmacist.firstName} onChange={this.changeSearchPharmacist}/>
+                           <FormControl type="text" placeholder="Search by last name" className="mr-sm-2" name={'lastName'} value={this.state.searchPharmacist.lastName} onChange={this.changeSearchPharmacist}/>
+                           <Button variant="outline-success" onClick={this.searchPharmacist}>Search</Button>
+                           <Button variant="outline-info" onClick={this.resetSearchPharmacist}>Reset</Button>
+
                        </Form>
                    </Navbar.Collapse>
                </Navbar>
@@ -135,6 +153,9 @@ export default class PharmacyEmployees extends React.Component{
                        <th scope="col">Ime</th>
                        <th scope="col">Prezime</th>
                        <th scope="col">Ocena</th>
+                       <th scope="col">Pocetak smene</th>
+                       <th scope="col">Kraj smene</th>
+
                    </tr>
                    </thead>
                    <tbody>
@@ -144,6 +165,8 @@ export default class PharmacyEmployees extends React.Component{
                            <td>{pharmacist.firstName}</td>
                            <td>{pharmacist.lastName}</td>
                            <td>{pharmacist.grade}</td>
+                           <td>{pharmacist.workingHours[0].period.periodStart}</td>
+                           <td>{pharmacist.workingHours[0].period.periodEnd}</td>
                            <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="primary" onClick={this.handleModalAddDermatologist}>
                                    Zakazi savetovanje
@@ -242,7 +265,7 @@ export default class PharmacyEmployees extends React.Component{
                     <Modal.Title>Create Pharmacist</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreatePharmacist closeModal = {this.handleModalCreatePharmacist}/>
+                    <CreatePharmacist closeModal = {this.handleModalCreatePharmacist} fetchPharmacists = {this.fetchPharmacists}/>
                 </Modal.Body>
             </Modal>
         );
@@ -268,5 +291,47 @@ export default class PharmacyEmployees extends React.Component{
     deletePharmacist = (dermatologist) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + dermatologist.firstName + ' ' + dermatologist.lastName + ' from your employees list?');
         alert( isBoss ); // true if OK is pressed
+    }
+
+    fetchPharmacists = async () => {
+        axios
+            .get('http://localhost:8080/api/pharmacist/getByPharmacy/1')
+            .then(res => {
+                this.setState({
+                    pharmacists : res.data
+                })
+            });
+    }
+
+    changeSearchPharmacist = (event) => {
+        const { name, value } = event.target;
+        const searchPharmacist = this.state.searchPharmacist;
+        searchPharmacist[name] = value;
+
+        this.setState({ searchPharmacist });
+    }
+    resetSearchPharmacist = () => {
+        this.setState({
+            searchPharmacist : {
+                firstName : '',
+                lastName : ''
+            },
+            pharmacists : this.state.backupPharmacists
+        })
+    }
+
+    searchPharmacist = async () => {
+        let filterPharmacists = await this.state.pharmacists.filter(pharmacist => {
+            if (this.state.searchPharmacist.firstName !== '' && this.state.searchPharmacist.lastName !== '')
+                return pharmacist.firstName.includes(this.state.searchPharmacist.firstName) && pharmacist.lastName.includes(this.state.searchPharmacist.lastName);
+            else if (this.state.searchPharmacist.firstName !== '')
+                return pharmacist.firstName.includes(this.state.searchPharmacist.firstName);
+            else if (this.state.searchPharmacist.lastName !== '')
+                return pharmacist.lastName.includes(this.state.searchPharmacist.lastName);
+            return true;
+        });
+        this.setState({
+            pharmacists : filterPharmacists
+        })
     }
 }
