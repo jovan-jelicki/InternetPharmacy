@@ -1,19 +1,13 @@
 package app.service.impl;
 
-import app.model.medication.Ingredient;
 import app.model.medication.Medication;
-import app.model.medication.SideEffect;
-import app.model.user.Patient;
 import app.repository.MedicationRepository;
 import app.service.MedicationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
