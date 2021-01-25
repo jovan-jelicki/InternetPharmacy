@@ -6,6 +6,7 @@ import app.service.MedicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -41,5 +42,13 @@ public class MedicationServiceImpl implements MedicationService {
     @Override
     public boolean existsById(Long id) {
         return medicationRepository.existsById(id);
+    }
+
+    @Override
+    public Collection<Medication> fetchMedicationAlternatives(Long id) {
+        Optional<Medication> patient = medicationRepository.findById(id);
+        if(patient.isPresent())
+            return patient.get().getAlternatives();
+        return new ArrayList<>();
     }
 }

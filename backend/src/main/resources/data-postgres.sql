@@ -10,17 +10,15 @@ INSERT INTO patient (id, first_name, last_name, user_type, penalty_count, email,
 INSERT INTO patient (id, first_name, last_name, user_type, penalty_count, email, password, phone_number, country, latitude, longitude, street, town)
                     VALUES (2, 'Jovana', 'Jeremic', 4, 0, 'jovana.jeremic@gmail.com', 'malakojacinicuda', '+988795562', 'France', 49, 2, 'Lui V', 'Paris');
 INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (1, 'Jovan', 'Jelicki', 1, 'jovan.Dermatologist.jelicki@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
+                    VALUES (1, 'Pera', 'Peric', 1, 'pera.Dermatologist@gmail.com', 'perap', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
 INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (0, 'Jovan', 'Jelicki', 1, 'jovan.Pharmacist.jelicki@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
+                    VALUES (1, 'Jovan', 'Jovic', 0, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (1, 4);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (1, 2);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (1, 5);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (2, 2);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (2, 1);
 
-
--- add additional tables when needed
 INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description) VALUES
                      (0, 'Pfizer', 'USA', 41, 87, 'Fifth Ave', 'Chicago', 'Pfizer Inc. is an American multinational pharmaceutical corporation. Pfizer is one of the world''s largest pharmaceutical companies, and was ranked 64th on the 2020 Fortune 500 list of the largest U.S. corporations by total revenue, at $51.75 billion');
 INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description) VALUES
@@ -30,7 +28,6 @@ INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, desc
 
 INSERT INTO pharmacy (id, country, latitude, longitude, street, town, description, name) VALUES
                      (4, 'Portugal', 43,3,'Sui gue peauqe', 'Lisbon', 'All purpose pharmacy!', 'Suei Mei');
-
 
 
 INSERT INTO medication (id, name, type, dose, loyalty_points, medication_shape, manufacturer, medication_issue, note) VALUES
@@ -45,6 +42,32 @@ INSERT INTO medication (id, name, type, dose, loyalty_points, medication_shape, 
                        (4, 'Bromazepan', 1, 6, 20, 4, 'BioFarm', 1, 'Take while studying PSW');
 
 
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 1);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 2);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (2, 4);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (3, 2);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (4, 3);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 5);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 5);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (2, 5);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (3, 0);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (4, 0);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 2);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 3);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (2, 0);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (3, 5);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (4, 1);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 0);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 4);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (1, 0);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (2, 3);
+INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 4);
+
 
 INSERT INTO pharmacy_admin (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, pharmacy_id)
 VALUES (1, 'Jovan', 'Brokovich', 2, 'brokovich@gmail.com', 'broka', '0605435487', 'SRB', 41, 87, 'Avenue 3rd', 'Belgrade',1);
+
+INSERT INTO vacation_request( employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
+VALUES (1,0, '2021-05-01', '2021-05-08', 'Godisnji odmor dermatolog', 0, 0);
+INSERT INTO vacation_request( employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
+VALUES (1,1, '2021-07-01', '2021-07-08', 'Godisnji odmor farmaceut', 0, 1);

@@ -23,10 +23,10 @@ public class VacationRequest {
    @ManyToOne
    private Pharmacy pharmacy;
 
-   @Column
+   @Column(columnDefinition = "TEXT")
    private String rejectionNote;
 
-   @Column
+   @Column(columnDefinition = "TEXT")
    private String vacationNote;
 
    @Enumerated(EnumType.ORDINAL)

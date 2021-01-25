@@ -2,6 +2,8 @@ package app.service;
 
 import app.model.medication.Medication;
 
+import java.util.Collection;
+
 public interface MedicationService extends CRUDService<Medication> {
-    // methods for fetching lazy loaded entities
+    Collection<Medication> fetchMedicationAlternatives(Long id);
 }
