@@ -1,6 +1,6 @@
 import React from "react";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import WorkingHoursCalendar from "../components/WorkingHoursCalendar";
+import WorkingHoursCalendar from "../../components/WorkingHoursCalendar";
 
 export default class DermatologistWorkingHours extends React.Component {
     constructor(props) {

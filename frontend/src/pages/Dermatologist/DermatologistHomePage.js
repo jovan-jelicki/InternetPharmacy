@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Button} from "react-bootstrap";
-import ReviewedClients from "./ReviewedClients";
-import VacationRequest from "./VacationRequest";
+import ReviewedClients from "../ReviewedClients";
+import VacationRequest from "../VacationRequest";
 import DermatologistsProfilePage from "./DermatologistsProfilePage";
 import DermatologistWorkingHours from "./DermatologistWorkingHours";
 import DermatologistAppointmentStart from "./DermatologistAppointmentStart";
