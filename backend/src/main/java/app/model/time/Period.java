@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Embeddable
 public class Period {
-
+    
     private LocalDateTime periodStart;
 
     private LocalDateTime periodEnd;
