@@ -27,6 +27,7 @@ export default class App extends React.Component {
   render() {
     const role = "Admin";
     const Id = this.state.Id;
+    process.env.MY_VARIABLE =
     document.title = "Internet Pharmacy"
     return (
         <BrowserRouter>
