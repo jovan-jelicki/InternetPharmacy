@@ -2,6 +2,7 @@ package app.service.impl;
 
 import app.dto.VacationRequestDTO;
 import app.model.time.VacationRequest;
+import app.model.time.VacationRequestStatus;
 import app.model.user.EmployeeType;
 import app.model.user.User;
 import app.repository.VacationRequestRepository;
@@ -68,5 +69,22 @@ public class VacationRequestServiceImpl implements VacationRequestService {
             vacationRequestDTOS.add(vacationRequestDTO);
         }
         return vacationRequestDTOS;
+    }
+
+    @Override
+    public void confirmVacationRequest(Long id) {
+        VacationRequest vacationRequest = this.read(id).get();
+        vacationRequest.setVacationRequestStatus(VacationRequestStatus.approved);
+        this.save(vacationRequest);
+        //TODO send confirmation email
+    }
+
+    @Override
+    public void declineVacationRequest(VacationRequestDTO vacationRequestDTO) {
+        VacationRequest vacationRequest = this.read(vacationRequestDTO.getId()).get();
+        vacationRequest.setVacationRequestStatus(VacationRequestStatus.rejected);
+        vacationRequest.setRejectionNote(vacationRequestDTO.getRejectionNote());
+        this.save(vacationRequest);
+        //TODO send rejection email
     }
 }

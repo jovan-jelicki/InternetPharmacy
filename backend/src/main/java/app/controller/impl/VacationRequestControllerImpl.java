@@ -68,4 +68,21 @@ public class VacationRequestControllerImpl implements VacationRequestController 
     public ResponseEntity<Collection<VacationRequestDTO>> findByPharmacyAndEmployeeType(@PathVariable Long pharmacyId, @PathVariable EmployeeType employeeType) {
         return new ResponseEntity<>(vacationRequestService.findByPharmacyIdAndEmployeeType(pharmacyId, employeeType), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/confirmVacationRequest/{id}")
+    public ResponseEntity<Object> confirmVacationRequest(@PathVariable Long id) {
+        if(!vacationRequestService.existsById(id))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        vacationRequestService.confirmVacationRequest(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @PutMapping(value = "/rejectVacationRequest", consumes = "application/json")
+    public ResponseEntity<Object> update(@RequestBody VacationRequestDTO vacationRequestDTO) {
+        if(!vacationRequestService.existsById(vacationRequestDTO.getId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        vacationRequestService.declineVacationRequest(vacationRequestDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

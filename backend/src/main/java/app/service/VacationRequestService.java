@@ -11,4 +11,8 @@ public interface VacationRequestService extends CRUDService<VacationRequest> {
 
     Collection<VacationRequestDTO> findByPharmacyIdAndEmployeeType(Long pharmacyId, EmployeeType employeeType);
 
+    void confirmVacationRequest(Long id);
+
+    void declineVacationRequest(VacationRequestDTO vacationRequestDTO);
+
 }
