@@ -8,7 +8,10 @@ export default class PharmacyVacationsRequests extends React.Component{
         this.state = {
             vacationRequests : [],
             userType : 'pharmacyAdmin',
-            showModal : false
+            showModal : false,
+            modalVacationRequest : {
+                rejectionNote:""
+            }
         }
     }
 
@@ -100,7 +103,7 @@ export default class PharmacyVacationsRequests extends React.Component{
                                     </Button>
                                 </td >
                                 <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
-                                    <Button variant="outline-danger" onClick={this.handleModal}>
+                                    <Button variant="outline-danger" onClick={() => this.handleModal(vacationRequest)}>
                                         Reject
                                     </Button>
                                 </td >
@@ -122,14 +125,14 @@ export default class PharmacyVacationsRequests extends React.Component{
                         <Modal.Body>
                             <Form.Group controlId="exampleForm.ControlTextarea1">
                                 <Form.Label>Please enter a reason of declining the vacation request</Form.Label>
-                                <Form.Control as="textarea" rows={3} />
+                                <Form.Control type='text' value={this.state.modalVacationRequest.rejectionNote !== undefined ? this.state.modalVacationRequest.rejectionNote : ""} onChange={(event) => this.handleRejectionNoteChange(event)} />
                             </Form.Group>
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant="secondary" onClick={this.handleModal}>
                                 Close
                             </Button>
-                            <Button variant="primary" onClick={this.handleModal}>
+                            <Button variant="primary" onClick={this.rejectRequest}>
                                 Confirm
                             </Button>
                         </Modal.Footer>
@@ -139,13 +142,52 @@ export default class PharmacyVacationsRequests extends React.Component{
         );
     }
 
-    handleModal = () => {
+    handleRejectionNoteChange = (event) => {
+        const { name, value } = event.target;
         this.setState({
-            showModal : !this.state.showModal
+            modalVacationRequest : {
+                ...this.state.modalVacationRequest,
+                rejectionNote : value
+            }
+        })
+    }
+
+    rejectRequest = () => {
+        axios.put("http://localhost:8080/api/vacationRequest/rejectVacationRequest/", this.state.modalVacationRequest).then(() => {
+            this.fetchVacationRequests();
+            this.setState({
+                showModal : !this.state.showModal
+            });
+        })
+    }
+
+    handleModal = (vacationRequest) => {
+        this.setState({
+            showModal : !this.state.showModal,
+            modalVacationRequest : vacationRequest
         });
     }
 
     acceptVacationRequest = (vacationRequest) => {
-        window.confirm('Are you sure you want to accept the vacation request from ' + vacationRequest.employeeFirstName + '?');
+        let answer = window.confirm('Are you sure you want to accept the vacation request from ' + vacationRequest.employeeFirstName + '?');
+        if (answer) {
+            let path = "http://localhost:8080/api/vacationRequest/confirmVacationRequest/" + vacationRequest.id
+            axios.get(path).then(() => this.fetchVacationRequests());
+
+        }
+    }
+
+    fetchVacationRequests = () => {
+        axios
+            .get('http://localhost:8080/api/vacationRequest/findByPharmacyAndEmployeeType/1/pharmacist') //todo change pharmacyId
+            .then(res => {
+                this.setState({
+                    vacationRequests : res.data,
+                    modalVacationRequest : {
+                        rejectionNote:""
+                    }
+                })
+            });
+
     }
 }
