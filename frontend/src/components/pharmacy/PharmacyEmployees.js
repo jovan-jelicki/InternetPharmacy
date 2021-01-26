@@ -26,7 +26,22 @@ export default class PharmacyEmployees extends React.Component{
                 firstName : '',
                 lastName : ''
             },
-            backupPharmacists : []
+            backupPharmacists : [],
+            backupDermatologists : [],
+            notWorkingDermatologists : [],
+            dermatologistForAdding : {
+                id : 0,
+                workingHours : []
+            },
+            workingHours : {
+                period : {
+                    periodStart : "",
+                    periodEnd : ""
+                },
+                pharmacy : {
+                    id : 1 //todo change pharmacy ID
+                }
+            }
         }
     }
 // definise slobodne termine,pretražuje, kreira i uklanja farmaceute/dermatologe
@@ -56,20 +71,12 @@ export default class PharmacyEmployees extends React.Component{
             }
         ];
 
-        await axios
-            .get('http://localhost:8080/api/pharmacist/getByPharmacy/1')
-            .then(res => {
-                this.setState({
-                    pharmacists : res.data,
-                    backupPharmacists : res.data
-                })
-            });
+        await this.fetchPharmacists();
+
+        await this.fetchDermatologists();
 
         console.log(this.state.pharmacists);
-        // this.setState({
-        //     dermatologists : dermatologists,
-        //     pharmacists : pharmacists
-        // });
+        this.fetchDermatologistNotWorkingInThisPharmacy();
     }
 
     render() {
@@ -79,7 +86,7 @@ export default class PharmacyEmployees extends React.Component{
                <br/><br/>
                <h1>Dermatolozi</h1>
                
-               <Button variant="success" onClick={this.handleModalAddDermatologist}>Dodaj dermatologa</Button>
+               <Button variant="success" onClick={this.openModalAddDermatologist}>Dodaj dermatologa</Button>
                <br/><br/>
 
                <Navbar bg="light" expand="lg">
@@ -193,7 +200,27 @@ export default class PharmacyEmployees extends React.Component{
            </div>
         );
     }
+// <select  name="medication" onChange={this.handleInputChange} value={this.state.inputOrder.medication}>
+// <option disabled>select medication</option>
+// {this.props.medications.map((medication) => <option key={medication.id} value={medication.name}>{medication.name}</option>)}
+// </select>
 
+    handleDermatologistForAddingChange = async (event) => {
+        const target = event.target;
+        let value = event.target.value;
+
+        const path = "http://localhost:8080/api/dermatologists/" + value;
+        await axios.get(path).then(res => {
+            this.setState({
+                dermatologistForAdding : res.data
+            });
+
+        })
+
+        console.log(this.state.dermatologistForAdding);
+
+
+    }
     renderModalAddDermatologist = () => {
         return (
             <Modal show={this.state.showModalAddDermatologist} onHide={this.handleModalAddDermatologist}>
@@ -204,9 +231,11 @@ export default class PharmacyEmployees extends React.Component{
                     <Form>
                         <Form.Row>
                             <Col>
-                                <Form.Control placeholder="Medication" as={"select"} >
-                                    <option disabled={true} selected="selected">Choose...</option>
-                                    <option >...</option>
+                                <Form.Control placeholder="Dermatologist" as={"select"} value={this.state.dermatologistForAdding.id} onChange={this.handleDermatologistForAddingChange}>
+                                    <option disabled={true} selected="selected">Choose</option>
+                                    {this.state.notWorkingDermatologists.map(dermatologist =>
+                                    <option key={dermatologist.id} value={dermatologist.id}>{dermatologist.firstName + " " + dermatologist.lastName}</option>
+                                    )}
                                 </Form.Control>
                             </Col>
                         </Form.Row>
@@ -214,48 +243,77 @@ export default class PharmacyEmployees extends React.Component{
                         <Form.Row>
                             <div style={({ marginLeft: '1rem' })}>
                                 <label style={({ marginRight: '1rem' })}>Select start of work time : </label>
-                                <TimePicker />
-
+                                <TimePicker  name="periodStart" value={this.state.workingHours.period.periodStart} onChange={this.setPeriodStart}/>
                             </div>
                         </Form.Row>
                         <br/>
                         <Form.Row>
                             <div style={({ marginLeft: '1rem' })}>
                                 <label style={({ marginRight: '1rem' })}>Select end of work time : </label>
-                                <TimePicker/>
+                                <TimePicker  name="periodEnd" value={this.state.workingHours.period.periodEnd} onChange={this.setPeriodEnd}/>
                             </div>
                         </Form.Row>
 
-                        <br/>
-                        <h3>Work time in other pharmacies</h3>
-                        <table class="table table-sm">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Start</th>
-                                <th scope="col">End</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>{"11:00"}</td>
-                                <td>{"13:00"}</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <div style={this.state.dermatologistForAdding.workingHours.length !== 0 ? {display : 'block'} : {display : 'none'}}>
+                            <br/>
+                            <h3>Work time in other pharmacies</h3>
+                            <table class="table table-sm">
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Start</th>
+                                    <th scope="col">End</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>{"11:00"}</td>
+                                    <td>{"13:00"}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={this.handleModalAddDermatologist}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={this.handleModalAddDermatologist}>
+                    <Button variant="primary" onClick={this.addDermatologist}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
             </Modal>
         );
+    }
+
+    openModalAddDermatologist = async () => {
+        await this.fetchDermatologistNotWorkingInThisPharmacy();
+        if (this.state.notWorkingDermatologists.length !== 0)
+            this.handleModalAddDermatologist();
+        else
+            alert("All available dermatologists are already working in this pharmacy!");
+    }
+
+    addDermatologist = async () => {
+        let finalDermatologist = this.state.dermatologistForAdding;
+        let workingHours = this.state.workingHours;
+        workingHours.period.periodStart = '2017-01-13 ' + workingHours.period.periodStart + ":00";
+        workingHours.period.periodEnd = '2017-01-13 ' + workingHours.period.periodEnd + ":00";
+        finalDermatologist.workingHours.push(this.state.workingHours);
+        console.log(finalDermatologist);
+        axios.put("http://localhost:8080/api/dermatologists", finalDermatologist).then(() => {
+                this.setState({
+                    dermatologistForAdding : {
+                        id : 0,
+                        workingHours : []
+                    }
+                });
+                this.handleModalAddDermatologist();
+                this.fetchDermatologists();
+            }
+        )
     }
 
     renderModalCreatePharmacist = () => {
@@ -295,10 +353,22 @@ export default class PharmacyEmployees extends React.Component{
 
     fetchPharmacists = async () => {
         axios
-            .get('http://localhost:8080/api/pharmacist/getByPharmacy/1')
+            .get('http://localhost:8080/api/pharmacist/getByPharmacy/1') //todo change pharmacy id
             .then(res => {
                 this.setState({
-                    pharmacists : res.data
+                    pharmacists : res.data,
+                    backupPharmacists : res.data
+                })
+            });
+    }
+
+    fetchDermatologists = async () => {
+        axios
+            .get('http://localhost:8080/api/dermatologists/getAllDermatologistWorkingInPharmacy/1')//todo change pharmacy ID
+            .then(res => {
+                this.setState({
+                    dermatologists : res.data,
+                    backupDermatologists : res.data
                 })
             });
     }
@@ -332,6 +402,63 @@ export default class PharmacyEmployees extends React.Component{
         });
         this.setState({
             pharmacists : filterPharmacists
+        })
+    }
+
+    fetchDermatologistNotWorkingInThisPharmacy = async () => {
+        await axios.get("http://localhost:8080/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/1").then( //todo change pharmacy id
+            res => {
+                this.setState({
+                    notWorkingDermatologists : res.data,
+
+                })
+            }
+        )
+        if (this.state.notWorkingDermatologists.length !== 0)
+            this.setState({
+                dermatologistForAdding : this.state.notWorkingDermatologists[0],
+                workingHours : {
+                    period : {
+                        periodStart : "",
+                        periodEnd : ""
+                    },
+                    pharmacy : {
+                        id : 1 //todo change pharmacy ID
+                    }
+                }
+            })
+        else {
+            this.setState({
+                dermatologistForAdding : {
+                    id : 0,
+                    workingHours : []
+                },
+                workingHours : {
+                    period : {
+                        periodStart : "",
+                        periodEnd : ""
+                    },
+                    pharmacy : {
+                        id : 1 //todo change pharmacy ID
+                    }
+                }
+            })
+        }
+    }
+
+    setPeriodStart = (date) => {
+        const workingHours = this.state.workingHours;
+        workingHours.period.periodStart = date;
+        this.setState({
+            workingHours : workingHours
+        })
+    }
+
+    setPeriodEnd = (date) => {
+        const workingHours = this.state.workingHours;
+        workingHours.period.periodEnd = date;
+        this.setState({
+            workingHours : workingHours
         })
     }
 }

@@ -13,6 +13,10 @@ INSERT INTO patient (id, first_name, last_name, user_type, penalty_count, email,
                     VALUES (2, 'Jovana', 'Jeremic', 4, 0, 'jovana.jeremic@gmail.com', 'malakojacinicuda', '+988795562', 'France', 49, 2, 'Lui V', 'Paris');
 INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
                     VALUES (1, 'Pera', 'Peric', 1, 'pera.Dermatologist@gmail.com', 'perap', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
+INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
+                    VALUES (2, 'Agate', 'Fendi', 1, 'agate@gmail.com', 'perap', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'Chicago');
+INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
+                    VALUES (3, 'Peter', 'Smith', 1, 'pera@gmail.com', 'perap', '00987563214', 'GER', 41, 87, 'Fifth Ave', 'Chicago');
 
 
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (1, 4);
