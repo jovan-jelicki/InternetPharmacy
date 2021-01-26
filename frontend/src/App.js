@@ -8,10 +8,11 @@ import VacationRequest from "./pages/VacationRequest";
 import DermatologistHomePage from "./pages/DermatologistHomePage";
 import PharmacistProfilePage from "./pages/PharmacistProfilePage";
 import PharmacistHomePage from "./pages/PharmacistHomePage";
+import PatientHomePage from "./pages/PatientHomePage";
 import PharmacistWorkingHours from "./pages/PharmacistWorkingHours";
 import Registration from "./pages/Registration";
 import {ISAdminHomePage} from "./pages/ISAdminHomePage";
-
+import PharmacyAdminProfilePage from "./pages/PharmacyAdminProfilePage";
 
 export default class App extends React.Component {
   constructor () {
@@ -32,9 +33,11 @@ export default class App extends React.Component {
           <Switch>
             <Route exact path="/"  render={(props) => <IndexPage {...props} role={role} /> } />
             <Route path="/patient-profile" render={(props) => <PatientProfilePage {...props} role={role} /> } />
+            <Route path="/pharmacy-admin-profile" render={(props) => <PharmacyAdminProfilePage {...props} role={role} /> } />
             <Route path="/pharmacy"  component={PharmacyPage} role={role}/>
             <Route path="/reviewClients"  render={(props) => <ReviewedClients {...props} role={role} Id={Id}/> } />
             <Route path="/vacationRequest" render={(props) => <VacationRequest {...props} role={role} Id={Id}/> } />
+            <Route path='/patient-home' render={(props) => <PatientHomePage {...props} role={role} Id={Id}/> }/>
             <Route path="/dermatologistHomePage"  render={(props) => <DermatologistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/pharmacistHomePage"  render={(props) => <PharmacistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/registration"  component={Registration} role={role}/>

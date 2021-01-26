@@ -5,6 +5,7 @@ import AllergyPatientListing from "../components/AllergyPatientListing";
 import AddAllergy from "../components/AddAllergy";
 import ChangePassword from "../components/ChangePassword";
 import axios from "axios"
+import PatientLayout from "../layout/PatientLayout";
 
 export default class PatientProfilePage extends React.Component {
     constructor(props) {
@@ -187,12 +188,12 @@ export default class PatientProfilePage extends React.Component {
         const passwords = [oldPass, newPass, repPass]
 
         return (
-            <Container fluid>
+            <PatientLayout>
                 <Row className="pt-5">
                     <Col xs={2}>
                         <Nav defaultActiveKey="/home" className="flex-column">
                             {!this.state.editMode
-                                ? <Button variant="primary" onClick={this.activateUpdateMode}>Edit</Button>
+                                ? <Button variant="dark" onClick={this.activateUpdateMode}>Edit</Button>
                                 : <Button variant="outline-secondary" onClick={this.activateUpdateMode}>Cancel</Button>
                             }
                             {this.state.editMode && <Button variant="primary mt-2"
@@ -212,8 +213,7 @@ export default class PatientProfilePage extends React.Component {
                         <ChangePassword pass={passwords} onChange={this.handleInputChange} disable={this.disableSave}/>}
                     </Col>
                 </Row>
-
-            </Container>
+            </PatientLayout>
         );
     }
 }

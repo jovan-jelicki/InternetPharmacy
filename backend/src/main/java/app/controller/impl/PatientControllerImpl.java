@@ -2,9 +2,8 @@ package app.controller.impl;
 
 import app.controller.PatientController;
 import app.dto.UserPasswordDTO;
-import app.model.Contact;
-import app.model.Ingredient;
-import app.model.Patient;
+import app.model.medication.Ingredient;
+import app.model.user.Patient;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,11 +1,13 @@
 package app.service.impl;
 
-import app.model.Pharmacy;
+import app.dto.PharmacySearchDTO;
+import app.model.pharmacy.Pharmacy;
 import app.repository.PharmacyRepository;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -43,4 +45,16 @@ public class PharmacyServiceImpl implements PharmacyService {
     public boolean existsById(Long id) {
         return pharmacyRepository.existsById(id);
     }
+
+    @Override
+    public Collection<Pharmacy> searchByNameAndAddress(PharmacySearchDTO pharmacySearchDTO) {
+        ArrayList<Pharmacy> pharmacies = new ArrayList<>();
+        read().forEach(p -> {
+            if(p.isEqual(pharmacySearchDTO))
+                pharmacies.add(p);
+        });
+        return pharmacies;
+    }
+
+
 }

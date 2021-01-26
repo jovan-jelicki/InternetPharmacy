@@ -1,7 +1,7 @@
 package app.controller.impl;
 
 import app.controller.IngredientController;
-import app.model.Ingredient;
+import app.model.medication.Ingredient;
 import app.service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
