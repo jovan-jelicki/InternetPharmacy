@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.controller.MedicationReservationController;
 import app.model.medication.MedicationReservation;
+import app.model.medication.MedicationReservationStatus;
 import app.service.MedicationReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,16 @@ public class MedicationReservationControllerImpl implements MedicationReservatio
         if(!medicationReservationService.existsById(entity.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(medicationReservationService.save(entity), HttpStatus.OK);
+    }
+
+    @Override
+    @PutMapping(consumes = "application/json", value = "/giveMedicine")
+    public ResponseEntity<Void> giveMedicine(@RequestBody MedicationReservation entity){
+        if(!medicationReservationService.existsById(entity.getId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        entity.setStatus(MedicationReservationStatus.successful);
+        medicationReservationService.save(entity);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
