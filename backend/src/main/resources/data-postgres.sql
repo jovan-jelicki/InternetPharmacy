@@ -13,8 +13,7 @@ INSERT INTO patient (id, first_name, last_name, user_type, penalty_count, email,
                     VALUES (2, 'Jovana', 'Jeremic', 4, 0, 'jovana.jeremic@gmail.com', 'malakojacinicuda', '+988795562', 'France', 49, 2, 'Lui V', 'Paris');
 INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
                     VALUES (1, 'Pera', 'Peric', 1, 'pera.Dermatologist@gmail.com', 'perap', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
-INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (1, 'Jovan', 'Jovic', 0, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
+
 
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (1, 4);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (1, 2);
@@ -86,11 +85,15 @@ INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation
 VALUES (0,1);
 INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
 VALUES (4,2);
+
 INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (0, '2020-01-01 07:00:00', '2021-12-31 15:00:00', 0);
 INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (1, '2020-01-01 09:00:00', '2021-12-31 17:00:00', 1);
 
 INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id)
-                    VALUES (2, 'Jovan', 'Jelicki', 1, 'jovan.Pharmacist.jelicki@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago', 0);
+VALUES (1, 'Jovan', 'Jovic', 0, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',1);
+INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id)
+VALUES (2, 'Jovan', 'Jelicki', 0, 'jovan.Pharmacist.jelicki@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago', 0);
+
 
 INSERT INTO vacation_request( employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
 VALUES (1,0, '2021-05-01', '2021-05-08', 'Godisnji odmor dermatolog', 0, 0);
