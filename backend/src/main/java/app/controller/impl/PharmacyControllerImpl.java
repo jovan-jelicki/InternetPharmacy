@@ -1,6 +1,8 @@
 package app.controller.impl;
 
+import app.dto.GetMedicationReservationDTO;
 import app.dto.PharmacySearchDTO;
+import app.model.medication.MedicationReservation;
 import app.model.pharmacy.Pharmacy;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,11 @@ public class PharmacyControllerImpl {
     @GetMapping
     public ResponseEntity<Collection<Pharmacy>> read() {
         return new ResponseEntity<>(pharmacyService.read(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getMedicationReservation")
+    public ResponseEntity<MedicationReservation> getMedicationReservationFromPharmacy(@RequestBody GetMedicationReservationDTO getMedicationReservationDTO){
+        return new ResponseEntity<>(pharmacyService.getMedicationReservationFromPharmacy(getMedicationReservationDTO), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")

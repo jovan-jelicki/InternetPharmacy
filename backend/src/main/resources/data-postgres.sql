@@ -77,6 +77,9 @@ VALUES (3, 1, 3);
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 VALUES (1, '2021-01-28', 3, 1,1);
 
+INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
+VALUES (0,1);
+
 INSERT INTO vacation_request( employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
 VALUES (1,0, '2021-05-01', '2021-05-08', 'Godisnji odmor dermatolog', 0, 0);
 INSERT INTO vacation_request( employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
