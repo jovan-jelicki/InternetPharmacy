@@ -58,10 +58,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         return pharmacies;
     }
 
-    @Override
-    public MedicationReservation getMedicationReservationFromPharmacy(GetMedicationReservationDTO getMedicationReservationDTO) {
-        return null;
-    }
+
 
 
 }

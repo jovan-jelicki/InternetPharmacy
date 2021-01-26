@@ -1,6 +1,7 @@
 package app.controller.impl;
 
 import app.controller.MedicationReservationController;
+import app.dto.GetMedicationReservationDTO;
 import app.model.medication.MedicationReservation;
 import app.model.medication.MedicationReservationStatus;
 import app.service.MedicationReservationService;
@@ -34,6 +35,15 @@ public class MedicationReservationControllerImpl implements MedicationReservatio
         if(!medicationReservationService.existsById(entity.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(medicationReservationService.save(entity), HttpStatus.OK);
+    }
+
+    @Override
+    @PostMapping(value = "/getMedicationReservation")
+    public ResponseEntity<MedicationReservation> getMedicationReservationFromPharmacy(@RequestBody GetMedicationReservationDTO getMedicationReservationDTO){
+        MedicationReservation medicationReservation = medicationReservationService.getMedicationReservationFromPharmacy(getMedicationReservationDTO);
+        if(medicationReservation == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(medicationReservation, HttpStatus.OK);
     }
 
     @Override
