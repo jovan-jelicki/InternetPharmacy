@@ -1,10 +1,11 @@
 import React from "react";
 import { Container, Button} from "react-bootstrap";
-import ReviewedClients from "./ReviewedClients";
-import VacationRequest from "./VacationRequest";
+import ReviewedClients from "../ReviewedClients";
+import VacationRequest from "../VacationRequest";
 import PharmacistProfilePage from "./PharmacistProfilePage";
 import PharmacistWorkingHours from "./PharmacistWorkingHours";
 import PharmacistConsultationStart from "./PharmacistConsultationStart";
+import PharmacistGiveMedicine from "./PharmacistGiveMedicine";
 
 export default class PharmacistHomePage extends React.Component {
     constructor(props) {
@@ -35,6 +36,9 @@ export default class PharmacistHomePage extends React.Component {
                     </li>
                     <li className="nav-item">
                         <Button className="nav-link" name="profile" onClick={this.handleChange}>Account</Button>
+                    </li>
+                    <li className="nav-item">
+                        <Button className="nav-link" name="medicine" onClick={this.handleChange}>Give the medicine</Button>
                     </li>
                     <li className="nav-item">
                         <Button className="nav-link" name="scheduleAppointment" onClick={this.handleChange}>Schedule appointment</Button>
@@ -74,6 +78,10 @@ export default class PharmacistHomePage extends React.Component {
         else if (this.state.navbar === "startAppointment")
             return (
                 <PharmacistConsultationStart Id = {this.state.id} role = {this.state.role} />
+            );
+        if (this.state.navbar === "medicine")
+            return (
+                <PharmacistGiveMedicine Id = {this.state.id} role = {this.state.role} />
             );
         else
             return (

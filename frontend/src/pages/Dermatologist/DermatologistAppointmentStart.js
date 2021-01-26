@@ -1,6 +1,6 @@
 import React from "react";
-import ScheduledAppointments from "../components/ScheduledAppointments";
-import Appointment from "../components/Appointment";
+import ScheduledAppointments from "../../components/ScheduledAppointments";
+import Appointment from "../../components/Appointment";
 
 export default class DermatologistAppointmentStart extends React.Component {
     constructor(props) {
