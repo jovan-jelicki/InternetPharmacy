@@ -1,12 +1,12 @@
 package app.model.appointment;
 
+import app.dto.AppointmentSearchDTO;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
-import app.model.user.EmployeeType;
-import app.model.user.Patient;
-import app.model.user.User;
+import app.model.user.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Appointment {
@@ -21,14 +21,14 @@ public class Appointment {
    @Column
    private String report;
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JoinColumn
    private Pharmacy pharmacy;
 
    @Column
    private boolean isPatientPresent;
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JoinColumn
    private Patient patient;
 
@@ -125,5 +125,11 @@ public class Appointment {
 
    public void setPeriod(Period period) {
       this.period = period;
+   }
+
+   public boolean isOverlapping(LocalDateTime timeSlot) {
+      if(period.getPeriodStart().isBefore(timeSlot) && period.getPeriodEnd().isAfter(timeSlot))
+         return true;
+      return false;
    }
 }

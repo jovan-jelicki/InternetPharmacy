@@ -1,8 +1,6 @@
 package app.controller.impl;
 
-import app.model.medication.Ingredient;
 import app.model.medication.Medication;
-import app.model.medication.SideEffect;
 import app.service.MedicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
