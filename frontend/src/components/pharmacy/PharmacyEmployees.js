@@ -165,8 +165,8 @@ export default class PharmacyEmployees extends React.Component{
                            <td>{pharmacist.firstName}</td>
                            <td>{pharmacist.lastName}</td>
                            <td>{pharmacist.grade}</td>
-                           <td>{pharmacist.workingHours[0].period.periodStart}</td>
-                           <td>{pharmacist.workingHours[0].period.periodEnd}</td>
+                           <td>{pharmacist.workingHours.period.periodStart}</td>
+                           <td>{pharmacist.workingHours.period.periodEnd}</td>
                            <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="primary" onClick={this.handleModalAddDermatologist}>
                                    Zakazi savetovanje
