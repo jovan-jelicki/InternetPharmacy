@@ -1,18 +1,18 @@
 import React from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import IndexPage from "./pages/IndexPage";
-import PatientProfilePage from "./pages/PatientProfilePage";
+import PatientProfilePage from "./pages/patient/PatientProfilePage";
 import PharmacyPage from "./pages/PharmacyPage";
 import ReviewedClients from "./pages/ReviewedClients";
 import VacationRequest from "./pages/VacationRequest";
 import DermatologistHomePage from "./pages/DermatologistHomePage";
 import PharmacistProfilePage from "./pages/PharmacistProfilePage";
 import PharmacistHomePage from "./pages/PharmacistHomePage";
-import PatientHomePage from "./pages/PatientHomePage";
+import PatientHomePage from "./pages/patient/PatientHomePage";
 import PharmacistWorkingHours from "./pages/PharmacistWorkingHours";
 import Registration from "./pages/Registration";
 import PharmacyAdminProfilePage from "./pages/PharmacyAdminProfilePage";
-
+import PatientCounselScheduling from "./pages/patient/PatientCounselScheduling";
 
 export default class App extends React.Component {
   constructor () {
@@ -40,6 +40,7 @@ export default class App extends React.Component {
             <Route path='/patient-home' render={(props) => <PatientHomePage {...props} role={role} Id={Id}/> }/>
             <Route path="/dermatologistHomePage"  render={(props) => <DermatologistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/pharmacistHomePage"  render={(props) => <PharmacistHomePage {...props} role={role} Id={Id}/> } />
+            <Route path="/patient-counsel-schedule"  render={(props) => <PatientCounselScheduling {...props} role={role} Id={Id}/> } />
             <Route path="/registration"  component={Registration} role={role}/>
 
           </Switch>
