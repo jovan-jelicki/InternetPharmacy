@@ -1,7 +1,7 @@
 import React from "react";
 
-import ScheduledAppointments from "../components/ScheduledAppointments";
-import Appointment from "../components/Appointment";
+import ScheduledAppointments from "../../components/ScheduledAppointments";
+import Appointment from "../../components/Appointment";
 
 
 export default class PharmacistConsultationStart extends React.Component {

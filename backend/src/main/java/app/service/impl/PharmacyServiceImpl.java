@@ -1,6 +1,8 @@
 package app.service.impl;
 
+import app.dto.GetMedicationReservationDTO;
 import app.dto.PharmacySearchDTO;
+import app.model.medication.MedicationReservation;
 import app.model.pharmacy.Pharmacy;
 import app.repository.PharmacyRepository;
 import app.service.PharmacyService;
@@ -54,6 +56,11 @@ public class PharmacyServiceImpl implements PharmacyService {
                 pharmacies.add(p);
         });
         return pharmacies;
+    }
+
+    @Override
+    public MedicationReservation getMedicationReservationFromPharmacy(GetMedicationReservationDTO getMedicationReservationDTO) {
+        return null;
     }
 
 
