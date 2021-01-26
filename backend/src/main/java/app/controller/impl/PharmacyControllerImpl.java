@@ -34,10 +34,6 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(pharmacyService.read(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/getMedicationReservation")
-    public ResponseEntity<MedicationReservation> getMedicationReservationFromPharmacy(@RequestBody GetMedicationReservationDTO getMedicationReservationDTO){
-        return new ResponseEntity<>(pharmacyService.getMedicationReservationFromPharmacy(getMedicationReservationDTO), HttpStatus.OK);
-    }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Optional<Pharmacy>> read(@PathVariable Long id) {

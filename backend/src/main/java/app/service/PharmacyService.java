@@ -11,6 +11,4 @@ import java.util.Collection;
 
 public interface PharmacyService extends CRUDService<Pharmacy> {
     Collection<Pharmacy> searchByNameAndAddress(PharmacySearchDTO pharmacySearchDTO);
-
-    MedicationReservation getMedicationReservationFromPharmacy(GetMedicationReservationDTO getMedicationReservationDTO);
 }
