@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 public class Pharmacist extends User {
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn
     private WorkingHours workingHours;
 

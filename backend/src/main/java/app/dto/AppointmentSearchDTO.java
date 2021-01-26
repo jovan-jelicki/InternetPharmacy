@@ -1,10 +1,12 @@
 package app.dto;
 
 import app.model.user.EmployeeType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
 public class AppointmentSearchDTO {
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timeSlot;
     private EmployeeType employeeType;
 

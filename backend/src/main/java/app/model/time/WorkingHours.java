@@ -13,7 +13,7 @@ public class WorkingHours {
 
     private Period period;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn
     private Pharmacy pharmacy;
 
