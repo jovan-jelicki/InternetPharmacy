@@ -9,5 +9,7 @@ import java.util.Collection;
 public interface PharmacistService extends CRUDService<Pharmacist> {
     void changePassword(UserPasswordDTO passwordKit);
 
+    Collection<Pharmacist> read();
+
     Collection<Pharmacist> getPharmacistsByPharmacyId(Long id);
 }

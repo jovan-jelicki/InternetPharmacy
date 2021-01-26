@@ -197,7 +197,7 @@ export default class PharmacyRegistration extends React.Component {
                 color: 'rgb(0, 92, 230)',
             }}>
                 <h3 style={({marginTop: '5rem', textAlignVertical: "center", textAlign: "center"})}>Pharmacy registration</h3>
-                <div class="row"
+                <div className="row"
                      style={{marginTop: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <label className="col-sm-2 col-form-label">Name</label>
                     <div className="col-sm-3 mb-2">
