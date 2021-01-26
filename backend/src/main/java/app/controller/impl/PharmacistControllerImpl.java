@@ -74,4 +74,9 @@ public class PharmacistControllerImpl {
         Pharmacist pharmacist = pharmacistService.read(id).get();
         return new ResponseEntity<>(pharmacist.getWorkingHours(), HttpStatus.OK);
     }
+
+    @GetMapping(value = "getByPharmacy/{id}")
+    public ResponseEntity<Collection<Pharmacist>> getPharmacistsByPharmacyId(@PathVariable Long id) {
+        return new ResponseEntity<>(pharmacistService.getPharmacistsByPharmacyId(id), HttpStatus.OK);
+    }
 }

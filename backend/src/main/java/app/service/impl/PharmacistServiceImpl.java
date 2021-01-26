@@ -4,9 +4,8 @@ import app.dto.UserPasswordDTO;
 import app.model.user.Pharmacist;
 import app.repository.PharmacistRepository;
 import app.service.PharmacistService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -15,6 +14,7 @@ import java.util.Optional;
 public class PharmacistServiceImpl implements PharmacistService {
     private final PharmacistRepository pharmacistRepository;
 
+    @Autowired
     public PharmacistServiceImpl(PharmacistRepository pharmacistRepository) {
         this.pharmacistRepository = pharmacistRepository;
     }
@@ -29,6 +29,8 @@ public class PharmacistServiceImpl implements PharmacistService {
         user.getCredentials().setPassword(passwordKit.getNewPassword());
         save(user);
     }
+
+
 
     private void validatePassword(UserPasswordDTO passwordKit, Pharmacist user) {
         String password = user.getCredentials().getPassword();
@@ -60,5 +62,16 @@ public class PharmacistServiceImpl implements PharmacistService {
     @Override
     public boolean existsById(Long id) {
         return pharmacistRepository.existsById(id);
+    }
+
+    @Override
+    public Collection<Pharmacist> getPharmacistsByPharmacyId(Long id) {
+        ArrayList<Pharmacist> ret = new ArrayList<>();
+        for (Pharmacist pharmacist : this.read()) {
+            if (pharmacist.getWorkingHours().size() != 0)
+                if (pharmacist.getWorkingHours().get(0).getPharmacy().getId() == id)
+                    ret.add(pharmacist);
+        }
+        return ret;
     }
 }
