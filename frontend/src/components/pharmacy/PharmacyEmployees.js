@@ -7,7 +7,7 @@ import {FormControl, Row} from "react-bootstrap";
 import moment from 'moment';
 import TimePicker from 'react-time-picker';
 import Registration from "../../pages/Registration";
-import CreatePharmacist from "./CreatePharmacist";
+import CreatePharmacistModal from "./CreatePharmacistModal";
 import axios from "axios";
 
 
@@ -76,7 +76,7 @@ export default class PharmacyEmployees extends React.Component{
         await this.fetchDermatologists();
 
         console.log(this.state.pharmacists);
-        this.fetchDermatologistNotWorkingInThisPharmacy();
+        await this.fetchDermatologistNotWorkingInThisPharmacy();
     }
 
     render() {
@@ -323,7 +323,7 @@ export default class PharmacyEmployees extends React.Component{
                     <Modal.Title>Create Pharmacist</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreatePharmacist closeModal = {this.handleModalCreatePharmacist} fetchPharmacists = {this.fetchPharmacists}/>
+                    <CreatePharmacistModal closeModal = {this.handleModalCreatePharmacist} fetchPharmacists = {this.fetchPharmacists}/>
                 </Modal.Body>
             </Modal>
         );

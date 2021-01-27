@@ -3,9 +3,11 @@ package app.service.impl;
 import app.dto.UserPasswordDTO;
 import app.model.user.Pharmacist;
 import app.repository.PharmacistRepository;
+import app.repository.PharmacyRepository;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -13,10 +15,12 @@ import java.util.Optional;
 @Service
 public class PharmacistServiceImpl implements PharmacistService {
     private final PharmacistRepository pharmacistRepository;
+    private final PharmacyRepository pharmacyRepository;
 
     @Autowired
-    public PharmacistServiceImpl(PharmacistRepository pharmacistRepository) {
+    public PharmacistServiceImpl(PharmacistRepository pharmacistRepository, PharmacyRepository pharmacyRepository) {
         this.pharmacistRepository = pharmacistRepository;
+        this.pharmacyRepository = pharmacyRepository;
     }
 
     @Override
@@ -41,6 +45,7 @@ public class PharmacistServiceImpl implements PharmacistService {
     }
     @Override
     public Pharmacist save(Pharmacist entity) {
+        entity.getWorkingHours().setPharmacy(pharmacyRepository.findById(entity.getWorkingHours().getPharmacy().getId()).get());
         return pharmacistRepository.save(entity);
     }
 
