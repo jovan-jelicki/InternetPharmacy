@@ -13,6 +13,8 @@ import PharmacistWorkingHours from "./pages/Pharmacist/PharmacistWorkingHours";
 import Registration from "./pages/Registration";
 import {ISAdminHomePage} from "./pages/ISAdminHomePage";
 import PharmacyAdminProfilePage from "./pages/PharmacyAdminProfilePage";
+import SupplierHomePage from "./pages/SupplierHomePage";
+import CreateNewOffer from "./components/Supplier/CreateNewOffer";
 
 export default class App extends React.Component {
   constructor () {
@@ -42,6 +44,8 @@ export default class App extends React.Component {
             <Route path="/pharmacistHomePage"  render={(props) => <PharmacistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/registration"  component={Registration} role={role}/>
             <Route path="/pharmacyAdmin"  component={ISAdminHomePage} role={role}/>
+            <Route path="/supplierHomePage"  component={SupplierHomePage} role={role}/>
+            <Route path="/createNew" component={CreateNewOffer} role={role}/>
 
           </Switch>
         </BrowserRouter>
