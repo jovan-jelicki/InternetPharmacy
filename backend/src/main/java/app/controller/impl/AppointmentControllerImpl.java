@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "api/appointment")
@@ -20,6 +21,18 @@ public class AppointmentControllerImpl {
         this.appointmentService = appointmentService;
     }
 
+    @GetMapping
+    public ResponseEntity<Collection<Appointment>> read() {
+        Collection<Appointment> appointments= appointmentService.read();
+        Appointment appointment = (Appointment) appointments.toArray()[0];
+        Long id = appointment.getPharmacy().getId();
+        return new ResponseEntity<>(appointmentService.read(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Optional<Appointment>> read(@PathVariable Long id) {
+        return new ResponseEntity<>(appointmentService.read(id), HttpStatus.OK);
+    }
 
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Appointment> save(@RequestBody Appointment entity) {

@@ -1,9 +1,9 @@
 package app.model.appointment;
 
-import app.dto.AppointmentSearchDTO;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
-import app.model.user.*;
+import app.model.user.EmployeeType;
+import app.model.user.Patient;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,9 +14,8 @@ public class Appointment {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-   @ManyToOne
-   @JoinColumn
-   private User examiner;
+   @Column
+   private Long examinerId;
 
    @Column
    private String report;
@@ -38,7 +37,7 @@ public class Appointment {
    @Column
    private double cost;
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JoinColumn
    private Therapy therapy;
    
@@ -55,12 +54,12 @@ public class Appointment {
         this.id = id;
     }
 
-    public User getExaminer() {
-      return examiner;
+   public Long getExaminerId() {
+      return examinerId;
    }
 
-   public void setExaminer(User examiner) {
-      this.examiner = examiner;
+   public void setExaminerId(Long examinerId) {
+      this.examinerId = examinerId;
    }
 
    public String getReport() {

@@ -59,4 +59,12 @@ public class PharmacyControllerImpl {
 //        return new ResponseEntity<>(new CourseDTO(course), HttpStatus.CREATED);
         return null;
     }
+
+    @PutMapping(consumes = "application/json")
+    public ResponseEntity<Pharmacy> update(@RequestBody Pharmacy entity) {
+        if(!pharmacyService.existsById(entity.getId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(pharmacyService.save(entity), HttpStatus.CREATED);
+    }
+
 }

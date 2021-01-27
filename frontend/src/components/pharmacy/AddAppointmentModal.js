@@ -79,7 +79,13 @@ export default class AddAppointmentModal extends React.Component {
                 periodStart : fullYear + " " + this.state.period.periodStart + ":00",
                 periodEnd : fullYear + " " + this.state.period.periodEnd + ":00",
             }
-
+        }).then( () =>
+            {
+                alert("Appointment successfully created!");
+                this.props.closeModal();
+            }
+        ).catch(() => {
+            alert("Appointment was not created!");
         });
     }
 
