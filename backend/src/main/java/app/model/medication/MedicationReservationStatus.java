@@ -1,7 +1,7 @@
 package app.model.medication;
 
 public enum MedicationReservationStatus {
-    pending,
+    denied,
     canceled,
     successful,
     requested

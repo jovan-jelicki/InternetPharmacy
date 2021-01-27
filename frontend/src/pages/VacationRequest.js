@@ -71,7 +71,7 @@ export default class VacationRequest extends React.Component {
             .then(res => {
                 alert('You have successfully submitted the request!');
             })
-            .catch(e => alert('Something\'s gona wrong!'));
+            .catch(e => alert('Something\'s gonna wrong!'));
 
     }
 }

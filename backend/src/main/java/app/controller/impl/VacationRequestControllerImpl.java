@@ -1,7 +1,9 @@
 package app.controller.impl;
 
 import app.controller.VacationRequestController;
+import app.dto.VacationRequestDTO;
 import app.model.time.VacationRequest;
+import app.model.user.EmployeeType;
 import app.service.VacationRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,5 +62,27 @@ public class VacationRequestControllerImpl implements VacationRequestController 
     @GetMapping (value = "/findByPharmacy/{pharmacyId}")
     public ResponseEntity<Collection<VacationRequest>> findByPharmacy(@PathVariable Long pharmacyId) {
         return new ResponseEntity<>(vacationRequestService.findByPharmacy(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/findByPharmacyAndEmployeeType/{pharmacyId}/{employeeType}")
+    public ResponseEntity<Collection<VacationRequestDTO>> findByPharmacyAndEmployeeType(@PathVariable Long pharmacyId, @PathVariable EmployeeType employeeType) {
+        return new ResponseEntity<>(vacationRequestService.findByPharmacyIdAndEmployeeType(pharmacyId, employeeType), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/confirmVacationRequest/{id}")
+    public ResponseEntity<Object> confirmVacationRequest(@PathVariable Long id) {
+        if(!vacationRequestService.existsById(id))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        vacationRequestService.confirmVacationRequest(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @PutMapping(value = "/rejectVacationRequest", consumes = "application/json")
+    public ResponseEntity<Object> update(@RequestBody VacationRequestDTO vacationRequestDTO) {
+        if(!vacationRequestService.existsById(vacationRequestDTO.getId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        vacationRequestService.declineVacationRequest(vacationRequestDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
