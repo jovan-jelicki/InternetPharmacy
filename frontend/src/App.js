@@ -1,20 +1,22 @@
 import React from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import IndexPage from "./pages/IndexPage";
-import PatientProfilePage from "./pages/PatientProfilePage";
+import PatientProfilePage from "./pages/patient/PatientProfilePage";
 import PharmacyPage from "./pages/PharmacyPage";
 import ReviewedClients from "./pages/ReviewedClients";
 import VacationRequest from "./pages/VacationRequest";
+import PatientHomePage from "./pages/patient/PatientHomePage";
 import DermatologistHomePage from "./pages/Dermatologist/DermatologistHomePage";
 import PharmacistProfilePage from "./pages/Pharmacist/PharmacistProfilePage";
 import PharmacistHomePage from "./pages/Pharmacist/PharmacistHomePage";
-import PatientHomePage from "./pages/PatientHomePage";
 import PharmacistWorkingHours from "./pages/Pharmacist/PharmacistWorkingHours";
 import Registration from "./pages/Registration";
 import {ISAdminHomePage} from "./pages/ISAdminHomePage";
 import PharmacyAdminProfilePage from "./pages/PharmacyAdminProfilePage";
 import SupplierHomePage from "./pages/SupplierHomePage";
 import CreateNewOffer from "./components/Supplier/CreateNewOffer";
+import PatientCounselScheduling from "./pages/patient/PatientCounselScheduling";
+
 
 export default class App extends React.Component {
   constructor () {
@@ -42,6 +44,7 @@ export default class App extends React.Component {
             <Route path='/patient-home' render={(props) => <PatientHomePage {...props} role={role} Id={Id}/> }/>
             <Route path="/dermatologistHomePage"  render={(props) => <DermatologistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/pharmacistHomePage"  render={(props) => <PharmacistHomePage {...props} role={role} Id={Id}/> } />
+            <Route path="/patient-counsel-schedule"  render={(props) => <PatientCounselScheduling {...props} role={role} Id={Id}/> } />
             <Route path="/registration"  component={Registration} role={role}/>
             <Route path="/pharmacyAdmin"  component={ISAdminHomePage} role={role}/>
             <Route path="/supplierHomePage"  component={SupplierHomePage} role={role}/>

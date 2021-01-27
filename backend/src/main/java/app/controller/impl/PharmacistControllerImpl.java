@@ -1,6 +1,5 @@
 package app.controller.impl;
 
-import app.controller.PharmacistController;
 import app.dto.UserPasswordDTO;
 import app.model.time.WorkingHours;
 import app.model.user.Pharmacist;
@@ -17,7 +16,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "api/pharmacist")
 public class PharmacistControllerImpl {
-    private PharmacistService pharmacistService;
+    private final PharmacistService pharmacistService;
 
     @Autowired
     public PharmacistControllerImpl(PharmacistService pharmacistService) {
@@ -53,7 +52,12 @@ public class PharmacistControllerImpl {
 
     @GetMapping
     public ResponseEntity<Collection<Pharmacist>> read() {
-        return new ResponseEntity<>(pharmacistService.read(), HttpStatus.OK);
+        Collection<Pharmacist> pharmacists = pharmacistService.read();
+        for (Pharmacist pharmacist : pharmacists) {
+            pharmacist.getWorkingHours().getPharmacy().setMedicationReservation(null);
+            pharmacist.getWorkingHours().getPharmacy().setMedicationQuantity(null);
+        }
+        return new ResponseEntity<>(pharmacists, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")

@@ -13,9 +13,13 @@ public class WorkingHours {
 
     private Period period;
 
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn
     private Pharmacy pharmacy;
+
+    public WorkingHours() {
+    }
 
     public Long getId() {
         return id;

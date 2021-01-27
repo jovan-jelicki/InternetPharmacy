@@ -1,8 +1,6 @@
 package app.controller.impl;
 
-import app.dto.GetMedicationReservationDTO;
 import app.dto.PharmacySearchDTO;
-import app.model.medication.MedicationReservation;
 import app.model.pharmacy.Pharmacy;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,4 +53,12 @@ public class PharmacyControllerImpl {
 //        return new ResponseEntity<>(new CourseDTO(course), HttpStatus.CREATED);
         return null;
     }
+
+    @PutMapping(consumes = "application/json")
+    public ResponseEntity<Pharmacy> update(@RequestBody Pharmacy entity) {
+        if(!pharmacyService.existsById(entity.getId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(pharmacyService.save(entity), HttpStatus.CREATED);
+    }
+
 }

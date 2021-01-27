@@ -34,10 +34,10 @@ class PatientLayout extends React.Component {
                         </Nav>
                         <Nav>
                             <NavDropdown title="Account" id="collasible-nav-dropdow">
-                                <NavDropdown.Item href="javascript:;">My Account</NavDropdown.Item>
+                                <NavDropdown.Item as={NavLink} to='/patient-profile'>My Account</NavDropdown.Item>
                                 <NavDropdown.Item href="javascript:;">Penalties</NavDropdown.Item>
                             </NavDropdown>
-                            <Nav.Link as={NavLink} to='/patient-profile'>File a Complaint</Nav.Link>
+                            <Nav.Link as={NavLink} to='javascript:;'>File a Complaint</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>

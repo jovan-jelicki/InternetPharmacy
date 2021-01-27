@@ -1,18 +1,20 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
+import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
 import app.repository.DermatologistRepository;
 import app.service.DermatologistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
 @Service
 public class DermatologistServiceImpl implements DermatologistService {
-    private DermatologistRepository dermatologistRepository;
+    private final DermatologistRepository dermatologistRepository;
 
     @Autowired
     public DermatologistServiceImpl(DermatologistRepository dermatologistRepository) {
@@ -29,6 +31,43 @@ public class DermatologistServiceImpl implements DermatologistService {
         user.getCredentials().setPassword(passwordKit.getNewPassword());
         save(user);
     }
+
+    @Override
+    public Collection<Dermatologist> getAllDermatologistNotWorkingInPharmacy(Long id) {
+        ArrayList<Dermatologist> dermatologistArrayList = new ArrayList<>();
+        for (Dermatologist dermatologist : this.read()) {
+            if (dermatologist.getWorkingHours().size()!=0) {
+                boolean worksInPharmacy = false;
+                for (WorkingHours workingHours : dermatologist.getWorkingHours())
+                    if (workingHours.getPharmacy().getId() == id) {
+                        worksInPharmacy = true;
+                        break;
+                    }
+                if (!worksInPharmacy)
+                    dermatologistArrayList.add(dermatologist);
+            }
+            else
+                dermatologistArrayList.add(dermatologist);
+        }
+        return dermatologistArrayList;
+    }
+
+    @Override
+    public Collection<Dermatologist> getAllDermatologistWorkingInPharmacy(Long id) {
+        ArrayList<Dermatologist> dermatologistArrayList = new ArrayList<>();
+        for (Dermatologist dermatologist : this.read()) {
+            if (dermatologist.getWorkingHours().size()!=0) {
+                boolean worksInPharmacy = false;
+                for (WorkingHours workingHours : dermatologist.getWorkingHours())
+                    if (workingHours.getPharmacy().getId() == id) {
+                        worksInPharmacy = true;
+                        break;
+                    }
+                if (worksInPharmacy)
+                    dermatologistArrayList.add(dermatologist);
+            }
+        }
+        return dermatologistArrayList;    }
 
     private void validatePassword(UserPasswordDTO passwordKit, Dermatologist user) {
         String password = user.getCredentials().getPassword();
