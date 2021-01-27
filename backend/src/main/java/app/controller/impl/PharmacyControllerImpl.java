@@ -1,8 +1,10 @@
 package app.controller.impl;
 
+import app.dto.PharmacyDTO;
 import app.dto.PharmacySearchDTO;
 import app.model.pharmacy.Pharmacy;
 import app.service.PharmacyService;
+import app.util.DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +61,11 @@ public class PharmacyControllerImpl {
         if(!pharmacyService.existsById(entity.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(pharmacyService.save(entity), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/dto")
+    public void newPharmacyDTOMapping(@DTO(PharmacyDTO.class) Pharmacy pharmacy) {
+        pharmacyService.save(pharmacy);
     }
 
 }

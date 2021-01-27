@@ -51,7 +51,7 @@ export default class PharmacyEmployees extends React.Component{
     async componentDidMount() {
         await this.fetchPharmacists();
 
-        await this.fetchDermatologists();
+        await this.fetchWorkingDermatologists();
 
         console.log(this.state.pharmacists);
         await this.fetchDermatologistNotWorkingInThisPharmacy();
@@ -298,7 +298,7 @@ export default class PharmacyEmployees extends React.Component{
                     }
                 });
                 this.handleModalAddDermatologist();
-                this.fetchDermatologists();
+                this.fetchWorkingDermatologists();
             }
         )
     }
@@ -368,7 +368,7 @@ export default class PharmacyEmployees extends React.Component{
             });
     }
 
-    fetchDermatologists = async () => {
+    fetchWorkingDermatologists = async () => {
         axios
             .get('http://localhost:8080/api/dermatologists/getAllDermatologistWorkingInPharmacy/1')//todo change pharmacy ID
             .then(res => {
