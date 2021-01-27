@@ -1,10 +1,11 @@
 import React from "react";
-import {Row, Col, Nav, Button} from "react-bootstrap";
-import UserInfo from "../components/UserInfo";
-import ChangePassword from "../components/ChangePassword";
+import {Container, Row, Col, Nav, Button} from "react-bootstrap";
+import UserInfo from "../../components/UserInfo";
+import ChangePassword from "../../components/ChangePassword";
 import axios from "axios";
 
-export default class DermatologistsProfilePage extends React.Component {
+//TODO Za sada namerno postoje dve iste stranice za profil dermatologa i farmaceuta, u toku rada uvideti da li je to zaista potrebno
+export default class PharmacistProfilePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,8 +16,8 @@ export default class DermatologistsProfilePage extends React.Component {
             'town' : '',
             'country' : '',
             'phoneNumber' : '',
-             'longitude' : '',
-             'latitude' : '',
+            'longitude' : '',
+            'latitude' : '',
             'oldPass' : '',
             'newPass' : '',
             'repPass' : '',
@@ -28,7 +29,7 @@ export default class DermatologistsProfilePage extends React.Component {
     async componentDidMount() {
 
         await axios
-            .get('http://localhost:8080/api/dermatologists/1')
+            .get('http://localhost:8080/api/pharmacist/1')
             .then(res => {
                 let patient = res.data;
                 console.log(patient)
@@ -90,7 +91,7 @@ export default class DermatologistsProfilePage extends React.Component {
 
     changePass = () => {
         axios
-            .put('http://localhost:8080/api/dermatologists/pass', {
+            .put('http://localhost:8080/api/pharmacist/pass', {
                 'userId' : this.state.id,
                 'oldPassword' : this.state.oldPass,
                 'newPassword' : this.state.newPass,
@@ -131,7 +132,7 @@ export default class DermatologistsProfilePage extends React.Component {
 
     save = () => {
         axios
-            .put('http://localhost:8080/api/dermatologists', {
+            .put('http://localhost:8080/api/pharmacist', {
                 'id' : this.state.id,
                 'firstName' : this.state.firstName,
                 'lastName' : this.state.lastName,
@@ -166,27 +167,26 @@ export default class DermatologistsProfilePage extends React.Component {
         const passwords = [oldPass, newPass, repPass]
 
         return (
-                <Row className="pt-5">
-                    <Col xs={2}>
-                        <Nav defaultActiveKey="/home" className="flex-column">
-                            {!this.state.editMode
-                                ? <Button variant="dark" onClick={this.activateUpdateMode}>Edit</Button>
-                                : <Button variant="outline-secondary" onClick={this.activateUpdateMode}>Cancel</Button>
-                            }
-                            {this.state.editMode && <Button variant="primary mt-2"
-                                                            onClick={this.activateChangePasswordMode}>
-                                Change Password</Button>}
-                            {this.state.editMode && <Button variant="success mt-2"
-                                                            disabled={this.state.saveDisabled} onClick={this.save}>Save</Button>}
-                        </Nav>
-                    </Col>
-                    <Col>
-                        <UserInfo user={this.state} edit={this.state.editMode} onChange={this.handleInputChange}/>
-                        {this.state.changePasswordMode &&
-                        <ChangePassword pass={passwords} onChange={this.handleInputChange} disable={this.disableSave}/>}
-                    </Col>
-                </Row>
+            <Row className="pt-5">
+                <Col xs={2}>
+                    <Nav defaultActiveKey="/home" className="flex-column">
+                        {!this.state.editMode
+                            ? <Button variant="dark" onClick={this.activateUpdateMode}>Edit</Button>
+                            : <Button variant="outline-secondary" onClick={this.activateUpdateMode}>Cancel</Button>
+                        }
+                        {this.state.editMode && <Button variant="primary mt-2"
+                                                        onClick={this.activateChangePasswordMode}>
+                            Change Password</Button>}
+                        {this.state.editMode && <Button variant="success mt-2"
+                                                        disabled={this.state.saveDisabled} onClick={this.save}>Save</Button>}
+                    </Nav>
+                </Col>
+                <Col>
+                    <UserInfo user={this.state} edit={this.state.editMode} onChange={this.handleInputChange}/>
+                    {this.state.changePasswordMode &&
+                    <ChangePassword pass={passwords} onChange={this.handleInputChange} disable={this.disableSave}/>}
+                </Col>
+            </Row>
         );
     }
-
 }
