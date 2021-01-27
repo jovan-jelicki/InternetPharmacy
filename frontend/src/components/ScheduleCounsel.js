@@ -9,23 +9,25 @@ export default class ScheduleCounsel extends React.Component {
     render() {
         const pharmacies = this.props.data.map((pharmacy, index) => {
             const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country
+            const pharmacists = this.props.pharmacists.filter(p => p.workingHours.pharmacy.id === pharmacy.id)
+                .map((pharmacist, index) => {
+                return(
+                    <ListGroup.Item key={index}>{pharmacist.firstName + ' ' + pharmacist.lastName}</ListGroup.Item>
+                )
+            })
             return (
                 <Col>
                 <Accordion defaultActiveKey="1" className={'mt-3 mb-3'}>
                     <Card bg={'dark'} text={'white'}>
                         <Accordion.Toggle as={Card.Header} eventKey="0">
-                            <Row><b>{pharmacy.name}</b></Row>
-                            <Row> {address} </Row>
+                            <Row className={'pl-3'}><b>{pharmacy.name}</b></Row>
+                            <Row className={'pl-3'}> {address} </Row>
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey="0">
                             <Card text={'dark'}>
                             <Card.Body>
                                 <ListGroup>
-                                    <ListGroup.Item>Cras justo odio</ListGroup.Item>
-                                    <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
-                                    <ListGroup.Item>Morbi leo risus</ListGroup.Item>
-                                    <ListGroup.Item>Porta ac consectetur ac</ListGroup.Item>
-                                    <ListGroup.Item>Vestibulum at eros</ListGroup.Item>
+                                    {pharmacists}
                                 </ListGroup>
                             </Card.Body>
                             </Card>

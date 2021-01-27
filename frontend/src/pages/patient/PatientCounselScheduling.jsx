@@ -22,9 +22,14 @@ class PatientCounselScheduling extends React.Component {
             })
             .then(res => {
                 this.setState({
-                    pharmacies : res.data.map(p => p.workingHours.pharmacy)
+                    pharmacies : [...new Set(res.data.map(p => p.workingHours.pharmacy))],
+                    pharmacists : res.data
                 })
             });
+    }
+
+    removeDuplicates(pharmacists) {
+
     }
 
     render() {
@@ -35,7 +40,7 @@ class PatientCounselScheduling extends React.Component {
                         <h2>Choose what date & time fits you the best</h2>
                     </Row>
                     <DateTime search={this.search}/>
-                    <ScheduleCounsel data={this.state.pharmacies}/>
+                    <ScheduleCounsel data={this.state.pharmacies} pharmacists={this.state.pharmacists}/>
                 </Container>
             </PatientLayout>
         )
