@@ -64,18 +64,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
 
                 <h1>Medication orders</h1>
 
-                <b>Filter by :</b>
-                <ButtonGroup>
-                    <Button>All
-                        <Input ref="input1" type="radio" name="radioButtonSet" value='input1' standalone defaultChecked/>
-                    </Button>
-                    <Button>Pending
-                        <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
-                    </Button>
-                    <Button>Processed
-                        <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
-                    </Button>
-                </ButtonGroup>
+
                 <br/>
                 <table className="table table-hover">
                     <thead>
