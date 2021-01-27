@@ -9,6 +9,7 @@ import TimePicker from 'react-time-picker';
 import Registration from "../../pages/Registration";
 import CreatePharmacistModal from "./CreatePharmacistModal";
 import axios from "axios";
+import AddAppointmentModal from "./AddAppointmentModal";
 
 
 
@@ -21,7 +22,9 @@ export default class PharmacyEmployees extends React.Component{
             pharmacists: [],
             showModalAddDermatologist : false,
             showModalCreatePharmacist : false,
+            showModalAddAppointment : false,
             userType : "pharmacyAdmin",
+            dermatologistModalAddAppointment : {},
             searchPharmacist : {
                 firstName : '',
                 lastName : ''
@@ -46,37 +49,13 @@ export default class PharmacyEmployees extends React.Component{
     }
 // definise slobodne termine,pretražuje, kreira i uklanja farmaceute/dermatologe
     async componentDidMount() {
-        let dermatologists = [
-            {
-                firstName : "Mirko",
-                lastName : "Jugovic",
-                grade : 5,
-            },
-            {
-                firstName : "Maja",
-                lastName : "Jugovic",
-                grade : 3,
-            }
-        ];
-        let pharmacists = [
-            {
-                firstName : "Jelena",
-                lastName : "Matic",
-                grade : 3.25,
-            },
-            {
-                firstName : "Maja",
-                lastName : "Berovic",
-                grade : 4.1,
-            }
-        ];
-
         await this.fetchPharmacists();
 
         await this.fetchDermatologists();
 
         console.log(this.state.pharmacists);
         await this.fetchDermatologistNotWorkingInThisPharmacy();
+
     }
 
     render() {
@@ -107,6 +86,8 @@ export default class PharmacyEmployees extends React.Component{
                        <th scope="col">Ime</th>
                        <th scope="col">Prezime</th>
                        <th scope="col">Ocena</th>
+                       <th scope="col">Pocetak smene</th>
+                       <th scope="col">Kraj smene</th>
                    </tr>
                    </thead>
                    <tbody>
@@ -116,13 +97,16 @@ export default class PharmacyEmployees extends React.Component{
                        <td>{dermatologist.firstName}</td>
                        <td>{dermatologist.lastName}</td>
                        <td>{dermatologist.grade}</td>
+                       <td>{dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodStart}</td>
+                       <td>{dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodEnd}</td>
+
                        <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="primary" onClick={this.handleModalAddDermatologist}>
                                 Zakazi pregled
                            </Button>
                        </td >
                        <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                           <Button variant="warning" onClick={this.handleModalAddDermatologist}>
+                           <Button variant="warning" onClick={(e) => this.handleModalAddAppointment(dermatologist)}>
                                Definisi slobodne termine
                            </Button>
                        </td>
@@ -196,6 +180,7 @@ export default class PharmacyEmployees extends React.Component{
 
                {this.renderModalAddDermatologist()}
                {this.renderModalCreatePharmacist()}
+               {this.renderModalAddAppointment()}
 
            </div>
         );
@@ -221,6 +206,8 @@ export default class PharmacyEmployees extends React.Component{
 
 
     }
+
+
     renderModalAddDermatologist = () => {
         return (
             <Modal show={this.state.showModalAddDermatologist} onHide={this.handleModalAddDermatologist}>
@@ -329,6 +316,25 @@ export default class PharmacyEmployees extends React.Component{
         );
     }
 
+    renderModalAddAppointment = () => {
+        return (
+            <Modal show={this.state.showModalAddAppointment} onHide={this.handleModalAddAppointment}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Create Appointment</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <AddAppointmentModal closeModal = {this.handleModalAddAppointment} dermatologist={this.state.dermatologistModalAddAppointment}/>
+                </Modal.Body>
+            </Modal>
+        )
+    }
+
+    handleModalAddAppointment = (dermatologist) => {
+        this.setState({
+            showModalAddAppointment : !this.state.showModalAddAppointment,
+            dermatologistModalAddAppointment : dermatologist
+        });
+    }
     handleModalAddDermatologist = () => {
         this.setState({
             showModalAddDermatologist : !this.state.showModalAddDermatologist
