@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 public class Dermatologist extends User {
 
-   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private List<WorkingHours> workingHours;
 
    public Dermatologist() {

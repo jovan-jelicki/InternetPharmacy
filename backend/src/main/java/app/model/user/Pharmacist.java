@@ -1,16 +1,14 @@
 package app.model.user;
 
 import app.model.time.WorkingHours;
-import org.hibernate.jdbc.Work;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 public class Pharmacist extends User {
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn
     private WorkingHours workingHours;
 

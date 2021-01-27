@@ -77,4 +77,14 @@ public class DermatologistControllerImpl implements DermatologistController {
         Dermatologist dermatologist = dermatologistService.read(id).get();
         return new ResponseEntity<>(dermatologist.getWorkingHours(), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/getAllDermatologistNotWorkingInPharmacy/{id}")
+    public ResponseEntity<Collection<Dermatologist>> getAllDermatologistNotWorkingInPharmacy(@PathVariable Long id) {
+        return new ResponseEntity<>(dermatologistService.getAllDermatologistNotWorkingInPharmacy(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAllDermatologistWorkingInPharmacy/{id}")
+    public ResponseEntity<Collection<Dermatologist>> getAllDermatologistWorkingInPharmacy(@PathVariable Long id) {
+        return new ResponseEntity<>(dermatologistService.getAllDermatologistWorkingInPharmacy(id), HttpStatus.OK);
+    }
 }

@@ -3,14 +3,12 @@ package app.service.impl;
 import app.model.appointment.Appointment;
 import app.model.user.Pharmacist;
 import app.repository.AppointmentRepository;
-import app.repository.DermatologistRepository;
 import app.repository.PharmacistRepository;
 import app.service.CounselingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,7 +46,7 @@ public class CounselingServiceImpl implements CounselingService {
         Set<Pharmacist> unavailable = new HashSet<>();
         Collection<Appointment> scheduled = appointmentRepository.findAppointmentsByPatientNotNull();
         scheduled.forEach(a -> {
-            Pharmacist pharmacist = (Pharmacist) a.getExaminer();
+            Pharmacist pharmacist = pharmacistRepository.findById(a.getExaminerId()).get();
             if(a.isOverlapping(dateTime))
                 unavailable.add(pharmacist);
         });
