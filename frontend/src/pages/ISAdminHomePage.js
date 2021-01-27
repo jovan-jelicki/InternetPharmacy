@@ -96,7 +96,8 @@ export class ISAdminHomePage extends React.Component {
         else if (this.state.navbar === "loyalty")
             return (
                 <LoyaltyProgram/>
-            );else if (this.state.navbar === "pharmacyAdmin")
+            );
+        else if (this.state.navbar === "pharmacyAdmin")
             return (
                 <PharmacyAdminRegistration/>
             );

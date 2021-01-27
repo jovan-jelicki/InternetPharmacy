@@ -205,7 +205,6 @@ export default class DermatologistRegistration extends React.Component {
                     <div className="col-sm-4">
                     </div>
                 </div>
-                <h1>Working hours</h1>
 
                 <div className="row"style={{marginTop: '1rem'}}>
                     <div className="col-sm-5 mb-2">
