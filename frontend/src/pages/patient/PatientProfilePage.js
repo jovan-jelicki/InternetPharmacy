@@ -1,11 +1,11 @@
 import React from "react";
 import {Col, Container, Nav, Row, Button, Toast} from "react-bootstrap";
-import UserInfo from "../components/UserInfo";
-import AllergyPatientListing from "../components/AllergyPatientListing";
-import AddAllergy from "../components/AddAllergy";
-import ChangePassword from "../components/ChangePassword";
+import UserInfo from "../../components/UserInfo";
+import AllergyPatientListing from "../../components/AllergyPatientListing";
+import AddAllergy from "../../components/AddAllergy";
+import ChangePassword from "../../components/ChangePassword";
 import axios from "axios"
-import PatientLayout from "../layout/PatientLayout";
+import PatientLayout from "../../layout/PatientLayout";
 
 export default class PatientProfilePage extends React.Component {
     constructor(props) {
@@ -158,7 +158,7 @@ export default class PatientProfilePage extends React.Component {
             'id' : this.state.id,
             'firstName' : this.state.firstName,
             'lastName' : this.state.lastName,
-            'userType' : this.state.userType,
+            //'userType' : this.state.userType,
             'allergies' : this.state.allergies,
             'credentials' : {
                 'email' : this.state.email,

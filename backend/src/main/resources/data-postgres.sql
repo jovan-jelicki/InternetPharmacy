@@ -82,10 +82,14 @@ INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (3, 1, 3);
 
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
-VALUES (1, '2021-01-28 13:00:00', 3, 1,1);
+VALUES (1, '2021-01-26', 3, 1,1);
+INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
+VALUES (2, '2021-01-26', 3, 1,2);
 
 INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
 VALUES (0,1);
+INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
+VALUES (4,2);
 
 -- INSERT INTO pharmacy_dermatologist(pharmacy_id, dermatologist_id) VALUES (1,1);
 

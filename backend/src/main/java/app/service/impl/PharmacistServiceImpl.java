@@ -43,6 +43,7 @@ public class PharmacistServiceImpl implements PharmacistService {
         else if(!passwordKit.getNewPassword().equals(passwordKit.getRepeatedPassword()))
             throw new IllegalArgumentException("Entered passwords doesn't match");
     }
+
     @Override
     public Pharmacist save(Pharmacist entity) {
         entity.getWorkingHours().setPharmacy(pharmacyRepository.findById(entity.getWorkingHours().getPharmacy().getId()).get());
