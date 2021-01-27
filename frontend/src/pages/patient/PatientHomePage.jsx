@@ -1,5 +1,5 @@
 import React from 'react'
-import PatientLayout from '../layout/PatientLayout'
+import PatientLayout from '../../layout/PatientLayout'
 
 class PatientHomePage extends React.Component {
     constructor(props) {
