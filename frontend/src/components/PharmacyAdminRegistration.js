@@ -3,8 +3,7 @@ import {Button, Container, FormControl} from "react-bootstrap";
 import "../App.css";
 import Script from "react-load-script";
 
-
-export default class Registration extends React.Component {
+export default class PharmacyAdminRegistration extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,17 +20,17 @@ export default class Registration extends React.Component {
                     longitude: -0.127758
                 },
                 telephone: '',
-                rePassword : ''
+                rePassword: ''
             },
-            errors:{
+            errors: {
                 user: {
                     'email': 'Enter email',
                     'password': 'Enter password',
                     'firstName': 'Enter First name',
                     'lastName': 'Enter Last name',
-                    'address':'Enter address',
+                    'address': 'Enter address',
                     'telephone': 'Enter Telephone',
-                    'rePassword' : 'Repeat password'
+                    'rePassword': 'Repeat password'
                 }
             },
             validForm: false,
@@ -39,11 +38,7 @@ export default class Registration extends React.Component {
 
 
         }
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.isValidPassword = this.isValidPassword.bind(this);
-
     }
-
     handleInputChange = (event) => {
         const { name, value } = event.target;
         const user = this.state.user;
@@ -139,7 +134,7 @@ export default class Registration extends React.Component {
 
             <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
                 <div className="container">
-                    <h1 style={({marginTop: '5rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
+                    <h3 style={({ textAlignVertical: "center", textAlign: "center"})}>Pharmacy admin registration</h3>
                 </div>
 
                 <div className="row" style={{marginTop: '3rem', marginLeft:'20rem',display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
@@ -285,10 +280,10 @@ export default class Registration extends React.Component {
     }
 
     isValidPassword = (value) => {
-            if(this.state.user.password !== this.state.user.rePassword) {
-                return false;
-            }else{
-                return  true
-            }
+        if(this.state.user.password !== this.state.user.rePassword) {
+            return false;
+        }else{
+            return  true
+        }
     }
 }
