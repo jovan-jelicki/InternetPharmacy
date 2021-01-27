@@ -12,6 +12,7 @@ import MedicationOffers from "../components/pharmacy/MedicationOffers";
 import CreateOrder from "../components/pharmacy/CreateOrder";
 import CreateNewOffer from "../components/Supplier/CreateNewOffer";
 import SupplierMedicationOffers from "../components/Supplier/SupplierMedicationOffers";
+import SupplierProfile from "../components/Supplier/SupplierProfile";
 
 export default class SupplierHomePage extends React.Component {
     constructor(props) {
@@ -78,7 +79,7 @@ export default class SupplierHomePage extends React.Component {
             );
         else if (this.state.navbar === "profile")
             return (
-                <SupplierRegistration/>
+                <SupplierProfile/>
             );
 
     }
