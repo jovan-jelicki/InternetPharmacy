@@ -14,7 +14,7 @@ public class MedicationReservation {
    private Long id;
 
    @JoinColumn
-   @ManyToOne
+   @ManyToOne(cascade = CascadeType.ALL)
    private MedicationQuantity medicationQuantity;
 
    @Column
