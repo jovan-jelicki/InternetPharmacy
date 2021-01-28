@@ -5,7 +5,17 @@ export default class MedicationOffers extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            order : this.props.order,
+            order : {
+                pharmacyAdmin : {
+                    firstName : 'Mirko',
+                    lastName : 'Mirkovic'
+                },
+                deadLine : '21.3.2021.',
+                medicationQuantity: {
+
+                },
+                status : 'pending',
+            },
             medicationOffers : []
         }
     }

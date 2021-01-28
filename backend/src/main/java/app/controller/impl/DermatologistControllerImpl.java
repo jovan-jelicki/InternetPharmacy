@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.controller.DermatologistController;
 import app.dto.PharmacyNameIdDTO;
+import app.dto.DermatologistDTO;
 import app.dto.UserPasswordDTO;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -24,13 +26,13 @@ public class DermatologistControllerImpl implements DermatologistController {
         this.dermatologistService = dermatologistService;
     }
 
-    @Override
+
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Dermatologist> save(@RequestBody Dermatologist entity) {
         return new ResponseEntity<>(dermatologistService.save(entity), HttpStatus.CREATED);
     }
 
-    @Override
+
     @PutMapping(consumes = "application/json")
     public ResponseEntity<Dermatologist> update(@RequestBody Dermatologist entity) {
         if(!dermatologistService.existsById(entity.getId()))
@@ -38,10 +40,13 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistService.save(entity), HttpStatus.CREATED);
     }
 
-    @Override
+
     @GetMapping
-    public ResponseEntity<Collection<Dermatologist>> read() {
-        return new ResponseEntity<>(dermatologistService.read(), HttpStatus.OK);
+    public ResponseEntity<ArrayList<DermatologistDTO>> read() {
+        ArrayList<DermatologistDTO> dermatologistDTOS = new ArrayList<>();
+        for (Dermatologist dermatologist : dermatologistService.read())
+            dermatologistDTOS.add(new DermatologistDTO(dermatologist));
+        return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 
     @GetMapping(value = "/getPharmacy/{id}")
@@ -49,13 +54,12 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistService.getPharmacyOfPharmacist(id), HttpStatus.OK);
     }
 
-    @Override
     @GetMapping(value = "/{id}")
     public ResponseEntity<Optional<Dermatologist>> read(@PathVariable Long id) {
         return new ResponseEntity<>(dermatologistService.read(id), HttpStatus.OK);
     }
 
-    @Override
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if(!dermatologistService.existsById(id))
@@ -85,12 +89,19 @@ public class DermatologistControllerImpl implements DermatologistController {
     }
 
     @GetMapping(value = "/getAllDermatologistNotWorkingInPharmacy/{id}")
-    public ResponseEntity<Collection<Dermatologist>> getAllDermatologistNotWorkingInPharmacy(@PathVariable Long id) {
-        return new ResponseEntity<>(dermatologistService.getAllDermatologistNotWorkingInPharmacy(id), HttpStatus.OK);
+    public ResponseEntity<Collection<DermatologistDTO>> getAllDermatologistNotWorkingInPharmacy(@PathVariable Long id) {
+        ArrayList<DermatologistDTO> dermatologistDTOS = new ArrayList<>();
+        for (Dermatologist dermatologist : dermatologistService.getAllDermatologistNotWorkingInPharmacy(id))
+            dermatologistDTOS.add(new DermatologistDTO(dermatologist));
+        return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 
     @GetMapping(value = "/getAllDermatologistWorkingInPharmacy/{id}")
-    public ResponseEntity<Collection<Dermatologist>> getAllDermatologistWorkingInPharmacy(@PathVariable Long id) {
-        return new ResponseEntity<>(dermatologistService.getAllDermatologistWorkingInPharmacy(id), HttpStatus.OK);
+    public ResponseEntity<Collection<DermatologistDTO>> getAllDermatologistWorkingInPharmacy(@PathVariable Long id) {
+        ArrayList<DermatologistDTO> dermatologistDTOS = new ArrayList<>();
+        for (Dermatologist dermatologist : dermatologistService.getAllDermatologistWorkingInPharmacy(id))
+            dermatologistDTOS.add(new DermatologistDTO(dermatologist));
+        return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
+
 }
