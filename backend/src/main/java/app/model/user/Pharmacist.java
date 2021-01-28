@@ -38,8 +38,7 @@ public class Pharmacist extends User {
 
     public boolean isOverlapping(LocalDateTime timeSlot) {
         WorkingHours wh = getWorkingHours();
-        if(wh.getPeriod().getPeriodStart().isBefore(timeSlot) && wh.getPeriod().getPeriodEnd().isAfter(timeSlot))
-            return true;
-        return false;
+        return wh.getPeriod().getPeriodStart().toLocalTime().isBefore(timeSlot.toLocalTime())
+                && wh.getPeriod().getPeriodEnd().toLocalTime().isAfter(timeSlot.toLocalTime());
     }
 }
