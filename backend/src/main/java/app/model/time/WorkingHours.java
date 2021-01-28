@@ -8,7 +8,8 @@ import javax.persistence.*;
 public class WorkingHours {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "working_hours_generator")
+    @SequenceGenerator(name="working_hours_generator", sequenceName = "working_hours_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     private Period period;

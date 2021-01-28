@@ -9,7 +9,8 @@ import javax.persistence.*;
 public class Therapy {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "therapy_generator")
+    @SequenceGenerator(name="therapy_generator", sequenceName = "therapy_seq", allocationSize=50, initialValue = 1000)
     private long id;
 
     @ManyToOne

@@ -6,7 +6,8 @@ import javax.persistence.*;
 public class MedicationQuantity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medication_quantity_generator")
+    @SequenceGenerator(name="medication_quantity_generator", sequenceName = "medication_quantity_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     @ManyToOne

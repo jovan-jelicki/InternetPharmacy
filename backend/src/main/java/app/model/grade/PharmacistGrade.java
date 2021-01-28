@@ -9,7 +9,8 @@ import javax.persistence.*;
 public class PharmacistGrade {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pharmacist_grade_generator")
+    @SequenceGenerator(name="pharmacist_grade_generator", sequenceName = "pharmacist_grade_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     @ManyToOne
