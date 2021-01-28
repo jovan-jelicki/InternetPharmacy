@@ -40,9 +40,6 @@ export default class PharmacistHomePage extends React.Component {
                     <li className="nav-item">
                         <Button className="nav-link" name="medicine" onClick={this.handleChange}>Give the medicine</Button>
                     </li>
-                    <li className="nav-item">
-                        <Button className="nav-link" name="scheduleAppointment" onClick={this.handleChange}>Schedule appointment</Button>
-                    </li>
                 </ul>
                 {this.renderNavbar()}
             </div>

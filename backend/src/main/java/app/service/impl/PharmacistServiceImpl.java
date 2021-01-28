@@ -1,11 +1,13 @@
 package app.service.impl;
 
+import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
 import app.model.user.Pharmacist;
 import app.repository.PharmacistRepository;
 import app.repository.PharmacyRepository;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,6 +55,11 @@ public class PharmacistServiceImpl implements PharmacistService {
     @Override
     public Collection<Pharmacist> read() {
         return pharmacistRepository.findAll();
+    }
+
+    @Override
+    public PharmacyNameIdDTO getPharmacyOfPharmacist(Long id) {
+        return new PharmacyNameIdDTO(pharmacistRepository.findById(id).get().getWorkingHours().getPharmacy());
     }
 
     @Override

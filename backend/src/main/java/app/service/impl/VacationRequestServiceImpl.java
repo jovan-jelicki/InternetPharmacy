@@ -1,6 +1,7 @@
 package app.service.impl;
 
 import app.dto.VacationRequestDTO;
+import app.dto.VacationRequestSendDTO;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.user.EmployeeType;
@@ -8,6 +9,7 @@ import app.model.user.User;
 import app.repository.VacationRequestRepository;
 import app.service.DermatologistService;
 import app.service.PharmacistService;
+import app.service.PharmacyService;
 import app.service.VacationRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +23,13 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     private final VacationRequestRepository vacationRequestRepository;
     private final DermatologistService dermatologistService;
     private final PharmacistService pharmacistService;
+    private final PharmacyService pharmacyService;
 
 
     @Autowired
-    public VacationRequestServiceImpl(VacationRequestRepository vacationRequestRepository, DermatologistService dermatologistService, PharmacistService pharmacistService) {
+    public VacationRequestServiceImpl(PharmacyService pharmacyService,VacationRequestRepository vacationRequestRepository, DermatologistService dermatologistService, PharmacistService pharmacistService) {
         this.vacationRequestRepository = vacationRequestRepository;
+        this.pharmacyService = pharmacyService;
         this.dermatologistService = dermatologistService;
         this.pharmacistService = pharmacistService;
     }
@@ -69,6 +73,14 @@ public class VacationRequestServiceImpl implements VacationRequestService {
             vacationRequestDTOS.add(vacationRequestDTO);
         }
         return vacationRequestDTOS;
+    }
+
+    @Override
+    public VacationRequestSendDTO saveVacationRequest(VacationRequestSendDTO entity) {
+        VacationRequest vacationRequest = entity.createEntity();
+        vacationRequest.setPharmacy(pharmacyService.read(entity.getPharmacy().getId()).get());
+        save(vacationRequest);
+        return  entity;
     }
 
     @Override

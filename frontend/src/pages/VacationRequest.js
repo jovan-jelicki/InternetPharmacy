@@ -9,20 +9,42 @@ export default class VacationRequest extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            startDate : "",
-            endDate : "",
+            startDate : new Date(),
+            endDate : new Date(),
             pharmacy : "",
+            pharmacies : [],
             vacationNote : ""
         }
         this.handleChange = this.handleChange.bind(this);
+    }
+    componentDidMount() {
+     /*   if(this.props.role == "Pharmacist"){*/
+            axios
+                .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/pharmacist/getPharmacy/' + 1)
+                .then(res => {
+                    this.setState({
+                        pharmacies : [res.data],
+                        pharmacy : res.data
+                    })
+                })
+                .catch(res => alert("Wrong!"));
+   /*     }else if (this.props.role == "Dermatologist"){
+            axios
+                .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologist/getPharmacy/' + this.props.Id)
+                .then(res => {
+                    this.setState({
+                        pharmacies : res.data
+                    })
+                })
+                .catch(res => alert("Wrong!"));
+        }*/
     }
 
     handleChange(event) {
         this.setState({value: event.target.value});
     }
     render() {
-        let pharmacies = [{name : "hemofarm"}, {name : "jankovic"} ];
-        const  PharmaciesTag = pharmacies.map((pharmacy, key) =>
+        const  PharmaciesTag = this.state.pharmacies.map((pharmacy, key) =>
             <option value={pharmacy.name}> {pharmacy.name} </option>
         );
         return (
@@ -32,7 +54,7 @@ export default class VacationRequest extends React.Component {
                 <br/>
                 <Row>
                     <Col xs={2}> <p> Choose period: </p> </Col>
-                    <Col xs={-4}> <DatePicker  selected={this.state.startDate} minDate={new Date()} onChange={date => this.setState({startDate : date})} /> </Col>
+                    <Col xs={-4}> <DatePicker selected={this.state.startDate} minDate={new Date()} onChange={date => this.setState({startDate : date})} /> </Col>
                     <Col xs={-4}> <DatePicker  selected={this.state.endDate} minDate={new Date()} onChange={date => this.setState({endDate : date})} /> </Col>
                 </Row>
                 <Row>
@@ -57,13 +79,46 @@ export default class VacationRequest extends React.Component {
 
 
     sendData = () => {
+        let periodStart = this.state.startDate;
+        let periodEnd = this.state.endDate;
+
+        //let momentDate = moment(date);
+        let day = periodStart.getDate();
+        let month = parseInt(periodStart.getMonth())+1;
+        if (month < 10)
+            month = "0" + month;
+        if (parseInt(day)<10)
+            day = "0"+day;
+        let hours = parseInt(periodStart.getHours());
+        if(hours < 10)
+            hours = "0" + hours;
+        let minutes = parseInt(periodStart.getMinutes());
+        if(minutes < 10)
+            minutes = "0" + minutes;
+
+        let fullYearStart = periodStart.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes + ":00";
+        day = periodEnd.getDate();
+        month = parseInt(periodEnd.getMonth())+1;
+        if (month < 10)
+            month = "0" + month;
+        if (parseInt(day)<10)
+            day = "0"+day;
+         hours = parseInt(periodEnd.getHours());
+        if(hours < 10)
+            hours = "0" + hours;
+         minutes = parseInt(periodEnd.getMinutes());
+        if(minutes < 10)
+            minutes = "0" + minutes;
+        let fullYearEnd = periodEnd.getFullYear() + "-" + month + "-" + day  + " " + hours + ":" + minutes + ":00";
+
         axios
-            .post( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/vacationRequest', {
+            .post( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/vacationRequest/saveDto', {
                 'period' : {
-                    periodStart: this.state.startDate,
-                    periodEnd: this.state.endDate
+                    periodStart: fullYearStart,
+                    periodEnd: fullYearEnd
                 },
-                'employeeType' : 0, //props.role
+                'pharmacy' : this.state.pharmacy,
+                'employeeType' : 1, //props.role
                 'employeeId' : 1, //props.Id
                 'vacationNote' : this.state.vacationNote,
                 'vacationRequestStatus' : 0

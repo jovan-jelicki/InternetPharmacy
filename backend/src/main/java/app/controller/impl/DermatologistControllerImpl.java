@@ -1,6 +1,7 @@
 package app.controller.impl;
 
 import app.controller.DermatologistController;
+import app.dto.PharmacyNameIdDTO;
 import app.dto.DermatologistDTO;
 import app.dto.UserPasswordDTO;
 import app.model.time.WorkingHours;
@@ -48,6 +49,10 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/getPharmacy/{id}")
+    public ResponseEntity<Collection<PharmacyNameIdDTO>> getPharmacyOfPharmacist(@PathVariable Long id){
+        return new ResponseEntity<>(dermatologistService.getPharmacyOfPharmacist(id), HttpStatus.OK);
+    }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Optional<Dermatologist>> read(@PathVariable Long id) {
