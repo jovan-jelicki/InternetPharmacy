@@ -1,6 +1,7 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
+import app.model.pharmacy.Pharmacy;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
 import app.repository.DermatologistRepository;
@@ -52,6 +53,8 @@ public class DermatologistServiceImpl implements DermatologistService {
         return dermatologistArrayList;
     }
 
+
+
     @Override
     public Collection<Dermatologist> getAllDermatologistWorkingInPharmacy(Long id) {
         ArrayList<Dermatologist> dermatologistArrayList = new ArrayList<>();
@@ -68,6 +71,18 @@ public class DermatologistServiceImpl implements DermatologistService {
             }
         }
         return dermatologistArrayList;    }
+
+    @Override
+    public WorkingHours workingHoursInSpecificPharmacy(Long dermatologistId, Pharmacy pharmacy) {
+        Dermatologist dermatologist = dermatologistRepository.findById(dermatologistId).get();
+        for (WorkingHours workingHours : dermatologist.getWorkingHours()) {
+            if (workingHours.getPharmacy().getId() == pharmacy.getId()) {
+                return  workingHours;
+            }
+        }
+
+        return null;
+    }
 
     private void validatePassword(UserPasswordDTO passwordKit, Dermatologist user) {
         String password = user.getCredentials().getPassword();
