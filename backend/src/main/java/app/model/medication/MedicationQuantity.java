@@ -42,4 +42,12 @@ public class MedicationQuantity {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public void addQuantity(int quantity) {
+        this.quantity = this.quantity + quantity;
+    }
+
+    public void subtractQuantity(int quantity) {
+        this.quantity = this.quantity - quantity;
+    }
 }

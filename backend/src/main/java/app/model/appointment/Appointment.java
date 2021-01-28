@@ -127,8 +127,7 @@ public class Appointment {
    }
 
    public boolean isOverlapping(LocalDateTime timeSlot) {
-      if(period.getPeriodStart().isBefore(timeSlot) && period.getPeriodEnd().isAfter(timeSlot))
-         return true;
-      return false;
+      return period.getPeriodStart().toLocalTime().isBefore(timeSlot.toLocalTime()) &&
+              period.getPeriodEnd().toLocalTime().isAfter(timeSlot.toLocalTime());
    }
 }
