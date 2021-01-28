@@ -9,6 +9,10 @@ services:
 notifications:
   email: false
 
+before_install:
+  - cd backend
+  - chmod +x mvnw
+
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
