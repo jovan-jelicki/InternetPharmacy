@@ -41,7 +41,7 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(appointmentService.save(entity), HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/getEvents")
+    @PostMapping(value = "/getEvents")
     public ResponseEntity<Collection<EventDTO>> getEventsByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getAllEventsOfExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
