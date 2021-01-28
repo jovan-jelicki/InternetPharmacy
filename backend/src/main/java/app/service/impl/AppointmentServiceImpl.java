@@ -1,6 +1,8 @@
 package app.service.impl;
 
+import app.dto.EventDTO;
 import app.model.appointment.Appointment;
+import app.model.appointment.AppointmentStatus;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
@@ -13,6 +15,7 @@ import app.service.DermatologistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -40,6 +43,21 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> read() {
         return appointmentRepository.findAll();
+    }
+
+    @Override
+    public Collection<Appointment> getAllByExaminerAndAppointmentStatus(Long examinerId, EmployeeType type, AppointmentStatus status){
+        return appointmentRepository.getAllByExaminerAndAppointmentStatus(examinerId, type, status);
+    }
+
+    @Override
+    public Collection<EventDTO> getAllEventsOfExaminer(Long examinerId, EmployeeType type){
+        Collection<Appointment> appointments = getAllByExaminerAndAppointmentStatus(examinerId, type, AppointmentStatus.available);
+        Collection<EventDTO> eventDTOS = new ArrayList<>();
+        for(Appointment a : appointments){
+            eventDTOS.add(new EventDTO(a));
+        }
+        return eventDTOS;
     }
 
     @Override

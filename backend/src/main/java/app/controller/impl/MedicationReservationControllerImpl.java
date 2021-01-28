@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.controller.MedicationReservationController;
 import app.dto.GetMedicationReservationDTO;
+import app.dto.MedicationReservationSimpleInfoDTO;
 import app.model.medication.MedicationReservation;
 import app.model.medication.MedicationReservationStatus;
 import app.service.MedicationReservationService;
@@ -39,20 +40,22 @@ public class MedicationReservationControllerImpl implements MedicationReservatio
 
     @Override
     @PostMapping(value = "/getMedicationReservation")
-    public ResponseEntity<MedicationReservation> getMedicationReservationFromPharmacy(@RequestBody GetMedicationReservationDTO getMedicationReservationDTO){
+    public ResponseEntity<MedicationReservationSimpleInfoDTO> getMedicationReservationFromPharmacy(@RequestBody GetMedicationReservationDTO getMedicationReservationDTO){
         MedicationReservation medicationReservation = medicationReservationService.getMedicationReservationFromPharmacy(getMedicationReservationDTO);
         if(medicationReservation == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(medicationReservation, HttpStatus.OK);
+        MedicationReservationSimpleInfoDTO medicationReservationSimpleInfoDTO = new MedicationReservationSimpleInfoDTO(medicationReservation);
+        return new ResponseEntity<>(medicationReservationSimpleInfoDTO, HttpStatus.OK);
     }
 
     @Override
-    @PutMapping(consumes = "application/json", value = "/giveMedicine")
-    public ResponseEntity<Void> giveMedicine(@RequestBody MedicationReservation entity){
-        if(!medicationReservationService.existsById(entity.getId()))
+    @PutMapping(value = "/giveMedicine/{id}")
+    public ResponseEntity<Void> giveMedicine(@PathVariable Long id){
+        MedicationReservation medicationReservation = medicationReservationService.read(id).get();
+        if(medicationReservation == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        entity.setStatus(MedicationReservationStatus.successful);
-        medicationReservationService.save(entity);
+        medicationReservation.setStatus(MedicationReservationStatus.successful);
+        medicationReservationService.save(medicationReservation);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

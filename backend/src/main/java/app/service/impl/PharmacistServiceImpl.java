@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
 import app.model.user.Pharmacist;
 import app.repository.PharmacistRepository;
@@ -53,6 +54,11 @@ public class PharmacistServiceImpl implements PharmacistService {
     @Override
     public Collection<Pharmacist> read() {
         return pharmacistRepository.findAll();
+    }
+
+    @Override
+    public PharmacyNameIdDTO getPharmacyOfPharmacist(Long id) {
+        return new PharmacyNameIdDTO(pharmacistRepository.findById(id).get().getWorkingHours().getPharmacy());
     }
 
     @Override

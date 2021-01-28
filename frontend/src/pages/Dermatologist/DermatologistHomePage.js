@@ -36,9 +36,6 @@ export default class DermatologistHomePage extends React.Component {
                     <li className="nav-item">
                         <Button className="nav-link" name="profile" onClick={this.handleChange}>Account</Button>
                     </li>
-                    <li className="nav-item">
-                        <Button className="nav-link" name="scheduleAppointment" onClick={this.handleChange}>Schedule appointment</Button>
-                    </li>
                 </ul>
                 {this.renderNavbar()}
             </div>
