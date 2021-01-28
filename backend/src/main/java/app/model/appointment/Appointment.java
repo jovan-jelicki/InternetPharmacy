@@ -24,8 +24,8 @@ public class Appointment {
    @JoinColumn
    private Pharmacy pharmacy;
 
-   @Column
-   private boolean isPatientPresent;
+   @Enumerated(EnumType.ORDINAL)
+   private AppointmentStatus appointmentStatus;
 
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JoinColumn
@@ -46,13 +46,13 @@ public class Appointment {
    public Appointment() {
    }
 
-    public Long getId() {
-        return id;
-    }
+   public Long getId() {
+      return id;
+   }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+   public void setId(Long id) {
+      this.id = id;
+   }
 
    public Long getExaminerId() {
       return examinerId;
@@ -78,12 +78,12 @@ public class Appointment {
       this.pharmacy = pharmacy;
    }
 
-   public boolean isPatientPresent() {
-      return isPatientPresent;
+   public AppointmentStatus getAppointmentStatus() {
+      return appointmentStatus;
    }
 
-   public void setPatientPresent(boolean patientPresent) {
-      isPatientPresent = patientPresent;
+   public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
+      this.appointmentStatus = appointmentStatus;
    }
 
    public Patient getPatient() {
