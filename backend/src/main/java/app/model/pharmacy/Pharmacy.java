@@ -13,7 +13,8 @@ import java.util.List;
 public class Pharmacy {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pharmacy_generator")
+    @SequenceGenerator(name="pharmacy_generator", sequenceName = "pharmacy_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     @Column

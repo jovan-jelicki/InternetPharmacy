@@ -1,6 +1,7 @@
 package app.repository;
 
 import app.model.time.VacationRequest;
+import app.model.time.VacationRequestStatus;
 import app.model.user.EmployeeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,6 @@ public interface VacationRequestRepository extends JpaRepository<VacationRequest
     Collection<VacationRequest> findByPharmacyId(Long pharmacyId);
 
     Collection<VacationRequest> findByPharmacyIdAndEmployeeType(Long pharmacyId, EmployeeType employeeType);
+
+    Collection<VacationRequest> findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(Long employeeId, EmployeeType employeeType, VacationRequestStatus status);
 }

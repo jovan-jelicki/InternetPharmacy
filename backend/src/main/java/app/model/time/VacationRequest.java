@@ -9,7 +9,8 @@ import javax.persistence.*;
 public class VacationRequest {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vacation_generator")
+   @SequenceGenerator(name="vacation_generator", sequenceName = "vacation_seq", allocationSize=50, initialValue = 1000)
    private Long id;
 
    @Column

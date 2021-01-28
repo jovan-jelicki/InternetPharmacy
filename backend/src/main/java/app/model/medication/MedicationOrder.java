@@ -9,7 +9,8 @@ import java.util.List;
 @Entity
 public class MedicationOrder {
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medication_order_generator")
+   @SequenceGenerator(name="medication_order_generator", sequenceName = "medication_order_seq", allocationSize=50, initialValue = 1000)
    private Long id;
 
    @Column

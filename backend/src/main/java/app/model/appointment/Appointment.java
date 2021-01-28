@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Appointment {
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointment_generator")
+   @SequenceGenerator(name="appointment_generator", sequenceName = "appointment_seq", allocationSize=50, initialValue = 1000)
    private Long id;
 
    @Column
@@ -127,8 +128,7 @@ public class Appointment {
    }
 
    public boolean isOverlapping(LocalDateTime timeSlot) {
-      if(period.getPeriodStart().isBefore(timeSlot) && period.getPeriodEnd().isAfter(timeSlot))
-         return true;
-      return false;
+      return period.getPeriodStart().toLocalTime().isBefore(timeSlot.toLocalTime()) &&
+              period.getPeriodEnd().toLocalTime().isAfter(timeSlot.toLocalTime());
    }
 }
