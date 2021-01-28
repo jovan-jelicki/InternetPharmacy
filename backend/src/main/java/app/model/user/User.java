@@ -1,17 +1,14 @@
 package app.model.user;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
 
-import static javax.persistence.InheritanceType.TABLE_PER_CLASS;
 
-@Entity
-@Inheritance(strategy=TABLE_PER_CLASS)
-public class User {
 
-    @Id
-    @SequenceGenerator(name = "mySeqGen", sequenceName = "mySeq", initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGen")
-    private Long id;
+@MappedSuperclass
+public abstract class User {
 
     @Column(nullable = false)
     private String firstName;
@@ -27,14 +24,6 @@ public class User {
     private UserType userType;
 
     public User() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;

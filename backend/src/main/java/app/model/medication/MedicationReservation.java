@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 public class MedicationReservation {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medication_reservation_generator")
+   @SequenceGenerator(name="medication_reservation_generator", sequenceName = "medication_reservation_seq", allocationSize=50, initialValue = 1000)
    private Long id;
 
    @JoinColumn

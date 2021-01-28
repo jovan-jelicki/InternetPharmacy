@@ -9,7 +9,8 @@ import javax.persistence.*;
 public class DermatologistGrade {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dermatologist_grade_generator")
+    @SequenceGenerator(name="dermatologist_grade_generator", sequenceName = "dermatologist_grade_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     @ManyToOne

@@ -10,6 +10,11 @@ import java.util.List;
 @Entity
 public class Patient extends User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "patient_generator")
+    @SequenceGenerator(name="patient_generator", sequenceName = "patient_seq", allocationSize=50, initialValue = 1000)
+    private Long id;
+
     @Column
     private int penaltyCount;
 
@@ -20,6 +25,14 @@ public class Patient extends User {
     private List<Promotion> promotions;
 
     public Patient() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getPenaltyCount() {

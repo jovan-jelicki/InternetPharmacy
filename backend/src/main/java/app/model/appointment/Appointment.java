@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Appointment {
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointment_generator")
+   @SequenceGenerator(name="appointment_generator", sequenceName = "appointment_seq", allocationSize=50, initialValue = 1000)
    private Long id;
 
    @Column

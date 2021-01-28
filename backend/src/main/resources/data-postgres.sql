@@ -120,10 +120,10 @@ INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, p
 -- INSERT INTO pharmacy_pharmacist(pharmacy_id, pharmacist_id) VALUES (1,1);
 -- INSERT INTO pharmacy_pharmacist(pharmacy_id, pharmacist_id) VALUES (0,2);
 
-INSERT INTO vacation_request( employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
-    VALUES (3,0, '2021-03-01', '2021-02-10', 'Godisnji odmor dermatolog', 1, 0);
-INSERT INTO vacation_request( employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
-    VALUES (1,1, '2021-07-01', '2021-07-08', 'Godisnji odmor farmaceut', 0, 1);
+INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
+    VALUES (1,3,0, '2021-03-01', '2021-02-10', 'Godisnji odmor dermatolog', 1, 0);
+INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
+    VALUES (2,1,1, '2021-07-01', '2021-07-08', 'Godisnji odmor farmaceut', 0, 1);
 
 
 insert into appointment (id, cost, examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
