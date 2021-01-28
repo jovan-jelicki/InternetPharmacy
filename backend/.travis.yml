@@ -10,7 +10,7 @@ notifications:
   email: false
 
 before_install:
-  - chmod +x mvn
+  - chmod +x mvnw
 
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
