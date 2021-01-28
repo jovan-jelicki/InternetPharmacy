@@ -5,7 +5,6 @@ import app.dto.MedicationReservationSimpleInfoDTO;
 import app.model.medication.MedicationReservation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 public interface MedicationReservationController extends CRUDController<MedicationReservation> {
     ResponseEntity<Void> giveMedicine(@PathVariable Long id);

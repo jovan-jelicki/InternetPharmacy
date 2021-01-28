@@ -1,8 +1,8 @@
 package app.controller.impl;
 
 import app.controller.DermatologistController;
-import app.dto.PharmacyNameIdDTO;
 import app.dto.DermatologistDTO;
+import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
@@ -34,10 +34,10 @@ public class DermatologistControllerImpl implements DermatologistController {
 
 
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<Dermatologist> update(@RequestBody Dermatologist entity) {
+    public ResponseEntity<Dermatologist> update(@RequestBody DermatologistDTO entity) {
         if(!dermatologistService.existsById(entity.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(dermatologistService.save(entity), HttpStatus.CREATED);
+        return new ResponseEntity<>(dermatologistService.save(convertDTOtoEntity(entity)), HttpStatus.CREATED);
     }
 
 
@@ -102,6 +102,17 @@ public class DermatologistControllerImpl implements DermatologistController {
         for (Dermatologist dermatologist : dermatologistService.getAllDermatologistWorkingInPharmacy(id))
             dermatologistDTOS.add(new DermatologistDTO(dermatologist));
         return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
+    }
+
+    private Dermatologist convertDTOtoEntity(DermatologistDTO dermatologistDTO) {
+        Dermatologist dermatologist = dermatologistService.read(dermatologistDTO.getId()).get();
+        dermatologist.setId(dermatologistDTO.getId());
+        dermatologist.setWorkingHours(dermatologistDTO.getWorkingHours());
+        dermatologist.setFirstName(dermatologistDTO.getFirstName());
+        dermatologist.setLastName(dermatologistDTO.getLastName());
+        dermatologist.setContact(dermatologistDTO.getContact());
+
+        return dermatologist;
     }
 
 }

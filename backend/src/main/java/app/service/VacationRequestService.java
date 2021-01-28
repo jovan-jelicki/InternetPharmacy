@@ -4,8 +4,6 @@ import app.dto.VacationRequestDTO;
 import app.dto.VacationRequestSendDTO;
 import app.model.time.VacationRequest;
 import app.model.user.EmployeeType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collection;
 

@@ -5,7 +5,6 @@ import app.dto.UserPasswordDTO;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
-import app.model.user.Pharmacist;
 import app.repository.DermatologistRepository;
 import app.service.DermatologistService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +54,8 @@ public class DermatologistServiceImpl implements DermatologistService {
         return dermatologistArrayList;
     }
 
+
+
     //query nije radio
     @Override
     public Collection<PharmacyNameIdDTO> getPharmacyOfPharmacist(Long id) {
@@ -85,6 +86,18 @@ public class DermatologistServiceImpl implements DermatologistService {
             }
         }
         return dermatologistArrayList;    }
+
+    @Override
+    public WorkingHours workingHoursInSpecificPharmacy(Long dermatologistId, Pharmacy pharmacy) {
+        Dermatologist dermatologist = dermatologistRepository.findById(dermatologistId).get();
+        for (WorkingHours workingHours : dermatologist.getWorkingHours()) {
+            if (workingHours.getPharmacy().getId() == pharmacy.getId()) {
+                return  workingHours;
+            }
+        }
+
+        return null;
+    }
 
     private void validatePassword(UserPasswordDTO passwordKit, Dermatologist user) {
         String password = user.getCredentials().getPassword();

@@ -31,6 +31,7 @@ public class DermatologistDTO {
 
         for (WorkingHours workingHours : this.workingHours)
             workingHours.getPharmacy().setMedicationReservation(null);
-
     }
+
+    public DermatologistDTO() {}
 }
