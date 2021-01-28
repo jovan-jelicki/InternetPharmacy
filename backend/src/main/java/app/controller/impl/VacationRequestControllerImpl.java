@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.controller.VacationRequestController;
 import app.dto.VacationRequestDTO;
+import app.dto.VacationRequestSendDTO;
 import app.model.time.VacationRequest;
 import app.model.user.EmployeeType;
 import app.service.VacationRequestService;
@@ -27,6 +28,11 @@ public class VacationRequestControllerImpl implements VacationRequestController 
     @PostMapping(consumes = "application/json")
     public ResponseEntity<VacationRequest> save(@RequestBody VacationRequest entity) {
         return new ResponseEntity<>(vacationRequestService.save(entity), HttpStatus.CREATED);
+    }
+
+    @PostMapping(consumes = "application/json", value = "/saveDto")
+    public ResponseEntity<VacationRequestSendDTO> saveVacationRequest(@RequestBody VacationRequestSendDTO entity) {
+        return new ResponseEntity<>(vacationRequestService.saveVacationRequest(entity), HttpStatus.CREATED);
     }
 
     @Override

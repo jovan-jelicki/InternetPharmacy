@@ -67,13 +67,12 @@ export default class AddAppointmentModal extends React.Component {
         let check = fullYear + " " + this.state.period.periodStart + ":00";
         let  a = "2020-01-01 12:00:00";
         axios.post('http://localhost:8080/api/appointment', {
-            examiner: {
-                id : this.props.dermatologist.id
-            },
+            examinerId: this.props.dermatologist.id,
             pharmacy: {
                 id : 1
             },
             type : 'dermatologist',
+            appointmentStatus : 'available',
             cost : 2000,
             period : {
                 periodStart : fullYear + " " + this.state.period.periodStart + ":00",

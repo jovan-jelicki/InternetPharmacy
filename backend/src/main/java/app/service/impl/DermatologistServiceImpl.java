@@ -1,8 +1,11 @@
 package app.service.impl;
 
+import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
+import app.model.pharmacy.Pharmacy;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
+import app.model.user.Pharmacist;
 import app.repository.DermatologistRepository;
 import app.service.DermatologistService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,20 @@ public class DermatologistServiceImpl implements DermatologistService {
                 dermatologistArrayList.add(dermatologist);
         }
         return dermatologistArrayList;
+    }
+
+    //query nije radio
+    @Override
+    public Collection<PharmacyNameIdDTO> getPharmacyOfPharmacist(Long id) {
+        ArrayList<Pharmacy> pharmacyList = new ArrayList<>();
+        for (WorkingHours w : dermatologistRepository.findById(id).get().getWorkingHours()){
+            pharmacyList.add(w.getPharmacy());
+        }
+        ArrayList<PharmacyNameIdDTO> retVal = new ArrayList<>();
+        for(Pharmacy p : pharmacyList){
+            retVal.add(new PharmacyNameIdDTO(p));
+        }
+        return retVal;
     }
 
     @Override

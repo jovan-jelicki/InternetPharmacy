@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "api/pharmacy")
@@ -24,20 +24,18 @@ public class PharmacyControllerImpl {
         this.pharmacyService = pharmacyService;
     }
 
-//    @GetMapping
-//    public ResponseEntity<String> getHello() {
-//        return new ResponseEntity<String>("Hi", HttpStatus.OK);
-//    }
-
     @GetMapping
-    public ResponseEntity<Collection<Pharmacy>> read() {
-        return new ResponseEntity<>(pharmacyService.read(), HttpStatus.OK);
+    public ResponseEntity<Collection<PharmacyDTO>> read() {
+        ArrayList<PharmacyDTO> pharmacyDTOS = new ArrayList<>();
+        for (Pharmacy pharmacy : pharmacyService.read())
+            pharmacyDTOS.add(new PharmacyDTO(pharmacy));
+        return new ResponseEntity<>(pharmacyDTOS, HttpStatus.OK);
     }
 
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Optional<Pharmacy>> read(@PathVariable Long id) {
-        return new ResponseEntity<>(pharmacyService.read(id), HttpStatus.OK);
+    public ResponseEntity<PharmacyDTO> read(@PathVariable Long id) {
+        return new ResponseEntity<>(new PharmacyDTO(pharmacyService.read(id).get()), HttpStatus.OK);
     }
 
     @PostMapping(value = "/search")
@@ -57,10 +55,10 @@ public class PharmacyControllerImpl {
     }
 
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<Pharmacy> update(@RequestBody Pharmacy entity) {
+    public ResponseEntity<PharmacyDTO> update(@RequestBody Pharmacy entity) {
         if(!pharmacyService.existsById(entity.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(pharmacyService.save(entity), HttpStatus.CREATED);
+        return new ResponseEntity<>(new PharmacyDTO(pharmacyService.save(entity)), HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/dto")

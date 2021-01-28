@@ -51,13 +51,7 @@ export default class PharmacistGiveMedicine extends React.Component {
 
     giveMedicine = () => {
         axios
-            .put( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medicationReservation/giveMedicine', {
-                id : this.state.reservation.id,
-                patient : this.state.reservation.patient,
-                status : this.state.reservation.status,
-                pickUpDate : this.state.reservation.pickUpDate,
-                medicationQuantity : this.state.reservation.medicationQuantity
-            })
+            .put( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medicationReservation/giveMedicine/' + this.state.reservation.id)
             .then(res => {
                     this.setState({
                         reservationFound : false,
