@@ -1,10 +1,7 @@
 package app.controller.impl;
 
-import app.dto.PharmacyNameIdDTO;
-import app.dto.UserPasswordDTO;
-import app.model.pharmacy.Pharmacy;
-import app.model.time.WorkingHours;
 import app.dto.PharmacistDTO;
+import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
 import app.dto.WorkingHoursDTO;
 import app.model.user.Pharmacist;

@@ -288,7 +288,7 @@ export default class PharmacyEmployees extends React.Component{
         let workingHours = this.state.workingHours;
         workingHours.period.periodStart = '2017-01-13 ' + workingHours.period.periodStart + ":00";
         workingHours.period.periodEnd = '2017-01-13 ' + workingHours.period.periodEnd + ":00";
-        finalDermatologist.workingHours.push(this.state.workingHours);
+        finalDermatologist.workingHours.push(workingHours);
         console.log(finalDermatologist);
         axios.put("http://localhost:8080/api/dermatologists", finalDermatologist).then(() => {
                 this.setState({
