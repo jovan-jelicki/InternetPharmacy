@@ -232,7 +232,7 @@ export default class Registration extends React.Component {
                 }
             })
             .then(res => {
-                
+
             });
 
     }
