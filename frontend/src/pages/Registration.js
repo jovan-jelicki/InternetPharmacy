@@ -2,6 +2,7 @@ import React from "react";
 import {Button, Container, FormControl} from "react-bootstrap";
 import "../App.css";
 import Script from "react-load-script";
+import axios from "axios";
 
 
 export default class Registration extends React.Component {
@@ -21,7 +22,15 @@ export default class Registration extends React.Component {
                     longitude: -0.127758
                 },
                 telephone: '',
-                rePassword : ''
+
+            },
+            rePassword : '',
+            addressPom: {
+                street: "",
+                town: "",
+                country: "",
+                latitude: 51.507351,
+                longitude: -0.127758
             },
             errors:{
                 user: {
@@ -45,11 +54,25 @@ export default class Registration extends React.Component {
     }
 
     handleInputChange = (event) => {
+        console.log(event.target.value)
         const { name, value } = event.target;
         const user = this.state.user;
         user[name] = value;
 
         this.setState({ user });
+        console.log(this.state.user.password)
+
+        this.validationErrorMessage(event);
+    }
+
+    handlePassChange = (event) => {
+        console.log("dosao")
+        console.log(event.target.value)
+        this.state.rePassword=event.target.value;
+       // this.setState({
+       //     rePassword: event.target.value
+       // });
+        console.log(this.state.rePassword)
         this.validationErrorMessage(event);
     }
 
@@ -73,17 +96,18 @@ export default class Registration extends React.Component {
                 if (this.setAddressParams(address)) {
                     this.setState(
                         {
-                            user: {
-                                address: {
+                                addressPom: {
                                     street: this.state.streetP,
                                     town: this.state.townP,
                                     country: this.state.countryP,
                                     latitude: addressObject.geometry.location.lat(),
-                                    longitude: addressObject.geometry.location.lng()
-                                }
+                                    longitude: addressObject.geometry.location.lng(),
+
+
                             },
                         }
                     );
+                  this.state.user.address=this.state.addressPom;
                 }
             } else {
                 this.addressErrors(false)
@@ -98,7 +122,7 @@ export default class Registration extends React.Component {
         for (i = 0; i < address.length; i++) {
             if (address[i].types == "route") {
                 street = address[i].long_name;
-            } else if (address[i].types == "street_numbe") {
+            } else if (address[i].types == "street_number") {
                 number = address[i].long_name;
             } else if (address[i].types[0] == "locality") {
                 city = address[i].long_name;
@@ -118,7 +142,7 @@ export default class Registration extends React.Component {
             if (number == undefined)
                 this.state.streetP = street;
             else
-                this.state.streetP = street + number;
+                this.state.streetP = street +" "+number;
         }
         return true;
     }
@@ -134,6 +158,87 @@ export default class Registration extends React.Component {
         }
         this.setState({errors});
     }
+    submitForm = async (event) => {
+        this.setState({ submitted: true });
+        const user = this.state.user;
+        console.log(this.state.user)
+
+        event.preventDefault();
+        if (this.validateForm(this.state.errors)) {
+            console.info('Valid Form')
+        } else {
+            console.log('Invalid Form')
+        }
+        this.sendParams()
+    }
+
+    validationErrorMessage = (event) => {
+        const { name, value } = event.target;
+        let errors = this.state.errors;
+
+        switch (name) {
+            case 'firstName':
+                errors.user.firstName = value.length < 1 ? 'Enter First Name' : '';
+                break;
+            case 'lastName':
+                errors.user.lastName = value.length < 1 ? 'Enter Last Name' : '';
+                break;
+            case 'email':
+                errors.user.email = this.isValidEmail(value) ? '' : 'Email is not valid!';
+                break;
+            case 'telephone':
+                errors.user.telephone = this.isValidTelephone(value) ? 'Enter valid telephone number' : '';
+                break;
+            case 'country':
+                errors.user.country = value.length < 1 ?  'Enter Country' : '';
+                break;
+            case 'city':
+                errors.user.city = value.length < 1 ?  'Enter City' : '';
+                break;
+            case 'password':
+                errors.user.password = value.length < 1 ? 'Enter Password' : '';
+                break;
+            case 'rePassword':
+                errors.user.rePassword = this.isValidPassword(value) ? '' : 'This password must match the previous';
+                break;
+            default:
+                break;
+        }
+
+        this.setState({ errors });
+    }
+
+    async sendParams() {
+        console.log("DOSAO")
+        await axios
+            .post('http://localhost:8080/api/patients/save',
+                );
+
+    }
+    validateForm = (errors) => {
+        let valid = true;
+        Object.entries(errors.user).forEach(item => {
+            console.log(item)
+            item && item[1].length > 0 && (valid = false)
+        })
+        return valid;
+    }
+    isValidEmail = (value) => {
+        return !(value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,64}$/i.test(value))
+    }
+
+    isValidTelephone = (value) => {
+        return !(value && /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[0-9]{2,3}[-\s\./0-9]*$/i.test(value))
+    }
+
+    isValidPassword = (value) => {
+        if(this.state.user.password !== this.state.rePassword) {
+            return false;
+        }else{
+            return  true
+        }
+    }
+
     render() {
         return (
 
@@ -202,7 +307,7 @@ export default class Registration extends React.Component {
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Repeat password</label>
                     <div className="col-sm-6 mb-2">
-                        <FormControl name="rePassword" type="password" placeholder="Repeat new Password" value={this.state.user.rePassword} onChange={(e) => { this.handleInputChange(e)} }/>
+                        <FormControl name="rePassword" type="password" placeholder="Repeat new Password" value={this.state.rePassword} onChange={(e) => { this.handlePassChange(e)} }/>
                         { this.state.submitted && this.state.errors.user.rePassword.length > 0 &&  <span className="text-danger">{this.state.errors.user.rePassword}</span>}
 
                     </div>
@@ -221,74 +326,5 @@ export default class Registration extends React.Component {
             </div>
         );
     }
-    submitForm = async (event) => {
-        this.setState({ submitted: true });
-        const user = this.state.user;
-        event.preventDefault();
-        if (this.validateForm(this.state.errors)) {
-            console.info('Valid Form')
-        } else {
-            console.log('Invalid Form')
-        }
-    }
 
-    validationErrorMessage = (event) => {
-        const { name, value } = event.target;
-        let errors = this.state.errors;
-
-        switch (name) {
-            case 'firstName':
-                errors.user.firstName = value.length < 1 ? 'Enter First Name' : '';
-                break;
-            case 'lastName':
-                errors.user.lastName = value.length < 1 ? 'Enter Last Name' : '';
-                break;
-            case 'email':
-                errors.user.email = this.isValidEmail(value) ? '' : 'Email is not valid!';
-                break;
-            case 'telephone':
-                errors.user.telephone = this.isValidTelephone(value) ? 'Enter valid telephone number' : '';
-                break;
-            case 'country':
-                errors.user.country = value.length < 1 ?  'Enter Country' : '';
-                break;
-            case 'city':
-                errors.user.city = value.length < 1 ?  'Enter City' : '';
-                break;
-            case 'password':
-                errors.user.password = value.length < 1 ? 'Enter Password' : '';
-                break;
-            case 'rePassword':
-                errors.user.rePassword = this.isValidPassword(value) ? '' : 'This password must match the previous';
-                break;
-            default:
-                break;
-        }
-
-        this.setState({ errors });
-    }
-
-    validateForm = (errors) => {
-        let valid = true;
-        Object.entries(errors.user).forEach(item => {
-            console.log(item)
-            item && item[1].length > 0 && (valid = false)
-        })
-        return valid;
-    }
-    isValidEmail = (value) => {
-        return !(value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,64}$/i.test(value))
-    }
-
-    isValidTelephone = (value) => {
-        return !(value && /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[0-9]{2,3}[-\s\./0-9]*$/i.test(value))
-    }
-
-    isValidPassword = (value) => {
-            if(this.state.user.password !== this.state.user.rePassword) {
-                return false;
-            }else{
-                return  true
-            }
-    }
 }

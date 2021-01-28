@@ -24,8 +24,10 @@ public class PatientControllerImpl implements PatientController {
     }
 
     @Override
-    @PostMapping(consumes = "application/json")
+    @PostMapping(consumes = "application/json", value="/save")
     public ResponseEntity<Patient> save(@RequestBody Patient entity) {
+        System.out.println(entity);
+
         return new ResponseEntity<>(patientUserService.save(entity), HttpStatus.CREATED);
     }
 
