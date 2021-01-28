@@ -91,7 +91,7 @@ INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VA
 
 
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
-VALUES (0, '2021-01-30', 3, 1,0);
+VALUES (0, '2021-01-31', 3, 1,0);
 -- INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 -- VALUES (2, '2021-01-26', 3, 1,6);
 
