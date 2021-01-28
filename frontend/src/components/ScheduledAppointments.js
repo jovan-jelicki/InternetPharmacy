@@ -18,9 +18,9 @@ export default class ScheduledAppointments extends React.Component {
     renderAll = () => {
         const Events = this.props.events.map((appointment, key) =>
             <tr>
-                <td>{appointment.pharmacy.name}</td>
-                <td>{appointment.patient.firstName}</td>
-                <td>{appointment.patient.lastName}</td>
+                <td>{appointment.pharmacyName}</td>
+                <td>{appointment.firstName}</td>
+                <td>{appointment.lastName}</td>
                 <td>{moment(appointment.period.periodStart).format('DD.MM.YYYY hh:mm')}</td>
                 <td>{moment(appointment.period.periodEnd).format('DD.MM.YYYY hh:mm')}</td>
                 <td> <Button onClick={() => this.handleClickStart(appointment)}> Start </Button> </td>
@@ -48,7 +48,7 @@ export default class ScheduledAppointments extends React.Component {
     }
 
     handleClickCancel = (appointment) => {
-        alert(appointment.patient.firstName);
+        alert(appointment.firstName);
     }
 
     handleClickStart = (appointment) => {

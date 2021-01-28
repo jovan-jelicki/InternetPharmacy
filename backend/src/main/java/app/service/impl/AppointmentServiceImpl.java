@@ -54,15 +54,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Collection<Appointment> getAllScheduledNotFinishedByExaminer(Long examinerId, EmployeeType type) {
         return appointmentRepository.getAllScheduledNotFinishedByExaminer(examinerId, type);
     }
-    //Promeni status na scheduled i resio problem
+
     @Override
     public Collection<AppointmentScheduledDTO> getAllAppointmentsByExaminer(Long examinerId, EmployeeType type) {
         Collection<AppointmentScheduledDTO> appointmentScheduledDTOS = new ArrayList<>();
-        Collection<Appointment> appointments = getAllByExaminerAndAppointmentStatus(examinerId, type, AppointmentStatus.available);
-        for(Appointment a : appointments){
-            if(a.getReport() != null && a.getReport() != "")
-                appointmentScheduledDTOS.add(new AppointmentScheduledDTO(a));
-        }
+        Collection<Appointment> appointments = getAllScheduledNotFinishedByExaminer(examinerId, type);
+        for(Appointment a : appointments)
+            appointmentScheduledDTOS.add(new AppointmentScheduledDTO(a));
+
         return appointmentScheduledDTOS;
     }
 

@@ -50,8 +50,8 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(appointmentService.getAllEventsOfExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/getAllDTO")
-    public ResponseEntity<Collection<AppointmentScheduledDTO>> getAppointmentsByExaminer(@RequestBody ExaminerDTO examinerDTO){
+    @PostMapping(value = "/getAllScheduledByExaminer")
+    public ResponseEntity<Collection<AppointmentScheduledDTO>> getScheduledAppointmentsByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getAllAppointmentsByExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 }

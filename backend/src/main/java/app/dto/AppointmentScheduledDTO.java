@@ -12,9 +12,12 @@ public class AppointmentScheduledDTO {
     private Long id;
     private Long examinerId;
     private String report;
-    private Pharmacy pharmacy = new Pharmacy();
+    private Long pharmacyId;
+    private String pharmacyName;
     private AppointmentStatus appointmentStatus;
-    private Patient patient = new Patient();
+    private Long patientId;
+    private String firstName;
+    private String lastName;
     private EmployeeType type;
     private double cost;
     private Therapy therapy;
@@ -24,12 +27,12 @@ public class AppointmentScheduledDTO {
         this.id = appointment.getId();
         this.examinerId = appointment.getExaminerId();
         this.report = appointment.getReport();
-        this.pharmacy.setId(appointment.getPharmacy().getId());
-        this.pharmacy.setName(appointment.getPharmacy().getName());
+        this.pharmacyId = appointment.getPharmacy().getId();
+        this.pharmacyName = appointment.getPharmacy().getName();
         this.appointmentStatus = appointment.getAppointmentStatus();
-        this.patient.setId(appointment.getPatient().getId());
-        this.patient.setFirstName(appointment.getPatient().getFirstName());
-        this.patient.setLastName(appointment.getPatient().getLastName());
+        this.patientId = appointment.getPatient().getId();
+        this.firstName = appointment.getPatient().getFirstName();
+        this.lastName = appointment.getPatient().getLastName();
         this.type = appointment.getType();
         this.cost = appointment.getCost();
         this.therapy = appointment.getTherapy();
@@ -37,6 +40,46 @@ public class AppointmentScheduledDTO {
     }
 
     public AppointmentScheduledDTO() {
+    }
+
+    public Long getPharmacyId() {
+        return pharmacyId;
+    }
+
+    public void setPharmacyId(Long pharmacyId) {
+        this.pharmacyId = pharmacyId;
+    }
+
+    public String getPharmacyName() {
+        return pharmacyName;
+    }
+
+    public void setPharmacyName(String pharmacyName) {
+        this.pharmacyName = pharmacyName;
+    }
+
+    public Long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public Long getId() {
@@ -63,13 +106,6 @@ public class AppointmentScheduledDTO {
         this.report = report;
     }
 
-    public Pharmacy getPharmacy() {
-        return pharmacy;
-    }
-
-    public void setPharmacy(Pharmacy pharmacy) {
-        this.pharmacy = pharmacy;
-    }
 
     public AppointmentStatus getAppointmentStatus() {
         return appointmentStatus;
@@ -77,14 +113,6 @@ public class AppointmentScheduledDTO {
 
     public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
         this.appointmentStatus = appointmentStatus;
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
     }
 
     public EmployeeType getType() {

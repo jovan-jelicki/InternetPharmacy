@@ -2,6 +2,7 @@ import React from "react";
 
 import ScheduledAppointments from "../../components/ScheduledAppointments";
 import Appointment from "../../components/Appointment";
+import axios from "axios";
 
 
 export default class PharmacistConsultationStart extends React.Component {
@@ -10,29 +11,21 @@ export default class PharmacistConsultationStart extends React.Component {
         this.state = {
             startedConsultation : !!localStorage.getItem("startedConsultation") ? JSON.parse(localStorage.getItem("startedConsultation")) : false,
             appointment : !!localStorage.getItem("appointment") ? JSON.parse(localStorage.getItem("appointment")) : {},
-            appointments : [
-                {
-                    id: 0,
-                    pharmacy : {Id : '1', name : "Proba"},
-                    patient : { Id : "0",
-                                firstName : "Pera",
-                                lastName: "Peric"},
-                    period : {periodStart: new Date(2021, 0, 20, 10 , 30 , 0 ),
-                              periodEnd: new Date(2021, 0, 20, 11, 30, 0)},
-                    desc: 'Pre-meeting meeting, to prepare for the meeting'
-                },
-                {
-                    id: 0,
-                    pharmacy : {Id : '1', name : "Proba"},
-                    patient : { Id : "1",
-                                firstName : "Jova",
-                                lastName: "Jovic"},
-                    period : {periodStart: new Date(2021, 1, 20, 10 , 30 , 0 ),
-                        periodEnd: new Date(2021, 1, 20, 11, 30, 0)},
-                    desc: 'Pre-meeting meeting, to prepare for the meeting'
-                }
-            ],
+            appointments : [],
         }
+    }
+    componentDidMount() {
+        axios
+            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getAllScheduledByExaminer', {
+                    'id' : 1, //this.props.id
+                    'type' : 1 //this.props.role
+                } )
+                .then(res => {
+                    this.setState({
+                        appointments : res.data
+                    })
+                })
+                .catch(res => alert("Wrong!"));
     }
 
     render() {
