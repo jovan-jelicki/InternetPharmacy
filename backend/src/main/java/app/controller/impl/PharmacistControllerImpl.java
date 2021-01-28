@@ -1,6 +1,8 @@
 package app.controller.impl;
 
+import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
+import app.model.pharmacy.Pharmacy;
 import app.model.time.WorkingHours;
 import app.model.user.Pharmacist;
 import app.service.PharmacistService;
@@ -35,6 +37,10 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(pharmacistService.save(entity), HttpStatus.CREATED);
     }
 
+    @GetMapping(value = "/getPharmacy/{id}")
+    public ResponseEntity<PharmacyNameIdDTO> getPharmacyOfPharmacist(@PathVariable Long id){
+        return new ResponseEntity<>(pharmacistService.getPharmacyOfPharmacist(id), HttpStatus.OK);
+    }
 
     @PutMapping(value = "/pass")
     public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
