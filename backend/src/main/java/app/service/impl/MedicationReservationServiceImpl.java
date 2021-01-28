@@ -1,11 +1,15 @@
 package app.service.impl;
 
 import app.dto.GetMedicationReservationDTO;
+import app.dto.MakeMedicationReservationDTO;
+import app.model.medication.MedicationQuantity;
 import app.model.medication.MedicationReservation;
 import app.model.medication.MedicationReservationStatus;
+import app.model.pharmacy.Pharmacy;
 import app.model.user.Pharmacist;
 import app.repository.MedicationReservationRepository;
 import app.repository.PharmacistRepository;
+import app.repository.PharmacyRepository;
 import app.service.MedicationReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,17 +18,20 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class MedicationReservationServiceImpl implements MedicationReservationService {
     private final MedicationReservationRepository medicationReservationRepository;
     private final PharmacistRepository pharmacistRepository;
+    private final PharmacyRepository pharmacyRepository;
 
     @Autowired
-    public MedicationReservationServiceImpl(PharmacistRepository pharmacistRepository,MedicationReservationRepository medicationReservationRepository) {
+    public MedicationReservationServiceImpl(PharmacistRepository pharmacistRepository,
+                                            MedicationReservationRepository medicationReservationRepository,
+                                            PharmacyRepository pharmacyRepository) {
         this.medicationReservationRepository = medicationReservationRepository;
         this.pharmacistRepository = pharmacistRepository;
+        this.pharmacyRepository = pharmacyRepository;
     }
 
     @Override
@@ -74,5 +81,26 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
     @Override
     public boolean existsById(Long id) {
         return medicationReservationRepository.existsById(id);
+    }
+
+    @Override
+    public MedicationReservation reserve(MakeMedicationReservationDTO entity) {
+        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(entity.getPharmacyId());
+        if(pharmacy.isEmpty())
+            throw new IllegalArgumentException("Pharmacy Id does not exist");
+        entity.getMedicationReservation().setId(Long.valueOf(15));
+        MedicationReservation medicationReservation = this.save(entity.getMedicationReservation());
+        pharmacy.get().getMedicationReservation().add(medicationReservation);
+        updateMedicationQuantity(pharmacy.get().getMedicationQuantity(),
+                medicationReservation.getMedicationQuantity());
+        pharmacyRepository.save(pharmacy.get());
+        return medicationReservation;
+    }
+
+    private void updateMedicationQuantity(List<MedicationQuantity> quantities, MedicationQuantity medicationQuantity) {
+        quantities.forEach(quantity -> {
+            if(medicationQuantity.getMedication().getId() == quantity.getMedication().getId())
+                quantity.subtractQuantity(medicationQuantity.getQuantity());
+        });
     }
 }

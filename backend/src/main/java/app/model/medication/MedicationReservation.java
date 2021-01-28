@@ -1,6 +1,7 @@
 package app.model.medication;
 
 import app.model.user.Patient;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class MedicationReservation {
    private MedicationQuantity medicationQuantity;
 
    @Column
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
    private LocalDateTime pickUpDate;
 
    @JoinColumn

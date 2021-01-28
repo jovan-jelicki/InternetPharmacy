@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.controller.MedicationReservationController;
 import app.dto.GetMedicationReservationDTO;
+import app.dto.MakeMedicationReservationDTO;
 import app.model.medication.MedicationReservation;
 import app.model.medication.MedicationReservationStatus;
 import app.service.MedicationReservationService;
@@ -75,5 +76,15 @@ public class MedicationReservationControllerImpl implements MedicationReservatio
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         medicationReservationService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/reserve", consumes = "application/json")
+    public ResponseEntity<MedicationReservation> reserve(@RequestBody MakeMedicationReservationDTO entity) {
+        try {
+            return new ResponseEntity<>(medicationReservationService.reserve(entity), HttpStatus.CREATED);
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
