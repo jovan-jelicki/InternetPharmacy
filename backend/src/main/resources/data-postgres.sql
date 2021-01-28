@@ -91,7 +91,7 @@ INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VA
 
 
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
-VALUES (0, '2021-01-30', 3, 1,0);
+VALUES (0, '2021-01-31', 3, 1,0);
 -- INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 -- VALUES (2, '2021-01-26', 3, 1,6);
 
@@ -128,7 +128,6 @@ INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_
 
 insert into appointment (id, cost, examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
     values (1,2000,1,0, 0, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 0, null,null,1);
-    values (1,2000,1,0, null, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 0, null,null,0);
 insert into appointment (id, cost, examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
     values (2,2000,1,0, null, '2021-03-01 10:45:00', '2021-03-01 10:00:00', 0, null,null,0);
 insert into appointment (id, cost, examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)

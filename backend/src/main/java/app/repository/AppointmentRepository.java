@@ -11,8 +11,10 @@ import java.util.Collection;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     Collection<Appointment> findAppointmentsByPatientNotNull();
 
-    Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType);
+    @Query("select a from Appointment a where a.examinerId = ?1 and a.type = ?2 and a.appointmentStatus = 0 and a.patient is not null")
+    Collection<Appointment> getAllScheduledNotFinishedByExaminer(Long examinerId, EmployeeType type);
 
+    Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType);
 
     @Query("select a from Appointment a where a.examinerId = ?1 and a.type = ?2 and a.appointmentStatus = ?3")
     Collection<Appointment> getAllByExaminerAndAppointmentStatus(Long examinerId, EmployeeType type, AppointmentStatus status);
