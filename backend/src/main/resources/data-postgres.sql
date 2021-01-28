@@ -85,13 +85,13 @@ INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VA
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (1, 3);
 
 
--- INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
--- VALUES (0, '2021-01-26', 3, 1,1);
---
--- INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
--- VALUES (0,0);
--- INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
--- VALUES (4,0);
+INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
+VALUES (0, '2021-01-26', 3, 1,1);
+
+INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
+VALUES (0,0);
+INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
+VALUES (4,0);
 
 INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (0, '2020-01-01 07:00:00', '2021-12-31 15:00:00', 0);
 INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (1, '2020-01-01 09:00:00', '2021-12-31 17:00:00', 1);
