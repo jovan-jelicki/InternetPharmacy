@@ -30,4 +30,16 @@ public class Period {
     public void setPeriodEnd(LocalDateTime periodEnd) {
         this.periodEnd = periodEnd;
     }
+
+//    public LocalTime convertPeriodStartToPeriodStartTime() {
+//        String localTimeString = this.getPeriodStart().getHour() + ":" + this.getPeriodStart().getMinute() + ":00";
+//        LocalTime time = this.getPeriodStart().toLocalTime();
+//        return LocalTime.parse(localTimeString, DateTimeFormatter.ISO_DATE_TIME);
+//    }
+//
+//    public LocalTime convertPeriodEndToPeriodEndTime() {
+//        String localTimeString = this.getPeriodEnd().getHour() + ":" + this.getPeriodEnd().getMinute() + ":00";
+//        LocalTime time = this.getPeriodEnd().toLocalTime();
+//        return LocalTime.parse(localTimeString, DateTimeFormatter.ISO_DATE_TIME);
+//    }
 }

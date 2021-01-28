@@ -37,8 +37,11 @@ public class AppointmentControllerImpl {
     }
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<Appointment> save(@RequestBody Appointment entity) {
-        return new ResponseEntity<>(appointmentService.save(entity), HttpStatus.CREATED);
+    public ResponseEntity<Object> save(@RequestBody Appointment entity) {
+        boolean ret = appointmentService.createAvailableAppointment(entity);
+        if (ret)
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/getEvents")
