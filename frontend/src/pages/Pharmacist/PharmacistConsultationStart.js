@@ -10,9 +10,10 @@ export default class PharmacistConsultationStart extends React.Component {
         this.state = {
             startedConsultation : !!localStorage.getItem("startedConsultation") ? JSON.parse(localStorage.getItem("startedConsultation")) : false,
             appointment : !!localStorage.getItem("appointment") ? JSON.parse(localStorage.getItem("appointment")) : {},
-            pharmacistEvents : [
+            appointments : [
                 {
                     id: 0,
+                    pharmacy : {Id : '1', name : "Proba"},
                     patient : { Id : "0",
                                 firstName : "Pera",
                                 lastName: "Peric"},
@@ -22,6 +23,7 @@ export default class PharmacistConsultationStart extends React.Component {
                 },
                 {
                     id: 0,
+                    pharmacy : {Id : '1', name : "Proba"},
                     patient : { Id : "1",
                                 firstName : "Jova",
                                 lastName: "Jovic"},
@@ -42,9 +44,9 @@ export default class PharmacistConsultationStart extends React.Component {
     }
     handleContent = () => {
         if(!this.state.startedConsultation)
-            return ( <ScheduledAppointments renderParent={this.renderParent} role={this.props.role} Id={this.props.Id} events={this.state.pharmacistEvents}/>)
+            return ( <ScheduledAppointments renderParent={this.renderParent} role={this.props.role} Id={this.props.Id} events={this.state.appointments}/>)
         else if(this.state.startedConsultation)
-            return (<Appointment appointment={this.state.appointment} renderParent={this.renderParent}/>)
+            return (<Appointment appointment={this.state.appointment} role={this.props.role} Id={this.props.Id} renderParent={this.renderParent}/>)
 
     }
 

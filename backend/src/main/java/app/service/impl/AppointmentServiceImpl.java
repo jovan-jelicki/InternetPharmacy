@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.AppointmentScheduledDTO;
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
@@ -39,6 +40,21 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> getAllByExaminerAndAppointmentStatus(Long examinerId, EmployeeType type, AppointmentStatus status){
         return appointmentRepository.getAllByExaminerAndAppointmentStatus(examinerId, type, status);
+    }
+
+    public Collection<Appointment> getAllScheduledNotFinishedByExaminer(Long examinerId, EmployeeType type) {
+        return appointmentRepository.getAllScheduledNotFinishedByExaminer(examinerId, type);
+    }
+    //Promeni status na scheduled i resio problem
+    @Override
+    public Collection<AppointmentScheduledDTO> getAllAppointmentsByExaminer(Long examinerId, EmployeeType type) {
+        Collection<AppointmentScheduledDTO> appointmentScheduledDTOS = new ArrayList<>();
+        Collection<Appointment> appointments = getAllByExaminerAndAppointmentStatus(examinerId, type, AppointmentStatus.available);
+        for(Appointment a : appointments){
+            if(a.getReport() != null && a.getReport() != "")
+                appointmentScheduledDTOS.add(new AppointmentScheduledDTO(a));
+        }
+        return appointmentScheduledDTOS;
     }
 
     @Override

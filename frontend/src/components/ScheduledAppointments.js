@@ -18,6 +18,7 @@ export default class ScheduledAppointments extends React.Component {
     renderAll = () => {
         const Events = this.props.events.map((appointment, key) =>
             <tr>
+                <td>{appointment.pharmacy.name}</td>
                 <td>{appointment.patient.firstName}</td>
                 <td>{appointment.patient.lastName}</td>
                 <td>{moment(appointment.period.periodStart).format('DD.MM.YYYY hh:mm')}</td>
@@ -31,6 +32,7 @@ export default class ScheduledAppointments extends React.Component {
                 <Table style={{"borderWidth":"1px", 'borderColor':"#aaaaaa", 'borderStyle':'solid'}} striped hover>
                     <tbody>
                     <tr>
+                        <th>Pharmacy</th>
                         <th>First name</th>
                         <th>Last name</th>
                         <th>Start of appointment</th>
