@@ -4,6 +4,7 @@ import app.model.time.WorkingHours;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 public class Pharmacist extends User {
@@ -38,7 +39,9 @@ public class Pharmacist extends User {
 
     public boolean isOverlapping(LocalDateTime timeSlot) {
         WorkingHours wh = getWorkingHours();
-        return wh.getPeriod().getPeriodStart().toLocalTime().isBefore(timeSlot.toLocalTime())
-                && wh.getPeriod().getPeriodEnd().toLocalTime().isAfter(timeSlot.toLocalTime());
+        LocalTime start = wh.getPeriod().getPeriodStart().toLocalTime();
+        LocalTime end = wh.getPeriod().getPeriodEnd().toLocalTime();
+        return (start.isBefore(timeSlot.toLocalTime()) && end.isAfter(timeSlot.toLocalTime())) ||
+                (start.isBefore(timeSlot.toLocalTime().plusHours(1)) && end.isAfter(timeSlot.toLocalTime().plusHours(1)));
     }
 }
