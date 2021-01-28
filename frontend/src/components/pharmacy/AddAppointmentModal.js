@@ -72,6 +72,7 @@ export default class AddAppointmentModal extends React.Component {
                 id : 1
             },
             type : 'dermatologist',
+            appointmentStatus : 'available',
             cost : 2000,
             period : {
                 periodStart : fullYear + " " + this.state.period.periodStart + ":00",
