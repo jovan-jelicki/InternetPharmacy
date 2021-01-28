@@ -35,9 +35,6 @@ public class Appointment {
    @Enumerated(EnumType.ORDINAL)
    private EmployeeType type;
 
-   @Column
-   private double cost;
-
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JoinColumn
    private Therapy therapy;
@@ -101,14 +98,6 @@ public class Appointment {
 
    public void setType(EmployeeType type) {
       this.type = type;
-   }
-
-   public double getCost() {
-      return cost;
-   }
-
-   public void setCost(double cost) {
-      this.cost = cost;
    }
 
    public Therapy getTherapy() {

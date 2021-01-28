@@ -37,6 +37,12 @@ public class Pharmacy {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MedicationReservation> medicationReservation;
 
+    @Column
+    private int pharmacistCost;
+
+    @Column
+    private int dermatologistCost;
+
     public Pharmacy() {
     }
 
@@ -104,6 +110,22 @@ public class Pharmacy {
         this.medicationReservation = medicationReservation;
     }
 
+    public int getPharmacistCost() {
+        return pharmacistCost;
+    }
+
+    public void setPharmacistCost(int pharmacistCost) {
+        this.pharmacistCost = pharmacistCost;
+    }
+
+    public int getDermatologistCost() {
+        return dermatologistCost;
+    }
+
+    public void setDermatologistConst(int dermatologistCost) {
+        this.dermatologistCost = dermatologistCost;
+    }
+
     public boolean isEqual(PharmacySearchDTO pharmacySearchDTO) {
         return searchCondition(pharmacySearchDTO.getName(), name)
                 && searchCondition(pharmacySearchDTO.getCountry(), address.getCountry())
@@ -117,4 +139,6 @@ public class Pharmacy {
         else
             return actual.toLowerCase().contains(searched.toLowerCase());
     }
+
+
 }

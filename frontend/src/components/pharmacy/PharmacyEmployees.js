@@ -97,8 +97,8 @@ export default class PharmacyEmployees extends React.Component{
                        <td>{dermatologist.firstName}</td>
                        <td>{dermatologist.lastName}</td>
                        <td>{dermatologist.grade}</td>
-                       <td>{dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodStart}</td>
-                       <td>{dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodEnd}</td>
+                       <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodStart).format('hh:mm a')}</td>
+                       <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodEnd).format('hh:mm a')}</td>
 
                        <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="primary" onClick={this.handleModalAddDermatologist}>
@@ -156,8 +156,8 @@ export default class PharmacyEmployees extends React.Component{
                            <td>{pharmacist.firstName}</td>
                            <td>{pharmacist.lastName}</td>
                            <td>{pharmacist.grade}</td>
-                           <td>{pharmacist.workingHours.period.periodStart}</td>
-                           <td>{pharmacist.workingHours.period.periodEnd}</td>
+                           <td>{moment(pharmacist.workingHours.period.periodStart).format('hh:mm a')}</td>
+                           <td>{moment(pharmacist.workingHours.period.periodEnd).format('hh:mm a')}</td>
                            <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="primary" onClick={this.handleModalAddDermatologist}>
                                    Zakazi savetovanje
@@ -290,7 +290,7 @@ export default class PharmacyEmployees extends React.Component{
         workingHours.period.periodEnd = '2017-01-13 ' + workingHours.period.periodEnd + ":00";
         finalDermatologist.workingHours.push(workingHours);
         console.log(finalDermatologist);
-        axios.put("http://localhost:8080/api/dermatologists", finalDermatologist).then(() => {
+        await axios.put("http://localhost:8080/api/dermatologists", finalDermatologist).then(() => {
                 this.setState({
                     dermatologistForAdding : {
                         id : 0,
@@ -300,7 +300,20 @@ export default class PharmacyEmployees extends React.Component{
                 this.handleModalAddDermatologist();
                 this.fetchWorkingDermatologists();
             }
-        )
+        ).catch(() => {
+            this.setState({
+                dermatologistForAdding : {
+                    id : 0,
+                    workingHours : []
+                }
+            });
+        })
+        await this.setState({
+            dermatologistForAdding : {
+                id : 0,
+                workingHours : []
+            }
+        });
     }
 
     renderModalCreatePharmacist = () => {
