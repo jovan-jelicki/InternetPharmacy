@@ -1,5 +1,7 @@
 package app.controller.impl;
 
+import app.dto.EventDTO;
+import app.dto.ExaminerDTO;
 import app.model.appointment.Appointment;
 import app.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,4 +41,8 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(appointmentService.save(entity), HttpStatus.CREATED);
     }
 
+    @GetMapping(value = "/getEvents")
+    public ResponseEntity<Collection<EventDTO>> getEventsByExaminer(@RequestBody ExaminerDTO examinerDTO){
+        return new ResponseEntity<>(appointmentService.getAllEventsOfExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
+    }
 }

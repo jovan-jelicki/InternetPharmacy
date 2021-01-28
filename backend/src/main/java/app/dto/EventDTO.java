@@ -13,10 +13,21 @@ public class EventDTO {
     private String desc;
 
     public EventDTO(Appointment appointment) {
+        this.id = appointment.getId();
+        this.start = appointment.getPeriod().getPeriodStart();
+        this.end = appointment.getPeriod().getPeriodEnd();
         createEventBasedOnAppointment(appointment);
     }
+
     private void createEventBasedOnAppointment(Appointment appointment) {
-        
+        if(appointment.getPatient() == null){
+            this.title = "Free appointment!";
+            this.desc = "Pharmacy " + appointment.getPharmacy().getName();
+        }else {
+            this.title = "Scheduled appointment!";
+            this.desc = "Pharmacy " + appointment.getPharmacy().getName() + " \n"
+                    + "Patient "  + appointment.getPatient().getFirstName() + " " + appointment.getPatient().getLastName();
+        }
     }
 
     public EventDTO() {
