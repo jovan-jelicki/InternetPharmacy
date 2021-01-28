@@ -1,9 +1,9 @@
 package app.model.appointment;
 
-import app.dto.AppointmentSearchDTO;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
-import app.model.user.*;
+import app.model.user.EmployeeType;
+import app.model.user.Patient;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,9 +14,8 @@ public class Appointment {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-   @ManyToOne
-   @JoinColumn
-   private User examiner;
+   @Column
+   private Long examinerId;
 
    @Column
    private String report;
@@ -25,8 +24,8 @@ public class Appointment {
    @JoinColumn
    private Pharmacy pharmacy;
 
-   @Column
-   private boolean isPatientPresent;
+   @Enumerated(EnumType.ORDINAL)
+   private AppointmentStatus appointmentStatus;
 
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JoinColumn
@@ -38,7 +37,7 @@ public class Appointment {
    @Column
    private double cost;
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JoinColumn
    private Therapy therapy;
    
@@ -47,20 +46,20 @@ public class Appointment {
    public Appointment() {
    }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getExaminer() {
-      return examiner;
+   public Long getId() {
+      return id;
    }
 
-   public void setExaminer(User examiner) {
-      this.examiner = examiner;
+   public void setId(Long id) {
+      this.id = id;
+   }
+
+   public Long getExaminerId() {
+      return examinerId;
+   }
+
+   public void setExaminerId(Long examinerId) {
+      this.examinerId = examinerId;
    }
 
    public String getReport() {
@@ -79,12 +78,12 @@ public class Appointment {
       this.pharmacy = pharmacy;
    }
 
-   public boolean isPatientPresent() {
-      return isPatientPresent;
+   public AppointmentStatus getAppointmentStatus() {
+      return appointmentStatus;
    }
 
-   public void setPatientPresent(boolean patientPresent) {
-      isPatientPresent = patientPresent;
+   public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
+      this.appointmentStatus = appointmentStatus;
    }
 
    public Patient getPatient() {

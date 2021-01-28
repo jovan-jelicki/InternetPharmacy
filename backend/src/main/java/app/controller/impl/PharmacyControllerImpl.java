@@ -1,17 +1,17 @@
 package app.controller.impl;
 
-import app.dto.GetMedicationReservationDTO;
+import app.dto.PharmacyDTO;
 import app.dto.PharmacySearchDTO;
-import app.model.medication.MedicationReservation;
 import app.model.pharmacy.Pharmacy;
 import app.service.PharmacyService;
+import app.util.DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "api/pharmacy")
@@ -24,20 +24,18 @@ public class PharmacyControllerImpl {
         this.pharmacyService = pharmacyService;
     }
 
-//    @GetMapping
-//    public ResponseEntity<String> getHello() {
-//        return new ResponseEntity<String>("Hi", HttpStatus.OK);
-//    }
-
     @GetMapping
-    public ResponseEntity<Collection<Pharmacy>> read() {
-        return new ResponseEntity<>(pharmacyService.read(), HttpStatus.OK);
+    public ResponseEntity<Collection<PharmacyDTO>> read() {
+        ArrayList<PharmacyDTO> pharmacyDTOS = new ArrayList<>();
+        for (Pharmacy pharmacy : pharmacyService.read())
+            pharmacyDTOS.add(new PharmacyDTO(pharmacy));
+        return new ResponseEntity<>(pharmacyDTOS, HttpStatus.OK);
     }
 
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Optional<Pharmacy>> read(@PathVariable Long id) {
-        return new ResponseEntity<>(pharmacyService.read(id), HttpStatus.OK);
+    public ResponseEntity<PharmacyDTO> read(@PathVariable Long id) {
+        return new ResponseEntity<>(new PharmacyDTO(pharmacyService.read(id).get()), HttpStatus.OK);
     }
 
     @PostMapping(value = "/search")
@@ -55,4 +53,17 @@ public class PharmacyControllerImpl {
 //        return new ResponseEntity<>(new CourseDTO(course), HttpStatus.CREATED);
         return null;
     }
+
+    @PutMapping(consumes = "application/json")
+    public ResponseEntity<PharmacyDTO> update(@RequestBody Pharmacy entity) {
+        if(!pharmacyService.existsById(entity.getId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new PharmacyDTO(pharmacyService.save(entity)), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/dto")
+    public void newPharmacyDTOMapping(@DTO(PharmacyDTO.class) Pharmacy pharmacy) {
+        pharmacyService.save(pharmacy);
+    }
+
 }

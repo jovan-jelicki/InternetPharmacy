@@ -17,6 +17,9 @@ public class WorkingHours {
     @JoinColumn
     private Pharmacy pharmacy;
 
+    public WorkingHours() {
+    }
+
     public Long getId() {
         return id;
     }

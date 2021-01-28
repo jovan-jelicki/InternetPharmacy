@@ -1,8 +1,12 @@
 package app.controller.impl;
 
-import app.controller.PharmacistController;
+import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
+import app.model.pharmacy.Pharmacy;
 import app.model.time.WorkingHours;
+import app.dto.PharmacistDTO;
+import app.dto.UserPasswordDTO;
+import app.dto.WorkingHoursDTO;
 import app.model.user.Pharmacist;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +14,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 
 @RestController
 @RequestMapping(value = "api/pharmacist")
 public class PharmacistControllerImpl {
-    private PharmacistService pharmacistService;
+    private final PharmacistService pharmacistService;
 
     @Autowired
     public PharmacistControllerImpl(PharmacistService pharmacistService) {
@@ -36,6 +40,10 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(pharmacistService.save(entity), HttpStatus.CREATED);
     }
 
+    @GetMapping(value = "/getPharmacy/{id}")
+    public ResponseEntity<PharmacyNameIdDTO> getPharmacyOfPharmacist(@PathVariable Long id){
+        return new ResponseEntity<>(pharmacistService.getPharmacyOfPharmacist(id), HttpStatus.OK);
+    }
 
     @PutMapping(value = "/pass")
     public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
@@ -52,13 +60,17 @@ public class PharmacistControllerImpl {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Pharmacist>> read() {
-        return new ResponseEntity<>(pharmacistService.read(), HttpStatus.OK);
+    public ResponseEntity<Collection<PharmacistDTO>> read() {
+        ArrayList<PharmacistDTO> pharmacists = new ArrayList<>();
+        for (Pharmacist pharmacist : pharmacistService.read()) {
+            pharmacists.add(new PharmacistDTO(pharmacist));
+        }
+        return new ResponseEntity<>(pharmacists, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Optional<Pharmacist>> read(@PathVariable Long id) {
-        return new ResponseEntity<>(pharmacistService.read(id), HttpStatus.OK);
+    public ResponseEntity<PharmacistDTO> read(@PathVariable Long id) {
+        return new ResponseEntity<>(new PharmacistDTO(pharmacistService.read(id).get()), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -70,13 +82,16 @@ public class PharmacistControllerImpl {
     }
 
     @GetMapping(value = "getWorkingHours/{id}")
-    public ResponseEntity<WorkingHours> getPharmacistsWorkingHours(@PathVariable Long id) {
+    public ResponseEntity<WorkingHoursDTO> getPharmacistsWorkingHours(@PathVariable Long id) {
         Pharmacist pharmacist = pharmacistService.read(id).get();
-        return new ResponseEntity<>(pharmacist.getWorkingHours(), HttpStatus.OK);
+        return new ResponseEntity<>(new WorkingHoursDTO(pharmacist.getWorkingHours()), HttpStatus.OK);
     }
 
     @GetMapping(value = "getByPharmacy/{id}")
-    public ResponseEntity<Collection<Pharmacist>> getPharmacistsByPharmacyId(@PathVariable Long id) {
-        return new ResponseEntity<>(pharmacistService.getPharmacistsByPharmacyId(id), HttpStatus.OK);
+    public ResponseEntity<Collection<PharmacistDTO>> getPharmacistsByPharmacyId(@PathVariable Long id) {
+        ArrayList<PharmacistDTO> pharmacistDTOS = new ArrayList<>();
+        for (Pharmacist pharmacist : pharmacistService.getPharmacistsByPharmacyId(id))
+            pharmacistDTOS.add(new PharmacistDTO(pharmacist));
+        return new ResponseEntity<>(pharmacistDTOS, HttpStatus.OK);
     }
 }

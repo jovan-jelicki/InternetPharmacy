@@ -6,7 +6,7 @@ import axios from "axios";
 
 
 
-export default class CreatePharmacist extends React.Component {
+export default class CreatePharmacistModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -206,17 +206,16 @@ export default class CreatePharmacist extends React.Component {
                         longitude: 34
                     }
                 },
-                workingHours: [
-                    {
+                workingHours: {
                         period: {
-                            periodStart: '2017-01-13T' + this.state.user.startShift,
-                            periodEnd: '2017-01-13T' + this.state.user.endShift
+                            periodStart: "2017-01-01 " + this.state.user.startShift + ":00",
+                            periodEnd: "2017-01-01 " + this.state.user.endShift + ":00"
                         },
                         pharmacy : {
                             id : 1
                         }
                     }
-                ]
+
             });
 
             this.closeModal();
