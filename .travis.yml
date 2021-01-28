@@ -14,7 +14,6 @@ before_install:
   - chmod +x mvnw
 
 install:
-  - ls
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 before_script:
