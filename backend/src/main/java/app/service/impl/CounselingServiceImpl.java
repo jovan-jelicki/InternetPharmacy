@@ -43,7 +43,7 @@ public class CounselingServiceImpl implements CounselingService {
         Set<Pharmacist> available = new HashSet<>();
         Collection<Pharmacist> pharmacists = pharmacistRepository.findAll();
         pharmacists.forEach(p -> {
-            if(p.isOverlapping(dateTime))
+            if(p.isOverlapping(dateTime) && !isOnVacation(dateTime, p.getId()))
                 available.add(p);
         });
         return available;
@@ -51,10 +51,11 @@ public class CounselingServiceImpl implements CounselingService {
 
     private Set<Pharmacist> findUnavailable(LocalDateTime dateTime) {
         Set<Pharmacist> unavailable = new HashSet<>();
-        Collection<Appointment> scheduled = appointmentRepository.findAppointmentsByPatientNotNull();
+        Collection<Appointment> scheduled = appointmentRepository
+                .findAppointmentsByPatientNotNullAndType(EmployeeType.pharmacist);
         scheduled.forEach(a -> {
             Pharmacist pharmacist = pharmacistRepository.findById(a.getExaminerId()).get();
-            if(a.isOverlapping(dateTime) && isOnVacation(dateTime, a.getExaminerId()))
+            if(a.isOverlapping(dateTime))
                 unavailable.add(pharmacist);
         });
         return unavailable;
@@ -62,7 +63,7 @@ public class CounselingServiceImpl implements CounselingService {
 
     private boolean isOnVacation(LocalDateTime dateTime, Long id) {
         Collection<VacationRequest> vacations = vacationRequestRepository
-                .findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(id, EmployeeType.dermatologist, VacationRequestStatus.approved);
+                .findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(id, EmployeeType.pharmacist, VacationRequestStatus.approved);
         for (VacationRequest vacation: vacations) {
             LocalDateTime start = vacation.getPeriod().getPeriodStart();
             LocalDateTime end = vacation.getPeriod().getPeriodEnd();
