@@ -21,18 +21,16 @@ class PatientCounselScheduling extends React.Component {
                 'employeeType' : 'pharmacist'
             })
             .then(res => {
+                console.log(res.data)
                 this.setState({
-                    pharmacies : [...new Set(res.data.map(p => p.workingHours.pharmacy))],
+                    pharmacies : [...new Set(res.data.map(x => x.pharmacyDTO))],
                     pharmacists : res.data
                 })
-            });
-    }
-
-    removeDuplicates(pharmacists) {
-
+            })
     }
 
     render() {
+        console.log(this.state.pharmacies)
         return (
             <PatientLayout>
                 <Container fluid>

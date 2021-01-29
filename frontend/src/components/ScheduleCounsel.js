@@ -1,18 +1,31 @@
 import React from 'react'
-import {Accordion, Card, Col, ListGroup, Row} from "react-bootstrap";
+import {Accordion, Card, Col, ListGroup, Row, Button} from "react-bootstrap";
 
 export default class ScheduleCounsel extends React.Component {
     constructor(props) {
         super(props);
+        this.schedule = this.schedule.bind(this)
     }
+
+    schedule() {
+
+    }
+
 
     render() {
         const pharmacies = this.props.data.map((pharmacy, index) => {
+
             const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country
-            const pharmacists = this.props.pharmacists.filter(p => p.workingHours.pharmacy.id === pharmacy.id)
+            const pharmacists = this.props.pharmacists.filter(p => p.pharmacyDTO.id === pharmacy.id)
                 .map((pharmacist, index) => {
+                let pharmacistPlain = pharmacist.pharmacistPlainDTO
                 return(
-                    <ListGroup.Item key={index}>{pharmacist.firstName + ' ' + pharmacist.lastName}</ListGroup.Item>
+                    <ListGroup.Item key={index}>
+                        <Row>
+                            <Col xs={4}>{pharmacistPlain.firstName + ' ' + pharmacistPlain.lastName}</Col>
+                            <Col xs={{span : 2, offset : 5}}><Button variant={'success'}>Schedule</Button></Col>
+                        </Row>
+                    </ListGroup.Item>
                 )
             })
             return (
