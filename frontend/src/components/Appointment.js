@@ -51,7 +51,7 @@ export default class Appointment extends React.Component {
               <br/>
               <label style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}}> Choose therapy </label>
 
-              {<ChooseTherapy dateEndTherapy={this.state.dateEndTherapy} dateStartTherapy={this.state.dateStartTherapy}  setStartDate={this.setStartDate} setEndDate={this.setEndDate} medications={this.state.medications} medication={this.state.medication} chooseMedication={this.chooseMedication} removeMedication={this.removeMedication}/>}
+              {<ChooseTherapy createEPrescription={this.createEPrescription} dateEndTherapy={this.state.dateEndTherapy} dateStartTherapy={this.state.dateStartTherapy}  setStartDate={this.setStartDate} setEndDate={this.setEndDate} medications={this.state.medications} medication={this.state.medication} chooseMedication={this.chooseMedication} removeMedication={this.removeMedication}/>}
 
               <Button onClick={() => this.finishAppointment()}> Finish appointment </Button>
           </Container>
@@ -75,7 +75,22 @@ export default class Appointment extends React.Component {
     }
 
 
-
+    createEPrescription = () => {
+        axios
+            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/eprescriptions/', {
+                'pharmacyId' : this.props.appointment.pharmacyId,
+                'prescription' : {
+                    'patient' : {id : this.props.appointment.patientId},
+                    'medicationQuantity' : [{
+                        medication: {id : this.state.medication.id},
+                        quantity : 2
+                    }
+                    ]
+                }
+            })
+            .then(res => alert("Uspeo si!"))
+            .catch(es => alert("Nisi uspeo!"));
+    }
     showScheduling =() => {
         this.setState({
             scheduleNewAppointment : !this.state.scheduleNewAppointment
