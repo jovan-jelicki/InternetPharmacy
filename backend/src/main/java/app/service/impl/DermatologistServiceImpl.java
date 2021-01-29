@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.DermatologistDTO;
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
 import app.model.pharmacy.Pharmacy;
@@ -7,6 +8,7 @@ import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
 import app.repository.DermatologistRepository;
 import app.service.DermatologistService;
+import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +19,13 @@ import java.util.Optional;
 @Service
 public class DermatologistServiceImpl implements DermatologistService {
     private final DermatologistRepository dermatologistRepository;
+    private final PharmacyService pharmacyService;
+
 
     @Autowired
-    public DermatologistServiceImpl(DermatologistRepository dermatologistRepository) {
+    public DermatologistServiceImpl(DermatologistRepository dermatologistRepository, PharmacyService pharmacyService) {
         this.dermatologistRepository = dermatologistRepository;
+        this.pharmacyService = pharmacyService;
     }
 
     @Override
@@ -99,6 +104,7 @@ public class DermatologistServiceImpl implements DermatologistService {
         return null;
     }
 
+
     private void validatePassword(UserPasswordDTO passwordKit, Dermatologist user) {
         String password = user.getCredentials().getPassword();
         if(!password.equals(passwordKit.getOldPassword()))
@@ -129,5 +135,66 @@ public class DermatologistServiceImpl implements DermatologistService {
     @Override
     public boolean existsById(Long id) {
         return dermatologistRepository.existsById(id);
+    }
+
+
+    @Override
+    public Boolean addDermatologistToPharmacy(DermatologistDTO dermatologistDTO) {
+        boolean isOverlapping = false;
+        for (WorkingHours workingHours : dermatologistDTO.getWorkingHours()) {
+            for (WorkingHours workingHoursIsOverlapping : dermatologistDTO.getWorkingHours()) {
+                if (validateWorkingHoursRegardingOtherWorkingHours(workingHours, workingHoursIsOverlapping))
+                    isOverlapping = true;
+            }
+        }
+
+        if (isOverlapping)
+            return false;
+
+        //validate working hours not in the same pharmacy
+        for (int i = 0; i < dermatologistDTO.getWorkingHours().size()-1; i++)
+            for (int k = i+1; k < dermatologistDTO.getWorkingHours().size(); k++)
+                if(dermatologistDTO.getWorkingHours().get(i).getPharmacy().getId() == dermatologistDTO.getWorkingHours().get(k).getPharmacy().getId())
+                    return false;
+
+        Dermatologist dermatologist = convertDTOtoEntity(dermatologistDTO);
+        return this.save(dermatologist) != null;
+    }
+
+    private Dermatologist convertDTOtoEntity(DermatologistDTO dermatologistDTO) {
+        Dermatologist dermatologist = this.read(dermatologistDTO.getId()).get();
+        dermatologist.setId(dermatologistDTO.getId());
+        dermatologist.setWorkingHours(dermatologistDTO.getWorkingHours());
+        dermatologist.setFirstName(dermatologistDTO.getFirstName());
+        dermatologist.setLastName(dermatologistDTO.getLastName());
+        dermatologist.setContact(dermatologistDTO.getContact());
+
+        for (WorkingHours workingHours : dermatologist.getWorkingHours())
+            workingHours.setPharmacy(pharmacyService.read(workingHours.getPharmacy().getId()).get());
+
+
+        return dermatologist;
+    }
+
+
+    private boolean validateWorkingHoursRegardingOtherWorkingHours(WorkingHours workingHours, WorkingHours workingHoursIsOverlapping) {
+        boolean isOverlapping = false;
+
+        if (workingHours.getPeriod().getPeriodStart().toLocalTime().isBefore(workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime()) &&
+                workingHours.getPeriod().getPeriodEnd().toLocalTime().isAfter(workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
+            isOverlapping = true;
+        else if (workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime().isBefore(workingHours.getPeriod().getPeriodStart().toLocalTime()) &&
+                workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime().isAfter(workingHours.getPeriod().getPeriodEnd().toLocalTime())) //E A A E
+            isOverlapping = true;
+        else if (workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime().isBefore(workingHours.getPeriod().getPeriodStart().toLocalTime()) &&
+                workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime().isBefore(workingHours.getPeriod().getPeriodEnd().toLocalTime()) &&
+                workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime().isAfter(workingHours.getPeriod().getPeriodStart().toLocalTime())) //E A E A
+            isOverlapping = true;
+        else if (workingHours.getPeriod().getPeriodStart().toLocalTime().isBefore(workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime()) &&
+                workingHours.getPeriod().getPeriodEnd().toLocalTime().isBefore(workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime()) &&
+                workingHours.getPeriod().getPeriodEnd().toLocalTime().isAfter(workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime())) //A E A E
+            isOverlapping = true;
+
+        return isOverlapping;
     }
 }

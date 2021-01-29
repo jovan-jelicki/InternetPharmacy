@@ -8,6 +8,7 @@ import PharmacyMedicationQueries from "../components/pharmacy/PharmacyMedication
 import PharmacyDescription from "../components/pharmacy/PharmacyDescription";
 import PriceList from "../components/pharmacy/PriceList";
 import PharmacyReports from "../components/pharmacy/PharmacyReports";
+import AppointmentsList from "../components/pharmacy/AppointmentsList";
 
 
 export default class PharmacyPage extends React.Component{
@@ -91,6 +92,9 @@ export default class PharmacyPage extends React.Component{
                         <a className="nav-link active" href='#' onClick={this.handleChange} name="employees">Dermatolozi & farmaceuti</a>
                     </li>
                     <li className="nav-item">
+                        <a className="nav-link active" href='#' onClick={this.handleChange} name="appointments">Pregledi dermatologa</a>
+                    </li>
+                    <li className="nav-item">
                         <a className="nav-link" href="#" name="medications" onClick={this.handleChange}>Lekovi</a>
                     </li>
                     <li className="nav-item">
@@ -135,6 +139,10 @@ export default class PharmacyPage extends React.Component{
         else if (this.state.navbar === 'description')
             return (
                 <PharmacyDescription pharmacy = {this.state.pharmacy } />
+            )
+        else if (this.state.navbar === 'appointments')
+            return (
+                <AppointmentsList pharmacy = {this.state.pharmacy } />
             )
         else if (this.state.navbar === 'reports')
             return (

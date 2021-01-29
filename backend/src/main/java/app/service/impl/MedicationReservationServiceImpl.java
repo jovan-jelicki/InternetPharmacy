@@ -60,13 +60,22 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
         List<MedicationReservation> medicationReservationSet = pharmacist.getWorkingHours().getPharmacy().getMedicationReservation();
         try {
             MedicationReservation medicationReservation = medicationReservationSet.stream().filter(m -> m.getId() == getMedicationReservationDTO.getMedicationId()).findFirst().get();
-            if(!checkMedicationReservationValid(medicationReservation))
+            if(!checkMedicationReservationValid(medicationReservation)){
+                getMedicationQuantityBack(pharmacist.getWorkingHours().getPharmacy() , medicationReservation.getMedicationQuantity());
                 return null;
+            }
             return medicationReservation;
         } catch(Exception e) {
-            e.printStackTrace();
             return null;
         }
+    }
+
+    private void getMedicationQuantityBack(Pharmacy pharmacy, MedicationQuantity medicationQuantity) {
+        pharmacy.getMedicationQuantity().forEach(quantity -> {
+            if(medicationQuantity.getMedication().getId() == quantity.getMedication().getId())
+                quantity.addQuantity(medicationQuantity.getQuantity());
+        });
+        pharmacyRepository.save(pharmacy);
     }
 
     private boolean checkMedicationReservationValid(MedicationReservation medicationReservation){
