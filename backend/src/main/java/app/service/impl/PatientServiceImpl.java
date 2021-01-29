@@ -2,7 +2,6 @@ package app.service.impl;
 
 import app.dto.UserPasswordDTO;
 import app.model.user.Patient;
-import app.model.user.Pharmacist;
 import app.repository.PatientRepository;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;

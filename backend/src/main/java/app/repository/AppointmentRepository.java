@@ -18,4 +18,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("select a from Appointment a where a.examinerId = ?1 and a.type = ?2 and a.appointmentStatus = ?3")
     Collection<Appointment> getAllByExaminerAndAppointmentStatus(Long examinerId, EmployeeType type, AppointmentStatus status);
+
+    @Query("select a from Appointment a where a.pharmacy.id = ?1 and a.appointmentStatus = 0")
+    Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId);
 }

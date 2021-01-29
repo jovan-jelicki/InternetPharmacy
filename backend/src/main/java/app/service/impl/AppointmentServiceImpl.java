@@ -169,4 +169,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType) {
         return appointmentRepository.getAllAppointmentsByExaminerIdAndType(examinerId, employeeType);
     }
+
+    @Override
+    public Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId) {
+        return appointmentRepository.GetAllAvailableAppointmentsByPharmacy(pharmacyId);
+    }
 }

@@ -3,10 +3,8 @@ package app.dto;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.appointment.Therapy;
-import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
-import app.model.user.Patient;
 
 public class AppointmentScheduledDTO {
     private Long id;
@@ -19,7 +17,6 @@ public class AppointmentScheduledDTO {
     private String firstName;
     private String lastName;
     private EmployeeType type;
-    private double cost;
     private Therapy therapy;
     private Period period;
 
@@ -34,7 +31,6 @@ public class AppointmentScheduledDTO {
         this.firstName = appointment.getPatient().getFirstName();
         this.lastName = appointment.getPatient().getLastName();
         this.type = appointment.getType();
-        this.cost = appointment.getCost();
         this.therapy = appointment.getTherapy();
         this.period = appointment.getPeriod();
     }
@@ -123,13 +119,6 @@ public class AppointmentScheduledDTO {
         this.type = type;
     }
 
-    public double getCost() {
-        return cost;
-    }
-
-    public void setCost(double cost) {
-        this.cost = cost;
-    }
 
     public Therapy getTherapy() {
         return therapy;

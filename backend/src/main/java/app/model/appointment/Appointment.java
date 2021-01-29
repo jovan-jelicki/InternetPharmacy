@@ -7,7 +7,6 @@ import app.model.user.Patient;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 public class Appointment {
@@ -35,9 +34,6 @@ public class Appointment {
 
    @Enumerated(EnumType.ORDINAL)
    private EmployeeType type;
-
-   @Column
-   private double cost;
 
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JoinColumn
@@ -102,14 +98,6 @@ public class Appointment {
 
    public void setType(EmployeeType type) {
       this.type = type;
-   }
-
-   public double getCost() {
-      return cost;
-   }
-
-   public void setCost(double cost) {
-      this.cost = cost;
    }
 
    public Therapy getTherapy() {
