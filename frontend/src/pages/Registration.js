@@ -50,15 +50,15 @@ export default class Registration extends React.Component {
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.isValidPassword = this.isValidPassword.bind(this);
-
     }
+    
     async sendParams() {
         axios
             .post('http://localhost:8080/api/patients/save', {
                 'id':'',
                 'firstName' : this.state.user.firstName,
                 'lastName' : this.state.user.lastName,
-                'userType' : this.state.user.userType,
+                'userType' : 4,
                 'credentials' : {
                     'email' : this.state.user.email,
                     'password' : this.state.user.password
