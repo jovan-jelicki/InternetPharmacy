@@ -6,6 +6,7 @@ import app.model.user.EmployeeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
@@ -21,4 +22,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("select a from Appointment a where a.pharmacy.id = ?1 and a.appointmentStatus = 0")
     Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId);
+
+    @Query("select a from Appointment a where a.patient is not null and a.examinerId = ?1 and a.type = ?2 and a.period.periodStart >= ?3")
+    Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date);
 }

@@ -112,10 +112,10 @@ INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (4,
 INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (3,3);
 INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (3,4);
 
-INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id)
-    VALUES (1, 'Jovan', 'Jovic', 0, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',1);
-INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id)
-    VALUES (2, 'Filip', 'Markovic', 0, 'filip@gmail.com', 'filip', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'NY',2);
+INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id, is_active)
+    VALUES (1, 'Jovan', 'Jovic', 0, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',1, true);
+INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id, is_active)
+    VALUES (2, 'Filip', 'Markovic', 0, 'filip@gmail.com', 'filip', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'NY',2, true);
 
 -- INSERT INTO pharmacy_pharmacist(pharmacy_id, pharmacist_id) VALUES (1,1);
 -- INSERT INTO pharmacy_pharmacist(pharmacy_id, pharmacist_id) VALUES (0,2);
@@ -127,12 +127,19 @@ INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_
 
 
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
-    values (1,3,0, 0, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 0, null,null,1);
+    values (1,3,0, null, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 0, null,null,1);
     values (1,3,0, null, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 0, null,null,0);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
     values (2,3,0, null, '2021-03-01 10:45:00', '2021-03-01 10:00:00', 0, null,null,0);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
     values (3,3,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,0);
+
+insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
+    values (4,1,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,1);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
+    values (5,1,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,1);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
+    values (6,1,0, null, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 0, null,null,1);
 
 
 -- SELECT MAX(id) FROM appointment;

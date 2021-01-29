@@ -6,6 +6,7 @@ import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.user.EmployeeType;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface AppointmentService extends CRUDService<Appointment>{
@@ -19,6 +20,9 @@ public interface AppointmentService extends CRUDService<Appointment>{
     Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType);
 
     Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId);
+
+    Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date);
+
 
 
 }

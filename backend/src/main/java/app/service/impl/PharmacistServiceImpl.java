@@ -2,13 +2,17 @@ package app.service.impl;
 
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
+import app.model.appointment.Appointment;
+import app.model.user.EmployeeType;
 import app.model.user.Pharmacist;
 import app.repository.PharmacistRepository;
 import app.repository.PharmacyRepository;
+import app.service.AppointmentService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -17,11 +21,13 @@ import java.util.Optional;
 public class PharmacistServiceImpl implements PharmacistService {
     private final PharmacistRepository pharmacistRepository;
     private final PharmacyRepository pharmacyRepository;
+    private final AppointmentService appointmentService;
 
     @Autowired
-    public PharmacistServiceImpl(PharmacistRepository pharmacistRepository, PharmacyRepository pharmacyRepository) {
+    public PharmacistServiceImpl(PharmacistRepository pharmacistRepository, PharmacyRepository pharmacyRepository, AppointmentService appointmentService) {
         this.pharmacistRepository = pharmacistRepository;
         this.pharmacyRepository = pharmacyRepository;
+        this.appointmentService = appointmentService;
     }
 
     @Override
@@ -68,7 +74,12 @@ public class PharmacistServiceImpl implements PharmacistService {
 
     @Override
     public void delete(Long id) {
-        pharmacistRepository.deleteById(id);
+        Collection<Appointment> ret = appointmentService.GetAllScheduledAppointmentsByExaminerIdAfterDate(id, EmployeeType.pharmacist, LocalDateTime.now());
+        if (ret.size() != 0)
+            return;
+        Pharmacist pharmacist = this.read(id).get();
+        pharmacist.setActive(false);
+        pharmacistRepository.save(pharmacist);
     }
 
     @Override

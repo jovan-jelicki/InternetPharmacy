@@ -74,7 +74,11 @@ public class PharmacistControllerImpl {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if(!pharmacistService.existsById(id))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else if (!pharmacistService.read(id).get().getActive())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         pharmacistService.delete(id);
+        if (pharmacistService.read(id).get().getActive())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
