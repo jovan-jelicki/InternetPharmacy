@@ -61,6 +61,13 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(new PharmacyDTO(pharmacyService.save(entity)), HttpStatus.CREATED);
     }
 
+    @PutMapping(value = "/editPharmacyProfile", consumes = "application/json")
+    public ResponseEntity<PharmacyDTO> editPharmacyProfile(@DTO(PharmacyDTO.class) Pharmacy pharmacy) {
+        if(!pharmacyService.existsById(pharmacy.getId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new PharmacyDTO(pharmacyService.save(pharmacy)), HttpStatus.CREATED);
+    }
+
     @PostMapping(value = "/dto")
     public void newPharmacyDTOMapping(@DTO(PharmacyDTO.class) Pharmacy pharmacy) {
         pharmacyService.save(pharmacy);
