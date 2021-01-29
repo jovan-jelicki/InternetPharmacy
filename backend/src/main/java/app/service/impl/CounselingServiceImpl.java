@@ -1,9 +1,13 @@
 package app.service.impl;
 
 import app.model.appointment.Appointment;
+import app.model.time.VacationRequest;
+import app.model.time.VacationRequestStatus;
+import app.model.user.EmployeeType;
 import app.model.user.Pharmacist;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacistRepository;
+import app.repository.VacationRequestRepository;
 import app.service.CounselingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,11 +21,14 @@ import java.util.Set;
 public class CounselingServiceImpl implements CounselingService {
     private AppointmentRepository appointmentRepository;
     private PharmacistRepository pharmacistRepository;
+    private VacationRequestRepository vacationRequestRepository;
 
     @Autowired
-    public CounselingServiceImpl(AppointmentRepository appointmentRepository, PharmacistRepository pharmacistRepository) {
+    public CounselingServiceImpl(AppointmentRepository appointmentRepository, PharmacistRepository pharmacistRepository,
+                                 VacationRequestRepository vacationRequestRepository) {
         this.appointmentRepository = appointmentRepository;
         this.pharmacistRepository = pharmacistRepository;
+        this.vacationRequestRepository = vacationRequestRepository;
     }
 
     @Override
@@ -47,9 +54,21 @@ public class CounselingServiceImpl implements CounselingService {
         Collection<Appointment> scheduled = appointmentRepository.findAppointmentsByPatientNotNull();
         scheduled.forEach(a -> {
             Pharmacist pharmacist = pharmacistRepository.findById(a.getExaminerId()).get();
-            if(a.isOverlapping(dateTime))
+            if(a.isOverlapping(dateTime) && isOnVacation(dateTime, a.getExaminerId()))
                 unavailable.add(pharmacist);
         });
         return unavailable;
+    }
+
+    private boolean isOnVacation(LocalDateTime dateTime, Long id) {
+        Collection<VacationRequest> vacations = vacationRequestRepository
+                .findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(id, EmployeeType.dermatologist, VacationRequestStatus.approved);
+        for (VacationRequest vacation: vacations) {
+            LocalDateTime start = vacation.getPeriod().getPeriodStart();
+            LocalDateTime end = vacation.getPeriod().getPeriodEnd();
+            if(start.isBefore(dateTime) && end.isAfter(dateTime))
+                return true;
+        }
+        return false;
     }
 }

@@ -19,6 +19,12 @@ public class MedicationServiceImpl implements MedicationService {
         this.medicationRepository = medicationRepository;
     }
 
+    public Collection<Medication> getAllPatientIsNotAllergicTo(Long patientId){
+        Collection<Medication> medications = read();
+        //TODO proci kroz sve sastojke leka, i ukoliko se nalaze u alergijama tog pacijenta ne vratiti ga
+        return medications;
+    }
+
     @Override
     public Medication save(Medication entity) {
         return medicationRepository.save(entity);

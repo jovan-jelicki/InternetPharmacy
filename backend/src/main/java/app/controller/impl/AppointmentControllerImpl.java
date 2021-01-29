@@ -1,6 +1,7 @@
 package app.controller.impl;
 
 import app.dto.AppointmentListingDTO;
+import app.dto.AppointmentScheduledDTO;
 import app.dto.EventDTO;
 import app.dto.ExaminerDTO;
 import app.model.appointment.Appointment;
@@ -49,9 +50,14 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(value = "/getEvents")
+    @PostMapping(value = "/getEvents")
     public ResponseEntity<Collection<EventDTO>> getEventsByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getAllEventsOfExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/getAllScheduledByExaminer")
+    public ResponseEntity<Collection<AppointmentScheduledDTO>> getScheduledAppointmentsByExaminer(@RequestBody ExaminerDTO examinerDTO){
+        return new ResponseEntity<>(appointmentService.getAllAppointmentsByExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 
     @GetMapping(value = "/getAllAvailableAppointmentsByPharmacy/{id}")

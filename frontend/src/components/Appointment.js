@@ -96,11 +96,11 @@ export default class Appointment extends React.Component {
                 <label style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}} > Information about patient :  </label>
                 <Row>
                     <label style={{fontSize : 20}} >  <b> First name: </b></label>
-                    <label style={{fontSize : 20 , marginLeft: 40}} > {this.props.appointment.patient.firstName} </label>
+                    <label style={{fontSize : 20 , marginLeft: 40}} > {this.props.appointment.firstName} </label>
                 </Row>
                 <Row>
                     <label style={{fontSize : 20}} >  <b> Last name: </b></label>
-                    <label style={{fontSize : 20, marginLeft: 40}} > {this.props.appointment.patient.lastName} </label>
+                    <label style={{fontSize : 20, marginLeft: 40}} > {this.props.appointment.lastName} </label>
                 </Row>
             </div>
         )
