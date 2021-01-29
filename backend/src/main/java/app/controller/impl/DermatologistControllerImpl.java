@@ -104,6 +104,15 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 
+    @PutMapping(value = "/addDermatologistToPharmacy",consumes = "application/json")
+    public ResponseEntity<Boolean> addDermatologistToPharmacy(@RequestBody DermatologistDTO entity) {
+        if(!dermatologistService.existsById(entity.getId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (dermatologistService.addDermatologistToPharmacy(entity))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     private Dermatologist convertDTOtoEntity(DermatologistDTO dermatologistDTO) {
         Dermatologist dermatologist = dermatologistService.read(dermatologistDTO.getId()).get();
         dermatologist.setId(dermatologistDTO.getId());

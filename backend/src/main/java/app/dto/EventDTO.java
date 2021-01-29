@@ -25,7 +25,7 @@ public class EventDTO {
             this.desc = "Pharmacy " + appointment.getPharmacy().getName();
         }else {
             this.title = "Scheduled appointment!";
-            this.desc = "Pharmacy " + appointment.getPharmacy().getName() + " \n"
+            this.desc = "Pharmacy " + appointment.getPharmacy().getName() + " -> "
                     + "Patient "  + appointment.getPatient().getFirstName() + " " + appointment.getPatient().getLastName();
         }
     }

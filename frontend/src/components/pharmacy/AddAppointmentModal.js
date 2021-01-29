@@ -27,13 +27,13 @@ export default class AddAppointmentModal extends React.Component {
             <div >
                 <Form>
                     <label style={{marginRight : 10}}>Select date of appointment: </label>
-                    <DatePicker selected={this.state.appointmentDate}  name="appointmentDate" minDate={new Date()} onChange={this.setDate} />
+                    <DatePicker selected={this.state.appointmentDate} dateFormat="dd MMMM yyyy"  name="appointmentDate" minDate={new Date()} onChange={this.setDate} />
                     <br/>
                     <label style={{marginRight : 10}}>Select start time of appointment: </label>
-                    <TimePicker  name="startShift" value={this.state.period.periodStart} onChange={this.setPeriodStart}/>
+                    <TimePicker  name="startShift" format="h:m a" value={this.state.period.periodStart} onChange={this.setPeriodStart}/>
                     <br/>
                     <label style={{marginRight : 10}}>Select end time of appointment: </label>
-                    <TimePicker  name="endShift" value={this.state.period.periodEnd} onChange={this.setPeriodEnd}/>
+                    <TimePicker  name="endShift" format="h:m a" value={this.state.period.periodEnd} onChange={this.setPeriodEnd}/>
 
                     <hr className="mt-2 mb-3"/>
 
@@ -73,7 +73,6 @@ export default class AddAppointmentModal extends React.Component {
             },
             type : 'dermatologist',
             appointmentStatus : 'available',
-            cost : 2000,
             period : {
                 periodStart : fullYear + " " + this.state.period.periodStart + ":00",
                 periodEnd : fullYear + " " + this.state.period.periodEnd + ":00",

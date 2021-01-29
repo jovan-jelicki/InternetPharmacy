@@ -8,7 +8,6 @@ import app.model.user.Pharmacist;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacistRepository;
 import app.repository.VacationRequestRepository;
-import app.service.AppointmentService;
 import app.service.CounselingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

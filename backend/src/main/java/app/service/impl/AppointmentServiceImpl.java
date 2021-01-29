@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.AppointmentScheduledDTO;
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
@@ -48,6 +49,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> getAllByExaminerAndAppointmentStatus(Long examinerId, EmployeeType type, AppointmentStatus status){
         return appointmentRepository.getAllByExaminerAndAppointmentStatus(examinerId, type, status);
+    }
+
+    public Collection<Appointment> getAllScheduledNotFinishedByExaminer(Long examinerId, EmployeeType type) {
+        return appointmentRepository.getAllScheduledNotFinishedByExaminer(examinerId, type);
+    }
+
+    @Override
+    public Collection<AppointmentScheduledDTO> getAllAppointmentsByExaminer(Long examinerId, EmployeeType type) {
+        Collection<AppointmentScheduledDTO> appointmentScheduledDTOS = new ArrayList<>();
+        Collection<Appointment> appointments = getAllScheduledNotFinishedByExaminer(examinerId, type);
+        for(Appointment a : appointments)
+            appointmentScheduledDTOS.add(new AppointmentScheduledDTO(a));
+
+        return appointmentScheduledDTOS;
     }
 
     @Override
@@ -153,5 +168,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType) {
         return appointmentRepository.getAllAppointmentsByExaminerIdAndType(examinerId, employeeType);
+    }
+
+    @Override
+    public Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId) {
+        return appointmentRepository.GetAllAvailableAppointmentsByPharmacy(pharmacyId);
     }
 }
