@@ -5,10 +5,12 @@ import app.model.user.Patient;
 import app.repository.PatientRepository;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
 
+@Service
 public class PatientServiceImpl implements PatientService {
     private PatientRepository patientRepository;
 

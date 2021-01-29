@@ -16,6 +16,7 @@ import PharmacyAdminProfilePage from "./pages/PharmacyAdminProfilePage";
 import SupplierHomePage from "./pages/SupplierHomePage";
 import CreateNewOffer from "./components/Supplier/CreateNewOffer";
 import PatientCounselScheduling from "./pages/patient/PatientCounselScheduling";
+import RegistrationConfirmation from "./pages/RegistrationConfirmation";
 
 
 export default class App extends React.Component {
@@ -46,10 +47,10 @@ export default class App extends React.Component {
             <Route path="/pharmacistHomePage"  render={(props) => <PharmacistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/patient-counsel-schedule"  render={(props) => <PatientCounselScheduling {...props} role={role} Id={Id}/> } />
             <Route path="/registration"  component={Registration} role={role}/>
-            <Route path="/pharmacyAdmin"  component={ISAdminHomePage} role={role}/>
+            <Route path="/systemAdmin"  component={ISAdminHomePage} role={role}/>
             <Route path="/supplierHomePage"  component={SupplierHomePage} role={role}/>
             <Route path="/createNew" component={CreateNewOffer} role={role}/>
-
+            <Route path="/confirmRegistration" component={RegistrationConfirmation} role={role}/>
           </Switch>
         </BrowserRouter>
     );
