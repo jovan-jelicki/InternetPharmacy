@@ -9,7 +9,9 @@ class PatientCounselScheduling extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            pharmacies : []
+            pharmacies : [],
+            pharmacists : [],
+            dateTime : ''
         }
         this.search = this.search.bind(this)
     }
@@ -21,16 +23,31 @@ class PatientCounselScheduling extends React.Component {
                 'employeeType' : 'pharmacist'
             })
             .then(res => {
-                console.log(res.data)
                 this.setState({
                     pharmacies : [...new Set(res.data.map(x => x.pharmacyDTO))],
-                    pharmacists : res.data
+                    pharmacists : res.data,
+                    dateTime
                 })
             })
     }
 
+    schedule(pharmacyId, pharmacistId) {
+        axios
+        .post('http://localhost:8080/api/appointment', {
+            examinerId : pharmacistId,
+            pharmacy : {
+                id : pharmacyId
+            },
+            patient : {
+                id : 0
+            },
+            period : {
+                periodStart : this.state.dateTime
+            }
+        })
+    }
+
     render() {
-        console.log(this.state.pharmacies)
         return (
             <PatientLayout>
                 <Container fluid>

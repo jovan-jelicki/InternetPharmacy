@@ -7,8 +7,8 @@ export default class ScheduleCounsel extends React.Component {
         this.schedule = this.schedule.bind(this)
     }
 
-    schedule() {
-
+    schedule(pharmacyId, pharmacistId) {
+        this.props.schedule(pharmacyId, pharmacistId);
     }
 
 
@@ -23,7 +23,9 @@ export default class ScheduleCounsel extends React.Component {
                     <ListGroup.Item key={index}>
                         <Row>
                             <Col xs={4}>{pharmacistPlain.firstName + ' ' + pharmacistPlain.lastName}</Col>
-                            <Col xs={{span : 2, offset : 5}}><Button variant={'success'}>Schedule</Button></Col>
+                            <Col xs={{span : 2, offset : 5}}>
+                                <Button variant={'success'} oClick={(e) => this.schedule(pharmacy.id, pharmacistPlain.id)}>Schedule</Button>
+                            </Col>
                         </Row>
                     </ListGroup.Item>
                 )
