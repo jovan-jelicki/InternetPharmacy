@@ -79,6 +79,37 @@ export default class Registration extends React.Component {
             });
 
     }
+
+    async sendMail() {
+        axios
+            .put('http://localhost:8080/api/email/send', {
+                'to':'t.kovacevic98@gmail.com',
+                'subject' : 'provera123',
+                'body' : 'idemo malena'
+            })
+            .then(res => {
+
+            });
+
+    }
+    submitForm = async (event) => {
+        this.setState({ submitted: true });
+        const user = this.state.user;
+        console.log(this.state.user)
+
+        event.preventDefault();
+        if (this.validateForm(this.state.errors)) {
+            console.info('Valid Form')
+            //this.sendParams()
+            //this.sendMail();
+        } else {
+            console.log('Invalid Form')
+        }
+        console.log(this.state.user)
+
+    }
+
+
     handleInputChange = (event) => {
         console.log(event.target.value)
         const { name, value } = event.target;
@@ -185,20 +216,7 @@ export default class Registration extends React.Component {
         this.setState({errors});
     }
 
-    submitForm = async (event) => {
-        this.setState({ submitted: true });
-        const user = this.state.user;
-        console.log(this.state.user)
 
-        event.preventDefault();
-        if (this.validateForm(this.state.errors)) {
-            console.info('Valid Form')
-        } else {
-            console.log('Invalid Form')
-        }
-        console.log(this.state.user)
-        this.sendParams()
-    }
 
     validationErrorMessage = (event) => {
         const { name, value } = event.target;
