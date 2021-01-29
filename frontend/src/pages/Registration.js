@@ -10,6 +10,7 @@ export default class Registration extends React.Component {
         super(props);
         this.state = {
             user: {
+                id:'',
                 email: '',
                 password: '',
                 firstName: '',
@@ -22,7 +23,6 @@ export default class Registration extends React.Component {
                     longitude: -0.127758
                 },
                 telephone: '',
-
             },
             rePassword : '',
             addressPom: {
@@ -52,7 +52,33 @@ export default class Registration extends React.Component {
         this.isValidPassword = this.isValidPassword.bind(this);
 
     }
+    async sendParams() {
+        axios
+            .post('http://localhost:8080/api/patients/save', {
+                'id':'',
+                'firstName' : this.state.user.firstName,
+                'lastName' : this.state.user.lastName,
+                'userType' : this.state.user.userType,
+                'credentials' : {
+                    'email' : this.state.user.email,
+                    'password' : this.state.user.password
+                },
+                'contact' : {
+                    'phoneNumber' : this.state.user.telephone,
+                    'address' : {
+                        'street' : this.state.user.address.street,
+                        'town' : this.state.user.address.town,
+                        'country' : this.state.user.address.country,
+                        'latitude' : this.state.user.address.latitude,
+                        'longitude' : this.state.user.address.longitude
+                    }
+                }
+            })
+            .then(res => {
 
+            });
+
+    }
     handleInputChange = (event) => {
         console.log(event.target.value)
         const { name, value } = event.target;
@@ -170,6 +196,7 @@ export default class Registration extends React.Component {
         } else {
             console.log('Invalid Form')
         }
+        console.log(this.state.user)
         this.sendParams()
     }
 
@@ -209,33 +236,8 @@ export default class Registration extends React.Component {
         this.setState({ errors });
     }
 
-    async sendParams() {
-        axios
-            .put('http://localhost:8080/api/patients/save', {
-                'id' : this.state.user.id,
-                'firstName' : this.state.user.firstName,
-                'lastName' : this.state.user.lastName,
-                'userType' : this.state.user.userType,
-                'credentials' : {
-                    'email' : this.state.user.email,
-                    'password' : this.state.user.password
-                },
-                'contact' : {
-                    'phoneNumber' : this.user.state.telephone,
-                    'address' : {
-                        'street' : this.user.state.address,
-                        'town' : this.user.state.town,
-                        'country' : this.user.state.country,
-                        'latitude' : this.user.state.latitude,
-                        'longitude' : this.user.state.longitude
-                    }
-                }
-            })
-            .then(res => {
 
-            });
 
-    }
     validateForm = (errors) => {
         let valid = true;
         Object.entries(errors.user).forEach(item => {
