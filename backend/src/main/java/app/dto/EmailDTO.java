@@ -4,11 +4,21 @@ public class EmailDTO {
     private String to;
     private String subject;
     private String body;
+    private String link;
 
-    public EmailDTO(String to, String subject, String body) {
+    public EmailDTO(String to, String subject, String body, String link) {
         this.to = to;
         this.subject = subject;
         this.body = body;
+        this.link=link;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public String getTo() { return to; }

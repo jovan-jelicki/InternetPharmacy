@@ -3,6 +3,7 @@ import {Button, Container, FormControl} from "react-bootstrap";
 import "../App.css";
 import Script from "react-load-script";
 import axios from "axios";
+import {Redirect} from "react-router";
 
 
 export default class Registration extends React.Component {
@@ -45,8 +46,8 @@ export default class Registration extends React.Component {
             },
             validForm: false,
             submitted: false,
-
-
+            buttonConfirm: false,
+            buttonSubmit:false
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.isValidPassword = this.isValidPassword.bind(this);
@@ -79,20 +80,32 @@ export default class Registration extends React.Component {
             });
 
     }
-
     async sendMail() {
+
         axios
-            .put('http://localhost:8080/api/email/send', {
-                'to':'t.kovacevic98@gmail.com',
-                'subject' : 'provera123',
-                'body' : 'idemo malena'
+            .put('http://localhost:8080/api/email/confirm', {
+
+                'to':"t.kovacevic98@gmail.com",
+                'subject':"Confirm registration",
+                'body':"Hi "+this.state.user.firstName+" You've created a InternetPharmacy account."+
+                        " Please take a moment to confirm your account. Please click the confirmation link.",
+                'link':"http://localhost:3000/confirmRegistration"
             })
             .then(res => {
 
             });
 
     }
-    submitForm = async (event) => {
+
+    confirmForm = (event) => {
+        if(!!localStorage.getItem("confirmed") ? JSON.parse(localStorage.getItem("confirmed")) : false) {
+            this.sendParams();
+            window.location = '/';
+            localStorage.setItem("confirmed", JSON.stringify(false));
+        }
+    }
+
+    submitForm =  (event) => {
         this.setState({ submitted: true });
         const user = this.state.user;
         console.log(this.state.user)
@@ -100,8 +113,11 @@ export default class Registration extends React.Component {
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form')
+            this.state.buttonSubmit=true;
+            this.state.buttonConfirm=true;
+            this.sendMail();
+            //zakljucaj button
             //this.sendParams()
-            //this.sendMail();
         } else {
             console.log('Invalid Form')
         }
@@ -288,6 +304,7 @@ export default class Registration extends React.Component {
                     <h1 style={({marginTop: '5rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
                 </div>
 
+
                 <div className="row" style={{marginTop: '3rem', marginLeft:'20rem',display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
                     <label className="col-sm-2 col-form-label">Name</label>
                     <div className="col-sm-3 mb-2">
@@ -356,13 +373,24 @@ export default class Registration extends React.Component {
                     </div>
                 </div>
 
-                <div className="row"style={{marginTop: '1rem'}}>
-                    <div className="col-sm-5 mb-2">
+
+                    <div className="row"style={{marginTop: '1rem'}}>
+                        <div className="col-sm-5 mb-2">
+                        </div>
+                        <div className="col-sm-4">
+                            <Button disabled={this.state.buttonSubmit} variant="primary" onClick={this.submitForm} >Submit</Button>
+                        </div>
+                        {
+                            this.state.buttonConfirm &&
+                            <div className="row" style={{marginTop: '1rem'}}>
+                                <div className="col-sm-5 mb-2">
+                                </div>
+                                <div className="col-sm-4">
+                                    <Button variant="primary" onClick={this.confirmForm}>Confirm</Button>
+                                </div>
+                            </div>
+                        }
                     </div>
-                    <div className="col-sm-4">
-                        <Button variant="primary" onClick={this.submitForm} >Submit</Button>
-                    </div>
-                </div>
 
             </div>
         );
