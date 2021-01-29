@@ -1,6 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button} from "react-bootstrap";
+import {Alert, Button} from "react-bootstrap";
 
 
 
@@ -18,10 +18,14 @@ export default class RegistrationConfirmation extends React.Component{
 
     render() {
         return (
-            <div className="App">
-                <h1>Potvrda registracije korisnika</h1>
-
-                <Button variant="primary" onClick={this.confirmation} >
+            <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
+                <Alert variant="success">
+                    <Alert.Heading>Hey, nice to see you</Alert.Heading>
+                    <p>
+                        Click on the "Confirm" button and go to registration page to complete your registration.
+                    </p>
+                </Alert>
+                <Button variant="success" onClick={this.confirmation} >
                              Confirm!
                 </Button>
             </div>

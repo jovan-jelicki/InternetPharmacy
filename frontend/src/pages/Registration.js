@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Container, FormControl} from "react-bootstrap";
+import {Alert, Button, Container, FormControl} from "react-bootstrap";
 import "../App.css";
 import Script from "react-load-script";
 import axios from "axios";
@@ -52,7 +52,10 @@ export default class Registration extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.isValidPassword = this.isValidPassword.bind(this);
     }
-    
+    componentDidMount() {
+        localStorage.setItem("confirmed", JSON.stringify(false));
+    }
+
     async sendParams() {
         axios
             .post('http://localhost:8080/api/patients/save', {
@@ -301,98 +304,121 @@ export default class Registration extends React.Component {
 
             <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
                 <div className="container">
-                    <h1 style={({marginTop: '5rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
+                    <h1 style={({marginTop: '1rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
                 </div>
+                {
+                    this.state.buttonConfirm &&
+                    <Alert variant='success' show={true}  style={({textAlignVertical: "center", textAlign: "center"})}>
+                        Please click on the link that has just been sent to your email to verify your account and
+                        finish the registration process.
+                    </Alert>
+                }
 
+                    <div className="row" style={{
+                        marginTop: '3rem',
+                        marginLeft: '20rem',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                        <label className="col-sm-2 col-form-label">Name</label>
+                        <div className="col-sm-3 mb-2">
+                            <input type="text" value={this.state.user.firstName} name="firstName" onChange={(e) => {
+                                this.handleInputChange(e)
+                            }} className="form-control" placeholder="First Name"/>
+                            {this.state.submitted && this.state.errors.user.firstName.length > 0 &&
+                            <span className="text-danger">{this.state.errors.user.firstName}</span>}
 
-                <div className="row" style={{marginTop: '3rem', marginLeft:'20rem',display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
-                    <label className="col-sm-2 col-form-label">Name</label>
-                    <div className="col-sm-3 mb-2">
-                        <input type="text" value={this.state.user.firstName} name="firstName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="First Name" />
-                        { this.state.submitted && this.state.errors.user.firstName.length > 0 &&  <span className="text-danger">{this.state.errors.user.firstName}</span>}
+                        </div>
+                        <div className="col-sm-3 mb-2">
+                            <input type="text" value={this.state.lastName} name="lastName" onChange={(e) => {
+                                this.handleInputChange(e)
+                            }} className="form-control" placeholder="Last Name"/>
+                            {this.state.submitted && this.state.errors.user.lastName.length > 0 &&
+                            <span className="text-danger">{this.state.errors.user.lastName}</span>}
 
+                        </div>
+                        <div className="col-sm-4">
+                        </div>
                     </div>
-                    <div className="col-sm-3 mb-2" >
-                        <input type="text" value={this.state.lastName} name="lastName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Last Name" />
-                        { this.state.submitted && this.state.errors.user.lastName.length > 0 &&  <span className="text-danger">{this.state.errors.user.lastName}</span>}
-
-                    </div>
-                    <div className="col-sm-4">
-                    </div>
-                </div>
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Email</label>
                     <div className="col-sm-6 mb-2">
-                        <input type="email" value={this.state.user.email} name="email" onChange={(e) => { this.handleInputChange(e)} }className="form-control" id="email" placeholder="example@gmail.com" />
-                        { this.state.submitted && this.state.errors.user.email.length > 0 && <span className="text-danger">{this.state.errors.user.email}</span>}
+                    <input type="email" value={this.state.user.email} name="email" onChange={(e) => {this.handleInputChange(e)}}className="form-control" id="email" placeholder="example@gmail.com" />
+                        {this.state.submitted && this.state.errors.user.email.length > 0 && <span className="text-danger">{this.state.errors.user.email}</span>}
 
                     </div>
                     <div className="col-sm-4">
                     </div>
-                </div>
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    </div>
+                    <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Tel</label>
                     <div className="col-sm-6 mb-2">
-                        <input type="text" value={this.state.user.telephone} name="telephone" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="telephone" placeholder="+3810640333489" />
-                        { this.state.submitted && this.state.errors.user.telephone.length > 0 && <span className="text-danger">{this.state.errors.user.telephone}</span>}
+                    <input type="text" value={this.state.user.telephone} name="telephone" onChange={(e) => {this.handleInputChange(e)}}  className="form-control" id="telephone" placeholder="+3810640333489" />
+                        {this.state.submitted && this.state.errors.user.telephone.length > 0 && <span className="text-danger">{this.state.errors.user.telephone}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
-                </div>
+                    </div>
 
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Address</label>
                     <div className="col-sm-6 mb-2">
-                        <Script type="text/javascript" url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
-                        <input type="text" id="street" placeholder="Enter Address" value={this.query}/>
+                    <Script type="text/javascript" url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
+                    <input type="text" id="street" placeholder="Enter Address" value={this.query}/>
                         {this.state.submitted && this.state.errors.user.address.length > 0 &&  <span className="text-danger">{this.state.errors.user.address}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
-                </div>
+                    </div>
 
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label className="col-sm-2 col-form-label">Password</label>
                     <div className="col-sm-6 mb-2">
-                        <FormControl name="password" type="password" placeholder="Password"  value={this.state.user.password} onChange={(e) => { this.handleInputChange(e)} }/>
-                        { this.state.submitted && this.state.errors.user.password.length > 0 &&  <span className="text-danger">{this.state.errors.user.password}</span>}
+                    <FormControl name="password" type="password" placeholder="Password"  value={this.state.user.password} onChange={(e) => {this.handleInputChange(e)}}/>
+                     {this.state.submitted && this.state.errors.user.password.length > 0 &&  <span className="text-danger">{this.state.errors.user.password}</span>}
 
                     </div>
                     <div className="col-sm-4">
                     </div>
-                </div>
+                    </div>
 
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Repeat password</label>
                     <div className="col-sm-6 mb-2">
-                        <FormControl name="rePassword" type="password" placeholder="Repeat new Password" value={this.state.rePassword} onChange={(e) => { this.handlePassChange(e)} }/>
-                        { this.state.submitted && this.state.errors.user.rePassword.length > 0 &&  <span className="text-danger">{this.state.errors.user.rePassword}</span>}
+                    <FormControl name="rePassword" type="password" placeholder="Repeat new Password" value={this.state.rePassword} onChange={(e) => {this.handlePassChange(e)}}/>
+                     {this.state.submitted && this.state.errors.user.rePassword.length > 0 &&  <span className="text-danger">{this.state.errors.user.rePassword}</span>}
 
                     </div>
                     <div className="col-sm-4">
                     </div>
-                </div>
+                    </div>
 
-
-                    <div className="row"style={{marginTop: '1rem'}}>
+                    <div className="row" style={{marginTop: '1rem'}}>
                         <div className="col-sm-5 mb-2">
                         </div>
-                        <div className="col-sm-4">
-                            <Button disabled={this.state.buttonSubmit} variant="primary" onClick={this.submitForm} >Submit</Button>
-                        </div>
+                        {
+                            !this.state.buttonConfirm &&
+                            <div className="col-sm-4">
+                                <Button disabled={this.state.buttonSubmit} variant="primary"
+                                        onClick={this.submitForm}>Submit</Button>
+                            </div>
+                        }
                         {
                             this.state.buttonConfirm &&
                             <div className="row" style={{marginTop: '1rem'}}>
                                 <div className="col-sm-5 mb-2">
                                 </div>
                                 <div className="col-sm-4">
-                                    <Button variant="primary" onClick={this.confirmForm}>Confirm</Button>
+                                    <Button  variant="success" onClick={this.confirmForm}>Confirm</Button>
                                 </div>
+
                             </div>
+
                         }
                     </div>
 
-            </div>
+                </div>
         );
     }
 
