@@ -1,14 +1,17 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
+import app.model.medication.Ingredient;
 import app.model.user.Patient;
 import app.repository.PatientRepository;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
 
+@Service
 public class PatientServiceImpl implements PatientService {
     private PatientRepository patientRepository;
 
@@ -34,6 +37,11 @@ public class PatientServiceImpl implements PatientService {
             throw new IllegalArgumentException("Wrong password");
         else if(!passwordKit.getNewPassword().equals(passwordKit.getRepeatedPassword()))
             throw new IllegalArgumentException("Entered passwords doesn't match");
+    }
+
+    @Override
+    public Collection<Ingredient> getPatientAllergieIngridients(Long id){
+        return read(id).get().getAllergies();
     }
 
     @Override
