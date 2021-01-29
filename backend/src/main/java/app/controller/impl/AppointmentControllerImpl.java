@@ -50,6 +50,11 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PutMapping(consumes = "application/json", value = "/finishAppointment")
+    public ResponseEntity<Boolean> finishAppointment(@RequestBody AppointmentScheduledDTO appointmentScheduledDTO){
+        return new ResponseEntity<>(appointmentService.finishAppointment(appointmentScheduledDTO), HttpStatus.OK);
+    }
+
     @PostMapping(value = "/getEvents")
     public ResponseEntity<Collection<EventDTO>> getEventsByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getAllEventsOfExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);

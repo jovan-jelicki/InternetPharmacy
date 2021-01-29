@@ -48,5 +48,6 @@ export default class PharmacistConsultationStart extends React.Component {
             startedConsultation : content,
             appointment : !!localStorage.getItem("appointment") ? JSON.parse(localStorage.getItem("appointment")) : {}
         })
+        this.componentDidMount();
     }
 }

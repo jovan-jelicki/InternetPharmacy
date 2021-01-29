@@ -166,6 +166,18 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Boolean finishAppointment(AppointmentScheduledDTO appointmentScheduledDTO) {
+        Appointment appointment = read(appointmentScheduledDTO.getId()).get();
+        appointment.setReport(appointmentScheduledDTO.getReport());
+        appointment.setTherapy(appointmentScheduledDTO.getTherapy());
+        appointment.setAppointmentStatus(AppointmentStatus.patientPresent);
+        appointment.setPatient(appointment.getPatient());
+        appointment.setPharmacy(appointment.getPharmacy());
+        this.save(appointment);
+        return true;
+    }
+
+    @Override
     public Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType) {
         return appointmentRepository.getAllAppointmentsByExaminerIdAndType(examinerId, employeeType);
     }
