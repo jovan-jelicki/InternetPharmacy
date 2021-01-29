@@ -17,7 +17,7 @@ export default class PharmacistConsultationStart extends React.Component {
     componentDidMount() {
         axios
             .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getAllScheduledByExaminer', {
-                    'id' : 1, //this.props.id
+                    'id' : 3, //this.props.id
                     'type' : 1 //this.props.role
                 } )
                 .then(res => {

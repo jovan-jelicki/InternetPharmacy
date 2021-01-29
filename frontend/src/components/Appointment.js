@@ -82,7 +82,7 @@ export default class Appointment extends React.Component {
                 'prescription' : {
                     'patient' : {id : this.props.appointment.patientId},
                     'medicationQuantity' : [{
-                        medication: {id : this.state.medication.id},
+                        medication: this.state.medication,
                         quantity : 2
                     }
                     ]
