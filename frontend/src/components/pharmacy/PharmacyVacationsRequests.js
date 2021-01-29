@@ -1,6 +1,8 @@
 import React from 'react';
 import {Button, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import axios from "axios";
+import moment from "moment";
+
 
 export default class PharmacyVacationsRequests extends React.Component{
     constructor() {
@@ -93,8 +95,8 @@ export default class PharmacyVacationsRequests extends React.Component{
                                 <td>{vacationRequest.employeeLastName}</td>
                                 <td>{vacationRequest.employeeType}</td>
                                 <td>{vacationRequest.vacationNote}</td>
-                                <td>{vacationRequest.period.periodStart}</td>
-                                <td>{vacationRequest.period.periodEnd}</td>
+                                <td>{moment(vacationRequest.period.periodStart).format('DD.MM.YYYY') }</td>
+                                <td>{moment(vacationRequest.period.periodEnd).format('DD.MM.YYYY') }</td>
                                 <td>{vacationRequest.vacationRequestStatus}</td>
 
                                 <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>

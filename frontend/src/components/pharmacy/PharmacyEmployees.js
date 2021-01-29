@@ -42,7 +42,7 @@ export default class PharmacyEmployees extends React.Component{
                     periodEnd : ""
                 },
                 pharmacy : {
-                    id : 1 //todo change pharmacy ID
+                    id : 2 //todo change pharmacy ID
                 }
             }
         }
@@ -290,28 +290,56 @@ export default class PharmacyEmployees extends React.Component{
         workingHours.period.periodEnd = '2017-01-13 ' + workingHours.period.periodEnd + ":00";
         finalDermatologist.workingHours.push(workingHours);
         console.log(finalDermatologist);
-        await axios.put("http://localhost:8080/api/dermatologists", finalDermatologist).then(() => {
+        await axios.put("http://localhost:8080/api/dermatologists/addDermatologistToPharmacy", finalDermatologist).then(() => {
                 this.setState({
                     dermatologistForAdding : {
                         id : 0,
                         workingHours : []
+                    },
+                    workingHours : {
+                        period : {
+                            periodStart : "",
+                            periodEnd : ""
+                        },
+                        pharmacy : {
+                            id : 2 //todo change pharmacy ID
+                        }
                     }
                 });
+                alert("Dermatologist added successfully!");
                 this.handleModalAddDermatologist();
                 this.fetchWorkingDermatologists();
             }
         ).catch(() => {
+            alert("Dermatologist was not added!");
             this.setState({
                 dermatologistForAdding : {
                     id : 0,
                     workingHours : []
+                },
+                workingHours : {
+                    period : {
+                        periodStart : "",
+                        periodEnd : ""
+                    },
+                    pharmacy : {
+                        id : 2 //todo change pharmacy ID
+                    }
                 }
             });
         })
         await this.setState({
             dermatologistForAdding : {
                 id : 0,
-                workingHours : []
+                workingHours : {
+                    period : {
+                        periodStart : "",
+                        periodEnd : ""
+                    },
+                    pharmacy : {
+                        id : 2 //todo change pharmacy ID
+                    }
+                }
             }
         });
     }
@@ -425,11 +453,10 @@ export default class PharmacyEmployees extends React.Component{
     }
 
     fetchDermatologistNotWorkingInThisPharmacy = async () => {
-        await axios.get("http://localhost:8080/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/1").then( //todo change pharmacy id
+        await axios.get("http://localhost:8080/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/2").then( //todo change pharmacy id
             res => {
                 this.setState({
                     notWorkingDermatologists : res.data,
-
                 })
             }
         )
