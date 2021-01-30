@@ -1,10 +1,13 @@
 package app.service;
 
+import app.dto.AppointmentFinishedDTO;
 import app.dto.AppointmentScheduledDTO;
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.user.EmployeeType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collection;
 
@@ -16,9 +19,13 @@ public interface AppointmentService extends CRUDService<Appointment>{
 
     Boolean createAvailableAppointment(Appointment entity);
 
-    Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType);
+    Boolean finishAppointment(AppointmentScheduledDTO appointmentScheduledDTO);
+        Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType);
 
     Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId);
 
+    Collection<AppointmentFinishedDTO> getFinishedByExaminer(Long examinerId, EmployeeType type);
+
     Appointment scheduleCounseling(Appointment entity);
+
 }

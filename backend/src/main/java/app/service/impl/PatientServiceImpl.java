@@ -1,6 +1,8 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
+import app.model.medication.Ingredient;
+import app.model.medication.Medication;
 import app.model.user.Patient;
 import app.repository.PatientRepository;
 import app.service.PatientService;
@@ -36,6 +38,20 @@ public class PatientServiceImpl implements PatientService {
             throw new IllegalArgumentException("Wrong password");
         else if(!passwordKit.getNewPassword().equals(passwordKit.getRepeatedPassword()))
             throw new IllegalArgumentException("Entered passwords doesn't match");
+    }
+
+    @Override
+    public Collection<Ingredient> getPatientAllergieIngridients(Long id){
+        return read(id).get().getAllergies();
+    }
+
+    @Override
+    public Boolean isPatientAllergic(Collection<Medication> medications, Long id){
+        Collection<Ingredient> ingredients = getPatientAllergieIngridients(id);
+        for(Medication medication : medications)
+            if(medication.getIngredient().stream().anyMatch(ingredients::contains))
+                return false;
+        return true;
     }
 
     @Override

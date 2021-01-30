@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.AppointmentFinishedDTO;
 import app.dto.AppointmentScheduledDTO;
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
@@ -179,6 +180,18 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Boolean finishAppointment(AppointmentScheduledDTO appointmentScheduledDTO) {
+        Appointment appointment = read(appointmentScheduledDTO.getId()).get();
+        appointment.setReport(appointmentScheduledDTO.getReport());
+        appointment.setTherapy(appointmentScheduledDTO.getTherapy());
+        appointment.setAppointmentStatus(AppointmentStatus.patientPresent);
+        appointment.setPatient(appointment.getPatient());
+        appointment.setPharmacy(appointment.getPharmacy());
+        this.save(appointment);
+        return true;
+    }
+
+    @Override
     public Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType) {
         return appointmentRepository.getAllAppointmentsByExaminerIdAndType(examinerId, employeeType);
     }
@@ -186,5 +199,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId) {
         return appointmentRepository.GetAllAvailableAppointmentsByPharmacy(pharmacyId);
+    }
+
+    @Override
+    public Collection<AppointmentFinishedDTO> getFinishedByExaminer(Long examinerId, EmployeeType type) {
+        Collection<AppointmentFinishedDTO> retVal = new ArrayList<>();
+        for(Appointment a : getAllByExaminerAndAppointmentStatus(examinerId, type, AppointmentStatus.patientPresent)){
+            retVal.add(new AppointmentFinishedDTO(a));
+        }
+        return retVal;
     }
 }

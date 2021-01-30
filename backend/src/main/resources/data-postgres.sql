@@ -80,8 +80,11 @@ INSERT INTO medication_quantity (id ,quantity, medication_id)
 VALUES (2, 5, 0);
 INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (3, 1, 3);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (4, 5, 4);
 
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (0, 2);
+INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (0, 4);
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (0, 1);
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (0, 3);
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (1, 2);
@@ -127,7 +130,7 @@ INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_
 
 
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
-    values (1,1,0, 0, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 0, null,null,1);
+    values (1,3,0, 0, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 0, null,null,1);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
     values (2,2,0, null, '2021-03-01 10:45:00', '2021-03-01 10:00:00', 0, null,null,1);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)

@@ -21,7 +21,7 @@ public class EPrescription {
     @JoinColumn
     private Patient patient;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<MedicationQuantity> medicationQuantity;
 
     public EPrescription() {

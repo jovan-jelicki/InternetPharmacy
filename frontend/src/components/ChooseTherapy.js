@@ -28,14 +28,14 @@ export default class ChooseTherapy extends React.Component {
                     {Drugs}
                 </select>
                 <br/>
-                {this.props.medication.Id !== undefined ?
+                {this.props.medication.id !== undefined ?
                     <div style={{ display : "flex"}}>
                         <div  className="m-2 bg-primary p-2" style={{ height: 45 , width : 200}}>
                             <Button onClick={this.removeMedication} variant="primary" className="mr-3 p-0" style={{width: '1rem'}} >X</Button>
                             <label  className='text-light'>{this.props.medication.name}</label>
                         </div>
                         <Button style={{height : 40, marginTop : 10}} onClick={this.handleModal} variant="secondary"> Information </Button>
-                        <Button style={{width: 120, height : 40, marginTop : 10, marginLeft : 2}} variant="secondary"> Prescribe </Button>
+                        <Button style={{width: 120, height : 40, marginTop : 10, marginLeft : 2}} onClick={this.createEPrescription} variant="secondary"> Prescribe </Button>
                     </div>
                     : <div>Nema leka</div>}
                 {this.showModalDialog()}
@@ -44,8 +44,12 @@ export default class ChooseTherapy extends React.Component {
         )
     }
 
+    createEPrescription = () => {
+
+        this.props.createEPrescription();
+    }
     showModalDialog = () => {
-        if(this.props.medication.Id !== undefined) {
+        if(this.props.medication.id !== undefined) {
              const Ingredients = this.props.medication.ingredient.map((ingredient, key) =>
                 <label style={{marginLeft: 5}}>{ingredient.name}</label>
             )
