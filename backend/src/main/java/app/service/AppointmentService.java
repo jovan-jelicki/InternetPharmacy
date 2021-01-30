@@ -20,5 +20,5 @@ public interface AppointmentService extends CRUDService<Appointment>{
 
     Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId);
 
-
+    Appointment scheduleCounseling(Appointment entity);
 }

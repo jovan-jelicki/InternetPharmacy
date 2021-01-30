@@ -30,7 +30,7 @@ export default class PatientProfilePage extends React.Component {
     async componentDidMount() {
 
         await axios
-            .get('http://localhost:8080/api/patients/1')
+            .get('http://localhost:8080/api/patients/0')
             .then(res => {
                 let patient = res.data;
                 console.log(patient)
@@ -52,7 +52,7 @@ export default class PatientProfilePage extends React.Component {
             });
 
         await axios
-            .get('http://localhost:8080/api/patients/allergies/1')
+            .get('http://localhost:8080/api/patients/allergies/0')
             .then(res => {
                 this.setState({
                     'allergies' : res.data
@@ -158,7 +158,7 @@ export default class PatientProfilePage extends React.Component {
             'id' : this.state.id,
             'firstName' : this.state.firstName,
             'lastName' : this.state.lastName,
-            //'userType' : this.state.userType,
+            'userType' : this.state.userType,
             'allergies' : this.state.allergies,
             'credentials' : {
                 'email' : this.state.email,
