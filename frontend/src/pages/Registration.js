@@ -84,10 +84,8 @@ export default class Registration extends React.Component {
 
     }
     async sendMail() {
-
         axios
             .put('http://localhost:8080/api/email/confirm', {
-
                 'to':"t.kovacevic98@gmail.com",
                 'subject':"Confirm registration",
                 'body':"Hi "+this.state.user.firstName+" You've created a InternetPharmacy account."+
@@ -97,7 +95,6 @@ export default class Registration extends React.Component {
             .then(res => {
 
             });
-
     }
 
     confirmForm = (event) => {

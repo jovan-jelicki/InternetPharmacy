@@ -6,6 +6,7 @@ import app.dto.UserPasswordDTO;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
+import app.model.user.Patient;
 import app.repository.DermatologistRepository;
 import app.service.DermatologistService;
 import app.service.PharmacyService;
@@ -197,4 +198,7 @@ public class DermatologistServiceImpl implements DermatologistService {
 
         return isOverlapping;
     }
+
+    public Dermatologist findByEmailAndPassword(String email, String password) { return dermatologistRepository.findByEmailAndPassword(email, password);}
+
 }

@@ -13,11 +13,11 @@ INSERT INTO patient (id, first_name, last_name, user_type, penalty_count, email,
                     VALUES (6, 'Jovana', 'Jeremic', 4, 0, 'jovana.jeremic@gmail.com', 'malakojacinicuda', '+988795562', 'France', 49, 2, 'Lui V', 'Paris');
 
 INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (3, 'Pera', 'Peric', 1, 'pera.Dermatologist@gmail.com', 'perap', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
+                    VALUES (3, 'Pera', 'Peric', 0, 'pera.Dermatologist@gmail.com', 'perap', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
 INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (4, 'Agate', 'Fendi', 1, 'agate@gmail.com', 'perap', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'Chicago');
+                    VALUES (4, 'Agate', 'Fendi', 0, 'agate@gmail.com', 'perap', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'Chicago');
 INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (5, 'Peter', 'Smith', 1, 'pera@gmail.com', 'perap', '00987563214', 'GER', 41, 87, 'Fifth Ave', 'Chicago');
+                    VALUES (5, 'Peter', 'Smith', 0, 'pera@gmail.com', 'perap', '00987563214', 'GER', 41, 87, 'Fifth Ave', 'Chicago');
 
 
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (0, 4);
@@ -113,9 +113,9 @@ INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALU
 INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (3,4);
 
 INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id)
-    VALUES (1, 'Jovan', 'Jovic', 0, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',1);
+    VALUES (1, 'Jovan', 'Jovic', 1, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',1);
 INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id)
-    VALUES (2, 'Filip', 'Markovic', 0, 'filip@gmail.com', 'filip', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'NY',2);
+    VALUES (2, 'Filip', 'Markovic', 1, 'filip@gmail.com', 'filip', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'NY',2);
 
 -- INSERT INTO pharmacy_pharmacist(pharmacy_id, pharmacist_id) VALUES (1,1);
 -- INSERT INTO pharmacy_pharmacist(pharmacy_id, pharmacist_id) VALUES (0,2);

@@ -49,17 +49,16 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Optional<Patient> read(Long id) {
-        return patientRepository.findById(id);
-    }
+    public Optional<Patient> read(Long id) {return patientRepository.findById(id); }
 
     @Override
-    public void delete(Long id) {
-        patientRepository.deleteById(id);
-    }
+    public void delete(Long id) {patientRepository.deleteById(id);}
 
     @Override
     public boolean existsById(Long id) {
         return patientRepository.existsById(id);
     }
+
+    public Patient findByEmailAndPassword(String email, String password) { return patientRepository.findByEmailAndPassword(email, password);}
+
 }
