@@ -5,6 +5,7 @@ import app.dto.UserPasswordDTO;
 import app.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -19,6 +20,7 @@ public class EmailControllerImpl {
         this.emailService = emailService;
     }
 
+    @Async
     @PutMapping(value = "/send")
     public ResponseEntity<Void> sendMail(@RequestBody EmailDTO emailParams) {
         try {
@@ -31,6 +33,7 @@ public class EmailControllerImpl {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Async
     @PutMapping(value = "/confirm")
     public ResponseEntity<Void> sendConfirmMail(@RequestBody EmailDTO emailParams) {
         try {

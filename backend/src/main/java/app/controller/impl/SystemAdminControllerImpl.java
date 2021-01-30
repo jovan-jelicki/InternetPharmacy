@@ -1,20 +1,23 @@
-//package app.controller.impl;
-//
-//import app.dto.SystemAdminDTO;
-//import app.model.user.SystemAdmin;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//
-//@Controller
-//@RequestMapping(value = "api/systemAdmin")
-//public class SystemAdminControllerImpl {
+package app.controller.impl;
+
+import app.dto.SystemAdminDTO;
+import app.model.user.SystemAdmin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Controller
+@RequestMapping(value = "api/systemAdmin")
+public class SystemAdminControllerImpl {
+
+
 //    private final UserService<SystemAdmin> userService;
 //
 //    @Autowired
@@ -72,4 +75,4 @@
 //        return new ResponseEntity<>(new SystemAdminDTO(this.userService.save(systemAdminUpdate)), HttpStatus.OK);
 //    }
 //
-//}
+}

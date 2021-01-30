@@ -1,6 +1,7 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
+import app.model.user.Patient;
 import app.model.user.PharmacyAdmin;
 import app.repository.PharmacyAdminRepository;
 import app.service.PharmacyAdminService;
@@ -61,4 +62,6 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         else if(!passwordKit.getNewPassword().equals(passwordKit.getRepeatedPassword()))
             throw new IllegalArgumentException("Entered passwords doesn't match");
     }
+    public PharmacyAdmin findByEmailAndPassword(String email, String password) { return pharmacyAdminRepository.findByEmailAndPassword(email, password);}
+
 }
