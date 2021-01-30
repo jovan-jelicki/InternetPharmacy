@@ -10,6 +10,7 @@ import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
 import app.model.user.EmployeeType;
 import app.repository.AppointmentRepository;
+import app.repository.PatientRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
 import app.service.AppointmentService;
@@ -17,6 +18,8 @@ import app.service.DermatologistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -27,19 +30,29 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final PharmacyRepository pharmacyRepository;
     private final DermatologistService dermatologistService;
     private final VacationRequestRepository vacationRequestRepository;
+    private final PatientRepository patientRepository;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientRepository patientRepository) {
         this.appointmentRepository = appointmentRepository;
         this.pharmacyRepository = pharmacyRepository;
         this.dermatologistService = dermatologistService;
         this.vacationRequestRepository = vacationRequestRepository;
+        this.patientRepository = patientRepository;
     }
 
     @Override
     public Appointment save(Appointment entity) {
         entity.setPharmacy(pharmacyRepository.findById(entity.getPharmacy().getId()).get());
         return appointmentRepository.save(entity);
+    }
+
+    @Override
+    public Appointment scheduleCounseling(Appointment entity) {
+        LocalDateTime start = entity.getPeriod().getPeriodStart();
+        entity.setPatient(patientRepository.findById(entity.getPatient().getId()).get());
+        entity.getPeriod().setPeriodEnd(start.plusHours(1));
+        return save(entity);
     }
 
     @Override

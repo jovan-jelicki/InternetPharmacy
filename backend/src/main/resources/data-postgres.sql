@@ -13,11 +13,11 @@ INSERT INTO patient (id, first_name, last_name, user_type, penalty_count, email,
                     VALUES (6, 'Jovana', 'Jeremic', 4, 0, 'jovana.jeremic@gmail.com', 'malakojacinicuda', '+988795562', 'France', 49, 2, 'Lui V', 'Paris');
 
 INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (3, 'Pera', 'Peric', 1, 'pera.Dermatologist@gmail.com', 'perap', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
+                    VALUES (3, 'Pera', 'Peric', 0, 'pera.Dermatologist@gmail.com', 'perap', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
 INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (4, 'Agate', 'Fendi', 1, 'agate@gmail.com', 'perap', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'Chicago');
+                    VALUES (4, 'Agate', 'Fendi', 0, 'agate@gmail.com', 'perap', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'Chicago');
 INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (5, 'Peter', 'Smith', 1, 'pera@gmail.com', 'perap', '00987563214', 'GER', 41, 87, 'Fifth Ave', 'Chicago');
+                    VALUES (5, 'Peter', 'Smith', 0, 'pera@gmail.com', 'perap', '00987563214', 'GER', 41, 87, 'Fifth Ave', 'Chicago');
 
 
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (0, 4);
@@ -116,9 +116,9 @@ INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALU
 INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (3,4);
 
 INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id)
-    VALUES (1, 'Jovan', 'Jovic', 0, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',1);
+    VALUES (1, 'Jovan', 'Jovic', 1, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',1);
 INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id)
-    VALUES (2, 'Filip', 'Markovic', 0, 'filip@gmail.com', 'filip', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'NY',2);
+    VALUES (2, 'Filip', 'Markovic', 1, 'filip@gmail.com', 'filip', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'NY',2);
 
 -- INSERT INTO pharmacy_pharmacist(pharmacy_id, pharmacist_id) VALUES (1,1);
 -- INSERT INTO pharmacy_pharmacist(pharmacy_id, pharmacist_id) VALUES (0,2);
@@ -126,13 +126,13 @@ INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, p
 INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
     VALUES (1,3,0, '2021-03-01', '2021-02-10', 'Godisnji odmor dermatolog', 1, 0);
 INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
-    VALUES (2,1,1, '2021-07-01', '2021-07-08', 'Godisnji odmor farmaceut', 0, 1);
+    VALUES (2,1,1, '2021-08-08', '2021-07-08', 'Godisnji odmor farmaceut', 1, 1);
 
 
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
     values (1,3,0, 0, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 0, null,null,1);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
-    values (2,3,0, null, '2021-03-01 10:45:00', '2021-03-01 10:00:00', 0, null,null,0);
+    values (2,2,0, null, '2021-03-01 10:45:00', '2021-03-01 10:00:00', 0, null,null,1);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type)
     values (3,3,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,0);
 

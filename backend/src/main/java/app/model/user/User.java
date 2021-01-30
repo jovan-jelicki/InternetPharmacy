@@ -41,9 +41,7 @@ public abstract class User {
         this.lastName = lastName;
     }
 
-    public Credentials getCredentials() {
-        return credentials;
-    }
+    public Credentials getCredentials() {return credentials; }
 
     public void setCredentials(Credentials credentials) {
         this.credentials = credentials;

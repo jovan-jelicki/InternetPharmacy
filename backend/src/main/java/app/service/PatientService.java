@@ -12,4 +12,7 @@ public interface PatientService extends CRUDService<Patient> {
 
     Collection<Ingredient> getPatientAllergieIngridients(Long id);
     Boolean isPatientAllergic(Collection<Medication> medication, Long id);
-    }
+
+     Patient findByEmailAndPassword(String email, String password);
+}
+

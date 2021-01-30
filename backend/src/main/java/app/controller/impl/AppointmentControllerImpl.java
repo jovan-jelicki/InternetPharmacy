@@ -53,8 +53,15 @@ public class AppointmentControllerImpl {
     }
 
     @PutMapping(consumes = "application/json", value = "/finishAppointment")
-    public ResponseEntity<Boolean> finishAppointment(@RequestBody AppointmentScheduledDTO appointmentScheduledDTO){
+    public ResponseEntity<Boolean> finishAppointment(@RequestBody AppointmentScheduledDTO appointmentScheduledDTO) {
         return new ResponseEntity<>(appointmentService.finishAppointment(appointmentScheduledDTO), HttpStatus.OK);
+    }
+    @PostMapping(value = "/counseling")
+    public ResponseEntity<Void> scheduleCounseling(@RequestBody Appointment entity) {
+        if(appointmentService.scheduleCounseling(entity) == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @PostMapping(value = "/getEvents")

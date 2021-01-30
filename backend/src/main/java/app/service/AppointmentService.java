@@ -26,5 +26,6 @@ public interface AppointmentService extends CRUDService<Appointment>{
 
     Collection<AppointmentFinishedDTO> getFinishedByExaminer(Long examinerId, EmployeeType type);
 
+    Appointment scheduleCounseling(Appointment entity);
 
 }

@@ -2,6 +2,7 @@ package app.service.impl;
 
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
+import app.model.user.Dermatologist;
 import app.model.user.Pharmacist;
 import app.repository.PharmacistRepository;
 import app.repository.PharmacyRepository;
@@ -86,4 +87,6 @@ public class PharmacistServiceImpl implements PharmacistService {
         }
         return ret;
     }
+    public Pharmacist findByEmailAndPassword(String email, String password) { return pharmacistRepository.findByEmailAndPassword(email, password);}
+
 }

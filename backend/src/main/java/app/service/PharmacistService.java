@@ -2,6 +2,7 @@ package app.service;
 
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
+import app.model.user.Patient;
 import app.model.user.Pharmacist;
 
 import java.util.Collection;
@@ -13,4 +14,6 @@ public interface PharmacistService extends CRUDService<Pharmacist> {
     Collection<Pharmacist> read();
     PharmacyNameIdDTO getPharmacyOfPharmacist(Long id);
     Collection<Pharmacist> getPharmacistsByPharmacyId(Long id);
+    Pharmacist findByEmailAndPassword(String email, String password);
+
 }
