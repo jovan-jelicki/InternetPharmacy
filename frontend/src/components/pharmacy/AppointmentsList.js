@@ -51,7 +51,7 @@ export default class AppointmentsList extends React.Component{
     }
 
     fetchAppointments = () => {
-        axios.get("http://localhost:8080/api/appointment/getAllAvailableAppointmentsByPharmacy/0").then(res => {
+        axios.get("http://localhost:8080/api/appointment/getAllAvailableAppointmentsByPharmacy/1").then(res => {
             this.setState({
                 appointments : res.data
             });

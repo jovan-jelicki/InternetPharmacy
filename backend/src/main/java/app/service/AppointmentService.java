@@ -28,6 +28,10 @@ public interface AppointmentService extends CRUDService<Appointment>{
     Appointment scheduleCounseling(Appointment entity);
     Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date);
 
+    Collection<Appointment> findAppointmentsByPatientNotNullAndType(EmployeeType type);
+
+    Collection<Appointment> GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date);
+
 
 
 }

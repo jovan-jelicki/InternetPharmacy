@@ -41,6 +41,9 @@ public class Appointment {
    
    private Period period;
 
+   @Column
+   private Boolean isActive;
+
    public Appointment() {
    }
 
@@ -114,6 +117,14 @@ public class Appointment {
 
    public void setPeriod(Period period) {
       this.period = period;
+   }
+
+   public Boolean getActive() {
+      return isActive;
+   }
+
+   public void setActive(Boolean active) {
+      isActive = active;
    }
 
    public boolean isOverlapping(LocalDateTime timeSlot) {

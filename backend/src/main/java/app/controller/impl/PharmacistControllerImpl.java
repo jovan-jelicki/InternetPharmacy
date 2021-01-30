@@ -32,7 +32,7 @@ public class PharmacistControllerImpl {
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<Pharmacist> update(@RequestBody Pharmacist entity) {
-        if(!pharmacistService.existsById(entity.getId()))
+        if(!pharmacistService.existsById(entity.getId()) || !pharmacistService.read(entity.getId()).get().getActive())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(pharmacistService.save(entity), HttpStatus.CREATED);
     }
@@ -67,7 +67,9 @@ public class PharmacistControllerImpl {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacistDTO> read(@PathVariable Long id) {
-        return new ResponseEntity<>(new PharmacistDTO(pharmacistService.read(id).get()), HttpStatus.OK);
+        if (pharmacistService.read(id).isPresent())
+            return new ResponseEntity<>(new PharmacistDTO(pharmacistService.read(id).get()), HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -77,7 +79,7 @@ public class PharmacistControllerImpl {
         else if (!pharmacistService.read(id).get().getActive())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         pharmacistService.delete(id);
-        if (pharmacistService.read(id).get().getActive())
+        if (pharmacistService.read(id).isPresent())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
