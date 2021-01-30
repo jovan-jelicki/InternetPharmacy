@@ -24,7 +24,7 @@ export default class ScheduleCounsel extends React.Component {
                         <Row>
                             <Col xs={4}>{pharmacistPlain.firstName + ' ' + pharmacistPlain.lastName}</Col>
                             <Col xs={{span : 2, offset : 5}}>
-                                <Button variant={'success'} oClick={(e) => this.schedule(pharmacy.id, pharmacistPlain.id)}>Schedule</Button>
+                                <Button variant={'success'} onClick={() => this.schedule(pharmacy.id, pharmacistPlain.id)}>Schedule</Button>
                             </Col>
                         </Row>
                     </ListGroup.Item>

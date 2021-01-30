@@ -14,6 +14,7 @@ class PatientCounselScheduling extends React.Component {
             dateTime : ''
         }
         this.search = this.search.bind(this)
+        this.schedule = this.schedule.bind(this)
     }
 
     search(dateTime) {
@@ -24,17 +25,18 @@ class PatientCounselScheduling extends React.Component {
             })
             .then(res => {
                 this.setState({
-                    pharmacies : [...new Set(res.data.map(x => x.pharmacyDTO))],
-                    pharmacists : res.data,
-                    dateTime
+                    'pharmacies' : [...new Set(res.data.map(x => x.pharmacyDTO))],
+                    'pharmacists' : res.data,
+                    'dateTime' : dateTime
                 })
             })
     }
 
     schedule(pharmacyId, pharmacistId) {
         axios
-        .post('http://localhost:8080/api/appointment', {
+        .post('http://localhost:8080/api/appointment/counseling', {
             examinerId : pharmacistId,
+            type : 'pharmacist',
             pharmacy : {
                 id : pharmacyId
             },
@@ -45,6 +47,7 @@ class PatientCounselScheduling extends React.Component {
                 periodStart : this.state.dateTime
             }
         })
+        .then(res => console.log(res));
     }
 
     render() {
@@ -55,7 +58,7 @@ class PatientCounselScheduling extends React.Component {
                         <h2>Choose what date & time fits you the best</h2>
                     </Row>
                     <DateTime search={this.search}/>
-                    <ScheduleCounsel data={this.state.pharmacies} pharmacists={this.state.pharmacists}/>
+                    <ScheduleCounsel data={this.state.pharmacies} pharmacists={this.state.pharmacists} schedule={this.schedule}/>
                 </Container>
             </PatientLayout>
         )
