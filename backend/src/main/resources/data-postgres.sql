@@ -130,11 +130,11 @@ INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_
 
 
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (1,3,0, 0, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 0, null,null,1, true);
+    values (1,3,0, null, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (2,2,0, null, '2021-03-01 10:45:00', '2021-03-01 10:00:00', 0, null,null,1, true);
+    values (2,3,0, null, '2021-03-01 10:45:00', '2021-03-01 10:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (3,3,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,0, true);
+    values (3,3,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 1, null,null,0, true);
 
 insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
     values (4,1,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,1, true);

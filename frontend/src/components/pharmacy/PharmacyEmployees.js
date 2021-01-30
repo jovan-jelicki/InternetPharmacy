@@ -390,7 +390,18 @@ export default class PharmacyEmployees extends React.Component{
 
     deleteDermatologist = (dermatologist) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + dermatologist.firstName + ' ' + dermatologist.lastName + ' from your employees list?');
-        alert( isBoss ); // true if OK is pressed
+        if (isBoss) {
+            axios.put("http://localhost:8080/api/dermatologists/deleteDermatologistFromPharmacy/1", dermatologist)
+                .then(res => {
+                    if (res.status === 200) {
+                        alert("Dermatologist deleted successfully!");
+                        this.fetchWorkingDermatologists();
+                    }
+                })
+                .catch(() => {
+                    alert("Dermatologist cannot be deleted due to scheduled appointments.");
+                })
+        }
     }
 
     deletePharmacist = (pharmacist) => {

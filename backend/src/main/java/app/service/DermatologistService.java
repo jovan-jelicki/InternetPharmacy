@@ -21,5 +21,7 @@ public interface DermatologistService extends CRUDService<Dermatologist> {
     Boolean addDermatologistToPharmacy (DermatologistDTO dermatologistDTO);
     Dermatologist findByEmailAndPassword(String email, String password);
 
+    Boolean deleteDermatologistFromPharmacy(Long pharmacyId, DermatologistDTO dermatologistDTO);
 
+    void setAppointmentService(AppointmentService appointmentService);
 }

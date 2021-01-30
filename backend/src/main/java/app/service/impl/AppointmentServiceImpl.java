@@ -18,6 +18,7 @@ import app.service.DermatologistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,9 +29,10 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PharmacyRepository pharmacyRepository;
-    private final DermatologistService dermatologistService;
+
     private final VacationRequestRepository vacationRequestRepository;
     private final PatientRepository patientRepository;
+    private DermatologistService dermatologistService;
 
     @Autowired
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientRepository patientRepository) {
@@ -39,6 +41,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.dermatologistService = dermatologistService;
         this.vacationRequestRepository = vacationRequestRepository;
         this.patientRepository = patientRepository;
+    }
+
+    @PostConstruct
+    public void init() {
+        dermatologistService.setAppointmentService(this);
     }
 
     @Override
@@ -226,5 +233,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date) {
         return appointmentRepository.GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(examinerId,employeeType,date);
+    }
+
+    @Override
+    public Collection<Appointment> GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date, Long pharmacyId) {
+        return appointmentRepository.GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(examinerId, employeeType, date, pharmacyId);
+    }
+
+    @Override
+    public Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date, Long pharmacyId) {
+        return appointmentRepository.GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(examinerId,employeeType,date, pharmacyId);
     }
 }
