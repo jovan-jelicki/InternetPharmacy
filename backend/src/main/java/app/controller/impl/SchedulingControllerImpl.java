@@ -1,6 +1,7 @@
 package app.controller.impl;
 
 import app.dto.AppointmentSearchDTO;
+import app.dto.CounselingSearchDTO;
 import app.model.user.EmployeeType;
 import app.model.user.Pharmacist;
 import app.service.CounselingService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
@@ -25,13 +27,16 @@ public class SchedulingControllerImpl {
     }
 
     @PostMapping(value = "/search", consumes = "application/json")
-    public ResponseEntity<Collection<Pharmacist>> getAvailable(@RequestBody AppointmentSearchDTO appointmentSearchKit) {
-        if (appointmentSearchKit.getEmployeeType() == EmployeeType.pharmacist)
-            return new ResponseEntity<>(counselingService.findAvailablePharmacists(appointmentSearchKit.getTimeSlot()),
-                    HttpStatus.OK);
+    public ResponseEntity<Collection<CounselingSearchDTO>> getAvailable(@RequestBody AppointmentSearchDTO appointmentSearchKit) {
+        if (appointmentSearchKit.getEmployeeType() == EmployeeType.pharmacist) {
+            Collection<CounselingSearchDTO> available = new ArrayList<>();
+            counselingService.findAvailablePharmacists(appointmentSearchKit.getTimeSlot()).forEach(p -> {
+                available.add(new CounselingSearchDTO(p));
+            });
+            return new ResponseEntity<>(available, HttpStatus.OK);
+        }
         else
             // ZA DERMATOLOGE KASNIJE DODATI
-            return new ResponseEntity<>(counselingService.findAvailablePharmacists(appointmentSearchKit.getTimeSlot()),
-                HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }
