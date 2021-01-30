@@ -197,4 +197,7 @@ public class DermatologistServiceImpl implements DermatologistService {
 
         return isOverlapping;
     }
+
+    public Dermatologist findByEmailAndPassword(String email, String password) { return dermatologistRepository.findByEmailAndPassword(email, password);}
+
 }

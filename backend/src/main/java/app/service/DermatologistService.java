@@ -19,5 +19,7 @@ public interface DermatologistService extends CRUDService<Dermatologist> {
     WorkingHours workingHoursInSpecificPharmacy(Long dermatologistId, Pharmacy pharmacy);
 
     Boolean addDermatologistToPharmacy (DermatologistDTO dermatologistDTO);
+    Dermatologist findByEmailAndPassword(String email, String password);
+
 
 }

@@ -13,4 +13,6 @@ public interface PharmacistService extends CRUDService<Pharmacist> {
     Collection<Pharmacist> read();
     PharmacyNameIdDTO getPharmacyOfPharmacist(Long id);
     Collection<Pharmacist> getPharmacistsByPharmacyId(Long id);
+    Pharmacist findByEmailAndPassword(String email, String password);
+
 }

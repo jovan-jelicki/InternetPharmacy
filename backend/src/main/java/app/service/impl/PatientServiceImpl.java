@@ -1,14 +1,18 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
+import app.model.medication.Ingredient;
+import app.model.medication.Medication;
 import app.model.user.Patient;
 import app.repository.PatientRepository;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
 
+@Service
 public class PatientServiceImpl implements PatientService {
     private PatientRepository patientRepository;
 
@@ -37,6 +41,20 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public Collection<Ingredient> getPatientAllergieIngridients(Long id){
+        return read(id).get().getAllergies();
+    }
+
+    @Override
+    public Boolean isPatientAllergic(Collection<Medication> medications, Long id){
+        Collection<Ingredient> ingredients = getPatientAllergieIngridients(id);
+        for(Medication medication : medications)
+            if(medication.getIngredient().stream().anyMatch(ingredients::contains))
+                return false;
+        return true;
+    }
+
+    @Override
     public Patient save(Patient entity) {
         return patientRepository.save(entity);
     }
@@ -47,17 +65,16 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Optional<Patient> read(Long id) {
-        return patientRepository.findById(id);
-    }
+    public Optional<Patient> read(Long id) {return patientRepository.findById(id); }
 
     @Override
-    public void delete(Long id) {
-        patientRepository.deleteById(id);
-    }
+    public void delete(Long id) {patientRepository.deleteById(id);}
 
     @Override
     public boolean existsById(Long id) {
         return patientRepository.existsById(id);
     }
+
+    public Patient findByEmailAndPassword(String email, String password) { return patientRepository.findByEmailAndPassword(email, password);}
+
 }

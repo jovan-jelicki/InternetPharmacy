@@ -50,6 +50,11 @@ public class MedicationControllerImpl {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(value = "/getMedicationsForPatient/{id}")
+    public ResponseEntity<Collection<Medication>> getAllMedicationsPatientIsNotAllergicTo(@PathVariable Long id){
+        return new ResponseEntity<>(medicationService.getAllMedicationsPatientIsNotAllergicTo(id), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/alternatives/{id}")
     public ResponseEntity<Collection<Medication>> getMedicationAlternatives(@PathVariable Long id) {
         return new ResponseEntity<>(medicationService.fetchMedicationAlternatives(id), HttpStatus.OK);

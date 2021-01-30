@@ -97,4 +97,6 @@ public class PharmacistServiceImpl implements PharmacistService {
         }
         return ret;
     }
+    public Pharmacist findByEmailAndPassword(String email, String password) { return pharmacistRepository.findByEmailAndPassword(email, password);}
+
 }

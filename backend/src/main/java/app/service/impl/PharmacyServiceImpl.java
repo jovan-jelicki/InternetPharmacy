@@ -1,6 +1,7 @@
 package app.service.impl;
 
 import app.dto.PharmacySearchDTO;
+import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
 import app.repository.PharmacyRepository;
 import app.service.PharmacyService;
@@ -56,7 +57,17 @@ public class PharmacyServiceImpl implements PharmacyService {
         return pharmacies;
     }
 
-
+    @Override
+    public Boolean checkMedicationQuantity(Collection<MedicationQuantity> medicationQuantities, Pharmacy pharmacy) {
+        MedicationQuantity medicationQuantity = new MedicationQuantity();
+        for(MedicationQuantity m : pharmacy.getMedicationQuantity()) {
+            medicationQuantity =  medicationQuantities.stream().filter(med -> med.getMedication().getId() == m.getMedication().getId()).findFirst().orElse(null);
+            if(medicationQuantity != null)
+                if (m.getQuantity() - medicationQuantity.getQuantity() < 0)
+                     return false;
+        }
+        return true;
+    }
 
 
 }

@@ -2,6 +2,7 @@ import React from "react";
 import {Button, Col, Container, FormControl, Row} from "react-bootstrap";
 import ChooseTherapy from "./ChooseTherapy";
 import ScheduleByDateTime from "./ScheduleByDateTime";
+import axios from "axios";
 
 export default class Appointment extends React.Component {
     constructor(props) {
@@ -12,52 +13,19 @@ export default class Appointment extends React.Component {
             medication : { name :  "Choose medication ..." },
             dateStartTherapy : "",
             dateEndTherapy : "",
-            medications : [{
-                Id: 0,
-                name: "aspirin",
-                type: "antibiotic",
-                dose: 20,
-                medicationShape: "capsule",
-                manufacturer: "hemofarm",
-                medicationIssue: "withPrescription",
-                note: "Be careful",
-                ingredient: [{
-                    Id: 0,
-                    name: "paracetamol"
-                },
-                    {
-                        Id: 1,
-                        name: "pera"
-                    }],
-                sideEffect: [{
-                    Id: 0,
-                    name: "osip"
-                }]
-            },
-                {
-                Id : 0,
-                name : "BS",
-                type : "probotic",
-                dose : 20,
-                medicationShape : "capsule",
-                manufacturer : "hemofarm",
-                medicationIssue : "withPrescription",
-                note : "Be careful",
-                ingredient :[ {
-                    Id : 0,
-                    name : "paracetamol"
-                },
-                    {
-                        Id : 1,
-                        name : "pera"
-                    }],
-                sideEffect : [{
-                    Id : 0,
-                    name : "osip"
-                }]
-
-            }]
+            medications : []
         }
+    }
+
+    componentDidMount() {
+        axios
+            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medications/getMedicationsForPatient/' + this.props.appointment.patientId)
+            .then(res => {
+                this.setState({
+                    medications : res.data
+                })
+            })
+            .catch(res => alert("Cant get medications!"));
     }
 
     render() {
@@ -83,7 +51,7 @@ export default class Appointment extends React.Component {
               <br/>
               <label style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}}> Choose therapy </label>
 
-              {<ChooseTherapy dateEndTherapy={this.state.dateEndTherapy} dateStartTherapy={this.state.dateStartTherapy}  setStartDate={this.setStartDate} setEndDate={this.setEndDate} medications={this.state.medications} medication={this.state.medication} chooseMedication={this.chooseMedication} removeMedication={this.removeMedication}/>}
+              {<ChooseTherapy createEPrescription={this.createEPrescription} dateEndTherapy={this.state.dateEndTherapy} dateStartTherapy={this.state.dateStartTherapy}  setStartDate={this.setStartDate} setEndDate={this.setEndDate} medications={this.state.medications} medication={this.state.medication} chooseMedication={this.chooseMedication} removeMedication={this.removeMedication}/>}
 
               <Button onClick={() => this.finishAppointment()}> Finish appointment </Button>
           </Container>
@@ -107,7 +75,22 @@ export default class Appointment extends React.Component {
     }
 
 
-
+    createEPrescription = () => {
+        axios
+            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/eprescriptions/', {
+                'pharmacyId' : this.props.appointment.pharmacyId,
+                'prescription' : {
+                    'patient' : {id : this.props.appointment.patientId},
+                    'medicationQuantity' : [{
+                        medication: this.state.medication,
+                        quantity : 2
+                    }
+                    ]
+                }
+            })
+            .then(res => alert("Uspeo si!"))
+            .catch(es => alert("Nisi uspeo!"));
+    }
     showScheduling =() => {
         this.setState({
             scheduleNewAppointment : !this.state.scheduleNewAppointment
@@ -133,7 +116,7 @@ export default class Appointment extends React.Component {
 
     removeMedication = () => {
         this.setState({
-            medication : {}
+            medication : { name :  "Choose medication ..." }
         })
     }
     handleInputChange = (event) => {
@@ -143,10 +126,53 @@ export default class Appointment extends React.Component {
         })
     }
 
-
-
     finishAppointment = () => {
-        this.props.renderParent(false);
-        localStorage.clear();
+        let periodStart = this.state.dateStartTherapy;
+
+
+        //let momentDate = moment(date);
+        let day = periodStart.getDate();
+        let month = parseInt(periodStart.getMonth())+1;
+        if (month < 10)
+            month = "0" + month;
+        if (parseInt(day)<10)
+            day = "0"+day;
+
+        let fullYearStart = periodStart.getFullYear() + "-" + month + "-" + day + " " + "00" + ":" + "00" + ":00";
+        let periodEnd = this.state.dateEndTherapy;
+         day = periodEnd.getDate();
+         month = parseInt(periodEnd.getMonth())+1;
+        if (month < 10)
+            month = "0" + month;
+        if (parseInt(day)<10)
+            day = "0"+day;
+
+        let fullYearEnd = periodEnd.getFullYear() + "-" + month + "-" + day + " " + "00" + ":" + "00" + ":00";
+        axios
+            .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/finishAppointment', {
+                'id' : this.props.appointment.id,
+                'examinerId' : this.props.appointment.examinerId,
+                'report' : this.state.report,
+                'pharmacyId' : this.props.appointment.pharmacyId,
+                'pharmacyName' : this.props.appointment.pharmacyName,
+                'appointmentStatus' : this.props.appointment.appointmentStatus,
+                'patientId' : this.props.appointment.patientId,
+                'therapy' : {
+                    'medication' : this.state.medication,
+                    'period' : {
+                        periodStart : fullYearStart,
+                        periodEnd : fullYearEnd
+                    }
+                }
+            })
+            .then(res => {
+                alert("Appointment finished!");
+                localStorage.clear();
+                this.props.renderParent(false);
+            })
+            .catch(res => {
+                alert("Appointment not finished!");
+            })
+
     }
 }

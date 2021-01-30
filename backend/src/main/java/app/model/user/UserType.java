@@ -1,8 +1,8 @@
 package app.model.user;
 
 public enum UserType {
-    pharmacist,
     dermatologist,
+    pharmacist,
     pharmacyAdmin,
     systemAdmin,
     patient,

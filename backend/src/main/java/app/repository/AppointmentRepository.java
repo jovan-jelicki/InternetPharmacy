@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    Collection<Appointment> findAppointmentsByPatientNotNull();
+    Collection<Appointment> findAppointmentsByPatientNotNullAndType(EmployeeType type);
 
     @Query("select a from Appointment a where a.examinerId = ?1 and a.type = ?2 and a.appointmentStatus = 0 and a.patient is not null")
     Collection<Appointment> getAllScheduledNotFinishedByExaminer(Long examinerId, EmployeeType type);

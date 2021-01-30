@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.AppointmentFinishedDTO;
 import app.dto.AppointmentScheduledDTO;
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
@@ -9,6 +10,7 @@ import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
 import app.model.user.EmployeeType;
 import app.repository.AppointmentRepository;
+import app.repository.PatientRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
 import app.service.AppointmentService;
@@ -27,19 +29,29 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final PharmacyRepository pharmacyRepository;
     private final DermatologistService dermatologistService;
     private final VacationRequestRepository vacationRequestRepository;
+    private final PatientRepository patientRepository;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientRepository patientRepository) {
         this.appointmentRepository = appointmentRepository;
         this.pharmacyRepository = pharmacyRepository;
         this.dermatologistService = dermatologistService;
         this.vacationRequestRepository = vacationRequestRepository;
+        this.patientRepository = patientRepository;
     }
 
     @Override
     public Appointment save(Appointment entity) {
         entity.setPharmacy(pharmacyRepository.findById(entity.getPharmacy().getId()).get());
         return appointmentRepository.save(entity);
+    }
+
+    @Override
+    public Appointment scheduleCounseling(Appointment entity) {
+        LocalDateTime start = entity.getPeriod().getPeriodStart();
+        entity.setPatient(patientRepository.findById(entity.getPatient().getId()).get());
+        entity.getPeriod().setPeriodEnd(start.plusHours(1));
+        return save(entity);
     }
 
     @Override
@@ -167,6 +179,18 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Boolean finishAppointment(AppointmentScheduledDTO appointmentScheduledDTO) {
+        Appointment appointment = read(appointmentScheduledDTO.getId()).get();
+        appointment.setReport(appointmentScheduledDTO.getReport());
+        appointment.setTherapy(appointmentScheduledDTO.getTherapy());
+        appointment.setAppointmentStatus(AppointmentStatus.patientPresent);
+        appointment.setPatient(appointment.getPatient());
+        appointment.setPharmacy(appointment.getPharmacy());
+        this.save(appointment);
+        return true;
+    }
+
+    @Override
     public Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType) {
         return appointmentRepository.getAllAppointmentsByExaminerIdAndType(examinerId, employeeType);
     }
@@ -174,6 +198,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId) {
         return appointmentRepository.GetAllAvailableAppointmentsByPharmacy(pharmacyId);
+    }
+
+    @Override
+    public Collection<AppointmentFinishedDTO> getFinishedByExaminer(Long examinerId, EmployeeType type) {
+        Collection<AppointmentFinishedDTO> retVal = new ArrayList<>();
+        for(Appointment a : getAllByExaminerAndAppointmentStatus(examinerId, type, AppointmentStatus.patientPresent)){
+            retVal.add(new AppointmentFinishedDTO(a));
+        }
+        return retVal;
     }
 
     @Override

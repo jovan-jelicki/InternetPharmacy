@@ -61,4 +61,6 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         else if(!passwordKit.getNewPassword().equals(passwordKit.getRepeatedPassword()))
             throw new IllegalArgumentException("Entered passwords doesn't match");
     }
+    public PharmacyAdmin findByEmailAndPassword(String email, String password) { return pharmacyAdminRepository.findByEmailAndPassword(email, password);}
+
 }
