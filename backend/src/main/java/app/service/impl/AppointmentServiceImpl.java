@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.AppointmentFinishedDTO;
 import app.dto.AppointmentScheduledDTO;
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
@@ -185,5 +186,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId) {
         return appointmentRepository.GetAllAvailableAppointmentsByPharmacy(pharmacyId);
+    }
+
+    @Override
+    public Collection<AppointmentFinishedDTO> getFinishedByExaminer(Long examinerId, EmployeeType type) {
+        Collection<AppointmentFinishedDTO> retVal = new ArrayList<>();
+        for(Appointment a : getAllByExaminerAndAppointmentStatus(examinerId, type, AppointmentStatus.patientPresent)){
+            retVal.add(new AppointmentFinishedDTO(a));
+        }
+        return retVal;
     }
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import {Col, Container, Row, Button, Table, FormControl, FormGroup} from "react-bootstrap";
+import axios from "axios";
 
 export default class ReviewedClients extends React.Component {
     constructor(props) {
@@ -7,16 +8,7 @@ export default class ReviewedClients extends React.Component {
         this.state = {
             role : props.role,
             Id : props.Id,
-            clients : [{
-            firstName: "Aovan",
-            lastName: "Jelicki",
-            dateOfAppointment: "20.01.2021."
-            },
-             {
-            firstName: "Pera",
-            lastName: "Peric",
-            dateOfAppointment: "10.01.2021."
-            }],
+            clients : [],
             searchClients : [],
             query : "",
             sortType : "desc"
@@ -24,16 +16,28 @@ export default class ReviewedClients extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({
-            searchClients : this.state.clients
-        })
+        axios
+            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getFinishedByExaminer', {
+                id : 3,
+                type : 1
+            })
+            .then(res => {
+                this.setState({
+                    searchClients: res.data,
+                    clients : res.data
+                })
+            })
+            .catch(res => {
+                
+            })
     }
 
     render() {
         const Clients = this.state.searchClients.map((client, key) =>
             <tr>
-                <td>{client.firstName}</td>
-                <td>{client.lastName}</td>
+                <td>{client.pharmacyName}</td>
+                <td>{client.patientFirstName}</td>
+                <td>{client.patientLastName}</td>
                 <td>{client.dateOfAppointment}</td>
             </tr>
         );
@@ -50,6 +54,7 @@ export default class ReviewedClients extends React.Component {
                 <Table style={{"borderWidth":"1px", 'borderColor':"#aaaaaa", 'borderStyle':'solid'}} striped hover>
                     <tbody>
                         <tr>
+                            <th>Pharmacy</th>
                             <th>First name</th>
                             <th>Last name</th>
                             <th>Date of appointment</th>

@@ -1,9 +1,6 @@
 package app.controller.impl;
 
-import app.dto.AppointmentListingDTO;
-import app.dto.AppointmentScheduledDTO;
-import app.dto.EventDTO;
-import app.dto.ExaminerDTO;
+import app.dto.*;
 import app.model.appointment.Appointment;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
@@ -27,6 +24,11 @@ public class AppointmentControllerImpl {
     public AppointmentControllerImpl(AppointmentService appointmentService, DermatologistService dermatologistService) {
         this.appointmentService = appointmentService;
         this.dermatologistService = dermatologistService;
+    }
+
+    @PostMapping(consumes = "application/json", value = "/getFinishedByExaminer")
+    public ResponseEntity<Collection<AppointmentFinishedDTO>> getFinishedByExaminer(@RequestBody ExaminerDTO examinerDTO){
+        return new ResponseEntity<>(appointmentService.getFinishedByExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 
     @GetMapping

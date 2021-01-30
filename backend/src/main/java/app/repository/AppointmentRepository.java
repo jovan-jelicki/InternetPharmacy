@@ -21,4 +21,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("select a from Appointment a where a.pharmacy.id = ?1 and a.appointmentStatus = 0")
     Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId);
+
 }
