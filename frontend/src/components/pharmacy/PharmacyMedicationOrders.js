@@ -74,7 +74,7 @@ export default class PharmacyMedicationOrders extends React.Component{
     handleContent = () => {
         if (this.state.showContent === 'listOrders')
             return (
-                <MedicationOrdersList showOffers={this.changeContent} showCreateOrder={this.changeContent}/>
+                <MedicationOrdersList showOffers={this.changeContent} />
             );
         else if (this.state.showContent === 'showOffers')
             return (
@@ -82,7 +82,7 @@ export default class PharmacyMedicationOrders extends React.Component{
             );
         else if (this.state.showContent === 'showCreateOrder')
             return (
-              <CreateOrder />
+              <CreateOrder showListOrders={this.changeContent} />
             );
     }
 

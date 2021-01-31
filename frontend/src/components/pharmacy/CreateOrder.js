@@ -93,10 +93,15 @@ export default class CreateOrder extends React.Component{
             }
         );
         console.log(this.state.medicationOrder);
+        if (this.state.medicationOrder.medicationQuantity.length === 0) {
+            alert("Cannot submit medication order without any medications!");
+            return;
+        }
 
         axios.post("http://localhost:8080/api/medicationOrder/newMedicationOrder", this.state.medicationOrder)
             .then((res) => {
                 alert("Medication order created successfully!");
+                this.props.showListOrders("listOrders")
             })
     }
 }
