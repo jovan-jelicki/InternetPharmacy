@@ -14,8 +14,8 @@ public class Pharmacist extends User {
     @SequenceGenerator(name="pharmacist_generator", sequenceName = "pharmacist_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
-    @Column
-    private Boolean isActive;
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean isActive;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn
@@ -24,11 +24,11 @@ public class Pharmacist extends User {
     public Pharmacist() {
     }
 
-    public Boolean getActive() {
+    public boolean getActive() {
         return isActive;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         isActive = active;
     }
 
