@@ -1,6 +1,5 @@
 package app.repository;
 
-import app.model.user.Patient;
 import app.model.user.PharmacyAdmin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

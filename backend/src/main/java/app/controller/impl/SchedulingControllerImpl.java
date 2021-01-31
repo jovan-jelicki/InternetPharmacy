@@ -5,7 +5,6 @@ import app.dto.AppointmentSearchDTO;
 import app.dto.CounselingSearchDTO;
 import app.model.appointment.Appointment;
 import app.model.user.EmployeeType;
-import app.model.user.Pharmacist;
 import app.service.CounselingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

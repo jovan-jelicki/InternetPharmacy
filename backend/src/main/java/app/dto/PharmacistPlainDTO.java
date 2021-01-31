@@ -1,6 +1,5 @@
 package app.dto;
 
-import app.model.time.WorkingHours;
 import app.model.user.Contact;
 import app.model.user.Pharmacist;
 import app.model.user.UserType;

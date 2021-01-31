@@ -2,7 +2,6 @@ package app.service;
 
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
-import app.model.user.Patient;
 import app.model.user.Pharmacist;
 
 import java.util.Collection;

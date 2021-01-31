@@ -3,16 +3,19 @@ package app.service.impl;
 import app.dto.DermatologistDTO;
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
+import app.model.appointment.Appointment;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
-import app.model.user.Patient;
+import app.model.user.EmployeeType;
 import app.repository.DermatologistRepository;
+import app.service.AppointmentService;
 import app.service.DermatologistService;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -21,12 +24,19 @@ import java.util.Optional;
 public class DermatologistServiceImpl implements DermatologistService {
     private final DermatologistRepository dermatologistRepository;
     private final PharmacyService pharmacyService;
+    private AppointmentService appointmentService;
 
 
     @Autowired
     public DermatologistServiceImpl(DermatologistRepository dermatologistRepository, PharmacyService pharmacyService) {
         this.dermatologistRepository = dermatologistRepository;
         this.pharmacyService = pharmacyService;
+        //this.appointmentService = appointmentService;
+    }
+
+    @Override
+    public void setAppointmentService(AppointmentService appointmentService) {
+        this.appointmentService = appointmentService;
     }
 
     @Override
@@ -200,5 +210,41 @@ public class DermatologistServiceImpl implements DermatologistService {
     }
 
     public Dermatologist findByEmailAndPassword(String email, String password) { return dermatologistRepository.findByEmailAndPassword(email, password);}
+
+    @Override
+    public Boolean deleteDermatologistFromPharmacy(Long pharmacyId, DermatologistDTO dermatologistDTO) {
+        //check if there are any scheduled appointments for dermatologist in that pharmacy
+        Collection<Appointment> scheduledAppointments = appointmentService.
+                GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistDTO.getId(), EmployeeType.dermatologist, LocalDateTime.now(), pharmacyId);
+
+        if (scheduledAppointments.size()!=0)
+            return false;
+
+        Collection<Appointment> availableAppointments = appointmentService.
+                GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistDTO.getId(), EmployeeType.dermatologist, LocalDateTime.now(), pharmacyId);
+
+        //delete available appointment in pharmacy
+        for (Appointment appointment : availableAppointments) {
+            appointment.setActive(false);
+            appointmentService.save(appointment);
+        }
+
+        //delete working hour in pharmacy
+        Dermatologist dermatologist = this.read(dermatologistDTO.getId()).get();
+        //WorkingHours workingHoursPharmacy = (WorkingHours) dermatologist.getWorkingHours().stream().filter(workingHours -> workingHours.getPharmacy().getId()==pharmacyId);
+
+        WorkingHours workingHoursPharmacy = new WorkingHours();
+        for (WorkingHours workingHours : dermatologist.getWorkingHours()) {
+            if (workingHours.getPharmacy().getId() == pharmacyId) {
+                workingHoursPharmacy = workingHours;
+                break;
+            }
+        }
+
+        dermatologist.getWorkingHours().remove(workingHoursPharmacy);
+        return this.save(dermatologist)!=null;
+    }
+
+
 
 }

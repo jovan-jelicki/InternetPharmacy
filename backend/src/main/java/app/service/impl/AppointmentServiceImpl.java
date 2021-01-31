@@ -18,19 +18,21 @@ import app.service.DermatologistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PharmacyRepository pharmacyRepository;
-    private final DermatologistService dermatologistService;
+
     private final VacationRequestRepository vacationRequestRepository;
     private final PatientRepository patientRepository;
+    private DermatologistService dermatologistService;
 
     @Autowired
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientRepository patientRepository) {
@@ -39,6 +41,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.dermatologistService = dermatologistService;
         this.vacationRequestRepository = vacationRequestRepository;
         this.patientRepository = patientRepository;
+    }
+
+    @PostConstruct
+    public void init() {
+        dermatologistService.setAppointmentService(this);
     }
 
     @Override
@@ -57,7 +64,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Collection<Appointment> read() {
-        return appointmentRepository.findAll();
+        return appointmentRepository.findAll().stream().filter(appointment -> appointment.getActive()).collect(Collectors.toList());
     }
 
     @Override
@@ -91,17 +98,22 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Optional<Appointment> read(Long id) {
-        return appointmentRepository.findById(id);
+        Appointment appointment = appointmentRepository.findById(id).get();
+        if (appointment.getActive())
+            return appointmentRepository.findById(id);
+        return Optional.empty();
     }
 
     @Override
     public void delete(Long id) {
-        appointmentRepository.deleteById(id);
+        Appointment appointment = appointmentRepository.findById(id).get();
+        appointment.setActive(false);
+        appointmentRepository.save(appointment);
     }
 
     @Override
     public boolean existsById(Long id) {
-        return appointmentRepository.existsById(id);
+        return appointmentRepository.findById(id).get().getActive();
     }
 
     public boolean validateAppointmentTimeRegardingWorkingHours(Appointment entity) {
@@ -174,9 +186,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         else if (!entity.getPeriod().getPeriodStart().toLocalTime().isBefore(entity.getPeriod().getPeriodEnd().toLocalTime()))
             return false;
 
-        if (this.save(entity) != null)
-            return true;
-        return false;
+        return this.save(entity) != null;
     }
 
     @Override
@@ -208,5 +218,35 @@ public class AppointmentServiceImpl implements AppointmentService {
             retVal.add(new AppointmentFinishedDTO(a));
         }
         return retVal;
+    }
+
+    @Override
+    public Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date) {
+        return appointmentRepository.GetAllScheduledAppointmentsByExaminerIdAfterDate(examinerId, employeeType,date);
+    }
+
+    @Override
+    public Collection<Appointment> findAppointmentsByPatientNotNullAndType(EmployeeType type) {
+        return appointmentRepository.findAppointmentsByPatientNotNullAndTypeAndIsActiveIsTrue(type);
+    }
+
+    @Override
+    public Collection<Appointment> findAppointmentsByPatient_IdAndType(Long id, EmployeeType type) {
+        return appointmentRepository.findAppointmentsByPatient_IdAndTypeAndIsActiveIsTrue(id, type);
+    }
+
+    @Override
+    public Collection<Appointment> GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date) {
+        return appointmentRepository.GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(examinerId,employeeType,date);
+    }
+
+    @Override
+    public Collection<Appointment> GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date, Long pharmacyId) {
+        return appointmentRepository.GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(examinerId, employeeType, date, pharmacyId);
+    }
+
+    @Override
+    public Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date, Long pharmacyId) {
+        return appointmentRepository.GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(examinerId,employeeType,date, pharmacyId);
     }
 }
