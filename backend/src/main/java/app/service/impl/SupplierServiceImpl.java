@@ -40,4 +40,9 @@ public class SupplierServiceImpl implements SupplierService{
     @Override
     public Supplier findByEmailAndPassword(String email, String password) { return supplierRepository.findByEmailAndPassword(email, password);}
 
+    @Override
+    public Supplier findByEmail(String email) {
+        return supplierRepository.findByEmail(email);
+    }
+
 }

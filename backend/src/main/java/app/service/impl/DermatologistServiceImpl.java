@@ -212,6 +212,10 @@ public class DermatologistServiceImpl implements DermatologistService {
     public Dermatologist findByEmailAndPassword(String email, String password) { return dermatologistRepository.findByEmailAndPassword(email, password);}
 
     @Override
+    public Dermatologist findByEmail(String email) {
+        return dermatologistRepository.findByEmail(email);
+    }
+
     public Boolean deleteDermatologistFromPharmacy(Long pharmacyId, DermatologistDTO dermatologistDTO) {
         //check if there are any scheduled appointments for dermatologist in that pharmacy
         Collection<Appointment> scheduledAppointments = appointmentService.
@@ -244,7 +248,6 @@ public class DermatologistServiceImpl implements DermatologistService {
         dermatologist.getWorkingHours().remove(workingHoursPharmacy);
         return this.save(dermatologist)!=null;
     }
-
 
 
 }

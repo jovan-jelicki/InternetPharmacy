@@ -7,6 +7,7 @@ import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,7 @@ public class PatientControllerImpl {
         return new ResponseEntity<>(patientService.save(entity), HttpStatus.CREATED);
     }
 
+   // @PreAuthorize("hasRole('pharmacist')")
     @GetMapping
     public ResponseEntity<Collection<Patient>> read() {
         return new ResponseEntity<>(patientService.read(), HttpStatus.OK);

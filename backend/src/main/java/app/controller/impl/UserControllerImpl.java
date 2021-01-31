@@ -3,78 +3,42 @@ package app.controller.impl;
 import app.dto.LoginDTO;
 import app.dto.LoginReturnDTO;
 import app.model.user.*;
+import app.security.TokenUtils;
 import app.service.*;
+import app.service.impl.FilterUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "api/users")
+@RequestMapping(value = "auth/users")
 public class UserControllerImpl {
-    private final PatientService patientService;
-    private final PharmacistService pharmacistService;
-    private final PharmacyAdminService pharmacyAdminService;
-    private final DermatologistService dermatologistService;
-    private final SystemAdminService systemAdminService;
-    private final SupplierService supplierService;
+    @Autowired
+    private FilterUserDetailsService filterUserDetailsService;
 
     @Autowired
-    public UserControllerImpl(PatientService patientService, PharmacyAdminService pharmacyAdminService, DermatologistService dermatologistService,
-                              PharmacistService pharmacistService,SystemAdminService systemAdminService,SupplierService supplierService) {
-        this.patientService = patientService;
-        this.pharmacyAdminService = pharmacyAdminService;
-        this.dermatologistService = dermatologistService;
-        this.pharmacistService =  pharmacistService;
-        this.systemAdminService=systemAdminService;
-        this.supplierService=supplierService;
+    private TokenUtils tokenUtils;
+
+    @Autowired
+    public UserControllerImpl(){
     }
 
-    @PutMapping(consumes = "application/json")
+    @PostMapping(consumes = "application/json")
     public ResponseEntity<LoginReturnDTO> logIn(@RequestBody LoginDTO loginDTO) {
-        LoginReturnDTO loginReturnDTO=new LoginReturnDTO();
-
-        Patient patient = this.patientService.findByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
-        if(patient!=null) {
-            loginReturnDTO.setId(patient.getId());
-            loginReturnDTO.setType(patient.getUserType());
-            return new ResponseEntity(loginReturnDTO, HttpStatus.OK);
-        }
-        Dermatologist dermatologist=this.dermatologistService.findByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
-        if(dermatologist!=null) {
-            loginReturnDTO.setId(dermatologist.getId());
-            loginReturnDTO.setType(dermatologist.getUserType());
-            return new ResponseEntity(loginReturnDTO, HttpStatus.OK);
-        }
-        Pharmacist pharmacist=this.pharmacistService.findByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
-        if(pharmacist!=null) {
-            loginReturnDTO.setId(pharmacist.getId());
-            loginReturnDTO.setType(pharmacist.getUserType());
-            return new ResponseEntity(loginReturnDTO, HttpStatus.OK);
-        }
-
-        SystemAdmin systemAdmin=this.systemAdminService.findByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
-        if(systemAdmin!=null) {
-            loginReturnDTO.setId(systemAdmin.getId());
-            loginReturnDTO.setType(systemAdmin.getUserType());
-            return new ResponseEntity(loginReturnDTO, HttpStatus.OK);
-        }
-
-        PharmacyAdmin pharmacyAdmin=this.pharmacyAdminService.findByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
-        if(pharmacyAdmin!=null) {
-            loginReturnDTO.setId(pharmacyAdmin.getId());
-            loginReturnDTO.setType(pharmacyAdmin.getUserType());
-            return new ResponseEntity(loginReturnDTO, HttpStatus.OK);
-        }
-
-        Supplier supplier=this.supplierService.findByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
-        if(supplier!=null) {
-            loginReturnDTO.setId(supplier.getId());
-            loginReturnDTO.setType(supplier.getUserType());
-            return new ResponseEntity(loginReturnDTO, HttpStatus.OK);
+        LoginReturnDTO loginReturnDTO = filterUserDetailsService.getUserForLogIn(loginDTO);
+        if(loginReturnDTO != null){
+            String jwt = tokenUtils.generateToken(loginReturnDTO.getEmail(), loginReturnDTO.getId(), loginReturnDTO.getType());
+            loginReturnDTO.setJwtToken(jwt);
+            return new ResponseEntity<>(loginReturnDTO, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

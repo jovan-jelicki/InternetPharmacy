@@ -108,4 +108,9 @@ public class PharmacistServiceImpl implements PharmacistService {
     }
     public Pharmacist findByEmailAndPassword(String email, String password) { return pharmacistRepository.findByEmailAndPassword(email, password);}
 
+    @Override
+    public Pharmacist findByEmail(String email) {
+        return pharmacistRepository.findByEmail(email);
+    }
+
 }
