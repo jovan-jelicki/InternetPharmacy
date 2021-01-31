@@ -227,7 +227,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Collection<Appointment> findAppointmentsByPatientNotNullAndType(EmployeeType type) {
-        return appointmentRepository.findAppointmentsByPatientNotNullAndType(type);
+        return appointmentRepository.findAppointmentsByPatientNotNullAndTypeAndIsActiveIsTrue(type);
+    }
+
+    @Override
+    public Collection<Appointment> findAppointmentsByPatient_IdAndType(Long id, EmployeeType type) {
+        return appointmentRepository.findAppointmentsByPatient_IdAndTypeAndIsActiveIsTrue(id, type);
     }
 
     @Override

@@ -77,4 +77,9 @@ public class PatientServiceImpl implements PatientService {
 
     public Patient findByEmailAndPassword(String email, String password) { return patientRepository.findByEmailAndPassword(email, password);}
 
+    @Override
+    public Patient findByEmail(String email) {
+        return patientRepository.findByEmail(email);
+    }
+
 }

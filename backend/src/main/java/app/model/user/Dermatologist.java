@@ -1,8 +1,11 @@
 package app.model.user;
 
 import app.model.time.WorkingHours;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -34,4 +37,7 @@ public class Dermatologist extends User {
    public void setWorkingHours(List<WorkingHours> workingHours) {
       this.workingHours = workingHours;
    }
+
+
+
 }

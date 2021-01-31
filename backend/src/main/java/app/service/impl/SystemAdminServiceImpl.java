@@ -39,4 +39,9 @@ public class SystemAdminServiceImpl implements SystemAdminService {
 
     public SystemAdmin findByEmailAndPassword(String email, String password) { return systemAdminRepository.findByEmailAndPassword(email, password);}
 
+    @Override
+    public SystemAdmin findByEmail(String email) {
+        return systemAdminRepository.findByEmail(email);
+    }
+
 }
