@@ -63,6 +63,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Appointment cancelCounseling(Appointment entity) {
+        if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
+            return null;
+        entity.setAppointmentStatus(AppointmentStatus.cancelled);
+        entity.setPatient(patientRepository.findById(entity.getPatient().getId()).get());
+        return save(entity);
+    }
+
+    @Override
     public Collection<Appointment> read() {
         return appointmentRepository.findAll().stream().filter(appointment -> appointment.getActive()).collect(Collectors.toList());
     }
@@ -227,12 +236,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Collection<Appointment> findAppointmentsByPatientNotNullAndType(EmployeeType type) {
-        return appointmentRepository.findAppointmentsByPatientNotNullAndTypeAndIsActiveIsTrue(type);
+        return appointmentRepository.getAllAvailableCancelledByType(type);
     }
 
     @Override
     public Collection<Appointment> findAppointmentsByPatient_IdAndType(Long id, EmployeeType type) {
-        return appointmentRepository.findAppointmentsByPatient_IdAndTypeAndIsActiveIsTrue(id, type);
+        return appointmentRepository.findAppointmentsByPatientAndType(id, type);
     }
 
     @Override

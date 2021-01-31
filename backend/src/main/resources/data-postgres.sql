@@ -139,7 +139,7 @@ insert into appointment (id,  examiner_id, appointment_status,  patient_id, peri
 insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
     values (4,1,0, 0, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,1, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (5,1,0, 0, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,1, true);
+    values (5,1,3, 0, '2021-03-08 13:00:00', '2021-03-08 12:00:00', 0, null,null,1, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
     values (6,1,0, null, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 0, null,null,1, true);
 

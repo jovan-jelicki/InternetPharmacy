@@ -1,6 +1,7 @@
 package app.service.impl;
 
 import app.model.appointment.Appointment;
+import app.model.appointment.AppointmentStatus;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.user.EmployeeType;
@@ -76,7 +77,7 @@ public class CounselingServiceImpl implements CounselingService {
                 .findAppointmentsByPatientNotNullAndType(EmployeeType.pharmacist);
         scheduled.forEach(a -> {
             Pharmacist pharmacist = pharmacistService.read(a.getExaminerId()).get();
-            if(a.isOverlapping(dateTime))
+            if(a.isOverlapping(dateTime) && a.getAppointmentStatus() == AppointmentStatus.available)
                 unavailable.add(pharmacist);
         });
         return unavailable;
