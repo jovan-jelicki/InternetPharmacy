@@ -91,14 +91,14 @@ export default class Appointment extends React.Component {
                 }
             })
             .then(res => {
-                alert("Uspeo si!");
+                alert("You created ePrescription!");
                 this.setState({
                     eprescription : res.data
                 })
 
             })
             .catch(es => {
-                alert("Nisi uspeo!");
+                alert("This medication is not allowed!");
                 this.setState({
                     eprescription : {}
                 })
@@ -186,7 +186,7 @@ export default class Appointment extends React.Component {
                     this.props.renderParent(false);
                 })
                 .catch(res => {
-                    alert("Appointment not finished!");
+                    alert("Appointment can not be finished!");
                 })
 
         }else {
@@ -206,7 +206,7 @@ export default class Appointment extends React.Component {
                     this.props.renderParent(false);
                 })
                 .catch(res => {
-                    alert("Appointment not finished!");
+                    alert("Appointment can not be finished!");
                 });
 
         }

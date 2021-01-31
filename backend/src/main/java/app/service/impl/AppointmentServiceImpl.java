@@ -248,6 +248,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Boolean patientDidNotShowUp(Long id) {
+        Appointment appointment = read(id).get();
+        if(appointment != null){
+            appointment.setAppointmentStatus(AppointmentStatus.patientNotPresent);
+            save(appointment);
+            return true;
+        }
+        throw new IllegalArgumentException("Appointment do not exists!");
+    }
+
+    @Override
     public Collection<Appointment> GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date) {
         return appointmentRepository.GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(examinerId,employeeType,date);
     }

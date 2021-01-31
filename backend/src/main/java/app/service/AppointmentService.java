@@ -7,6 +7,7 @@ import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.user.EmployeeType;
 
+import javax.swing.text.StyledEditorKit;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -37,4 +38,5 @@ public interface AppointmentService extends CRUDService<Appointment>{
     Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date, Long pharmacyId);
     Collection<Appointment> findAppointmentsByPatient_IdAndType(Long id, EmployeeType type);
 
+    Boolean patientDidNotShowUp(Long id);
 }
