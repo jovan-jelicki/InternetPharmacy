@@ -3,6 +3,9 @@ import {Button, Form, FormControl, Modal, Navbar, Col} from "react-bootstrap";
 import DropdownItem from "react-bootstrap/DropdownItem";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import DatePicker from "react-datepicker";
+import axios from "axios";
+
 
 const options = [
     'one', 'two', 'three'
@@ -15,7 +18,15 @@ export default class PharmacyMedications extends React.Component{
         this.state = {
             medications : [],
             userType : "",
-            showModal : false
+            showModal : false,
+            addMedication : {
+                priceDateStart : "",
+                priceDateEnd : "",
+                quantity : "",
+                medicationId : "",
+                pharmacyId : 1
+            },
+            notContainedMedications : []
         };
     }
 
@@ -98,6 +109,8 @@ export default class PharmacyMedications extends React.Component{
                 ]
             }
         ];
+
+        this.fetchNotContainedMedicationsInPharmacy();
         this.setState({
             medications : medications,
             userType : "pharmacyAdmin"
@@ -177,16 +190,36 @@ export default class PharmacyMedications extends React.Component{
                         <Modal.Title>Dodavanje leka</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form>
+                        <Form style={{marginLeft : 2}}>
                             <Form.Row>
                                 <Col>
-                                    <Form.Control placeholder="Medication" as={"select"} >
-                                        <option disabled={true} selected="selected">Choose...</option>
-                                        <option >...</option>
+                                    <Form.Control placeholder="Medication" as={"select"} value={this.state.notContainedMedications.id} onChange={this.handleSelectMedication}>
+                                        <option disabled={true} selected="selected">Choose</option>
+                                        {this.state.notContainedMedications.map(medication =>
+                                            <option key={medication.id} value={medication.id}>{medication.name}</option>
+                                        )}
                                     </Form.Control>
                                 </Col>
                                 <Col>
-                                    <Form.Control placeholder="Quantity"  />
+                                    <Form.Control placeholder="quantity" value={this.state.addMedication.quantity} onChange={this.changeQuantity}/>
+                                </Col>
+                            </Form.Row>
+                            <br/>
+                            <Form.Row>
+                                <Col>
+                                    <label>Pocetak vazenja cene</label>
+                                </Col>
+                                <Col>
+                                    <DatePicker selected={this.state.addMedication.priceDateStart} dateFormat="dd MMMM yyyy"  name="priceDateStart" minDate={new Date()} onChange={this.setPriceDateStart} />
+                                </Col>
+                            </Form.Row>
+                            <br/>
+                            <Form.Row>
+                                <Col>
+                                    <label>Kraj vazenja cene</label>
+                                </Col>
+                                <Col>
+                                    <DatePicker selected={this.state.addMedication.priceDateEnd} dateFormat="dd MMMM yyyy"  name="priceDateEnd" minDate={new Date()} onChange={this.setPriceDateEnd} />
                                 </Col>
                             </Form.Row>
                         </Form>
@@ -196,7 +229,7 @@ export default class PharmacyMedications extends React.Component{
                         <Button variant="secondary" onClick={this.handleModal}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={this.handleModal}>
+                        <Button variant="primary" onClick={this.submitAddMedication}>
                             Save Changes
                         </Button>
                     </Modal.Footer>
@@ -204,6 +237,19 @@ export default class PharmacyMedications extends React.Component{
             </div>
         );
     }
+
+    submitAddMedication = () => {
+        console.log(this.state.addMedication);
+        axios.put("http://localhost:8080/api/pharmacy/addNewMedication", this.state.addMedication)
+            .then(res => {
+                alert("Medication added successfully!");
+            })
+            .catch(() => {
+                alert("Medication was not added successfully!")
+            })
+        this.handleModal();
+    }
+
     handleModal = () => {
         this.setState({
             showModal : !this.state.showModal
@@ -212,5 +258,53 @@ export default class PharmacyMedications extends React.Component{
 
     deleteMedication = (medication) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + medication.name + ' from your medications list?');
+    }
+
+    setPriceDateStart = (date) => {
+        this.setState({
+            addMedication : {
+                ...this.state.addMedication,
+                priceDateStart : date
+            }
+        })
+    }
+
+    setPriceDateEnd = (date) => {
+        this.setState({
+            addMedication : {
+                ...this.state.addMedication,
+                priceDateEnd : date
+            }
+        })
+    }
+
+    changeQuantity = (event) => {
+        this.setState({
+            addMedication : {
+                ...this.state.addMedication,
+                quantity : event.target.value
+            }
+        })
+    }
+
+    fetchNotContainedMedicationsInPharmacy = () => {
+        axios.get("http://localhost:8080/api/medications/getMedicationsNotContainedInPharmacy/1").then(res => {
+            this.setState({
+                notContainedMedications : res.data
+            })
+        })
+    }
+
+    handleSelectMedication = async (event) => {
+        const target = event.target;
+        let value = event.target.value;
+
+        this.setState({
+            addMedication : {
+                ...this.state.addMedication,
+                medicationId : value
+            }
+        })
+
     }
 }

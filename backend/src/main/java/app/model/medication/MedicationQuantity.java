@@ -20,6 +20,11 @@ public class MedicationQuantity {
     public MedicationQuantity() {
     }
 
+    public MedicationQuantity(Medication medication, int quantity) {
+        this.medication = medication;
+        this.quantity = quantity;
+    }
+
     public Long getId() {
         return id;
     }

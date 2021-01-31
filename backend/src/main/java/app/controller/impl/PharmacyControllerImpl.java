@@ -1,5 +1,6 @@
 package app.controller.impl;
 
+import app.dto.AddMedicationToPharmacyDTO;
 import app.dto.PharmacyDTO;
 import app.dto.PharmacySearchDTO;
 import app.model.pharmacy.Pharmacy;
@@ -71,6 +72,13 @@ public class PharmacyControllerImpl {
     @PostMapping(value = "/dto")
     public void newPharmacyDTOMapping(@DTO(PharmacyDTO.class) Pharmacy pharmacy) {
         pharmacyService.save(pharmacy);
+    }
+
+    @PutMapping(value = "/addNewMedication", consumes = "application/json")
+    public ResponseEntity<Boolean> addNewMedication(@RequestBody AddMedicationToPharmacyDTO addMedicationToPharmacyDTO) {
+        if(!pharmacyService.existsById(addMedicationToPharmacyDTO.getPharmacyId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(pharmacyService.addNewMedication(addMedicationToPharmacyDTO), HttpStatus.CREATED);
     }
 
 }

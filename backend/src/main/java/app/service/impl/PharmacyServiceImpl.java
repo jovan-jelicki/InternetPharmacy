@@ -1,9 +1,12 @@
 package app.service.impl;
 
+import app.dto.AddMedicationToPharmacyDTO;
 import app.dto.PharmacySearchDTO;
+import app.model.medication.Medication;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
 import app.repository.PharmacyRepository;
+import app.service.MedicationService;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +19,16 @@ import java.util.Optional;
 public class PharmacyServiceImpl implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
+    private MedicationService medicationService;
 
     @Autowired
     public PharmacyServiceImpl(PharmacyRepository pharmacyRepository) {
         this.pharmacyRepository = pharmacyRepository;
+    }
+
+    @Override
+    public void setMedicationService(MedicationService medicationService) {
+        this.medicationService = medicationService;
     }
 
     @Override
@@ -68,6 +77,20 @@ public class PharmacyServiceImpl implements PharmacyService {
         }
         return true;
     }
+
+    @Override
+    public Boolean addNewMedication(AddMedicationToPharmacyDTO addMedicationToPharmacyDTO) {
+        Pharmacy pharmacy = this.read(addMedicationToPharmacyDTO.getPharmacyId()).get();
+        //circular dependency
+        Medication medication = medicationService.read(addMedicationToPharmacyDTO.getMedicationId()).get();
+        pharmacy.getMedicationQuantity().add(new MedicationQuantity(medication, addMedicationToPharmacyDTO.getQuantity()));
+
+        this.save(pharmacy);
+
+        return null;
+    }
+
+
 
 
 }
