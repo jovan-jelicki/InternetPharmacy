@@ -92,6 +92,23 @@ INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VA
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (1, 1);
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (1, 3);
 
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (1,0,0, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (2,4,0, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (3,1,0, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (4,3,0, 300, '2021-01-01', '2021-02-02');
+
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (5,0,1, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (6,1,2, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (7,1,1, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (8,3,1, 300, '2021-01-01', '2021-02-02');
 
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 VALUES (0, '2021-01-31', 3, 1,0);

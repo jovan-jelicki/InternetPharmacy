@@ -15,6 +15,11 @@ public class Period {
 
     public Period() {}
 
+    public Period(LocalDateTime periodStart, LocalDateTime periodEnd) {
+        this.periodStart = periodStart;
+        this.periodEnd = periodEnd;
+    }
+
     public LocalDateTime getPeriodStart() {
         return periodStart;
     }
