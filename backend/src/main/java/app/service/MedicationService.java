@@ -9,4 +9,7 @@ public interface MedicationService extends CRUDService<Medication> {
     Collection<Medication> getAllMedicationsPatientIsNotAllergicTo(Long patientId);
 
     Collection<Medication> getMedicationsNotContainedInPharmacy(Long pharmacyId);
-    }
+
+    Medication getMedicationByName(String name);
+
+}

@@ -7,7 +7,9 @@ export default class AddMedicationQuantity extends React.Component{
         this.state = {
             userType : 'pharmacyAdmin',
             inputOrder : {
-                medication : 'select medication',
+                medication : {
+                    name : 'select medication'
+                },
                 quantity : 0
             },
         }
@@ -28,7 +30,7 @@ export default class AddMedicationQuantity extends React.Component{
                 <tbody>
                     <tr>
                         <td>
-                            <select  name="medication" onChange={this.handleInputChange} value={this.state.inputOrder.medication}>
+                            <select  name="medication" onChange={this.handleSelectInputChange} value={this.state.inputOrder.medication.name}>
                                 <option disabled>select medication</option>
                                 {this.props.medications.map((medication) => <option key={medication.id} value={medication.name}>{medication.name}</option>)}
                             </select>
@@ -43,6 +45,21 @@ export default class AddMedicationQuantity extends React.Component{
                 </tbody>
             </table>
         );
+    }
+
+    handleSelectInputChange = (event) => {
+        const target = event.target;
+        let name = target.name;
+        let value = event.target.value;
+
+        this.setState({
+            inputOrder : {
+                ...this.state.inputOrder,
+                medication : {
+                    name : value
+                }
+            }
+        })
     }
 
     handleInputChange = (event) => {
