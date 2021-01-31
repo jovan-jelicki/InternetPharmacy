@@ -36,7 +36,7 @@ public class PatientControllerImpl {
         return new ResponseEntity<>(patientService.save(entity), HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('pharmacist')")
+   // @PreAuthorize("hasRole('pharmacist')")
     @GetMapping
     public ResponseEntity<Collection<Patient>> read() {
         return new ResponseEntity<>(patientService.read(), HttpStatus.OK);
