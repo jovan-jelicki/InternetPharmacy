@@ -81,7 +81,7 @@ export default class PharmacyProfile extends React.Component {
                      style={{margin: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <label className="col-sm-2 col-form-label">Description</label>
                     <div className="col-sm-3 mb-2">
-                        <input type="text" value={this.state.pharmacy.description} name="description" onChange={(e) => {
+                        <textarea rows={9} value={this.state.pharmacy.description} name="description" onChange={(e) => {
                             this.handleInputChange(e)
                         }} className="form-control" placeholder="Description"/>
                         {this.state.submitted && this.state.errors.pharmacy.description.length > 0 &&
@@ -265,6 +265,7 @@ export default class PharmacyProfile extends React.Component {
             console.log(pharmacy);
             await axios.put("http://localhost:8080/api/pharmacy/editPharmacyProfile", pharmacy).then(() => {
                     alert("Pharmacy edited successfully!");
+                    this.props.triggerPharmacyDataChange();
                 }
             ).catch(() => {
                 alert("Pharmacy did not edit!");
