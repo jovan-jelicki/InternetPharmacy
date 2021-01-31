@@ -2,21 +2,20 @@ package app.service.impl;
 
 import app.dto.VacationRequestDTO;
 import app.dto.VacationRequestSendDTO;
+import app.model.appointment.Appointment;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.user.EmployeeType;
 import app.model.user.User;
 import app.repository.VacationRequestRepository;
-import app.service.DermatologistService;
-import app.service.PharmacistService;
-import app.service.PharmacyService;
-import app.service.VacationRequestService;
+import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class VacationRequestServiceImpl implements VacationRequestService {
@@ -24,14 +23,16 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     private final DermatologistService dermatologistService;
     private final PharmacistService pharmacistService;
     private final PharmacyService pharmacyService;
+    private final AppointmentService appointmentService;
 
 
     @Autowired
-    public VacationRequestServiceImpl(PharmacyService pharmacyService,VacationRequestRepository vacationRequestRepository, DermatologistService dermatologistService, PharmacistService pharmacistService) {
+    public VacationRequestServiceImpl(PharmacyService pharmacyService, VacationRequestRepository vacationRequestRepository, DermatologistService dermatologistService, PharmacistService pharmacistService, AppointmentService appointmentService) {
         this.vacationRequestRepository = vacationRequestRepository;
         this.pharmacyService = pharmacyService;
         this.dermatologistService = dermatologistService;
         this.pharmacistService = pharmacistService;
+        this.appointmentService = appointmentService;
     }
 
     @Override
@@ -84,8 +85,27 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     @Override
-    public void confirmVacationRequest(Long id) {
-        VacationRequest vacationRequest = this.read(id).get();
+    public void confirmVacationRequest(VacationRequestDTO vacationRequestDTO) {
+        VacationRequest vacationRequest = this.read(vacationRequestDTO.getId()).get();
+
+        //check if there are any scheduled pharmacist appointments for that period
+        Collection<Appointment> scheduledAppointmentsForVacationRequestPeriod = appointmentService.
+                GetAllScheduledAppointmentsByExaminerIdAfterDate(vacationRequestDTO.getEmployeeId(),vacationRequestDTO.getEmployeeType(), vacationRequestDTO.getPeriod().getPeriodStart())
+                .stream().filter(appointment -> appointment.getPeriod().getPeriodEnd().isBefore(vacationRequestDTO.getPeriod().getPeriodEnd())).collect(Collectors.toList());
+
+        if (scheduledAppointmentsForVacationRequestPeriod.size() != 0)
+            return;
+
+        //delete available appointments for that period
+        Collection<Appointment> availableAppointmentsForVacationRequestPeriod = appointmentService.
+                GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(vacationRequestDTO.getEmployeeId(),vacationRequestDTO.getEmployeeType(), vacationRequestDTO.getPeriod().getPeriodStart())
+                .stream().filter(appointment -> appointment.getPeriod().getPeriodEnd().isBefore(vacationRequestDTO.getPeriod().getPeriodEnd())).collect(Collectors.toList());
+
+        for (Appointment appointment : availableAppointmentsForVacationRequestPeriod) {
+            appointment.setActive(false);
+            appointmentService.save(appointment);
+        }
+
         vacationRequest.setVacationRequestStatus(VacationRequestStatus.approved);
         this.save(vacationRequest);
         //TODO send confirmation email

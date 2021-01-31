@@ -1,8 +1,6 @@
 package app.service.impl;
 
-import app.model.user.Patient;
 import app.model.user.Supplier;
-import app.repository.PatientRepository;
 import app.repository.SupplierRepository;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;

@@ -21,25 +21,28 @@ public class Appointment {
    @Column
    private String report;
 
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn
    private Pharmacy pharmacy;
 
    @Enumerated(EnumType.ORDINAL)
    private AppointmentStatus appointmentStatus;
 
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn
    private Patient patient;
 
    @Enumerated(EnumType.ORDINAL)
    private EmployeeType type;
 
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn
    private Therapy therapy;
    
    private Period period;
+
+   @Column
+   private Boolean isActive;
 
    public Appointment() {
    }
@@ -114,6 +117,14 @@ public class Appointment {
 
    public void setPeriod(Period period) {
       this.period = period;
+   }
+
+   public Boolean getActive() {
+      return isActive;
+   }
+
+   public void setActive(Boolean active) {
+      isActive = active;
    }
 
    public boolean isOverlapping(LocalDateTime timeSlot) {

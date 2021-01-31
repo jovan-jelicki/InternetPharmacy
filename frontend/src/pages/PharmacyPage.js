@@ -9,6 +9,7 @@ import PharmacyDescription from "../components/pharmacy/PharmacyDescription";
 import PriceList from "../components/pharmacy/PriceList";
 import PharmacyReports from "../components/pharmacy/PharmacyReports";
 import AppointmentsList from "../components/pharmacy/AppointmentsList";
+import PharmacyProfile from "../components/pharmacy/PharmacyProfile";
 
 
 export default class PharmacyPage extends React.Component{
@@ -115,6 +116,9 @@ export default class PharmacyPage extends React.Component{
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="reports" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Reports</a>
                     </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="editPharmacyProfile" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Edit pharmacy profile</a>
+                    </li>
                 </ul>
                 {this.renderNavbar()}
             </div>
@@ -139,6 +143,10 @@ export default class PharmacyPage extends React.Component{
         else if (this.state.navbar === 'description')
             return (
                 <PharmacyDescription pharmacy = {this.state.pharmacy } />
+            )
+        else if (this.state.navbar === 'editPharmacyProfile')
+            return (
+                <PharmacyProfile pharmacy = {this.state.pharmacy } />
             )
         else if (this.state.navbar === 'appointments')
             return (
