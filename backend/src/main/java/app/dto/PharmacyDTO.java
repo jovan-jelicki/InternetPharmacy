@@ -17,6 +17,8 @@ public class PharmacyDTO {
     private String name;
     private Address address;
     private String description;
+    private int pharmacistCost;
+    private int dermatologistCost;
 
     private List<MedicationQuantity> medicationQuantity;
 
@@ -28,5 +30,7 @@ public class PharmacyDTO {
         this.address = pharmacy.getAddress();
         this.description = pharmacy.getDescription();
         this.medicationQuantity = pharmacy.getMedicationQuantity();
+        this.pharmacistCost = pharmacy.getPharmacistCost();
+        this.dermatologistCost = pharmacy.getDermatologistCost();
     }
 }

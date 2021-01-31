@@ -5,10 +5,10 @@ import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.user.EmployeeType;
 import app.model.user.Pharmacist;
-import app.repository.AppointmentRepository;
-import app.repository.PharmacistRepository;
 import app.repository.VacationRequestRepository;
+import app.service.AppointmentService;
 import app.service.CounselingService;
+import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +16,30 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CounselingServiceImpl implements CounselingService {
-    private AppointmentRepository appointmentRepository;
-    private PharmacistRepository pharmacistRepository;
-    private VacationRequestRepository vacationRequestRepository;
+    private final AppointmentService appointmentService;
+    private final PharmacistService pharmacistService;
+    private final VacationRequestRepository vacationRequestRepository;
 
     @Autowired
-    public CounselingServiceImpl(AppointmentRepository appointmentRepository, PharmacistRepository pharmacistRepository,
+    public CounselingServiceImpl(AppointmentService appointmentService, PharmacistService pharmacistService,
                                  VacationRequestRepository vacationRequestRepository) {
-        this.appointmentRepository = appointmentRepository;
-        this.pharmacistRepository = pharmacistRepository;
+        this.appointmentService = appointmentService;
+        this.pharmacistService = pharmacistService;
         this.vacationRequestRepository = vacationRequestRepository;
+    }
+
+    @Override
+    public Collection<Appointment> findUpcomingByPatientId(Long patientId) {
+        Collection<Appointment> appointments = appointmentService
+                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.pharmacist);
+        return appointments
+                .stream()
+                .filter(a -> a.getPeriod().getPeriodStart().isAfter(LocalDateTime.now()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -41,7 +52,7 @@ public class CounselingServiceImpl implements CounselingService {
 
     private Set<Pharmacist> findAvailable(LocalDateTime dateTime) {
         Set<Pharmacist> available = new HashSet<>();
-        Collection<Pharmacist> pharmacists = pharmacistRepository.findAll();
+        Collection<Pharmacist> pharmacists = pharmacistService.read();
         pharmacists.forEach(p -> {
             if(p.isOverlapping(dateTime) && !isOnVacation(dateTime, p.getId()))
                 available.add(p);
@@ -51,10 +62,10 @@ public class CounselingServiceImpl implements CounselingService {
 
     private Set<Pharmacist> findUnavailable(LocalDateTime dateTime) {
         Set<Pharmacist> unavailable = new HashSet<>();
-        Collection<Appointment> scheduled = appointmentRepository
+        Collection<Appointment> scheduled = appointmentService
                 .findAppointmentsByPatientNotNullAndType(EmployeeType.pharmacist);
         scheduled.forEach(a -> {
-            Pharmacist pharmacist = pharmacistRepository.findById(a.getExaminerId()).get();
+            Pharmacist pharmacist = pharmacistService.read(a.getExaminerId()).get();
             if(a.isOverlapping(dateTime))
                 unavailable.add(pharmacist);
         });

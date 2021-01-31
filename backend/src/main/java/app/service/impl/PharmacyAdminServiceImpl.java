@@ -1,7 +1,6 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
-import app.model.user.Patient;
 import app.model.user.PharmacyAdmin;
 import app.repository.PharmacyAdminRepository;
 import app.service.PharmacyAdminService;

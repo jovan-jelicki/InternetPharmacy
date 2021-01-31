@@ -173,9 +173,11 @@ export default class PharmacyVacationsRequests extends React.Component{
     acceptVacationRequest = (vacationRequest) => {
         let answer = window.confirm('Are you sure you want to accept the vacation request from ' + vacationRequest.employeeFirstName + '?');
         if (answer) {
-            let path = "http://localhost:8080/api/vacationRequest/confirmVacationRequest/" + vacationRequest.id
-            axios.get(path).then(() => this.fetchVacationRequests());
-
+            let path = "http://localhost:8080/api/vacationRequest/confirmVacationRequest/";
+            axios.put(path, vacationRequest).then(() => this.fetchVacationRequests())
+                .catch(() => {
+                    alert("Request cannot be accepted because pharmacist has scheduled appointments for that period.");
+                });
         }
     }
 

@@ -191,7 +191,8 @@ export default class CreatePharmacistModal extends React.Component {
             await axios.post('http://localhost:8080/api/pharmacist', {
                 firstName: this.state.user.firstName,
                 lastName: this.state.user.lastName,
-                userType : 0,
+                userType : 1,
+                active : Boolean(true),
                 credentials: {
                     email: this.state.user.email,
                     password: this.state.user.password
@@ -212,7 +213,7 @@ export default class CreatePharmacistModal extends React.Component {
                             periodEnd: "2017-01-01 " + this.state.user.endShift + ":00"
                         },
                         pharmacy : {
-                            id : 1
+                            id : 1 //todo change pharmacy id
                         }
                     }
 

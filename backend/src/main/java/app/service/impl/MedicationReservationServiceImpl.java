@@ -8,9 +8,9 @@ import app.model.medication.MedicationReservationStatus;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.Pharmacist;
 import app.repository.MedicationReservationRepository;
-import app.repository.PharmacistRepository;
 import app.repository.PharmacyRepository;
 import app.service.MedicationReservationService;
+import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +22,15 @@ import java.util.Optional;
 @Service
 public class MedicationReservationServiceImpl implements MedicationReservationService {
     private final MedicationReservationRepository medicationReservationRepository;
-    private final PharmacistRepository pharmacistRepository;
+    private final PharmacistService pharmacistService;
     private final PharmacyRepository pharmacyRepository;
 
     @Autowired
-    public MedicationReservationServiceImpl(PharmacistRepository pharmacistRepository,
+    public MedicationReservationServiceImpl(PharmacistService pharmacistService,
                                             MedicationReservationRepository medicationReservationRepository,
                                             PharmacyRepository pharmacyRepository) {
         this.medicationReservationRepository = medicationReservationRepository;
-        this.pharmacistRepository = pharmacistRepository;
+        this.pharmacistService = pharmacistService;
         this.pharmacyRepository = pharmacyRepository;
     }
 
@@ -56,7 +56,7 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
 
     @Override
     public MedicationReservation getMedicationReservationFromPharmacy(GetMedicationReservationDTO getMedicationReservationDTO) {
-        Pharmacist pharmacist = pharmacistRepository.findById(getMedicationReservationDTO.getPharmacistId()).get();
+        Pharmacist pharmacist = pharmacistService.read(getMedicationReservationDTO.getPharmacistId()).get();
         List<MedicationReservation> medicationReservationSet = pharmacist.getWorkingHours().getPharmacy().getMedicationReservation();
         try {
             MedicationReservation medicationReservation = medicationReservationSet.stream().filter(m -> m.getId() == getMedicationReservationDTO.getMedicationId()).findFirst().get();

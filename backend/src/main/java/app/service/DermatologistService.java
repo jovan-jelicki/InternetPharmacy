@@ -6,8 +6,6 @@ import app.dto.UserPasswordDTO;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
-import app.model.user.Patient;
-import app.model.user.SystemAdmin;
 
 import java.util.Collection;
 
@@ -24,5 +22,7 @@ public interface DermatologistService extends CRUDService<Dermatologist> {
     Dermatologist findByEmailAndPassword(String email, String password);
     Dermatologist findByEmail(String email);
 
+    Boolean deleteDermatologistFromPharmacy(Long pharmacyId, DermatologistDTO dermatologistDTO);
 
+    void setAppointmentService(AppointmentService appointmentService);
 }

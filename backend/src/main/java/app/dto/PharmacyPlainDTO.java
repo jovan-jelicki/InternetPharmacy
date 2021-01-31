@@ -1,12 +1,9 @@
 package app.dto;
 
-import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.Address;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter

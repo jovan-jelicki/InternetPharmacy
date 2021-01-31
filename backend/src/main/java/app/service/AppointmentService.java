@@ -6,9 +6,8 @@ import app.dto.EventDTO;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.user.EmployeeType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface AppointmentService extends CRUDService<Appointment>{
@@ -27,5 +26,15 @@ public interface AppointmentService extends CRUDService<Appointment>{
     Collection<AppointmentFinishedDTO> getFinishedByExaminer(Long examinerId, EmployeeType type);
 
     Appointment scheduleCounseling(Appointment entity);
+    Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date);
+
+    Collection<Appointment> findAppointmentsByPatientNotNullAndType(EmployeeType type);
+
+    Collection<Appointment> GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date);
+
+    Collection<Appointment> GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date, Long pharmacyId);
+
+    Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date, Long pharmacyId);
+    Collection<Appointment> findAppointmentsByPatient_IdAndType(Long id, EmployeeType type);
 
 }

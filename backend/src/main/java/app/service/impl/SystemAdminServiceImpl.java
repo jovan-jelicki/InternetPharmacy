@@ -1,6 +1,5 @@
 package app.service.impl;
 
-import app.model.user.Patient;
 import app.model.user.SystemAdmin;
 import app.repository.SystemAdminRepository;
 import app.service.SystemAdminService;

@@ -1,20 +1,19 @@
 package app.controller.impl;
 
+import app.dto.AppointmentListingDTO;
 import app.dto.AppointmentSearchDTO;
 import app.dto.CounselingSearchDTO;
+import app.model.appointment.Appointment;
 import app.model.user.EmployeeType;
-import app.model.user.Pharmacist;
 import app.service.CounselingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "api/scheduling")
@@ -38,5 +37,15 @@ public class SchedulingControllerImpl {
         else
             // ZA DERMATOLOGE KASNIJE DODATI
             return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/counseling/{id}")
+    public ResponseEntity<Collection<AppointmentListingDTO>> findUpcomingByPatientId(@PathVariable Long id) {
+        Collection<AppointmentListingDTO> appointments = counselingService
+                .findUpcomingByPatientId(id)
+                .stream()
+                .map(a -> new AppointmentListingDTO(a))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 }

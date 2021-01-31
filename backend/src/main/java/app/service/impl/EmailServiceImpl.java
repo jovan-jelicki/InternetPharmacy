@@ -1,20 +1,17 @@
 package app.service.impl;
 
 import app.service.EmailService;
-
-import javax.mail.*;
-import javax.mail.internet.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import java.net.URL;
-import java.util.List;
+import javax.mail.internet.MimeMultipart;
 
 @Service
 public class EmailServiceImpl implements EmailService {
