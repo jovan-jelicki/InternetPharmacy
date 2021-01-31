@@ -72,7 +72,7 @@ export default class ReviewedClients extends React.Component {
         const clients = this.state.clients;
         if (query !== "" && query)
             this.setState({
-                searchClients : clients.filter(c => (c.firstName + c.lastName).toLowerCase().includes(query.toLowerCase().replace(/\s/g, ''))),
+                searchClients : clients.filter(c => (c.patientFirstName + c.patientLastName).toLowerCase().includes(query.toLowerCase().replace(/\s/g, ''))),
                 query : query
             })
         else

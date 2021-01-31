@@ -5,6 +5,7 @@ import app.dto.AppointmentScheduledDTO;
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
+import app.model.medication.Medication;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
@@ -15,6 +16,7 @@ import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
+import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,16 +33,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final PharmacyRepository pharmacyRepository;
 
     private final VacationRequestRepository vacationRequestRepository;
-    private final PatientRepository patientRepository;
+    private final PatientService patientService;
     private DermatologistService dermatologistService;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientRepository patientRepository) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientService patientService ) {
         this.appointmentRepository = appointmentRepository;
         this.pharmacyRepository = pharmacyRepository;
         this.dermatologistService = dermatologistService;
         this.vacationRequestRepository = vacationRequestRepository;
-        this.patientRepository = patientRepository;
+        this.patientService = patientService;
     }
 
     @PostConstruct
@@ -57,7 +59,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Appointment scheduleCounseling(Appointment entity) {
         LocalDateTime start = entity.getPeriod().getPeriodStart();
-        entity.setPatient(patientRepository.findById(entity.getPatient().getId()).get());
+        entity.setPatient(patientService.read(entity.getPatient().getId()).get());
         entity.getPeriod().setPeriodEnd(start.plusHours(1));
         return save(entity);
     }
@@ -193,10 +195,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Boolean finishAppointment(AppointmentScheduledDTO appointmentScheduledDTO) {
         Appointment appointment = read(appointmentScheduledDTO.getId()).get();
         appointment.setReport(appointmentScheduledDTO.getReport());
-        appointment.setTherapy(appointmentScheduledDTO.getTherapy());
         appointment.setAppointmentStatus(AppointmentStatus.patientPresent);
         appointment.setPatient(appointment.getPatient());
         appointment.setPharmacy(appointment.getPharmacy());
+
+        if (appointmentScheduledDTO.getTherapy() != null){
+            Collection<Medication> medications = new ArrayList<>();
+            medications.add(appointmentScheduledDTO.getTherapy().getMedication());
+            if(!patientService.isPatientAllergic(medications,appointmentScheduledDTO.getPatientId())) {
+                appointment.setTherapy(appointmentScheduledDTO.getTherapy());
+                this.save(appointment);
+                return true;
+            }else
+                throw new IllegalArgumentException("Patient is alergic!!!");
+        }
         this.save(appointment);
         return true;
     }
