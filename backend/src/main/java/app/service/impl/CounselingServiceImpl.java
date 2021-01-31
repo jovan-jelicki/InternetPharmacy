@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CounselingServiceImpl implements CounselingService {
@@ -29,6 +30,16 @@ public class CounselingServiceImpl implements CounselingService {
         this.appointmentRepository = appointmentRepository;
         this.pharmacistRepository = pharmacistRepository;
         this.vacationRequestRepository = vacationRequestRepository;
+    }
+
+    @Override
+    public Collection<Appointment> findUpcomingByPatientId(Long patientId) {
+        Collection<Appointment> appointments = appointmentRepository
+                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.pharmacist);
+        return appointments
+                .stream()
+                .filter(a -> a.getPeriod().getPeriodStart().isAfter(LocalDateTime.now()))
+                .collect(Collectors.toList());
     }
 
     @Override
