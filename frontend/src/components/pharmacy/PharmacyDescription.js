@@ -20,6 +20,10 @@ export class PharmacyDescription extends React.Component{
         }
     }
 
+    componentDidMount() {
+        this.fetchPharmacy();
+    }
+
 
     render() {
         return (
@@ -29,12 +33,13 @@ export class PharmacyDescription extends React.Component{
                         <div className="col-md-12">
                             <div className="card">
                                 <h5 className="card-header">
-                                    {this.state.pharmacy.description}
+                                    {"About"}
                                 </h5>
                                 <div className="card-body">
                                     <p className="card-text">
                                         Address : {this.state.pharmacy.address.street} <br/>
                                         Grade : {this.state.pharmacy.grade} <br/>
+                                        Description : {this.state.pharmacy.description} <br/>
                                     </p>
                                 </div>
                             </div>
@@ -86,6 +91,10 @@ export class PharmacyDescription extends React.Component{
             });
         }
     };
+
+    fetchPharmacy = () => {
+
+    }
 }
 
 export default GoogleApiWrapper({
