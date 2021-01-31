@@ -63,7 +63,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Appointment cancelCounseling(Appointment entity) {
+    public Appointment cancelCounseling(Long appointmentId) {
+        Appointment entity = appointmentRepository.findById(appointmentId).get();
         if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
             return null;
         entity.setAppointmentStatus(AppointmentStatus.cancelled);

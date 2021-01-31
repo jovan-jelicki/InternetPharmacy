@@ -7,8 +7,8 @@ class AppointmentListing extends React.Component {
         this.cancel = this.cancel.bind(this)
     }
 
-    cancel() {
-        console.log('to be implemented...')
+    cancel(id) {
+        this.props.cancel(id);
     }
 
     render() {
@@ -21,7 +21,7 @@ class AppointmentListing extends React.Component {
                     <td>{index + 1}</td>
                     <td>{date}</td>
                     <td>{fromTime + ' to ' + toTime}</td>
-                    <td>popraviti davidovo....</td>
+                    <td>{appointment.dermatologistFirstName + ' ' + appointment.dermatologistLastName}</td>
                     <td>{appointment.pharmacyName}</td>
                     <td><Button variant={'danger'} onClick={() => this.cancel(appointment.id)}>Cancel</Button></td>
                 </tr>

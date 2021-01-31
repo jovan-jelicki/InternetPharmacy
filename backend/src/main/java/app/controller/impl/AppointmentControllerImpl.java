@@ -65,9 +65,9 @@ public class AppointmentControllerImpl {
 
     }
 
-    @PostMapping(value = "/cancel-counseling")
-    public ResponseEntity<Void> cancelCounseling(@RequestBody Appointment entity) {
-        if(appointmentService.cancelCounseling(entity) == null)
+    @PutMapping(value = "/cancel-counseling/{id}")
+    public ResponseEntity<Void> cancelCounseling(@PathVariable Long id) {
+        if(appointmentService.cancelCounseling(id) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
 
