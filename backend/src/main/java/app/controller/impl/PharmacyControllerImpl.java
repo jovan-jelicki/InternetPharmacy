@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.dto.AddMedicationToPharmacyDTO;
 import app.dto.PharmacyDTO;
+import app.dto.PharmacyMedicationListingDTO;
 import app.dto.PharmacySearchDTO;
 import app.model.pharmacy.Pharmacy;
 import app.service.PharmacyService;
@@ -81,6 +82,11 @@ public class PharmacyControllerImpl {
         if (pharmacyService.addNewMedication(addMedicationToPharmacyDTO))
             return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value = "/getPharmacyMedicationListing/{pharmacyId}")
+    public ResponseEntity<Collection<PharmacyMedicationListingDTO>> getPharmacyMedicationListing(@PathVariable Long pharmacyId) {
+        return new ResponseEntity<>(pharmacyService.getPharmacyMedicationListingDTOs(pharmacyId), HttpStatus.OK);
     }
 
 }

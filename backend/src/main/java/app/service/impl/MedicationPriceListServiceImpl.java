@@ -6,6 +6,7 @@ import app.service.MedicationPriceListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -42,5 +43,10 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
     @Override
     public boolean existsById(Long id) {
         return medicationPriceListRepository.existsById(id);
+    }
+
+    @Override
+    public MedicationPriceList GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date) {
+        return medicationPriceListRepository.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationId,date);
     }
 }

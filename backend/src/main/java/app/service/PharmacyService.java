@@ -1,6 +1,7 @@
 package app.service;
 
 import app.dto.AddMedicationToPharmacyDTO;
+import app.dto.PharmacyMedicationListingDTO;
 import app.dto.PharmacySearchDTO;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
@@ -14,4 +15,6 @@ public interface PharmacyService extends CRUDService<Pharmacy> {
     Boolean addNewMedication(AddMedicationToPharmacyDTO addMedicationToPharmacyDTO);
 
     void setMedicationService(MedicationService medicationService);
+
+    Collection<PharmacyMedicationListingDTO> getPharmacyMedicationListingDTOs(Long pharmacyId);
 }
