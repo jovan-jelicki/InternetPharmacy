@@ -43,6 +43,16 @@ public class CounselingServiceImpl implements CounselingService {
     }
 
     @Override
+    public Collection<Appointment> findPreviousByPatientId(Long patientId) {
+        Collection<Appointment> appointments = appointmentService
+                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.pharmacist);
+        return appointments
+                .stream()
+                .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Collection<Pharmacist> findAvailablePharmacists(LocalDateTime dateTime) {
         Set<Pharmacist> unavailable = findUnavailable(dateTime);
         Set<Pharmacist> available = findAvailable(dateTime);

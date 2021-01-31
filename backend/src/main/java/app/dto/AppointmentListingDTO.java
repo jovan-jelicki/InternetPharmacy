@@ -29,4 +29,12 @@ public class AppointmentListingDTO {
         this.period = appointment.getPeriod();
         //TODO dermatologist grade
     }
+
+    public void setDermatologistFirstName(String dermatologistFirstName) {
+        this.dermatologistFirstName = dermatologistFirstName;
+    }
+
+    public void setDermatologistLastName(String dermatologistLastName) {
+        this.dermatologistLastName = dermatologistLastName;
+    }
 }

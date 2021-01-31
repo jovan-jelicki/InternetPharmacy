@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface CounselingService {
+    Collection<Appointment> findPreviousByPatientId(Long patientId);
     Collection<Pharmacist> findAvailablePharmacists(LocalDateTime dateTime);
     Collection<Appointment> findUpcomingByPatientId(Long patientId);
 }

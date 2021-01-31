@@ -35,16 +35,18 @@ class PatientCounselScheduling extends React.Component {
     schedule(pharmacyId, pharmacistId) {
         axios
         .post('http://localhost:8080/api/appointment/counseling', {
-            examinerId : pharmacistId,
-            type : 'pharmacist',
-            pharmacy : {
-                id : pharmacyId
+            'examinerId' : pharmacistId,
+            'type' : 'pharmacist',
+            'active' : true,
+            'appointmentStatus' : 'available',
+            'pharmacy' : {
+                'id' : pharmacyId
             },
-            patient : {
-                id : 0
+            'patient' : {
+                'id' : 0
             },
-            period : {
-                periodStart : this.state.dateTime
+            'period' : {
+                'periodStart' : this.state.dateTime
             }
         })
         .then(res => console.log(res));
