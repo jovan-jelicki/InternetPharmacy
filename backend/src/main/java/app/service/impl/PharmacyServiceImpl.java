@@ -3,9 +3,12 @@ package app.service.impl;
 import app.dto.AddMedicationToPharmacyDTO;
 import app.dto.PharmacySearchDTO;
 import app.model.medication.Medication;
+import app.model.medication.MedicationPriceList;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
+import app.model.time.Period;
 import app.repository.PharmacyRepository;
+import app.service.MedicationPriceListService;
 import app.service.MedicationService;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +17,19 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PharmacyServiceImpl implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
     private MedicationService medicationService;
+    private final MedicationPriceListService medicationPriceListService;
 
     @Autowired
-    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository) {
+    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, MedicationPriceListService medicationPriceListService) {
         this.pharmacyRepository = pharmacyRepository;
+        this.medicationPriceListService = medicationPriceListService;
     }
 
     @Override
@@ -85,9 +91,16 @@ public class PharmacyServiceImpl implements PharmacyService {
         Medication medication = medicationService.read(addMedicationToPharmacyDTO.getMedicationId()).get();
         pharmacy.getMedicationQuantity().add(new MedicationQuantity(medication, addMedicationToPharmacyDTO.getQuantity()));
 
+        //TODO check if pharmacy already has that medication
+        if (pharmacy.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId() == medication.getId())
+                .collect(Collectors.toList()).size() != 0)
+            return false;
+
         this.save(pharmacy);
 
-        return null;
+        return medicationPriceListService.save(new MedicationPriceList(medication, addMedicationToPharmacyDTO.getCost(),new Period
+                (addMedicationToPharmacyDTO.getPriceDateStart(), addMedicationToPharmacyDTO.getPriceDateEnd()), pharmacy)) != null;
+
     }
 
 

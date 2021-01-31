@@ -78,7 +78,9 @@ public class PharmacyControllerImpl {
     public ResponseEntity<Boolean> addNewMedication(@RequestBody AddMedicationToPharmacyDTO addMedicationToPharmacyDTO) {
         if(!pharmacyService.existsById(addMedicationToPharmacyDTO.getPharmacyId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(pharmacyService.addNewMedication(addMedicationToPharmacyDTO), HttpStatus.CREATED);
+        if (pharmacyService.addNewMedication(addMedicationToPharmacyDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

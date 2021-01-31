@@ -22,6 +22,7 @@ export default class PharmacyMedications extends React.Component{
             addMedication : {
                 priceDateStart : "",
                 priceDateEnd : "",
+                cost : "",
                 quantity : "",
                 medicationId : "",
                 pharmacyId : 1
@@ -207,6 +208,15 @@ export default class PharmacyMedications extends React.Component{
                             <br/>
                             <Form.Row>
                                 <Col>
+                                    <label>Cena</label>
+                                </Col>
+                                <Col>
+                                    <FormControl type="text" value={this.state.addMedication.cost} onChange={this.changeCost}/>
+                                </Col>
+                            </Form.Row>
+                            <br/>
+                            <Form.Row>
+                                <Col>
                                     <label>Pocetak vazenja cene</label>
                                 </Col>
                                 <Col>
@@ -283,6 +293,15 @@ export default class PharmacyMedications extends React.Component{
             addMedication : {
                 ...this.state.addMedication,
                 quantity : event.target.value
+            }
+        })
+    }
+
+    changeCost = (event) => {
+        this.setState({
+            addMedication : {
+                ...this.state.addMedication,
+                cost : event.target.value
             }
         })
     }

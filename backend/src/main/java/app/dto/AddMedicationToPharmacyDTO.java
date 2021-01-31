@@ -3,7 +3,7 @@ package app.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -11,8 +11,9 @@ public class AddMedicationToPharmacyDTO {
     public Long pharmacyId;
     public Long medicationId;
     public int quantity;
-    public LocalDate priceDateStart;
-    public LocalDate priceDateEnd;
+    public LocalDateTime priceDateStart;
+    public LocalDateTime priceDateEnd;
+    public int cost;
 
     public AddMedicationToPharmacyDTO() {
     }
