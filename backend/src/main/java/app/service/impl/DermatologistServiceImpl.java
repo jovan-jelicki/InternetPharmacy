@@ -201,4 +201,9 @@ public class DermatologistServiceImpl implements DermatologistService {
 
     public Dermatologist findByEmailAndPassword(String email, String password) { return dermatologistRepository.findByEmailAndPassword(email, password);}
 
+    @Override
+    public Dermatologist findByEmail(String email) {
+        return dermatologistRepository.findByEmail(email);
+    }
+
 }

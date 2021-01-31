@@ -9,8 +9,7 @@ public class SystemAdmin extends User{
     @SequenceGenerator(name="system_admin_generator", sequenceName = "system_admin_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
-    public SystemAdmin() {
-    }
+    public SystemAdmin() { }
 
     public Long getId() {
         return id;

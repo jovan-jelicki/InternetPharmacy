@@ -64,4 +64,9 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
     }
     public PharmacyAdmin findByEmailAndPassword(String email, String password) { return pharmacyAdminRepository.findByEmailAndPassword(email, password);}
 
+    @Override
+    public PharmacyAdmin findByEmail(String email) {
+        return pharmacyAdminRepository.findByEmail(email);
+    }
+
 }
