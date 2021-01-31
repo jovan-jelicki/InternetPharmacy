@@ -15,7 +15,7 @@ export default class PharmacyProfile extends React.Component {
         super();
         this.state = {
             pharmacy: {
-                id : 0,
+                id : 1,
                 name: '',
                 description: '',
                 address: {

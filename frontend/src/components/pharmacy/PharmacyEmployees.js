@@ -42,7 +42,7 @@ export default class PharmacyEmployees extends React.Component{
                     periodEnd : ""
                 },
                 pharmacy : {
-                    id : 2 //todo change pharmacy ID
+                    id : 1 //todo change pharmacy ID
                 }
             }
         }
@@ -302,7 +302,7 @@ export default class PharmacyEmployees extends React.Component{
                             periodEnd : ""
                         },
                         pharmacy : {
-                            id : 2 //todo change pharmacy ID
+                            id : 1 //todo change pharmacy ID
                         }
                     }
                 });
@@ -473,7 +473,7 @@ export default class PharmacyEmployees extends React.Component{
     }
 
     fetchDermatologistNotWorkingInThisPharmacy = async () => {
-        await axios.get("http://localhost:8080/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/2").then( //todo change pharmacy id
+        await axios.get("http://localhost:8080/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/1").then( //todo change pharmacy id
             res => {
                 this.setState({
                     notWorkingDermatologists : res.data,

@@ -21,21 +21,21 @@ public class Appointment {
    @Column
    private String report;
 
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn
    private Pharmacy pharmacy;
 
    @Enumerated(EnumType.ORDINAL)
    private AppointmentStatus appointmentStatus;
 
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn
    private Patient patient;
 
    @Enumerated(EnumType.ORDINAL)
    private EmployeeType type;
 
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn
    private Therapy therapy;
    

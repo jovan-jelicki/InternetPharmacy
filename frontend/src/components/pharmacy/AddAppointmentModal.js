@@ -71,6 +71,7 @@ export default class AddAppointmentModal extends React.Component {
             pharmacy: {
                 id : 1
             },
+            active : true,
             type : 'dermatologist',
             appointmentStatus : 'available',
             period : {
