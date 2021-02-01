@@ -291,9 +291,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Boolean patientDidNotShowUp(Long id) {
         Appointment appointment = read(id).get();
         if(appointment != null){
-            appointment.setAppointmentStatus(AppointmentStatus.patientNotPresent);
-            save(appointment);
-            return true;
+            if(appointment.getPeriod().getPeriodEnd().isBefore(LocalDateTime.now())) {
+                appointment.setAppointmentStatus(AppointmentStatus.patientNotPresent);
+                Patient patient = patientService.read(appointment.getPatient().getId()).get();
+                patient.setPenaltyCount(patient.getPenaltyCount() + 1);
+                patientService.save(patient);
+                save(appointment);
+                return true;
+            }
+            throw new IllegalArgumentException("Appointment must pass!");
         }
         throw new IllegalArgumentException("Appointment do not exists!");
     }

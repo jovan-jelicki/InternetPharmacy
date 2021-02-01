@@ -6,32 +6,39 @@ import app.model.medication.MedicationQuantity;
 import app.model.medication.MedicationReservation;
 import app.model.medication.MedicationReservationStatus;
 import app.model.pharmacy.Pharmacy;
+import app.model.user.Patient;
 import app.model.user.Pharmacist;
 import app.repository.MedicationReservationRepository;
 import app.repository.PharmacyRepository;
+import app.service.EmailService;
 import app.service.MedicationReservationService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class MedicationReservationServiceImpl implements MedicationReservationService {
     private final MedicationReservationRepository medicationReservationRepository;
     private final PharmacistService pharmacistService;
     private final PharmacyRepository pharmacyRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public MedicationReservationServiceImpl(PharmacistService pharmacistService,
+    public MedicationReservationServiceImpl(EmailService emailService,PharmacistService pharmacistService,
                                             MedicationReservationRepository medicationReservationRepository,
                                             PharmacyRepository pharmacyRepository) {
         this.medicationReservationRepository = medicationReservationRepository;
         this.pharmacistService = pharmacistService;
         this.pharmacyRepository = pharmacyRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -67,6 +74,17 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
             return medicationReservation;
         } catch(Exception e) {
             return null;
+        }
+    }
+
+    @Override
+    @Async
+    public void sendEmailToPatient(Patient patient) {
+        try {
+            Thread.sleep(60000);
+            emailService.sendMail(patient.getCredentials().getEmail(), "Medication confirmation", "You have successfully pick up a medication!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -80,7 +80,7 @@ export default class ScheduledAppointments extends React.Component {
                 this.props.renderParent(false);
                 this.state.modal = false;
             })
-            .catch(res => {alert("Can not cancel this appointment!")});
+            .catch(res => {alert("The appointment has either not expired or does not exist!")});
     }
 
     handleModal = () => {
