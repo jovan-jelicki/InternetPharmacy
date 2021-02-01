@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface AppointmentService extends CRUDService<Appointment>{
+    Appointment cancelCounseling(Long appointmentId);
+
     Collection<Appointment> getAllByExaminerAndAppointmentStatus(Long examinerId, EmployeeType type, AppointmentStatus status);
 
     Collection<AppointmentScheduledDTO> getAllAppointmentsByExaminer(Long examinerId, EmployeeType type);

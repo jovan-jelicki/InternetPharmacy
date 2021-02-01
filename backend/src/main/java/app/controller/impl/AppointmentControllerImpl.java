@@ -56,9 +56,18 @@ public class AppointmentControllerImpl {
     public ResponseEntity<Boolean> finishAppointment(@RequestBody AppointmentScheduledDTO appointmentScheduledDTO) {
         return new ResponseEntity<>(appointmentService.finishAppointment(appointmentScheduledDTO), HttpStatus.OK);
     }
+
     @PostMapping(value = "/counseling")
     public ResponseEntity<Void> scheduleCounseling(@RequestBody Appointment entity) {
         if(appointmentService.scheduleCounseling(entity) == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @PutMapping(value = "/cancel-counseling/{id}")
+    public ResponseEntity<Void> cancelCounseling(@PathVariable Long id) {
+        if(appointmentService.cancelCounseling(id) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
 

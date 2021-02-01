@@ -9,6 +9,7 @@ public class AppointmentSearchDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timeSlot;
     private EmployeeType employeeType;
+    private Long patientId;
 
     public AppointmentSearchDTO() {
     }
@@ -27,5 +28,13 @@ public class AppointmentSearchDTO {
 
     public void setEmployeeType(EmployeeType employeeType) {
         this.employeeType = employeeType;
+    }
+
+    public Long getPatientId() {
+        return this.patientId;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
     }
 }
