@@ -42,6 +42,13 @@ public class SchedulingControllerImpl {
             return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/pharmacistScheduling", consumes = "application/json")
+    public ResponseEntity<Boolean> pharmacistScheduling(@RequestBody Appointment appointment){
+        if(counselingService.pharmacistScheduling(appointment))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.NOT_ACCEPTABLE);
+    }
+
     @GetMapping(value = "/counseling-upcoming/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> findUpcomingByPatientId(@PathVariable Long id) {
         Collection<AppointmentListingDTO> appointments = counselingService

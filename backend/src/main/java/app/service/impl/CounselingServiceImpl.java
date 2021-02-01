@@ -4,6 +4,8 @@ import app.dto.AppointmentSearchDTO;
 
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
+import app.model.time.Period;
+
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.user.EmployeeType;
@@ -11,10 +13,13 @@ import app.model.user.Pharmacist;
 import app.repository.VacationRequestRepository;
 import app.service.AppointmentService;
 import app.service.CounselingService;
+import app.service.PatientService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.StyledEditorKit;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,13 +31,47 @@ public class CounselingServiceImpl implements CounselingService {
     private final AppointmentService appointmentService;
     private final PharmacistService pharmacistService;
     private final VacationRequestRepository vacationRequestRepository;
+    private final PatientService patientService;
 
     @Autowired
-    public CounselingServiceImpl(AppointmentService appointmentService, PharmacistService pharmacistService,
+    public CounselingServiceImpl(PatientService patientService, AppointmentService appointmentService, PharmacistService pharmacistService,
                                  VacationRequestRepository vacationRequestRepository) {
         this.appointmentService = appointmentService;
+        this.patientService = patientService;
         this.pharmacistService = pharmacistService;
         this.vacationRequestRepository = vacationRequestRepository;
+    }
+
+
+    @Override
+    public Boolean pharmacistScheduling(Appointment appointment){
+        if(!isConsultationPossible(appointment.getExaminerId(), appointment.getPatient().getId(), appointment.getPeriod().getPeriodStart()))
+            return false;
+        appointment.setAppointmentStatus(AppointmentStatus.available);
+        appointment.setActive(true);
+        Period period = new Period();
+        period.setPeriodStart(appointment.getPeriod().getPeriodStart());
+        period.setPeriodEnd(appointment.getPeriod().getPeriodStart().plusHours(1));
+        appointment.setPeriod(period);
+        appointment.setPatient(patientService.read(appointment.getPatient().getId()).get());
+        appointmentService.save(appointment);
+        return true;
+    }
+
+    public Boolean isConsultationPossible(Long pharmacistId, Long patientId, LocalDateTime localDateTime){
+        Pharmacist pharmacist = pharmacistService.read(pharmacistId).get();
+        if(pharmacist == null)
+            return false;
+        AppointmentSearchDTO appointmentSearchDTO = new AppointmentSearchDTO();
+        appointmentSearchDTO.setPatientId(patientId);
+        appointmentSearchDTO.setTimeSlot(localDateTime);
+        if(findAvailablePharmacists(appointmentSearchDTO).stream().filter(f -> f.getId() == pharmacistId).findFirst().orElse(null) == null)
+            return false;
+        if(appointmentService.getAllNotFinishedByPatientId(patientId)
+                .stream().filter(a -> a.isOverlapping(localDateTime)).findFirst().orElse(null) != null)
+            return false;
+
+        return true;
     }
 
     @Override

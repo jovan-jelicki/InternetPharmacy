@@ -50,8 +50,8 @@ public class PatientServiceImpl implements PatientService {
         Collection<Ingredient> ingredients = getPatientAllergieIngridients(id);
         for(Medication medication : medications)
             if(medication.getIngredient().stream().anyMatch(ingredients::contains))
-                return false;
-        return true;
+                return true;
+        return false;
     }
 
     @Override

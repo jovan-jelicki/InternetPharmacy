@@ -56,6 +56,9 @@ export default class ChooseTherapy extends React.Component {
             const SideEffect = this.props.medication.sideEffect.map((effect, key) =>
                 <label style={{marginLeft: 5}}>{effect.name}</label>
             )
+            const Alternatives = this.props.medication.alternatives.map((alt, key) =>
+                <label style={{marginLeft: 5}}>{alt.name}</label>
+            )
             return (
                 <Modal backdrop="static" show={this.state.showModal} onHide={this.handleModal}>
                     <Modal.Header>
@@ -69,7 +72,8 @@ export default class ChooseTherapy extends React.Component {
                         {this.props.medication.medicationIssue !== undefined && <label> Medication issue : {this.props.medication.medicationIssue}</label> }<br/>
                         {this.props.medication.note !== undefined && <label> Note : {this.props.medication.note}</label> }<br/>
                         <label> Ingredients : </label> {Ingredients} <br/>
-                        <label> Side effects : </label> {SideEffect}
+                        <label> Side effects : </label> {SideEffect} <br/>
+                        <label> Alternatives : </label> {Alternatives}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.handleModal}>

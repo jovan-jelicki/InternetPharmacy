@@ -1,6 +1,8 @@
 package app.dto;
 
 import app.model.medication.EPrescription;
+import app.model.user.Patient;
+import org.springframework.security.core.parameters.P;
 
 public class MakeEPrescriptionDTO {
     private EPrescription prescription;
