@@ -49,11 +49,14 @@ public class CounselingServiceImpl implements CounselingService {
     public Collection<Appointment> findPreviousByPatientId(Long patientId) {
         Collection<Appointment> appointments = appointmentService
                 .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.pharmacist);
-        return appointments
-                .stream()
-                .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()) || 
-                             a.getAppointmentStatus() == AppointmentStatus.cancelled)
-                .collect(Collectors.toList());
+        Collection<Appointment> cancelled = appointmentService
+                .findCancelledByPatientIdAndType(patientId, EmployeeType.pharmacist);
+        Collection<Appointment> all = appointments
+                                        .stream()
+                                        .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()))
+                                        .collect(Collectors.toList());
+        all.addAll(cancelled);
+        return all;
     }
 
     @Override
@@ -78,16 +81,27 @@ public class CounselingServiceImpl implements CounselingService {
 
     private Set<Pharmacist> findUnavailable(LocalDateTime dateTime, Long patientId) {
         Set<Pharmacist> unavailable = new HashSet<>();
-        Collection<Appointment> scheduled = appointmentService
+        Collection<Appointment> scheduledAvailable = appointmentService
                 .findAppointmentsByPatientNotNullAndType(EmployeeType.pharmacist);
-        scheduled.forEach(a -> {
+        scheduledAvailable.forEach(a -> {
             Pharmacist pharmacist = pharmacistService.read(a.getExaminerId()).get();
             if(a.isOverlapping(dateTime)) {
-                if(a.getAppointmentStatus() == AppointmentStatus.available)
-                    unavailable.add(pharmacist);
-                else if(a.getAppointmentStatus() == AppointmentStatus.cancelled && a.getPatient().getId() == patientId)
-                    unavailable.add(pharmacist);
-            } 
+                unavailable.add(pharmacist);
+            }
+        });
+        unavailable.addAll(findUnavailableCanceled(dateTime, patientId));
+        return unavailable;
+    }
+
+    private Set<Pharmacist> findUnavailableCanceled(LocalDateTime dateTime, Long patientId) {
+        Set<Pharmacist> unavailable = new HashSet<>();
+        Collection<Appointment> scheduledCancelled = appointmentService
+                .findCancelledByPatientIdAndType(patientId, EmployeeType.pharmacist);
+        scheduledCancelled.forEach(a -> {
+            Pharmacist pharmacist = pharmacistService.read(a.getExaminerId()).get();
+            if(a.isOverlapping(dateTime)) {
+                unavailable.add(pharmacist);
+            }
         });
         return unavailable;
     }

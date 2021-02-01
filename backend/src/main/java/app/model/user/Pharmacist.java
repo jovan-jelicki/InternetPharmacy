@@ -52,7 +52,7 @@ public class Pharmacist extends User {
         WorkingHours wh = getWorkingHours();
         LocalTime start = wh.getPeriod().getPeriodStart().toLocalTime();
         LocalTime end = wh.getPeriod().getPeriodEnd().toLocalTime();
-        return (start.isBefore(timeSlot.toLocalTime()) && end.isAfter(timeSlot.toLocalTime())) ||
-                (start.isBefore(timeSlot.toLocalTime().plusHours(1)) && end.isAfter(timeSlot.toLocalTime().plusHours(1)));
+        return start.isBefore(timeSlot.toLocalTime()) && end.isAfter(timeSlot.toLocalTime()) &&
+                start.isBefore(timeSlot.toLocalTime().plusHours(1)) && end.isAfter(timeSlot.toLocalTime().plusHours(1));
     }
 }
