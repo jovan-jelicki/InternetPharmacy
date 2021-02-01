@@ -1,7 +1,10 @@
 package app.service.impl;
 
 import app.dto.MedicationPriceListDTO;
+import app.model.medication.Medication;
 import app.model.medication.MedicationPriceList;
+import app.model.pharmacy.Pharmacy;
+import app.model.time.Period;
 import app.repository.MedicationPriceListRepository;
 import app.service.MedicationPriceListService;
 import app.service.PharmacyService;
@@ -77,5 +80,35 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
             medicationPriceListDTOS.add(new MedicationPriceListDTO(medicationPriceList));
         });
         return medicationPriceListDTOS;
+    }
+
+    private boolean isOverlapping (Period periodA, Period periodB) {
+        //A A, B B
+        //B B, A A
+        if (periodA.getPeriodStart().isBefore(periodB.getPeriodStart()) && periodA.getPeriodStart().isBefore(periodB.getPeriodEnd())
+            && periodA.getPeriodEnd().isBefore(periodB.getPeriodStart()) && periodA.getPeriodEnd().isBefore(periodB.getPeriodEnd()))
+            return false;
+        else if (periodB.getPeriodStart().isBefore(periodA.getPeriodStart()) && periodB.getPeriodStart().isBefore(periodA.getPeriodEnd())
+            && periodB.getPeriodEnd().isBefore(periodA.getPeriodStart()) && periodB.getPeriodEnd().isBefore(periodA.getPeriodEnd()))
+            return false;
+        else
+            return true;
+    }
+
+    @Override
+    public Boolean createNewPriceList(MedicationPriceListDTO medicationPriceListDTO) {
+        Pharmacy pharmacy = pharmacyService.read(medicationPriceListDTO.getPharmacyId()).get();
+        Medication medication = pharmacy.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId()==medicationPriceListDTO.getMedicationId()).findFirst().get().getMedication();
+        MedicationPriceList medicationPriceList = new MedicationPriceList(medication, medicationPriceListDTO.getCost(), medicationPriceListDTO.getPeriod(), pharmacy);
+
+
+        if (medicationPriceListDTO.getPeriod().getPeriodStart().isAfter(medicationPriceListDTO.getPeriod().getPeriodEnd()))
+            return false;
+        //da li se overlappuje
+        for (MedicationPriceList medicationPriceListFor : medicationPriceListRepository.getMedicationPriceListHistoryByPharmacy(medicationPriceListDTO.getPharmacyId(), medicationPriceListDTO.getMedicationId()))
+            if (isOverlapping(medicationPriceListDTO.getPeriod(), medicationPriceListFor.getPeriod()))
+                return false;
+
+        return this.save(medicationPriceList) != null;
     }
 }
