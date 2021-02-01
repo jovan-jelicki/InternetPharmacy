@@ -161,6 +161,14 @@ insert into appointment (id,  examiner_id, appointment_status,  patient_id, peri
     values (6,1,0, null, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 0, null,null,1, true);
 
 
+-- NE DIRAJ MI OVA TRI!!!!!  Potpis : Jovan!!!
+insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+    values (7,2,0, 0, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,1, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+    values (8,2, 0, 6, '2021-03-01 14:00:00', '2021-03-01 13:00:00', 0, null,null,1, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+    values (9,2 ,0, 0, '2021-01-01 16:00:00', '2021-01-01 15:00:00', 0, null,null,1, true);
+
 -- medication quantity only for medication orders
 INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (5, 100, 0);

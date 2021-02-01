@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -33,9 +34,6 @@ public class AppointmentControllerImpl {
 
     @GetMapping
     public ResponseEntity<Collection<Appointment>> read() {
-        Collection<Appointment> appointments= appointmentService.read();
-        Appointment appointment = (Appointment) appointments.toArray()[0];
-        Long id = appointment.getPharmacy().getId();
         return new ResponseEntity<>(appointmentService.read(), HttpStatus.OK);
     }
 
@@ -105,6 +103,10 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/patientDidNotShowUp/{id}")
+    public ResponseEntity patientDidNotShowUp(@PathVariable Long id) {
+        return new ResponseEntity(appointmentService.patientDidNotShowUp(id), HttpStatus.OK);
+    }
     @GetMapping(value = "/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(@PathVariable Long id){
         ArrayList<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();

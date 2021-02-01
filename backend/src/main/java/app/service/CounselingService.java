@@ -11,4 +11,6 @@ public interface CounselingService {
     Collection<Appointment> findPreviousByPatientId(Long patientId);
     Collection<Pharmacist> findAvailablePharmacists(AppointmentSearchDTO appointmentSearchKit);
     Collection<Appointment> findUpcomingByPatientId(Long patientId);
-}
+    Boolean pharmacistScheduling(Appointment appointment);
+
+    }
