@@ -4,6 +4,8 @@ import DateTime from "../../components/DateTime";
 import {Container, Row} from "react-bootstrap";
 import ScheduleCounsel from "../../components/ScheduleCounsel";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
+
 
 class PatientCounselScheduling extends React.Component {
     constructor(props) {
@@ -49,7 +51,9 @@ class PatientCounselScheduling extends React.Component {
                 'periodStart' : this.state.dateTime
             }
         })
-        .then(res => console.log(res));
+        .then(res => {
+            this.props.history.push('/scheduled-appointments')
+        });
     }
 
     render() {
@@ -67,4 +71,4 @@ class PatientCounselScheduling extends React.Component {
     }
 }
 
-export default PatientCounselScheduling
+export default withRouter(PatientCounselScheduling)

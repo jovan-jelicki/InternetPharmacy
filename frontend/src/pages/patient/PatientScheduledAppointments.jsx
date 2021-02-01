@@ -42,7 +42,7 @@ class PatientScheduledAppointments extends React.Component {
                     <h2>Pharmacist Counselings</h2>
                 </Row>
                 <Row className={'m-2'}>
-                    <AppointmentListing appointments={this.state.counselings} cancel={this.cancel}/>
+                    <AppointmentListing appointments={this.state.counselings} cancel={this.cancel} view={false}/>
                 </Row>
             </PatientLayout>
         )

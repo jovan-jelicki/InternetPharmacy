@@ -23,7 +23,8 @@ class AppointmentListing extends React.Component {
                     <td>{fromTime + ' to ' + toTime}</td>
                     <td>{appointment.dermatologistFirstName + ' ' + appointment.dermatologistLastName}</td>
                     <td>{appointment.pharmacyName}</td>
-                    <td><Button variant={'danger'} onClick={() => this.cancel(appointment.id)}>Cancel</Button></td>
+                    <td>{appointment.appointmentStatus == 'cancelled' && this.props.view && <label variant={'danger'}>Cancelled</label>}
+                        {!this.props.view && <Button variant={'danger'} onClick={() => this.cancel(appointment.id)}>Cancel</Button>}</td>
                 </tr>
             )
         })
