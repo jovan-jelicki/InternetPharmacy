@@ -161,6 +161,36 @@ insert into appointment (id,  examiner_id, appointment_status,  patient_id, peri
     values (6,1,0, null, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 0, null,null,1, true);
 
 
+-- medication quantity only for medication orders
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (5, 100, 0);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (6, 53, 1);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (7, 65, 2);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (8, 1020, 3);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (9, 1342, 4);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (10, 5123, 3);
+
+INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
+VALUES (1, '2020-03-04', 1, 0);
+INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
+VALUES (2, '2020-03-10', 1, 0);
+
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (5,1);
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (6,1);
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (7,1);
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (8,2);
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (9,2);
+
 -- SELECT MAX(id) FROM appointment;
 --
 -- SELECT nextval('bookmarks_id_seq');

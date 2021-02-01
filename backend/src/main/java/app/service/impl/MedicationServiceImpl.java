@@ -88,4 +88,9 @@ public class MedicationServiceImpl implements MedicationService {
         allMedications.removeAll(pharmacyMedications);
         return allMedications;
     }
+
+    @Override
+    public Medication getMedicationByName(String name) {
+        return medicationRepository.getMedicationByName(name);
+    }
 }
