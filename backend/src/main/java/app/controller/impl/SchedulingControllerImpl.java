@@ -32,7 +32,7 @@ public class SchedulingControllerImpl {
     public ResponseEntity<Collection<CounselingSearchDTO>> getAvailable(@RequestBody AppointmentSearchDTO appointmentSearchKit) {
         if (appointmentSearchKit.getEmployeeType() == EmployeeType.pharmacist) {
             Collection<CounselingSearchDTO> available = new ArrayList<>();
-            counselingService.findAvailablePharmacists(appointmentSearchKit.getTimeSlot()).forEach(p -> {
+            counselingService.findAvailablePharmacists(appointmentSearchKit).forEach(p -> {
                 available.add(new CounselingSearchDTO(p));
             });
             return new ResponseEntity<>(available, HttpStatus.OK);

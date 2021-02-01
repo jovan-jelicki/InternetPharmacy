@@ -1,5 +1,7 @@
 package app.service.impl;
 
+import app.dto.AppointmentSearchDTO;
+
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.time.VacationRequest;
@@ -49,13 +51,16 @@ public class CounselingServiceImpl implements CounselingService {
                 .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.pharmacist);
         return appointments
                 .stream()
-                .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()))
+                .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()) || 
+                             a.getAppointmentStatus() == AppointmentStatus.cancelled)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Pharmacist> findAvailablePharmacists(LocalDateTime dateTime) {
-        Set<Pharmacist> unavailable = findUnavailable(dateTime);
+    public Collection<Pharmacist> findAvailablePharmacists(AppointmentSearchDTO appointmentSearchKit) {
+        LocalDateTime dateTime = appointmentSearchKit.getTimeSlot();
+        Long patientId = appointmentSearchKit.getPatientId();
+        Set<Pharmacist> unavailable = findUnavailable(dateTime, patientId);
         Set<Pharmacist> available = findAvailable(dateTime);
         available.removeAll(unavailable);
         return available;
@@ -71,14 +76,18 @@ public class CounselingServiceImpl implements CounselingService {
         return available;
     }
 
-    private Set<Pharmacist> findUnavailable(LocalDateTime dateTime) {
+    private Set<Pharmacist> findUnavailable(LocalDateTime dateTime, Long patientId) {
         Set<Pharmacist> unavailable = new HashSet<>();
         Collection<Appointment> scheduled = appointmentService
                 .findAppointmentsByPatientNotNullAndType(EmployeeType.pharmacist);
         scheduled.forEach(a -> {
             Pharmacist pharmacist = pharmacistService.read(a.getExaminerId()).get();
-            if(a.isOverlapping(dateTime) && a.getAppointmentStatus() == AppointmentStatus.available)
-                unavailable.add(pharmacist);
+            if(a.isOverlapping(dateTime)) {
+                if(a.getAppointmentStatus() == AppointmentStatus.available)
+                    unavailable.add(pharmacist);
+                else if(a.getAppointmentStatus() == AppointmentStatus.cancelled && a.getPatient().getId() == patientId)
+                    unavailable.add(pharmacist);
+            } 
         });
         return unavailable;
     }

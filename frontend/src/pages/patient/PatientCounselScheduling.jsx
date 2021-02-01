@@ -23,7 +23,8 @@ class PatientCounselScheduling extends React.Component {
         axios
             .post('http://localhost:8080/api/scheduling/search', {
                 'timeSlot' : dateTime,
-                'employeeType' : 'pharmacist'
+                'employeeType' : 'pharmacist',
+                'patientId' : 0
             })
             .then(res => {
                 this.setState({
