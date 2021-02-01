@@ -13,4 +13,7 @@ public interface VacationRequestRepository extends JpaRepository<VacationRequest
     Collection<VacationRequest> findByPharmacyIdAndEmployeeType(Long pharmacyId, EmployeeType employeeType);
 
     Collection<VacationRequest> findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(Long employeeId, EmployeeType employeeType, VacationRequestStatus status);
+
+    Collection<VacationRequest> findByEmployeeType(EmployeeType employeeType);
+
 }

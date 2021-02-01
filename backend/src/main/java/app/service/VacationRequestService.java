@@ -18,4 +18,7 @@ public interface VacationRequestService extends CRUDService<VacationRequest> {
 
     void declineVacationRequest(VacationRequestDTO vacationRequestDTO);
 
+    Collection<VacationRequestDTO> findByEmployeeType(EmployeeType employeeType);
+
+
 }
