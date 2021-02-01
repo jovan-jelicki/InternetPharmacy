@@ -4,32 +4,18 @@ import DatePicker from "react-datepicker";
 import AddMedicationQuantity from "./AddMedicationQuantity";
 import AllergyPatientListing from "../AllergyPatientListing";
 import OrderQuantityListing from "./OrderQuantityListing";
+import axios from "axios";
 
 export default class CreateOrder extends React.Component{
     constructor() {
         super();
         this.state = {
             userType : 'pharmacyAdmin',
-            medications : [
-                {
-                    id : 1,
-                    name : "Xantil"
-                },
-                {
-                    id: 2,
-                    name : "Brufen"
-                },
-                {
-                    id: 3,
-                    name : "Linex"
-                },
-                {
-                    id: 4,
-                    name : "Vitamin C"
-                }
-            ],
+            medications : [],
             medicationOrder : {
-                deadLine : "",
+                deadline : "",
+                pharmacyAdminId : 1,
+                status : "pending",
                 medicationQuantity : []
             },
             quantities : []
@@ -37,6 +23,7 @@ export default class CreateOrder extends React.Component{
     }
 
     componentDidMount() {
+        this.fetchMedication();
     }
 
     render() {
@@ -49,7 +36,7 @@ export default class CreateOrder extends React.Component{
                         </h1>
                         <br/>
                         Choose deadline for medication offers: <i/><i/><i/>
-                        <DatePicker  selected={this.state.medicationOrder.deadLine} minDate={new Date()} onChange={date => this.changeDatePicker(date)} />
+                        <DatePicker  selected={this.state.medicationOrder.deadline}  minDate={new Date()} onChange={this.changeDatePicker} />
 
                         <AddMedicationQuantity addQuantity={this.addQuantity} medications = {this.state.medications} />
 
@@ -64,8 +51,17 @@ export default class CreateOrder extends React.Component{
         );
     }
 
+    fetchMedication = () => {
+        axios.get("http://localhost:8080/api/medications")
+            .then((res) => {
+                this.setState({
+                    medications : res.data
+                })
+            })
+    }
+
     addQuantity = async (quantity) => {
-        if(!this.state.quantities.map(a => a.medication).includes(quantity.medication))
+        if(!this.state.quantities.map(a => a.medication.name).includes(quantity.medication.name))
             await this.setState({
                 quantities : this.state.quantities.concat(quantity)
             })
@@ -83,10 +79,9 @@ export default class CreateOrder extends React.Component{
         this.setState({
             medicationOrder : {
                 ...this.state.medicationOrder,
-                deadLine : date
+                deadline : date
             }
-            }
-        );
+        });
     }
 
     handleSubmit = async () => {
@@ -98,5 +93,15 @@ export default class CreateOrder extends React.Component{
             }
         );
         console.log(this.state.medicationOrder);
+        if (this.state.medicationOrder.medicationQuantity.length === 0) {
+            alert("Cannot submit medication order without any medications!");
+            return;
+        }
+
+        axios.post("http://localhost:8080/api/medicationOrder/newMedicationOrder", this.state.medicationOrder)
+            .then((res) => {
+                alert("Medication order created successfully!");
+                this.props.showListOrders("listOrders")
+            })
     }
 }
