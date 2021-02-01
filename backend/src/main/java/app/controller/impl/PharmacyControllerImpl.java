@@ -98,4 +98,13 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PutMapping(value = "/deleteMedicationFromPharmacy", consumes = "application/json")
+    public ResponseEntity<Boolean> deleteMedicationFromPharmacy(@RequestBody PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
+        if(!pharmacyService.existsById(pharmacyMedicationListingDTO.getPharmacyId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (pharmacyService.deleteMedicationFromPharmacy(pharmacyMedicationListingDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }

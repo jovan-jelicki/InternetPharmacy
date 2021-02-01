@@ -3,9 +3,7 @@ package app.service.impl;
 import app.dto.AddMedicationToPharmacyDTO;
 import app.dto.PharmacyMedicationListingDTO;
 import app.dto.PharmacySearchDTO;
-import app.model.medication.Medication;
-import app.model.medication.MedicationPriceList;
-import app.model.medication.MedicationQuantity;
+import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
 import app.repository.PharmacyRepository;
@@ -135,6 +133,24 @@ public class PharmacyServiceImpl implements PharmacyService {
         medicationQuantity.setQuantity(pharmacyMedicationListingDTO.getQuantity());
 
         return this.save(pharmacy)!= null;
+    }
+
+    @Override
+    public Boolean deleteMedicationFromPharmacy(PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
+        Pharmacy pharmacy = this.read(pharmacyMedicationListingDTO.getPharmacyId()).get();
+
+        MedicationQuantity medicationQuantity = pharmacy.getMedicationQuantity().stream().
+                filter(medicationQuantityPharmacy -> medicationQuantityPharmacy.getId()==pharmacyMedicationListingDTO.getMedicationQuantityId())
+                .findFirst().get();
+
+        for (MedicationReservation medicationReservation : pharmacy.getMedicationReservation())
+            if (medicationReservation.getMedicationQuantity().getMedication().getId() == pharmacyMedicationListingDTO.getMedicationId()
+                && medicationReservation.getStatus() == MedicationReservationStatus.requested)
+                return false;
+
+
+        pharmacy.getMedicationQuantity().remove(medicationQuantity);
+        return this.save(pharmacy) != null;
     }
 
 
