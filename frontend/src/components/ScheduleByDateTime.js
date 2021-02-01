@@ -56,11 +56,7 @@ export default class ScheduleByDateTime extends React.Component {
                 "pharmacy" : {"id" : this.props.appointment.pharmacyId},
                 "type" : 1
             })
-            .then(res => {
-                this.setState({
-                    medications : res.data
-                })
-            })
+            .then(res => alert("You have schedule new appointment!"))
             .catch(res => alert("Cant get medications!"));
     }
     setTimeForNewAppointment = (date) => {
