@@ -10,11 +10,14 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    @Query("select a from Appointment a where a.patient is not null and a.appointmentStatus = 0 or a.appointmentStatus = 3 and a.isActive = true and a.type = ?1")
-    Collection<Appointment> getAllAvailableCancelledByType(EmployeeType type);
+    @Query("select a from Appointment a where a.patient is not null and a.appointmentStatus = 0 and a.isActive = true and a.type = ?1")
+    Collection<Appointment> getAllAvailableByType(EmployeeType type);
 
-    @Query("select a from Appointment a where a.patient.id = ?1 and a.appointmentStatus = 0 or a.appointmentStatus = 3 and a.isActive = true and a.type = ?2")
+    @Query("select a from Appointment a where a.patient.id = ?1 and a.appointmentStatus = 0 and a.isActive = true and a.type = ?2")
     Collection<Appointment> findAppointmentsByPatientAndType(Long patientId, EmployeeType type);
+
+    @Query("select a from Appointment a where a.patient.id = ?1 and a.appointmentStatus = 3 and a.isActive = false and a.type = ?2")
+    Collection<Appointment> findCancelledByPatientIdAndType(Long patientId, EmployeeType type);
 
     @Query("select a from Appointment a where a.examinerId = ?1 and a.type = ?2 and a.appointmentStatus = 0 and a.patient is not null and a.isActive=true")
     Collection<Appointment> getAllScheduledNotFinishedByExaminer(Long examinerId, EmployeeType type);

@@ -52,6 +52,17 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PutMapping(value = "/update")
+    public ResponseEntity<Void> update(@RequestBody AppointmentUpdateDTO appointmentDTO) {
+        try {
+            appointmentService.update(appointmentDTO);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping(consumes = "application/json", value = "/finishAppointment")
     public ResponseEntity<Boolean> finishAppointment(@RequestBody AppointmentScheduledDTO appointmentScheduledDTO) {
         return new ResponseEntity<>(appointmentService.finishAppointment(appointmentScheduledDTO), HttpStatus.OK);
