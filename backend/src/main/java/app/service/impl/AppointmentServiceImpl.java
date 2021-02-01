@@ -246,6 +246,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId) {
+        return appointmentRepository.getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(LocalDateTime.now(), pharmacyId);
+    }
+
+    @Override
     public Collection<Appointment> GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date) {
         return appointmentRepository.GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(examinerId,employeeType,date);
     }
