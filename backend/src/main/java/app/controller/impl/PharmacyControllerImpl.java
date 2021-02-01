@@ -89,4 +89,13 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(pharmacyService.getPharmacyMedicationListingDTOs(pharmacyId), HttpStatus.OK);
     }
 
+    @PutMapping(value = "/editMedicationQuantity", consumes = "application/json")
+    public ResponseEntity<Boolean> editMedicationQuantity(@RequestBody PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
+        if(!pharmacyService.existsById(pharmacyMedicationListingDTO.getPharmacyId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (pharmacyService.editMedicationQuantity(pharmacyMedicationListingDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }

@@ -12,6 +12,9 @@ import java.util.Set;
 @Getter
 @Setter
 public class PharmacyMedicationListingDTO {
+    private Long medicationId;
+    private Long medicationQuantityId;
+    private Long pharmacyId;
     private String name;
     private int quantity;
     private double price;
@@ -23,7 +26,10 @@ public class PharmacyMedicationListingDTO {
     public PharmacyMedicationListingDTO() {
     }
 
-    public PharmacyMedicationListingDTO(MedicationQuantity medicationQuantity, double price, int grade) {
+    public PharmacyMedicationListingDTO(MedicationQuantity medicationQuantity, double price, int grade, Long pharmacyId) {
+        this.pharmacyId = pharmacyId;
+        this.medicationId = medicationQuantity.getMedication().getId();
+        this.medicationQuantityId = medicationQuantity.getId();
         this.name = medicationQuantity.getMedication().getName();
         this.quantity = medicationQuantity.getQuantity();
         this.price = price;
