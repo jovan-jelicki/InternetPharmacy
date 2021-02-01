@@ -204,7 +204,6 @@ export default class PharmacyEmployees extends React.Component{
 
         console.log(this.state.dermatologistForAdding);
 
-
     }
 
 
