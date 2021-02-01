@@ -18,7 +18,7 @@ export default class ReviewedClients extends React.Component {
     componentDidMount() {
         axios
             .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getFinishedByExaminer', {
-                id : 3,
+                id : 2,
                 type : 1
             })
             .then(res => {

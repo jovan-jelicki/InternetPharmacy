@@ -26,8 +26,8 @@ export default class ScheduledAppointments extends React.Component {
                 <td>{appointment.pharmacyName}</td>
                 <td>{appointment.firstName}</td>
                 <td>{appointment.lastName}</td>
-                <td>{moment(appointment.period.periodStart).format('DD.MM.YYYY hh:mm')}</td>
-                <td>{moment(appointment.period.periodEnd).format('DD.MM.YYYY hh:mm')}</td>
+                <td>{moment(appointment.period.periodStart).format('DD.MM.YYYY HH:mm')}</td>
+                <td>{moment(appointment.period.periodEnd).format('DD.MM.YYYY HH:mm')}</td>
                 <td> <Button onClick={() => this.handleClickStart(appointment)}> Start </Button> </td>
                 <td> <Button onClick={() => this.handleClickCancel(appointment)} > Did not show up </Button> </td>
             </tr>)
