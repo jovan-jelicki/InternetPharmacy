@@ -89,6 +89,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Collection<Appointment> getAllNotFinishedByPatientId(Long patientId){
+        return appointmentRepository.getAllNotFinishedByPatientId(patientId, AppointmentStatus.available);
+    }
+
+    @Override
     public Collection<EventDTO> getAllEventsOfExaminer(Long examinerId, EmployeeType type){
         Collection<Appointment> appointments = getAllByExaminerAndAppointmentStatus(examinerId, type, AppointmentStatus.available);
         Collection<EventDTO> eventDTOS = new ArrayList<>();

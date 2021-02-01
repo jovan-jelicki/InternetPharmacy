@@ -9,4 +9,6 @@ import java.util.Collection;
 public interface CounselingService {
     Collection<Pharmacist> findAvailablePharmacists(LocalDateTime dateTime);
     Collection<Appointment> findUpcomingByPatientId(Long patientId);
-}
+    Boolean pharmacistScheduling(Appointment appointment);
+
+    }

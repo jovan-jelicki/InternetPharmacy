@@ -17,6 +17,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("select a from Appointment a where a.examinerId = ?1 and a.type = ?2 and a.appointmentStatus = 0 and a.patient is not null and a.isActive=true")
     Collection<Appointment> getAllScheduledNotFinishedByExaminer(Long examinerId, EmployeeType type);
 
+    @Query("select a from Appointment a where a.patient.id = ?1 and a.appointmentStatus = ?2 and a.isActive=true")
+    Collection<Appointment> getAllNotFinishedByPatientId(Long patientId,AppointmentStatus status);
+
     Collection<Appointment> getAllAppointmentsByExaminerIdAndType(Long examinerId, EmployeeType employeeType);
 
     @Query("select a from Appointment a where a.examinerId = ?1 and a.type = ?2 and a.appointmentStatus = ?3 and a.isActive=true")
