@@ -70,7 +70,6 @@ public class AppointmentControllerImpl {
         if(appointmentService.cancelCounseling(id) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
-
     }
 
     @PostMapping(value = "/getEvents")
@@ -87,6 +86,18 @@ public class AppointmentControllerImpl {
     public ResponseEntity<Collection<AppointmentListingDTO>> getAllAvailableAppointmentsByPharmacy(@PathVariable Long id){
         ArrayList<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
         for (Appointment appointment : appointmentService.GetAllAvailableAppointmentsByPharmacy(id)) {
+            AppointmentListingDTO appointmentListingDTO = new AppointmentListingDTO(appointment);
+            appointmentListingDTO.setDermatologistFirstName(dermatologistService.read(appointment.getExaminerId()).get().getFirstName());
+            appointmentListingDTO.setDermatologistLastName(dermatologistService.read(appointment.getExaminerId()).get().getLastName());
+            appointmentListingDTOS.add(appointmentListingDTO);
+        }
+        return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/{id}")
+    public ResponseEntity<Collection<AppointmentListingDTO>> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(@PathVariable Long id){
+        ArrayList<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
+        for (Appointment appointment : appointmentService.getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(id)) {
             AppointmentListingDTO appointmentListingDTO = new AppointmentListingDTO(appointment);
             appointmentListingDTO.setDermatologistFirstName(dermatologistService.read(appointment.getExaminerId()).get().getFirstName());
             appointmentListingDTO.setDermatologistLastName(dermatologistService.read(appointment.getExaminerId()).get().getLastName());

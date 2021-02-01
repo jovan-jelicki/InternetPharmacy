@@ -18,6 +18,7 @@ export default class PharmacyMedications extends React.Component{
         this.state = {
             userType: "",
             showModal: false,
+            showEditMedicationQuantityModal : false,
             addMedication: {
                 priceDateStart: new Date(),
                 priceDateEnd: "",
@@ -25,6 +26,13 @@ export default class PharmacyMedications extends React.Component{
                 quantity: "",
                 medicationId: "",
                 pharmacyId: 1
+            },
+            medicationForEditing : {
+                medicationId : 0,
+                medicationQuantityId : 0,
+                pharmacyId : 0,
+                name : "",
+                quantity : ""
             },
             notContainedMedications: [],
             pharmacyMedicationListingDTOs: []
@@ -95,6 +103,12 @@ export default class PharmacyMedications extends React.Component{
                             </td >
 
                             <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                                <Button variant="info" onClick={() => this.editMedication(medicationListing)}>
+                                    Izmeni
+                                </Button>
+                            </td>
+
+                            <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                 <Button variant="danger" onClick={() => this.deleteMedication(medicationListing)}>
                                     Delete
                                 </Button>
@@ -104,7 +118,41 @@ export default class PharmacyMedications extends React.Component{
                     </tbody>
                 </table>
 
+                <Modal show={this.state.showEditMedicationQuantityModal} onHide={this.handleEditModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Edit Medication</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form style={{marginLeft : 2}}>
+                            <Form.Row>
+                                <Col>
+                                    <label>{this.state.medicationForEditing.name}</label>
+                                </Col>
+                                <Col>
 
+                                </Col>
+                            </Form.Row>
+                            <br/>
+                            <Form.Row>
+                                <Col>
+                                    <label>Quantity</label>
+                                </Col>
+                                <Col>
+                                    <FormControl type="text" value={this.state.medicationForEditing.quantity} onChange={this.changeMedicationForEditingQuantity}/>
+                                </Col>
+                            </Form.Row>
+                            <br/>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.handleEditModal}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={this.submitEditMedication}>
+                            Save Changes
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
 
                 <Modal show={this.state.showModal} onHide={this.handleModal}>
                     <Modal.Header closeButton>
@@ -191,6 +239,30 @@ export default class PharmacyMedications extends React.Component{
             })
         this.handleModal();
     }
+
+    submitEditMedication= () => {
+        console.log(this.state.medicationForEditing);
+        if (parseInt(this.state.medicationForEditing.quantity) < 0) {
+            alert("Medication quantity cannot be negative.");
+            return;
+        }
+        axios.put("http://localhost:8080/api/pharmacy/editMedicationQuantity", this.state.medicationForEditing)
+            .then(res => {
+                alert("Medication edited successfully!");
+                this.setState({
+                    medicationForEditing: {
+                        quantity: "",
+                        name : ""
+                    }
+                })
+                this.fetchPharmacyMedicationListingDTOs();
+            })
+            .catch(() => {
+                alert("Medication was not edited successfully!")
+            })
+        this.handleEditModal();
+    }
+
     openAddMedicationModal = () => {
         if (this.state.notContainedMedications.length === 0) {
             alert ("No medications to add!");
@@ -204,8 +276,27 @@ export default class PharmacyMedications extends React.Component{
         });
     }
 
+    handleEditModal= () => {
+        this.setState({
+            showEditMedicationQuantityModal : !this.state.showEditMedicationQuantityModal,
+        });
+    }
+
     deleteMedication = (medication) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + medication.name + ' from your medications list?');
+    }
+
+    editMedication = (medication) => {
+        this.setState({
+            medicationForEditing : {
+                name : medication.name,
+                quantity : medication.quantity,
+                medicationId : medication.medicationId,
+                medicationQuantityId : medication.medicationQuantityId,
+                pharmacyId : medication.pharmacyId,
+            },
+        });
+        this.handleEditModal();
     }
 
     setPriceDateStart = (date) => {
@@ -230,6 +321,15 @@ export default class PharmacyMedications extends React.Component{
         this.setState({
             addMedication : {
                 ...this.state.addMedication,
+                quantity : event.target.value
+            }
+        })
+    }
+
+    changeMedicationForEditingQuantity= (event) => {
+        this.setState({
+            medicationForEditing : {
+                ...this.state.medicationForEditing,
                 quantity : event.target.value
             }
         })

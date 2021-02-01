@@ -116,7 +116,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         ArrayList<PharmacyMedicationListingDTO> pharmacyMedicationListingDTOS = new ArrayList<PharmacyMedicationListingDTO>();
         for(MedicationQuantity medicationQuantity : pharmacy.getMedicationQuantity()) {
             MedicationPriceList medicationPriceList = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationQuantity.getMedication().getId(), LocalDateTime.now());
-            PharmacyMedicationListingDTO pharmacyMedicationListingDTO = new PharmacyMedicationListingDTO(medicationQuantity, medicationPriceList.getCost(), 0);
+            PharmacyMedicationListingDTO pharmacyMedicationListingDTO = new PharmacyMedicationListingDTO(medicationQuantity, medicationPriceList.getCost(), 0, pharmacyId);
             pharmacyMedicationListingDTOS.add(pharmacyMedicationListingDTO); //todo grade
         }
 //        pharmacy.getMedicationQuantity().forEach(medicationQuantity -> pharmacyMedicationListingDTOS.add(new PharmacyMedicationListingDTO(medicationQuantity,
@@ -124,7 +124,18 @@ public class PharmacyServiceImpl implements PharmacyService {
         return pharmacyMedicationListingDTOS;
     }
 
+    @Override
+    public Boolean editMedicationQuantity(PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
+        Pharmacy pharmacy = this.read(pharmacyMedicationListingDTO.getPharmacyId()).get();
 
+        MedicationQuantity medicationQuantity = pharmacy.getMedicationQuantity().stream().
+                filter(medicationQuantityPharmacy -> medicationQuantityPharmacy.getId()==pharmacyMedicationListingDTO.getMedicationQuantityId())
+                .findFirst().get();
+
+        medicationQuantity.setQuantity(pharmacyMedicationListingDTO.getQuantity());
+
+        return this.save(pharmacy)!= null;
+    }
 
 
 }
