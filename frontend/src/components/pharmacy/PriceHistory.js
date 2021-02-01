@@ -126,7 +126,7 @@ export default class PriceHistory extends React.Component{
 
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleModal}>
+                        <Button variant="secondary" onClick={this.closeModal}>
                             Close
                         </Button>
                         <Button variant="primary" onClick={this.submitAddPriceList}>
@@ -227,6 +227,21 @@ export default class PriceHistory extends React.Component{
 
     unsuccessfulAdd = () => {
         alert("New price list was not added successfully!");
+        this.setState({
+            addPriceList : {
+                cost : "",
+                period : {
+                    periodStart : "",
+                    periodEnd : ""
+                },
+                medicationId : this.props.priceListingHistory.medicationId,
+                pharmacyId : this.props.priceListingHistory.pharmacyId
+            },
+            showAddPriceListModal : !this.state.showAddPriceListModal
+        })
+    }
+
+    closeModal = () => {
         this.setState({
             addPriceList : {
                 cost : "",
