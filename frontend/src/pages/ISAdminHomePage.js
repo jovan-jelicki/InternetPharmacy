@@ -6,6 +6,7 @@ import AddNewMedication from "../components/AddNewMedication";
 import Complaints from "../components/Complaints";
 import LoyaltyProgram from "../components/LoyaltyProgram";
 import PharmacyAdminRegistration from "../components/PharmacyAdminRegistration";
+import SystemAdminVacationRequestListing from "../components/SystemAdminVacationRequestListing";
 
 export class ISAdminHomePage extends React.Component {
     constructor(props) {
@@ -56,6 +57,9 @@ export class ISAdminHomePage extends React.Component {
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="pharmacyAdmin" onClick={this.handleChange}>Add new pharmacy admin</a>
                     </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="dermatologistVacationRequests" onClick={this.handleChange}>Dermatologist vacation requests</a>
+                    </li>
 
                 </ul>
                 {this.renderNavbar()}
@@ -100,6 +104,10 @@ export class ISAdminHomePage extends React.Component {
         else if (this.state.navbar === "pharmacyAdmin")
             return (
                 <PharmacyAdminRegistration/>
+            );
+        else if (this.state.navbar === "dermatologistVacationRequests")
+            return (
+                <SystemAdminVacationRequestListing/>
             );
     }
 }

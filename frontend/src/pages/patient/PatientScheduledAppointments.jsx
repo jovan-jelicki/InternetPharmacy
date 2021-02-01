@@ -11,17 +11,28 @@ class PatientScheduledAppointments extends React.Component {
             counselings : [],
             examinations : []
         }
+        this.cancel = this.cancel.bind(this)
     }
 
     componentDidMount() {
         axios
-        .get('http://localhost:8080/api/scheduling/counseling/0')
+        .get('http://localhost:8080/api/scheduling/counseling-upcoming/0')
         .then(res => {
-            console.log(res.data)
             this.setState({
-                counselings : res.data
+                counselings : [...res.data.filter(c => c.appointmentStatus === 'available')]
             })
         })
+    }
+
+    cancel(id) {
+        axios
+        .put('http://localhost:8080/api/appointment/cancel-counseling/' + id)
+        .then(res => {
+            this.setState({
+                counselings : [...this.state.counselings.filter(c => c.id != id)]
+            })
+        })
+        .catch(e => alert('It is not allowed to cancel 24h prior to the appointment'))
     }
  
     render() {
@@ -31,7 +42,7 @@ class PatientScheduledAppointments extends React.Component {
                     <h2>Pharmacist Counselings</h2>
                 </Row>
                 <Row className={'m-2'}>
-                    <AppointmentListing appointments={this.state.counselings}/>
+                    <AppointmentListing appointments={this.state.counselings} cancel={this.cancel} view={false}/>
                 </Row>
             </PatientLayout>
         )

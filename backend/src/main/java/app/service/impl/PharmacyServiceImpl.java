@@ -1,26 +1,45 @@
 package app.service.impl;
 
+import app.dto.AddMedicationToPharmacyDTO;
+import app.dto.PharmacyMedicationListingDTO;
 import app.dto.PharmacySearchDTO;
+import app.model.medication.Medication;
+import app.model.medication.MedicationPriceList;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
+import app.model.time.Period;
 import app.repository.PharmacyRepository;
+import app.service.MedicationPriceListService;
+import app.service.MedicationService;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PharmacyServiceImpl implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
+    private MedicationService medicationService;
+    private final MedicationPriceListService medicationPriceListService;
 
     @Autowired
-    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository) {
+    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, MedicationPriceListService medicationPriceListService) {
         this.pharmacyRepository = pharmacyRepository;
+        this.medicationPriceListService = medicationPriceListService;
     }
+
+    @Override
+    public void setMedicationService(MedicationService medicationService) {
+        this.medicationService = medicationService;
+    }
+
+
 
     @Override
     public Pharmacy save(Pharmacy entity) {
@@ -67,6 +86,55 @@ public class PharmacyServiceImpl implements PharmacyService {
                      return false;
         }
         return true;
+    }
+
+    @Override
+    public Boolean addNewMedication(AddMedicationToPharmacyDTO addMedicationToPharmacyDTO) {
+        Pharmacy pharmacy = this.read(addMedicationToPharmacyDTO.getPharmacyId()).get();
+        //circular dependency
+        Medication medication = medicationService.read(addMedicationToPharmacyDTO.getMedicationId()).get();
+
+        //TODO check if pharmacy already has that medication
+        if (pharmacy.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId() == medication.getId())
+                .collect(Collectors.toList()).size() != 0)
+            return false;
+
+        pharmacy.getMedicationQuantity().add(new MedicationQuantity(medication, addMedicationToPharmacyDTO.getQuantity()));
+
+
+
+        this.save(pharmacy);
+
+        return medicationPriceListService.save(new MedicationPriceList(medication, addMedicationToPharmacyDTO.getCost(),new Period
+                (addMedicationToPharmacyDTO.getPriceDateStart(), addMedicationToPharmacyDTO.getPriceDateEnd()), pharmacy)) != null;
+
+    }
+
+    @Override
+    public Collection<PharmacyMedicationListingDTO> getPharmacyMedicationListingDTOs(Long pharmacyId) {
+        Pharmacy pharmacy = this.read(pharmacyId).get();
+        ArrayList<PharmacyMedicationListingDTO> pharmacyMedicationListingDTOS = new ArrayList<PharmacyMedicationListingDTO>();
+        for(MedicationQuantity medicationQuantity : pharmacy.getMedicationQuantity()) {
+            MedicationPriceList medicationPriceList = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationQuantity.getMedication().getId(), LocalDateTime.now());
+            PharmacyMedicationListingDTO pharmacyMedicationListingDTO = new PharmacyMedicationListingDTO(medicationQuantity, medicationPriceList.getCost(), 0, pharmacyId);
+            pharmacyMedicationListingDTOS.add(pharmacyMedicationListingDTO); //todo grade
+        }
+//        pharmacy.getMedicationQuantity().forEach(medicationQuantity -> pharmacyMedicationListingDTOS.add(new PharmacyMedicationListingDTO(medicationQuantity,
+//                medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationQuantity.getMedication().getId(), LocalDateTime.now()).getCost(),0)));
+        return pharmacyMedicationListingDTOS;
+    }
+
+    @Override
+    public Boolean editMedicationQuantity(PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
+        Pharmacy pharmacy = this.read(pharmacyMedicationListingDTO.getPharmacyId()).get();
+
+        MedicationQuantity medicationQuantity = pharmacy.getMedicationQuantity().stream().
+                filter(medicationQuantityPharmacy -> medicationQuantityPharmacy.getId()==pharmacyMedicationListingDTO.getMedicationQuantityId())
+                .findFirst().get();
+
+        medicationQuantity.setQuantity(pharmacyMedicationListingDTO.getQuantity());
+
+        return this.save(pharmacy)!= null;
     }
 
 

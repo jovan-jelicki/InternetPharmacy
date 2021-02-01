@@ -59,4 +59,9 @@ public class MedicationControllerImpl {
     public ResponseEntity<Collection<Medication>> getMedicationAlternatives(@PathVariable Long id) {
         return new ResponseEntity<>(medicationService.fetchMedicationAlternatives(id), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/getMedicationsNotContainedInPharmacy/{pharmacyId}")
+    public ResponseEntity<Collection<Medication>> getMedicationsNotContainedInPharmacy(@PathVariable Long pharmacyId){
+        return new ResponseEntity<>(medicationService.getMedicationsNotContainedInPharmacy(pharmacyId), HttpStatus.OK);
+    }
 }

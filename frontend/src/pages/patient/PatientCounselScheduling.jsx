@@ -4,6 +4,8 @@ import DateTime from "../../components/DateTime";
 import {Container, Row} from "react-bootstrap";
 import ScheduleCounsel from "../../components/ScheduleCounsel";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
+
 
 class PatientCounselScheduling extends React.Component {
     constructor(props) {
@@ -21,7 +23,8 @@ class PatientCounselScheduling extends React.Component {
         axios
             .post('http://localhost:8080/api/scheduling/search', {
                 'timeSlot' : dateTime,
-                'employeeType' : 'pharmacist'
+                'employeeType' : 'pharmacist',
+                'patientId' : 0
             })
             .then(res => {
                 this.setState({
@@ -35,19 +38,23 @@ class PatientCounselScheduling extends React.Component {
     schedule(pharmacyId, pharmacistId) {
         axios
         .post('http://localhost:8080/api/appointment/counseling', {
-            examinerId : pharmacistId,
-            type : 'pharmacist',
-            pharmacy : {
-                id : pharmacyId
+            'examinerId' : pharmacistId,
+            'type' : 'pharmacist',
+            'active' : true,
+            'appointmentStatus' : 'available',
+            'pharmacy' : {
+                'id' : pharmacyId
             },
-            patient : {
-                id : 0
+            'patient' : {
+                'id' : 0
             },
-            period : {
-                periodStart : this.state.dateTime
+            'period' : {
+                'periodStart' : this.state.dateTime
             }
         })
-        .then(res => console.log(res));
+        .then(res => {
+            this.props.history.push('/scheduled-appointments')
+        });
     }
 
     render() {
@@ -65,4 +72,4 @@ class PatientCounselScheduling extends React.Component {
     }
 }
 
-export default PatientCounselScheduling
+export default withRouter(PatientCounselScheduling)

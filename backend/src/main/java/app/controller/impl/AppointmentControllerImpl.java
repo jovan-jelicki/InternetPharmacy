@@ -50,16 +50,35 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PutMapping(value = "/update")
+    public ResponseEntity<Void> update(@RequestBody AppointmentUpdateDTO appointmentDTO) {
+        try {
+            appointmentService.update(appointmentDTO);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping(consumes = "application/json", value = "/finishAppointment")
     public ResponseEntity<Boolean> finishAppointment(@RequestBody AppointmentScheduledDTO appointmentScheduledDTO) {
         return new ResponseEntity<>(appointmentService.finishAppointment(appointmentScheduledDTO), HttpStatus.OK);
     }
+
     @PostMapping(value = "/counseling")
     public ResponseEntity<Void> scheduleCounseling(@RequestBody Appointment entity) {
         if(appointmentService.scheduleCounseling(entity) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
 
+    }
+
+    @PutMapping(value = "/cancel-counseling/{id}")
+    public ResponseEntity<Void> cancelCounseling(@PathVariable Long id) {
+        if(appointmentService.cancelCounseling(id) == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/getEvents")
@@ -85,7 +104,18 @@ public class AppointmentControllerImpl {
     }
 
     @GetMapping(value = "/patientDidNotShowUp/{id}")
-    public ResponseEntity patientDidNotShowUp(@PathVariable Long id){
-        return new ResponseEntity(appointmentService.patientDidNotShowUp(id),HttpStatus.OK);
+    public ResponseEntity patientDidNotShowUp(@PathVariable Long id) {
+        return new ResponseEntity(appointmentService.patientDidNotShowUp(id), HttpStatus.OK);
+    }
+    @GetMapping(value = "/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/{id}")
+    public ResponseEntity<Collection<AppointmentListingDTO>> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(@PathVariable Long id){
+        ArrayList<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
+        for (Appointment appointment : appointmentService.getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(id)) {
+            AppointmentListingDTO appointmentListingDTO = new AppointmentListingDTO(appointment);
+            appointmentListingDTO.setDermatologistFirstName(dermatologistService.read(appointment.getExaminerId()).get().getFirstName());
+            appointmentListingDTO.setDermatologistLastName(dermatologistService.read(appointment.getExaminerId()).get().getLastName());
+            appointmentListingDTOS.add(appointmentListingDTO);
+        }
+        return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
     }
 }

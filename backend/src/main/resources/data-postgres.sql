@@ -92,6 +92,23 @@ INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VA
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (1, 1);
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (1, 3);
 
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (1,0,0, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (2,4,0, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (3,1,0, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (4,3,0, 300, '2021-01-01', '2021-02-02');
+
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (5,0,1, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (6,1,2, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (7,1,1, 300, '2021-01-01', '2021-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (8,3,1, 300, '2021-01-01', '2021-02-02');
 
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 VALUES (0, '2021-01-31', 3, 1,0);
@@ -124,7 +141,7 @@ INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, p
 -- INSERT INTO pharmacy_pharmacist(pharmacy_id, pharmacist_id) VALUES (0,2);
 
 INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
-    VALUES (1,3,0, '2021-03-01', '2021-02-10', 'Godisnji odmor dermatolog', 1, 0);
+    VALUES (1,3,0, '2021-03-02', '2021-02-10', 'Godisnji odmor dermatolog', 0, 0);
 INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
     VALUES (2,1,1, '2021-07-08', '2021-01-01', 'Godisnji odmor farmaceut', 0, 1);
 
@@ -137,9 +154,9 @@ insert into appointment (id,  examiner_id, appointment_status,  patient_id, peri
     values (3,3,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 1, null,null,0, true);
 
 insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (4,1,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,1, true);
+    values (4,1,0, 0, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 1, null,null,1, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (5,1,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,1, true);
+    values (5,1,3, 0, '2021-03-08 13:00:00', '2021-03-08 12:00:00', 1, null,null,1, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
     values (6,1,0, null, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 0, null,null,1, true);
 
@@ -152,6 +169,35 @@ insert into appointment (id,  examiner_id, appointment_status,  patient_id, peri
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
     values (9,2 ,0, 0, '2021-01-01 16:00:00', '2021-01-01 15:00:00', 0, null,null,1, true);
 
+-- medication quantity only for medication orders
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (5, 100, 0);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (6, 53, 1);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (7, 65, 2);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (8, 1020, 3);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (9, 1342, 4);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (10, 5123, 3);
+
+INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
+VALUES (1, '2020-03-04', 1, 0);
+INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
+VALUES (2, '2020-03-10', 1, 0);
+
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (5,1);
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (6,1);
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (7,1);
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (8,2);
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (9,2);
 
 -- SELECT MAX(id) FROM appointment;
 --

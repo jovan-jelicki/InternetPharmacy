@@ -18,6 +18,7 @@ import CreateNewOffer from "./components/Supplier/CreateNewOffer";
 import PatientCounselScheduling from "./pages/patient/PatientCounselScheduling";
 import RegistrationConfirmation from "./pages/RegistrationConfirmation";
 import PatientScheduledAppointments from "./pages/patient/PatientScheduledAppointments";
+import PatientPreviousAppointments from "./pages/patient/PatientPreviousAppointments";
 
 
 export default class App extends React.Component {
@@ -53,6 +54,7 @@ export default class App extends React.Component {
             <Route path="/createNew" component={CreateNewOffer} role={role}/>
             <Route path="/confirmRegistration" component={RegistrationConfirmation} role={role}/>
             <Route path="/scheduled-appointments" component={PatientScheduledAppointments} role={role}/>
+            <Route path="/scheduled-appointments-history" component={PatientPreviousAppointments} role={role}/>
           </Switch>
         </BrowserRouter>
     );

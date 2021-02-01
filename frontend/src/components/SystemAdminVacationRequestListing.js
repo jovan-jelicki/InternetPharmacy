@@ -4,12 +4,12 @@ import axios from "axios";
 import moment from "moment";
 
 
-export default class PharmacyVacationsRequests extends React.Component{
+export default class SystemAdminVacationRequestListing extends React.Component{
     constructor() {
         super();
         this.state = {
             vacationRequests : [],
-            userType : 'pharmacyAdmin',
+            userType : 'systemAdmin',
             showModal : false,
             modalVacationRequest : {
                 rejectionNote:""
@@ -26,7 +26,7 @@ export default class PharmacyVacationsRequests extends React.Component{
             <div className="container-fluid">
                 <div>
                     <br/><br/>
-                    <h1>Trazena & odobrena odsustva</h1>
+                    <h1>Dermatologist vacation requests</h1>
 
                     <br/>
 
@@ -56,19 +56,19 @@ export default class PharmacyVacationsRequests extends React.Component{
                                 <td>{moment(vacationRequest.period.periodEnd).format('DD.MM.YYYY') }</td>
                                 <td>{vacationRequest.vacationRequestStatus}</td>
 
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
+                                <td style={this.state.userType === 'systemAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
                                     <Button variant="outline-success" onClick={() => this.acceptVacationRequest(vacationRequest)}>
                                         Accept
                                     </Button>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
+                                <td style={this.state.userType === 'systemAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
                                     <Button variant="outline-danger" onClick={() => this.handleModal(vacationRequest)}>
                                         Reject
                                     </Button>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
+                                <td style={this.state.userType === 'systemAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
+                                <td style={this.state.userType === 'systemAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
                                 </td >
                             </tr>
                         ))}
@@ -133,14 +133,14 @@ export default class PharmacyVacationsRequests extends React.Component{
             let path = "http://localhost:8080/api/vacationRequest/confirmVacationRequest/";
             axios.put(path, vacationRequest).then(() => this.fetchVacationRequests())
                 .catch(() => {
-                    alert("Request cannot be accepted because pharmacist has scheduled appointments for that period.");
+                    alert("Request cannot be accepted because dermatologist has scheduled appointments for that period.");
                 });
         }
     }
 
     fetchVacationRequests = () => {
         axios
-            .get('http://localhost:8080/api/vacationRequest/findByPharmacyAndEmployeeType/1/pharmacist') //todo change pharmacyId
+            .get('http://localhost:8080/api/vacationRequest/findByEmployeeType/dermatologist')
             .then(res => {
                 this.setState({
                     vacationRequests : res.data,

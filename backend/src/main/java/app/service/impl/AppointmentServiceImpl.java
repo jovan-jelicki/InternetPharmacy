@@ -2,6 +2,7 @@ package app.service.impl;
 
 import app.dto.AppointmentFinishedDTO;
 import app.dto.AppointmentScheduledDTO;
+import app.dto.AppointmentUpdateDTO;
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
@@ -10,6 +11,7 @@ import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
 import app.model.user.EmployeeType;
+import app.model.user.Patient;
 import app.repository.AppointmentRepository;
 import app.repository.PatientRepository;
 import app.repository.PharmacyRepository;
@@ -57,10 +59,33 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public void update(AppointmentUpdateDTO appointmentDTO) {
+        Optional<Appointment> appointment = appointmentRepository.findById(appointmentDTO.getAppointmentId());
+        if(appointment.isEmpty())
+            throw new IllegalArgumentException("Appointment does not exist");
+        Optional<Patient> patient = patientService.read(appointmentDTO.getPatientId());
+        if(patient.isEmpty())
+            throw new IllegalArgumentException("Patient does not exits");
+        appointment.get().setPatient(patient.get());
+        appointmentRepository.save(appointment.get());
+    }
+
+    @Override
     public Appointment scheduleCounseling(Appointment entity) {
         LocalDateTime start = entity.getPeriod().getPeriodStart();
         entity.setPatient(patientService.read(entity.getPatient().getId()).get());
         entity.getPeriod().setPeriodEnd(start.plusHours(1));
+        return save(entity);
+    }
+
+    @Override
+    public Appointment cancelCounseling(Long appointmentId) {
+        Appointment entity = appointmentRepository.findById(appointmentId).get();
+        if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
+            return null;
+        entity.setAppointmentStatus(AppointmentStatus.cancelled);
+        entity.setActive(false);
+        entity.setPatient(patientService.read(entity.getPatient().getId()).get());
         return save(entity);
     }
 
@@ -244,12 +269,22 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Collection<Appointment> findAppointmentsByPatientNotNullAndType(EmployeeType type) {
-        return appointmentRepository.findAppointmentsByPatientNotNullAndTypeAndIsActiveIsTrue(type);
+        return appointmentRepository.getAllAvailableByType(type);
     }
 
     @Override
     public Collection<Appointment> findAppointmentsByPatient_IdAndType(Long id, EmployeeType type) {
-        return appointmentRepository.findAppointmentsByPatient_IdAndTypeAndIsActiveIsTrue(id, type);
+        return appointmentRepository.findAppointmentsByPatientAndType(id, type);
+    }
+
+    @Override
+    public Collection<Appointment> findCancelledByPatientIdAndType(Long id, EmployeeType type) {
+        return appointmentRepository.findCancelledByPatientIdAndType(id, type);
+    }
+
+    @Override
+    public Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId) {
+        return appointmentRepository.getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(LocalDateTime.now(), pharmacyId);
     }
 
     @Override
