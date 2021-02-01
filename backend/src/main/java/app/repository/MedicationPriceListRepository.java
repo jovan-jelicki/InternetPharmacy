@@ -14,4 +14,7 @@ public interface MedicationPriceListRepository extends JpaRepository<MedicationP
 
     @Query("select m from MedicationPriceList m where m.pharmacy.id = ?1 and m.period.periodStart <= ?2 and m.period.periodEnd >= ?2")
     Collection<MedicationPriceList> getCurrentPriceListsByPharmacy(Long pharmacyId, LocalDateTime date);
+
+    @Query("select m from MedicationPriceList m where m.pharmacy.id = ?1 and m.medication.id = ?2")
+    Collection<MedicationPriceList> getMedicationPriceListHistoryByPharmacy(Long pharmacyId, Long medicationId);
 }

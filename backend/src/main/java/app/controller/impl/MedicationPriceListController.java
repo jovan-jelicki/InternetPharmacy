@@ -26,4 +26,9 @@ public class MedicationPriceListController {
     public ResponseEntity<Collection<MedicationPriceListDTO>> read(@PathVariable Long pharmacyId) {
         return new ResponseEntity<>(medicationPriceListService.getCurrentPriceListsByPharmacy(pharmacyId), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/getMedicationPriceListHistoryByPharmacy/{pharmacyId}/{medicationId}")
+    public ResponseEntity<Collection<MedicationPriceListDTO>> read(@PathVariable Long pharmacyId, @PathVariable Long medicationId) {
+        return new ResponseEntity<>(medicationPriceListService.getMedicationPriceListHistoryByPharmacy(pharmacyId, medicationId), HttpStatus.OK);
+    }
 }

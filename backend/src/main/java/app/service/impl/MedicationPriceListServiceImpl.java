@@ -69,4 +69,13 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
         });
         return medicationPriceListDTOS;
     }
+
+    @Override
+    public Collection<MedicationPriceListDTO> getMedicationPriceListHistoryByPharmacy(Long pharmacyId, Long medicationId) {
+        ArrayList<MedicationPriceListDTO> medicationPriceListDTOS = new ArrayList<>();
+        medicationPriceListRepository.getMedicationPriceListHistoryByPharmacy(pharmacyId, medicationId).forEach(medicationPriceList -> {
+            medicationPriceListDTOS.add(new MedicationPriceListDTO(medicationPriceList));
+        });
+        return medicationPriceListDTOS;
+    }
 }

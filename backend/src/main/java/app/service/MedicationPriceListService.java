@@ -11,4 +11,7 @@ public interface MedicationPriceListService extends CRUDService<MedicationPriceL
     MedicationPriceList GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date);
 
     Collection<MedicationPriceListDTO> getCurrentPriceListsByPharmacy(Long pharmacyId);
+
+    Collection<MedicationPriceListDTO> getMedicationPriceListHistoryByPharmacy(Long pharmacyId, Long medicationId);
+
 }
