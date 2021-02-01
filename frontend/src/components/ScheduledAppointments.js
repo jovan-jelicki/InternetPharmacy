@@ -1,10 +1,15 @@
 import React from "react";
 import moment from "moment";
-import {Button, Container, Table} from "react-bootstrap";
+import {Button, Container, Modal, Table} from "react-bootstrap";
+import axios from "axios";
 
 export default class ScheduledAppointments extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            modal : false,
+            appointmentForDelete : {}
+        }
     }
 
     render() {
@@ -41,14 +46,56 @@ export default class ScheduledAppointments extends React.Component {
                         <th>Cancel</th>
                     </tr>
                     {Events}
+                    {this.showModal()}
                     </tbody>
                 </Table>
             </Container>
         );
     }
 
+    showModal = () => {
+       return ( <Modal backdrop="static" show={this.state.modal} onHide={this.handleModal}>
+            <Modal.Header>
+                <Modal.Title> Alert! </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+             <label> Are you sure you want to cancel this appointment? </label>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="primary" onClick={this.cancelAppointment}>
+                    Yes
+                </Button>
+                <Button variant="secondary" onClick={this.handleModal}>
+                    No
+                </Button>
+            </Modal.Footer>
+        </Modal>
+       )
+    }
+
+    cancelAppointment = () => {
+        axios
+            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/patientDidNotShowUp/' + this.state.appointmentForDelete.id)
+            .then(res => {
+                this.props.renderParent(false);
+                this.state.modal = false;
+            })
+            .catch(res => {alert("Can not cancel this appointment!")});
+    }
+
+    handleModal = () => {
+        this.setState({
+                modal: !this.state.modal
+            }
+        )
+    }
+
     handleClickCancel = (appointment) => {
-        alert(appointment.firstName);
+        this.setState({
+                modal: !this.state.modal,
+                appointmentForDelete : appointment
+            }
+        )
     }
 
     handleClickStart = (appointment) => {

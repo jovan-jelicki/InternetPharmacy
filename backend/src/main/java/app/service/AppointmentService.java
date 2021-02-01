@@ -8,6 +8,7 @@ import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.user.EmployeeType;
 
+import javax.swing.text.StyledEditorKit;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -16,7 +17,9 @@ public interface AppointmentService extends CRUDService<Appointment>{
 
     Collection<Appointment> getAllByExaminerAndAppointmentStatus(Long examinerId, EmployeeType type, AppointmentStatus status);
 
-    Collection<AppointmentScheduledDTO> getAllAppointmentsByExaminer(Long examinerId, EmployeeType type);
+     Collection<Appointment> getAllNotFinishedByPatientId(Long patientId);
+
+        Collection<AppointmentScheduledDTO> getAllAppointmentsByExaminer(Long examinerId, EmployeeType type);
     Collection<EventDTO> getAllEventsOfExaminer(Long examinerId, EmployeeType type);
 
     Boolean createAvailableAppointment(Appointment entity);
@@ -45,6 +48,7 @@ public interface AppointmentService extends CRUDService<Appointment>{
 
     Collection<Appointment> findAppointmentsByPatient_IdAndType(Long id, EmployeeType type);
 
+    Boolean patientDidNotShowUp(Long id);
     Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId);
 
 

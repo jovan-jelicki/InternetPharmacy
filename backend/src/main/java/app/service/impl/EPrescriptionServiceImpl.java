@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
 import app.model.medication.EPrescription;
 import app.model.medication.Medication;
@@ -31,10 +32,10 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     }
 
     @Override
-    public EPrescription reserveEPrescription(MakeEPrescriptionDTO makeEPrescriptionDTO){
+    public EPrescriptionSimpleInfoDTO reserveEPrescription(MakeEPrescriptionDTO makeEPrescriptionDTO){
         Pharmacy pharmacy = pharmacyService.read(makeEPrescriptionDTO.getPharmacyId()).get();
         Collection<Medication> medications = makeEPrescriptionDTO.getPrescription().getMedicationQuantity().stream().map(medicationQuantity -> medicationQuantity.getMedication()).collect(Collectors.toList());
-        if(!patientService.isPatientAllergic(medications, makeEPrescriptionDTO.getPrescription().getPatient().getId()))
+        if(patientService.isPatientAllergic(medications, makeEPrescriptionDTO.getPrescription().getPatient().getId()))
             throw new IllegalArgumentException("Patient is allergic!");
         if(pharmacy == null)
             throw new IllegalArgumentException("Pharmacy does not exists!");
@@ -44,7 +45,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         this.save(makeEPrescriptionDTO.getPrescription());
         updateMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy.getMedicationQuantity());
         pharmacyService.save(pharmacy);
-        return makeEPrescriptionDTO.getPrescription();
+        return new EPrescriptionSimpleInfoDTO(makeEPrescriptionDTO.getPrescription());
     }
 
     public void updateMedicationQuantity(Collection<MedicationQuantity> medicationQuantities, Collection<MedicationQuantity> medicationQuantitiesOfPharmacy){

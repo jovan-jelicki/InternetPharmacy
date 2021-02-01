@@ -13,7 +13,9 @@ export default class Appointment extends React.Component {
             medication : { name :  "Choose medication ..." },
             dateStartTherapy : "",
             dateEndTherapy : "",
-            medications : []
+            medications : [],
+            eprescription : {},
+            therapy : {}
         }
     }
 
@@ -88,8 +90,19 @@ export default class Appointment extends React.Component {
                     ]
                 }
             })
-            .then(res => alert("Uspeo si!"))
-            .catch(es => alert("Nisi uspeo!"));
+            .then(res => {
+                alert("You created ePrescription!");
+                this.setState({
+                    eprescription : res.data
+                })
+
+            })
+            .catch(es => {
+                alert("This medication is not allowed!");
+                this.setState({
+                    eprescription : {}
+                })
+            });
     }
     showScheduling =() => {
         this.setState({
@@ -127,52 +140,77 @@ export default class Appointment extends React.Component {
     }
 
     finishAppointment = () => {
-        let periodStart = this.state.dateStartTherapy;
+        if(this.state.eprescription.id !== undefined){
+            let periodStart = this.state.dateStartTherapy;
 
 
-        //let momentDate = moment(date);
-        let day = periodStart.getDate();
-        let month = parseInt(periodStart.getMonth())+1;
-        if (month < 10)
-            month = "0" + month;
-        if (parseInt(day)<10)
-            day = "0"+day;
+            //let momentDate = moment(date);
+            let day = periodStart.getDate();
+            let month = parseInt(periodStart.getMonth())+1;
+            if (month < 10)
+                month = "0" + month;
+            if (parseInt(day)<10)
+                day = "0"+day;
 
-        let fullYearStart = periodStart.getFullYear() + "-" + month + "-" + day + " " + "00" + ":" + "00" + ":00";
-        let periodEnd = this.state.dateEndTherapy;
-         day = periodEnd.getDate();
-         month = parseInt(periodEnd.getMonth())+1;
-        if (month < 10)
-            month = "0" + month;
-        if (parseInt(day)<10)
-            day = "0"+day;
+            let fullYearStart = periodStart.getFullYear() + "-" + month + "-" + day + " " + "00" + ":" + "00" + ":00";
+            let periodEnd = this.state.dateEndTherapy;
+             day = periodEnd.getDate();
+             month = parseInt(periodEnd.getMonth())+1;
+            if (month < 10)
+                month = "0" + month;
+            if (parseInt(day)<10)
+                day = "0"+day;
 
-        let fullYearEnd = periodEnd.getFullYear() + "-" + month + "-" + day + " " + "00" + ":" + "00" + ":00";
-        axios
-            .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/finishAppointment', {
-                'id' : this.props.appointment.id,
-                'examinerId' : this.props.appointment.examinerId,
-                'report' : this.state.report,
-                'pharmacyId' : this.props.appointment.pharmacyId,
-                'pharmacyName' : this.props.appointment.pharmacyName,
-                'appointmentStatus' : this.props.appointment.appointmentStatus,
-                'patientId' : this.props.appointment.patientId,
-                'therapy' : {
-                    'medication' : this.state.medication,
-                    'period' : {
-                        periodStart : fullYearStart,
-                        periodEnd : fullYearEnd
+            let fullYearEnd = periodEnd.getFullYear() + "-" + month + "-" + day + " " + "00" + ":" + "00" + ":00";
+
+            axios
+                .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/finishAppointment', {
+                    'id' : this.props.appointment.id,
+                    'examinerId' : this.props.appointment.examinerId,
+                    'report' : this.state.report,
+                    'pharmacyId' : this.props.appointment.pharmacyId,
+                    'pharmacyName' : this.props.appointment.pharmacyName,
+                    'appointmentStatus' : this.props.appointment.appointmentStatus,
+                    'patientId' : this.props.appointment.patientId,
+                    'therapy' : {
+                        'medication' : this.state.medication,
+                        'period' : {
+                            periodStart : fullYearStart,
+                            periodEnd : fullYearEnd
+                        }
                     }
-                }
-            })
-            .then(res => {
-                alert("Appointment finished!");
-                localStorage.clear();
-                this.props.renderParent(false);
-            })
-            .catch(res => {
-                alert("Appointment not finished!");
-            })
+                })
+                .then(res => {
+                    alert("Appointment finished!");
+                    localStorage.clear();
+                    this.props.renderParent(false);
+                })
+                .catch(res => {
+                    alert("Appointment can not be finished!");
+                })
+
+        }else {
+            axios
+                .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/finishAppointment', {
+                    'id' : this.props.appointment.id,
+                    'examinerId' : this.props.appointment.examinerId,
+                    'report' : this.state.report,
+                    'pharmacyId' : this.props.appointment.pharmacyId,
+                    'pharmacyName' : this.props.appointment.pharmacyName,
+                    'appointmentStatus' : this.props.appointment.appointmentStatus,
+                    'patientId' : this.props.appointment.patientId
+                })
+                .then(res => {
+                    alert("Appointment finished!");
+                    localStorage.clear();
+                    this.props.renderParent(false);
+                })
+                .catch(res => {
+                    alert("Appointment can not be finished!");
+                });
+
+        }
+
 
     }
 }
