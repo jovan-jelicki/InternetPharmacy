@@ -119,4 +119,14 @@ public class VacationRequestServiceImpl implements VacationRequestService {
         this.save(vacationRequest);
         //TODO send rejection email
     }
+
+    @Override
+    public Collection<VacationRequestDTO> findByEmployeeType(EmployeeType employeeType) {
+        ArrayList<VacationRequestDTO> vacationRequestDTOS = new ArrayList<>();
+        for (VacationRequest vacationRequest : vacationRequestRepository.findByEmployeeType(employeeType)) {
+            User user = employeeType==EmployeeType.dermatologist ? dermatologistService.read(vacationRequest.getEmployeeId()).get() : pharmacistService.read(vacationRequest.getEmployeeId()).get();
+            vacationRequestDTOS.add(new VacationRequestDTO(user, vacationRequest));
+        }
+        return vacationRequestDTOS;
+    }
 }
