@@ -93,22 +93,38 @@ INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VA
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (1, 3);
 
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
-    (1,0,0, 300, '2021-01-01', '2021-02-02');
+    (1,0,0, 300, '2021-01-01', '2021-02-05');
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
-    (2,4,0, 300, '2021-01-01', '2021-02-02');
+    (2,4,0, 400, '2021-01-01', '2021-02-10');
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
-    (3,1,0, 300, '2021-01-01', '2021-02-02');
+    (3,1,0, 760, '2021-01-01', '2021-03-02');
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
-    (4,3,0, 300, '2021-01-01', '2021-02-02');
+    (4,3,0, 99, '2021-01-01', '2021-05-18');
 
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
-    (5,0,1, 300, '2021-01-01', '2021-02-02');
+    (5,0,1, 123, '2021-01-01', '2021-02-02');
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
-    (6,1,2, 300, '2021-01-01', '2021-02-02');
+    (6,1,2, 642, '2021-01-01', '2021-02-02');
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
-    (7,1,1, 300, '2021-01-01', '2021-02-02');
+    (7,1,1, 3765, '2021-01-01', '2021-02-02');
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
-    (8,3,1, 300, '2021-01-01', '2021-02-02');
+    (8,3,1, 323, '2021-01-01', '2021-02-02');
+
+--medication price list history
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (9,0,1, 500, '2020-01-01', '2020-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (10,0,1, 430, '2019-01-01', '2019-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (11,0,1, 330, '2018-01-01', '2018-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (12,1,1, 530, '2018-01-01', '2018-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (13,1,1, 630, '2019-01-01', '2019-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (14,3,1, 130, '2019-01-01', '2019-02-02');
+insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
+    (15,3,1, 230, '2018-01-01', '2018-02-02');
 
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 VALUES (0, '2021-01-31', 3, 1,0);
