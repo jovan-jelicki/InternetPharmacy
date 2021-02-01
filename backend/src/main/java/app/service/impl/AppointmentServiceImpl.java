@@ -2,6 +2,7 @@ package app.service.impl;
 
 import app.dto.AppointmentFinishedDTO;
 import app.dto.AppointmentScheduledDTO;
+import app.dto.AppointmentUpdateDTO;
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
@@ -9,6 +10,7 @@ import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
 import app.model.user.EmployeeType;
+import app.model.user.Patient;
 import app.repository.AppointmentRepository;
 import app.repository.PatientRepository;
 import app.repository.PharmacyRepository;
@@ -52,6 +54,18 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Appointment save(Appointment entity) {
         entity.setPharmacy(pharmacyRepository.findById(entity.getPharmacy().getId()).get());
         return appointmentRepository.save(entity);
+    }
+
+    @Override
+    public void update(AppointmentUpdateDTO appointmentDTO) {
+        Optional<Appointment> appointment = appointmentRepository.findById(appointmentDTO.getAppointmentId());
+        if(appointment.isEmpty())
+            throw new IllegalArgumentException("Appointment does not exist");
+        Optional<Patient> patient = patientRepository.findById(appointmentDTO.getPatientId());
+        if(patient.isEmpty())
+            throw new IllegalArgumentException("Patient does not exits");
+        appointment.get().setPatient(patient.get());
+        appointmentRepository.save(appointment.get());
     }
 
     @Override

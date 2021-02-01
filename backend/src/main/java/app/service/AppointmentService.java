@@ -2,6 +2,7 @@ package app.service;
 
 import app.dto.AppointmentFinishedDTO;
 import app.dto.AppointmentScheduledDTO;
+import app.dto.AppointmentUpdateDTO;
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
@@ -26,6 +27,8 @@ public interface AppointmentService extends CRUDService<Appointment>{
     Collection<Appointment> GetAllAvailableAppointmentsByPharmacy(Long pharmacyId);
 
     Collection<AppointmentFinishedDTO> getFinishedByExaminer(Long examinerId, EmployeeType type);
+
+    void update(AppointmentUpdateDTO appointmentDTO);
 
     Appointment scheduleCounseling(Appointment entity);
     Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date);
