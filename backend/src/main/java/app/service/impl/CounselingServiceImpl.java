@@ -49,11 +49,14 @@ public class CounselingServiceImpl implements CounselingService {
     public Collection<Appointment> findPreviousByPatientId(Long patientId) {
         Collection<Appointment> appointments = appointmentService
                 .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.pharmacist);
-        return appointments
-                .stream()
-                .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()) || 
-                             a.getAppointmentStatus() == AppointmentStatus.cancelled)
-                .collect(Collectors.toList());
+        Collection<Appointment> cancelled = appointmentService
+                .findCancelledByPatientIdAndType(patientId, EmployeeType.pharmacist);
+        Collection<Appointment> all = appointments
+                                        .stream()
+                                        .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()))
+                                        .collect(Collectors.toList());
+        all.addAll(cancelled);
+        return all;
     }
 
     @Override
