@@ -1,5 +1,7 @@
 package app.service.impl;
 
+import app.dto.MedicationSearchDTO;
+import app.dto.PharmacySearchDTO;
 import app.model.medication.Ingredient;
 import app.model.medication.Medication;
 import app.model.medication.MedicationQuantity;
@@ -92,5 +94,15 @@ public class MedicationServiceImpl implements MedicationService {
     @Override
     public Medication getMedicationByName(String name) {
         return medicationRepository.getMedicationByName(name);
+    }
+
+    @Override
+    public Collection<Medication> getMedicationByNameIsContaining(MedicationSearchDTO name) {
+        ArrayList<Medication> medications = new ArrayList<>();
+        read().forEach(m -> {
+            if(m.isEqual(name))
+                medications.add(m);
+        });
+        return medications;
     }
 }
