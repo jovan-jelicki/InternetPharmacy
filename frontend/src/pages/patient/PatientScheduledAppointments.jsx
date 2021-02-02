@@ -12,6 +12,7 @@ class PatientScheduledAppointments extends React.Component {
             examinations : []
         }
         this.cancel = this.cancel.bind(this)
+        this.cancelExamination = this.cancelExamination.bind(this)
     }
 
     componentDidMount() {
@@ -44,6 +45,18 @@ class PatientScheduledAppointments extends React.Component {
         })
         .catch(e => alert('It is not allowed to cancel 24h prior to the appointment'))
     }
+
+    cancelExamination(id) {
+        axios
+        .put('http://localhost:8080/api/appointment/cancel-examination/' + id)
+        .then(res => {
+            this.setState({
+                examinations : [...this.state.examinations.filter(c => c.id != id)]
+            })
+            
+        })
+        .catch(e => alert('It is not allowed to cancel 24h prior to the appointment'))
+    }
  
     render() {
         return (
@@ -58,7 +71,7 @@ class PatientScheduledAppointments extends React.Component {
                     <h2>Dermatologist Examinations</h2>
                 </Row>
                 <Row className={'m-2'}>
-                    <AppointmentListing appointments={this.state.examinations} cancel={this.cancel} view={false}/>
+                    <AppointmentListing appointments={this.state.examinations} cancel={this.cancelExamination} view={false}/>
                 </Row>
             </PatientLayout>
         )
