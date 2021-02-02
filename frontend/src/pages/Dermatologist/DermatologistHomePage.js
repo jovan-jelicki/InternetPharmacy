@@ -19,24 +19,27 @@ export default class DermatologistHomePage extends React.Component {
     render() {
         return (
             <div>
-                <Container> <h3> Welcome {this.props.role}! </h3> </Container>
+                <Container fluid style={{'background-color' : '#AEB6BF'}}>
+                    <br/>
                 <ul className="nav justify-content-center">
+                    <h3> Welcome {this.props.role}! </h3>
                     <li className="nav-item">
-                        <Button className="nav-link active" onClick={this.handleChange} name="reviewedClients">Reviewed clients</Button>
+                        <a className="nav-link active" style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' onClick={this.handleChange} name="reviewedClients">Reviewed clients</a>
                     </li>
                     <li className="nav-item">
-                        <Button className="nav-link" name="startAppointment" onClick={this.handleChange}>Start appointment</Button>
+                        <a className="nav-link " style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' name="startAppointment" onClick={this.handleChange}>Start appointment</a>
                     </li>
                     <li className="nav-item">
-                        <Button className="nav-link" name="workHours" onClick={this.handleChange}>Work hours</Button>
+                        <a className="nav-link " style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' name="workHours" onClick={this.handleChange}>Work hours</a>
                     </li>
                     <li className="nav-item">
-                        <Button className="nav-link" name="vacationRequest" onClick={this.handleChange}>Vacation request</Button>
+                        <a className="nav-link " style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' name="vacationRequest" onClick={this.handleChange}>Vacation request</a>
                     </li>
                     <li className="nav-item">
-                        <Button className="nav-link" name="profile" onClick={this.handleChange}>Account</Button>
+                        <a className="nav-link " style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' name="profile" onClick={this.handleChange}>Account</a>
                     </li>
                 </ul>
+                </Container>
                 {this.renderNavbar()}
             </div>
         );

@@ -10,4 +10,7 @@ public interface PharmacyAdminRepository extends JpaRepository<PharmacyAdmin, Lo
 
     @Query("select d from PharmacyAdmin d where d.credentials.email = ?1")
     PharmacyAdmin findByEmail(String email);
+
+    @Query("select p from PharmacyAdmin p where p.pharmacy.id = ?1")
+    PharmacyAdmin getPharmacyAdminByPharmacy (Long pharmacyId);
 }

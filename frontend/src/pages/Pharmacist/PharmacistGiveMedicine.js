@@ -38,7 +38,7 @@ export default class PharmacistGiveMedicine extends React.Component {
                         <th>Quantity</th>
                     </tr>
                     <tr>
-                        <td>{this.state.reservation.patient.firstName}</td>
+                        <td>{this.state.reservation.firstName}</td>
                         <td>{this.state.reservation.medicationQuantity.medication.name}</td>
                         <td>{this.state.reservation.medicationQuantity.quantity}</td>
                         <td> <Button onClick={this.giveMedicine}> Give medication </Button> </td>
