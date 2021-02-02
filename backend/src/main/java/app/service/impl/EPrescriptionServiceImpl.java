@@ -6,15 +6,16 @@ import app.model.medication.EPrescription;
 import app.model.medication.Medication;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
+import app.model.user.PharmacyAdmin;
 import app.repository.EPrescriptionRepository;
-import app.service.EPrescriptionService;
-import app.service.PatientService;
-import app.service.PharmacyService;
+import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,12 +24,16 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     private final EPrescriptionRepository ePrescriptionRepository;
     private final PharmacyService pharmacyService;
     private final PatientService patientService;
+    private final PharmacyAdminService pharmacyAdminService;
+    private final EmailService emailService;
 
     @Autowired
-    public EPrescriptionServiceImpl(PatientService patientService, EPrescriptionRepository ePrescriptionRepository, PharmacyService pharmacyService) {
+    public EPrescriptionServiceImpl(EmailService emailService, PharmacyAdminService pharmacyAdminService, PatientService patientService, EPrescriptionRepository ePrescriptionRepository, PharmacyService pharmacyService) {
         this.ePrescriptionRepository = ePrescriptionRepository;
         this.pharmacyService = pharmacyService;
         this.patientService = patientService;
+        this.pharmacyAdminService = pharmacyAdminService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -39,13 +44,28 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
             throw new IllegalArgumentException("Patient is allergic!");
         if(pharmacy == null)
             throw new IllegalArgumentException("Pharmacy does not exists!");
-        if(!pharmacyService.checkMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy))
+        if(!pharmacyService.checkMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy)) {
+            PharmacyAdmin pharmacyAdmin = pharmacyAdminService.getPharmacyAdminByPharmacy(pharmacy.getId());
+            List<String> namesList = medications.stream()
+                    .map(Medication::getName)
+                    .collect(Collectors.toList());
+            notifyPharmacyAdmin(namesList, pharmacyAdmin);
             throw new IllegalArgumentException("No enough medication!");
+        }
         makeEPrescriptionDTO.getPrescription().setDateIssued(LocalDateTime.now());
         this.save(makeEPrescriptionDTO.getPrescription());
         updateMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy.getMedicationQuantity());
         pharmacyService.save(pharmacy);
         return new EPrescriptionSimpleInfoDTO(makeEPrescriptionDTO.getPrescription());
+    }
+
+    @Async
+    public void notifyPharmacyAdmin(Collection<String> medications, PharmacyAdmin pharmacyAdmin){
+        try {
+            emailService.sendMail("jovanzte@gmail.com", "No enough medications", "There are not enough drugs in stock : " + medications);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateMedicationQuantity(Collection<MedicationQuantity> medicationQuantities, Collection<MedicationQuantity> medicationQuantitiesOfPharmacy){

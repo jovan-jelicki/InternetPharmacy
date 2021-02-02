@@ -19,6 +19,11 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
     }
 
     @Override
+    public PharmacyAdmin getPharmacyAdminByPharmacy(Long pharmacyId) {
+        return pharmacyAdminRepository.getPharmacyAdminByPharmacy(pharmacyId);
+    }
+
+    @Override
     public PharmacyAdmin save(PharmacyAdmin entity) {
         return pharmacyAdminRepository.save(entity);
     }
