@@ -10,9 +10,13 @@ import Registration from "../../pages/Registration";
 import CreatePharmacistModal from "./CreatePharmacistModal";
 import axios from "axios";
 import AddAppointmentModal from "./AddAppointmentModal";
+import Dropdown from "react-dropdown";
 
 
-
+const options = [
+    'Any', '1 - 2', '2 - 3', '3 - 4', ' > 4'
+];
+const defaultOption = options[0];
 
 export default class PharmacyEmployees extends React.Component{
     constructor(props) {
@@ -29,6 +33,7 @@ export default class PharmacyEmployees extends React.Component{
                 firstName : '',
                 lastName : ''
             },
+            filterGradesPharmacist : options[0],
             backupPharmacists : [],
             backupDermatologists : [],
             notWorkingDermatologists : [],
@@ -55,7 +60,6 @@ export default class PharmacyEmployees extends React.Component{
 
         console.log(this.state.pharmacists);
         await this.fetchDermatologistNotWorkingInThisPharmacy();
-
     }
 
     render() {
@@ -131,8 +135,12 @@ export default class PharmacyEmployees extends React.Component{
                        <Form inline>
                            <FormControl type="text" placeholder="Search by first name" className="mr-sm-2" name={'firstName'} value={this.state.searchPharmacist.firstName} onChange={this.changeSearchPharmacist}/>
                            <FormControl type="text" placeholder="Search by last name" className="mr-sm-2" name={'lastName'} value={this.state.searchPharmacist.lastName} onChange={this.changeSearchPharmacist}/>
-                           <Button variant="outline-success" onClick={this.searchPharmacist}>Search</Button>
-                           <Button variant="outline-info" onClick={this.resetSearchPharmacist}>Reset</Button>
+                           <label style={{marginRight : '1rem'}}>Filter by grade : </label>
+                           <select  name="filterGradesPharmacist" onChange={this.handleFilterGradesChange} value={this.state.filterGradesPharmacist}>
+                               {options.map((option,index) => <option key={index} value={option}>{option}</option>)}
+                           </select>
+                           <Button variant="outline-success" onClick={this.searchPharmacist} style={{marginLeft : '1rem'}}>Search</Button>
+                           <Button variant="outline-info" onClick={this.resetSearchPharmacist} style={{marginLeft : '1rem'}}>Reset</Button>
 
                        </Form>
                    </Navbar.Collapse>
@@ -189,6 +197,18 @@ export default class PharmacyEmployees extends React.Component{
 // <option disabled>select medication</option>
 // {this.props.medications.map((medication) => <option key={medication.id} value={medication.name}>{medication.name}</option>)}
 // </select>
+
+
+    handleFilterGradesChange = (event) => {
+        const target = event.target;
+        let value = event.target.value;
+
+        this.setState({
+            filterGradesPharmacist : value
+        })
+
+        console.log(this.state.dermatologistForAdding);
+    }
 
     handleDermatologistForAddingChange = async (event) => {
         const target = event.target;
@@ -452,11 +472,31 @@ export default class PharmacyEmployees extends React.Component{
                 firstName : '',
                 lastName : ''
             },
+            filterGradesPharmacist : options[0],
             pharmacists : this.state.backupPharmacists
         })
     }
 
     searchPharmacist = async () => {
+        let minRequiredGrade = 0;
+        let maxRequiredGrade = 0;
+        if (this.state.filterGradesPharmacist !== options[0] && this.state.filterGradesPharmacist === options[1]) {
+            minRequiredGrade = 1;
+            maxRequiredGrade = 2;
+        }
+        else if (this.state.filterGradesPharmacist !== options[0] && this.state.filterGradesPharmacist === options[2]) {
+            minRequiredGrade = 2;
+            maxRequiredGrade = 3;
+        }
+        else if (this.state.filterGradesPharmacist !== options[0] && this.state.filterGradesPharmacist === options[3]) {
+            minRequiredGrade = 3;
+            maxRequiredGrade = 4;
+        }
+        else if (this.state.filterGradesPharmacist !== options[0] && this.state.filterGradesPharmacist === options[4]) {
+            minRequiredGrade = 4;
+            maxRequiredGrade = 5;
+        }
+
         let filterPharmacists = await this.state.pharmacists.filter(pharmacist => {
             if (this.state.searchPharmacist.firstName !== '' && this.state.searchPharmacist.lastName !== '')
                 return pharmacist.firstName.includes(this.state.searchPharmacist.firstName) && pharmacist.lastName.includes(this.state.searchPharmacist.lastName);
@@ -466,8 +506,14 @@ export default class PharmacyEmployees extends React.Component{
                 return pharmacist.lastName.includes(this.state.searchPharmacist.lastName);
             return true;
         });
+
+        let filterPharmacistsGrades = filterPharmacists.filter(pharmacist => {
+            if (minRequiredGrade === 0 && maxRequiredGrade === 0)
+                return pharmacist;
+            return pharmacist.grade > minRequiredGrade && pharmacist.grade < maxRequiredGrade;
+        })
         this.setState({
-            pharmacists : filterPharmacists
+            pharmacists : filterPharmacistsGrades
         })
     }
 
