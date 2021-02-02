@@ -52,11 +52,14 @@ export default class MedicationOffers extends React.Component {
             <div>
                 <div className="container-fluid">
                     <div className="row">
+                        <Button style={({ marginLeft: '1rem', marginBottom: '1rem' })} variant={"outline-info"} onClick={() => this.props.showListOrders("listOrders")}>{"←"}</Button>
+                        <br/>
                         <div className="col-md-12">
                             <div className="card">
                                 <h5 className="card-header">
                                     Narudzbenica
                                 </h5>
+
                                 <div className="card-body">
                                     <p className="card-text">
                                         Kreirao : {this.state.order.pharmacyAdmin.firstName + " " + this.state.order.pharmacyAdmin.lastName}

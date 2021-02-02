@@ -34,7 +34,8 @@ export default class CreateOrder extends React.Component{
                         <h1>
                             Create order
                         </h1>
-                        <br/>
+                        <Button variant={"outline-info"} onClick={() => this.props.showListOrders("listOrders")}>{"←"}</Button>
+                        <br/><br/>
                         Choose deadline for medication offers: <i/><i/><i/>
                         <DatePicker  selected={this.state.medicationOrder.deadline}  minDate={new Date()} onChange={this.changeDatePicker} />
 
