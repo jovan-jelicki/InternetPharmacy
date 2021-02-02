@@ -3,6 +3,7 @@ package app.service;
 import app.dto.AddMedicationToPharmacyDTO;
 import app.dto.PharmacyMedicationListingDTO;
 import app.dto.PharmacySearchDTO;
+import app.dto.ReportsDTO;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
 import app.service.impl.MedicationPriceListServiceImpl;
@@ -24,4 +25,6 @@ public interface PharmacyService extends CRUDService<Pharmacy> {
     void setMedicationPriceListService(MedicationPriceListServiceImpl medicationPriceListService);
 
     Boolean deleteMedicationFromPharmacy(PharmacyMedicationListingDTO pharmacyMedicationListingDTO);
+
+    Collection<ReportsDTO> getMedicationsConsumptionMonthlyReport(Long pharmacyId);
 }

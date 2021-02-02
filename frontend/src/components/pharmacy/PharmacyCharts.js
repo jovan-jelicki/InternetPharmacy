@@ -46,12 +46,15 @@ export default class PharmacyCharts extends React.Component{
         super();
         this.state = {
             appointmentsReportOptions: options[0],
-            appointmentsReportData: []
+            appointmentsReportData: [],
+            medicationConsumptionReportOptions: options[0],
+            medicationConsumptionReportData: []
         }
     }
 
     componentDidMount() {
         this.renderAppointmentMonthlyReport();
+        this.renderMedicationConsumptionMonthlyReport();
     }
 
     static jsfiddleUrl = 'https://jsfiddle.net/alidingling/30763kr7/';
@@ -95,10 +98,22 @@ export default class PharmacyCharts extends React.Component{
                 <br/><br/>
                 <h1>Medications report</h1>
                 <br/>
+                <Navbar bg="light" expand="lg">
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Form inline>
+                            <select  name="medicationConsumptionReportOptions" onChange={this.handleMedicationConsumptionReportOptions} value={this.state.medicationConsumptionReportOptions}>
+                                {options.map((option,index) => <option key={index} value={option}>{option}</option>)}
+                            </select>
+                        </Form>
+                    </Navbar.Collapse>
+                </Navbar>
+                <br/>
+
                 <BarChart
                     width={500}
                     height={300}
-                    data={data}
+                    data={this.state.medicationConsumptionReportData}
                     margin={{
                         top: 5, right: 30, left: 20, bottom: 5,
                     }}
@@ -108,7 +123,7 @@ export default class PharmacyCharts extends React.Component{
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="pv" fill="#8884d8" />
+                    <Bar dataKey="consumption" fill="#8884d8" />
 
                 </BarChart>
 
@@ -143,7 +158,7 @@ export default class PharmacyCharts extends React.Component{
             appointmentsReportOptions : value
         });
 
-        if (this.state.appointmentsReportOptions === options[0]) 
+        if (this.state.appointmentsReportOptions === options[0])
             this.renderAppointmentMonthlyReport();
 
         else if (this.state.appointmentsReportOptions === options[1])
@@ -151,6 +166,24 @@ export default class PharmacyCharts extends React.Component{
 
         else
             this.renderAppointmentYearlyReport();
+    }
+
+    handleMedicationConsumptionReportOptions = async (event) => {
+        const target = event.target;
+        let value = event.target.value;
+
+        await this.setState({
+            medicationConsumptionReportOptions : value
+        });
+
+        if (this.state.medicationConsumptionReportOptions === options[0])
+            this.renderMedicationConsumptionMonthlyReport();
+
+        // else if (this.state.medicationConsumptionReportOptions === options[1])
+        //     this.renderAppointmentQuarterlyReport();
+        //
+        // else
+        //     this.renderAppointmentYearlyReport();
     }
 
     renderAppointmentMonthlyReport = () => {
@@ -200,6 +233,24 @@ export default class PharmacyCharts extends React.Component{
 
                 this.setState({
                     appointmentsReportData : temp
+                })
+            })
+    }
+
+
+    renderMedicationConsumptionMonthlyReport = () => {
+        axios.get("http://localhost:8080/api/pharmacy/getMedicationsConsumptionMonthlyReport/1")
+            .then((res) => {
+                let temp = [];
+                res.data.map(reportDTO => {
+                    let item = {
+                        name: reportDTO.chartName,  consumption:reportDTO.data
+                    };
+                    temp.push(item);
+                });
+
+                this.setState({
+                    medicationConsumptionReportData : temp
                 })
             })
     }

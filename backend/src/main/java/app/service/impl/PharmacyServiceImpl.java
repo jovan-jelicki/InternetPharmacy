@@ -3,6 +3,7 @@ package app.service.impl;
 import app.dto.AddMedicationToPharmacyDTO;
 import app.dto.PharmacyMedicationListingDTO;
 import app.dto.PharmacySearchDTO;
+import app.dto.ReportsDTO;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
@@ -13,10 +14,13 @@ import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -156,6 +160,83 @@ public class PharmacyServiceImpl implements PharmacyService {
         return this.save(pharmacy) != null;
     }
 
+    private LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
+        return Instant.ofEpochMilli(dateToConvert.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
+    private int filterMedicationReservationsByPeriod(LocalDateTime periodStart, LocalDateTime periodEnd, Pharmacy pharmacy) {
+        int temp = 0;
+        for (MedicationReservation medicationReservation : pharmacy.getMedicationReservation())
+            if (medicationReservation.getPickUpDate().isAfter(periodStart) && medicationReservation.getPickUpDate().isBefore(periodEnd))
+                temp++;
+
+        return temp;
+    }
+
+    @Override
+    public Collection<ReportsDTO> getMedicationsConsumptionMonthlyReport(Long pharmacyId) {
+
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+        cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+        return null;
+        }
+
+        for (int i = 1; i <= 13; i++) {
+        allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+        cal.add(Calendar.MONTH, -1);
+        }
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        Pharmacy pharmacy = this.read(pharmacyId).get();
+
+        ArrayList<ReportsDTO> medicationConsumptionByMonth = new ArrayList<>();
 
 
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.filterMedicationReservationsByPeriod(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacy);
+            String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
+            medicationConsumptionByMonth.add(new ReportsDTO(monthName,temp));
+        }
+        return medicationConsumptionByMonth;
+    }
 }
+
+//    List<LocalDate> allDates = new ArrayList<>();
+//    String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+//    SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+//    Calendar cal = Calendar.getInstance();
+//        try {
+//                cal.setTime(monthDate.parse(maxDate));
+//                }
+//                catch (Exception e) {
+//                return null;
+//                }
+//
+//                for (int i = 1; i <= 13; i++) {
+//                allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+//                cal.add(Calendar.MONTH, -1);
+//                }
+//
+//
+//                Collections.reverse(allDates);
+//                System.out.println(allDates);
+//
+//                ArrayList<ReportsDTO> appointmentCountByMonth = new ArrayList<>();
+//
+//        for (int i = 0; i < allDates.size()-1; i++) {
+//        int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
+//        String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
+//        appointmentCountByMonth.add(new ReportsDTO(monthName,temp));
+//        }
+//
+//        return appointmentCountByMonth;
