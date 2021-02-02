@@ -143,12 +143,14 @@ export default class PharmacyCharts extends React.Component{
             appointmentsReportOptions : value
         });
 
-        if (this.state.appointmentsReportOptions === options[0]) {
+        if (this.state.appointmentsReportOptions === options[0]) 
             this.renderAppointmentMonthlyReport();
-        }
-        else if (this.state.appointmentsReportOptions === options[1]) {
+
+        else if (this.state.appointmentsReportOptions === options[1])
             this.renderAppointmentQuarterlyReport();
-        }
+
+        else
+            this.renderAppointmentYearlyReport();
     }
 
     renderAppointmentMonthlyReport = () => {
@@ -170,6 +172,23 @@ export default class PharmacyCharts extends React.Component{
 
     renderAppointmentQuarterlyReport = () => {
         axios.get("http://localhost:8080/api/appointment/getAppointmentsQuarterlyReport/1")
+            .then((res) => {
+                let temp = [];
+                res.data.map(reportDTO => {
+                    let item = {
+                        name: reportDTO.chartName,  appointments:reportDTO.data
+                    };
+                    temp.push(item);
+                });
+
+                this.setState({
+                    appointmentsReportData : temp
+                })
+            })
+    }
+
+    renderAppointmentYearlyReport = () => {
+        axios.get("http://localhost:8080/api/appointment/getAppointmentsYearlyReport/1")
             .then((res) => {
                 let temp = [];
                 res.data.map(reportDTO => {

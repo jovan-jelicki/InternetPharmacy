@@ -4,7 +4,6 @@ import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.medication.Medication;
-import app.model.pharmacy.Pharmacy;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
@@ -327,8 +326,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Collection<ReportsDTO> getAppointmentsMonthlyReport(Long pharmacyId) {
-        Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId).get();
-
         List<LocalDate> allDates = new ArrayList<>();
         String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
         SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -341,7 +338,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         for (int i = 1; i <= 13; i++) {
-            String month_name1 = monthDate.format(cal.getTime());
             allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
             cal.add(Calendar.MONTH, -1);
         }
@@ -363,8 +359,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Collection<ReportsDTO> getAppointmentsQuarterlyReport(Long pharmacyId) {
-        Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId).get();
-
         List<LocalDate> allDates = new ArrayList<>();
         String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
         SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -377,7 +371,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         for (int i = 1; i <= 5; i++) {
-            String month_name1 = monthDate.format(cal.getTime());
             allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
             cal.add(Calendar.MONTH, -3);
         }
@@ -386,17 +379,48 @@ public class AppointmentServiceImpl implements AppointmentService {
         Collections.reverse(allDates);
         System.out.println(allDates);
 
-        ArrayList<ReportsDTO> appointmentCountByMonth = new ArrayList<>();
+        ArrayList<ReportsDTO> appointmentCountByQuarter = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
             int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
             String monthNameStart = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
             String monthNameEnd = allDates.get(i+1).format(DateTimeFormatter.ofPattern("MMM"));
-            appointmentCountByMonth.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd,temp));
+            appointmentCountByQuarter.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd,temp));
         }
 
-        return appointmentCountByMonth;
+        return appointmentCountByQuarter;
+    }
+
+    @Override
+    public Collection<ReportsDTO> getAppointmentsYearlyReport(Long pharmacyId) {
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).withDayOfYear(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+        for (int i = 1; i <= 11; i++) {
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -12);
+        }
+
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        ArrayList<ReportsDTO> appointmentCountByYear = new ArrayList<>();
+
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
+            String year = allDates.get(i).format(DateTimeFormatter.ofPattern("yyyy"));
+            appointmentCountByYear.add(new ReportsDTO(year,temp));
+        }
+
+        return appointmentCountByYear;
     }
 }
-
-//[2021-02-01, 2021-01-01, 2020-12-01, 2020-11-01, 2020-10-01, 2020-09-01, 2020-08-01, 2020-07-01, 2020-06-01, 2020-05-01, 2020-04-01, 2020-03-01]

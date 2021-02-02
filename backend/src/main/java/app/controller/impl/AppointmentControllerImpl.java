@@ -128,4 +128,9 @@ public class AppointmentControllerImpl {
     public ResponseEntity<Collection<ReportsDTO>> getAppointmentsQuarterlyReport(@PathVariable Long pharmacyId) {
         return new ResponseEntity(appointmentService.getAppointmentsQuarterlyReport(pharmacyId), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/getAppointmentsYearlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getAppointmentsYearlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(appointmentService.getAppointmentsYearlyReport(pharmacyId), HttpStatus.OK);
+    }
 }
