@@ -6,6 +6,7 @@ import app.dto.CounselingSearchDTO;
 import app.model.appointment.Appointment;
 import app.model.user.EmployeeType;
 import app.service.CounselingService;
+import app.service.DermatologistService;
 import app.service.ExaminationService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,14 @@ public class SchedulingControllerImpl {
     private CounselingService counselingService;
     private ExaminationService examinationService;
     private PharmacistService pharmacistService;
+    private DermatologistService dermatologistService;
 
     @Autowired
-    public SchedulingControllerImpl(CounselingService counselingService, PharmacistService pharmacistService, ExaminationService examinationService) {
+    public SchedulingControllerImpl(CounselingService counselingService, PharmacistService pharmacistService, ExaminationService examinationService, DermatologistService dermatologistService) {
         this.counselingService = counselingService;
         this.pharmacistService = pharmacistService;
         this.examinationService = examinationService;
+        this.dermatologistService = dermatologistService;
     }
 
     @PostMapping(value = "/search", consumes = "application/json")
@@ -39,49 +42,44 @@ public class SchedulingControllerImpl {
                 available.add(new CounselingSearchDTO(p));
             });
             return new ResponseEntity<>(available, HttpStatus.OK);
-        }
-        else
+        } else
             // ZA DERMATOLOGE KASNIJE DODATI
             return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping(value = "/pharmacistScheduling", consumes = "application/json")
-    public ResponseEntity<Boolean> pharmacistScheduling(@RequestBody Appointment appointment){
-        if(counselingService.pharmacistScheduling(appointment))
+    public ResponseEntity<Boolean> pharmacistScheduling(@RequestBody Appointment appointment) {
+        if (counselingService.pharmacistScheduling(appointment))
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @GetMapping(value = "/counseling-upcoming/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> findUpcomingCounselingsByPatientId(@PathVariable Long id) {
-        return getCounselingEntity(counselingService.findUpcomingByPatientId(id), id);
+        Collection<AppointmentListingDTO> appointments = filterCounselings(counselingService.findUpcomingByPatientId(id));
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
     @GetMapping(value = "/examination-upcoming/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> findUpcomingExaminationsByPatientId(@PathVariable Long id) {
-        return getCounselingEntity(examinationService.findUpcomingByPatientId(id), id);
+        Collection<AppointmentListingDTO> appointments = filterExaminations(examinationService.findUpcomingByPatientId(id));
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
     @GetMapping(value = "/counseling-previous/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> findPreviousCounselingsByPatientId(@PathVariable Long id) {
-        return getExaminationResponseEntity(counselingService.findPreviousByPatientId(id), id);
+        Collection<AppointmentListingDTO> appointments = filterCounselings(counselingService.findPreviousByPatientId(id));
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
     @GetMapping(value = "/examination-previous/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> findPreviousExaminationsByPatientId(@PathVariable Long id) {
-        return getExaminationResponseEntity(examinationService.findPreviousByPatientId(id), id);
+        Collection<AppointmentListingDTO> appointments = filterExaminations(examinationService.findPreviousByPatientId(id));
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
-    private ResponseEntity<Collection<AppointmentListingDTO>> getCounselingEntity(Collection<Appointment> upcomingByPatientId, @PathVariable Long id) {
-        return getCollectionResponseEntity(upcomingByPatientId);
-    }
-
-    private ResponseEntity<Collection<AppointmentListingDTO>> getExaminationResponseEntity(Collection<Appointment> previousByPatientId, @PathVariable Long id) {
-        return getCollectionResponseEntity(previousByPatientId);
-    }
-
-    private ResponseEntity<Collection<AppointmentListingDTO>> getCollectionResponseEntity(Collection<Appointment> service) {
-        Collection<AppointmentListingDTO> appointments = service
+    private Collection<AppointmentListingDTO> filterCounselings(Collection<Appointment> appointments) {
+        return appointments
                 .stream()
                 .map(a -> {
                     AppointmentListingDTO listing = new AppointmentListingDTO(a);
@@ -90,6 +88,17 @@ public class SchedulingControllerImpl {
                     return listing;
                 })
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
+    private Collection<AppointmentListingDTO> filterExaminations(Collection<Appointment> appointments) {
+        return appointments
+                .stream()
+                .map(a -> {
+                    AppointmentListingDTO listing = new AppointmentListingDTO(a);
+                    listing.setDermatologistFirstName(dermatologistService.read(a.getExaminerId()).get().getFirstName());
+                    listing.setDermatologistLastName(dermatologistService.read(a.getExaminerId()).get().getLastName());
+                    return listing;
+                })
+                .collect(Collectors.toList());
     }
 }
