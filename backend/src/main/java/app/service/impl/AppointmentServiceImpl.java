@@ -1,9 +1,6 @@
 package app.service.impl;
 
-import app.dto.AppointmentFinishedDTO;
-import app.dto.AppointmentScheduledDTO;
-import app.dto.AppointmentUpdateDTO;
-import app.dto.EventDTO;
+import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.medication.Medication;
@@ -328,7 +325,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
 
-    public Collection<Integer> getAppointmentsMonthlyReport(Long pharmacyId) {
+    public Collection<ReportsDTO> getAppointmentsMonthlyReport(Long pharmacyId) {
         Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId).get();
 
         List<LocalDate> allDates = new ArrayList<>();
@@ -352,11 +349,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         Collections.reverse(allDates);
         System.out.println(allDates);
 
-        ArrayList<Integer> appointmentCountByMonth = new ArrayList<>();
+        ArrayList<ReportsDTO> appointmentCountByMonth = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
             int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
-            appointmentCountByMonth.add(temp);
+            String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
+            appointmentCountByMonth.add(new ReportsDTO(monthName,temp));
         }
 
         return appointmentCountByMonth;

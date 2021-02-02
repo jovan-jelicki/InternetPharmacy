@@ -120,7 +120,7 @@ public class AppointmentControllerImpl {
     }
 
     @GetMapping(value = "/getAppointmentsMonthlyReport/{pharmacyId}")
-    public ResponseEntity<Collection<Integer>> getAppointmentsMonthlyReport(@PathVariable Long pharmacyId) {
+    public ResponseEntity<Collection<ReportsDTO>> getAppointmentsMonthlyReport(@PathVariable Long pharmacyId) {
         return new ResponseEntity(appointmentService.getAppointmentsMonthlyReport(pharmacyId), HttpStatus.OK);
     }
 }

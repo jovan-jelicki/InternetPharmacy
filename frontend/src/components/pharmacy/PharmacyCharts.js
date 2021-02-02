@@ -3,36 +3,55 @@ import { PureComponent } from 'react';
 import {
     BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
-
+import {Button, Col} from "react-bootstrap";
+import {Modal} from "react-bootstrap";
+import {Navbar} from "react-bootstrap";
+import {Form} from "react-bootstrap";
+import {FormControl, Row} from "react-bootstrap";
+import axios from "axios";
 
 const data = [
     {
-        name: 'Jan',  pv: 2400, amt: 2400,
+        name: 'Jan',  pv: 2400
     },
     {
-        name: 'Feb',  pv: 1398, amt: 2210,
+        name: 'Feb',  pv: 1398
     },
     {
-        name: 'Mar',  pv: 9800, amt: 2290,
+        name: 'Mar',  pv: 9800
     },
     {
-        name: 'Apr',  pv: 3908, amt: 2000,
+        name: 'Apr',  pv: 3908
     },
     {
-        name: 'May',  pv: 4800, amt: 2181,
+        name: 'May',  pv: 4800
     },
     {
-        name: 'June',  pv: 3800, amt: 2500,
+        name: 'June',  pv: 3800
     },
     {
-        name: 'July',  pv: 4300, amt: 2100,
+        name: 'July',  pv: 4300
     },
 ];
+
+
+const options = [
+    'Monthly', 'Quarterly', 'Yearly'
+];
+const defaultOption = options[0];
 
 
 export default class PharmacyCharts extends React.Component{
     constructor() {
         super();
+        this.state = {
+            appointmentsReportOptions: options[0],
+            appointmentsReportData: []
+        }
+    }
+
+    componentDidMount() {
+        this.renderAppointmentMonthlyReport();
     }
 
     static jsfiddleUrl = 'https://jsfiddle.net/alidingling/30763kr7/';
@@ -43,10 +62,22 @@ export default class PharmacyCharts extends React.Component{
                 <br/><br/>
                 <h1>Appointment report</h1>
                 <br/>
+
+                <Navbar bg="light" expand="lg">
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Form inline>
+                            <select  name="appointmentsReportOptions" onChange={this.handleAppointmentsReportOptions} value={this.state.appointmentsReportOptions}>
+                                {options.map((option,index) => <option key={index} value={option}>{option}</option>)}
+                            </select>
+                        </Form>
+                    </Navbar.Collapse>
+                </Navbar>
+                <br/>
                 <BarChart
-                    width={500}
+                    width={800}
                     height={300}
-                    data={data}
+                    data={this.state.appointmentsReportData}
                     margin={{
                         top: 5, right: 30, left: 20, bottom: 5,
                     }}
@@ -56,9 +87,9 @@ export default class PharmacyCharts extends React.Component{
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="pv" fill="#8884d8" />
-
+                    <Bar dataKey="appointments" fill="#8884d8" />
                 </BarChart>
+
 
 
                 <br/><br/>
@@ -102,5 +133,35 @@ export default class PharmacyCharts extends React.Component{
                 </BarChart>
             </div>
         );
+    }
+
+    handleAppointmentsReportOptions = async (event) => {
+        const target = event.target;
+        let value = event.target.value;
+
+        await this.setState({
+            appointmentsReportOptions : value
+        });
+
+        if (this.state.appointmentsReportOptions === options[0]) {
+            this.renderAppointmentMonthlyReport();
+        }
+    }
+
+    renderAppointmentMonthlyReport = () => {
+        axios.get("http://localhost:8080/api/appointment/getAppointmentsMonthlyReport/1")
+            .then((res) => {
+                let temp = [];
+                res.data.map(reportDTO => {
+                    let item = {
+                        name: reportDTO.chartName,  appointments:reportDTO.data
+                    };
+                    temp.push(item);
+                });
+
+                this.setState({
+                    appointmentsReportData : temp
+                })
+            })
     }
 }
