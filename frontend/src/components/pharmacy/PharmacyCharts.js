@@ -146,10 +146,30 @@ export default class PharmacyCharts extends React.Component{
         if (this.state.appointmentsReportOptions === options[0]) {
             this.renderAppointmentMonthlyReport();
         }
+        else if (this.state.appointmentsReportOptions === options[1]) {
+            this.renderAppointmentQuarterlyReport();
+        }
     }
 
     renderAppointmentMonthlyReport = () => {
         axios.get("http://localhost:8080/api/appointment/getAppointmentsMonthlyReport/1")
+            .then((res) => {
+                let temp = [];
+                res.data.map(reportDTO => {
+                    let item = {
+                        name: reportDTO.chartName,  appointments:reportDTO.data
+                    };
+                    temp.push(item);
+                });
+
+                this.setState({
+                    appointmentsReportData : temp
+                })
+            })
+    }
+
+    renderAppointmentQuarterlyReport = () => {
+        axios.get("http://localhost:8080/api/appointment/getAppointmentsQuarterlyReport/1")
             .then((res) => {
                 let temp = [];
                 res.data.map(reportDTO => {
