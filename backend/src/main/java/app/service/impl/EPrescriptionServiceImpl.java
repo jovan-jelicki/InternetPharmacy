@@ -42,15 +42,19 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         Collection<Medication> medications = makeEPrescriptionDTO.getPrescription().getMedicationQuantity().stream().map(medicationQuantity -> medicationQuantity.getMedication()).collect(Collectors.toList());
         if(patientService.isPatientAllergic(medications, makeEPrescriptionDTO.getPrescription().getPatient().getId()))
             throw new IllegalArgumentException("Patient is allergic!");
+
         if(pharmacy == null)
             throw new IllegalArgumentException("Pharmacy does not exists!");
+
         if(!pharmacyService.checkMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy)) {
-            PharmacyAdmin pharmacyAdmin = pharmacyAdminService.getPharmacyAdminByPharmacy(pharmacy.getId());
-            List<String> namesList = medications.stream()
-                    .map(Medication::getName)
-                    .collect(Collectors.toList());
-            notifyPharmacyAdmin(namesList, pharmacyAdmin);
-            throw new IllegalArgumentException("No enough medication!");
+             PharmacyAdmin pharmacyAdmin = pharmacyAdminService.getPharmacyAdminByPharmacy(pharmacy.getId());
+            List<String> namesList = medications.stream().map(Medication::getName).collect(Collectors.toList());
+            new Thread(new Runnable() {
+                public void run(){
+                    notifyPharmacyAdmin(namesList, pharmacyAdmin);
+                }
+            }).start();
+            return null;
         }
         makeEPrescriptionDTO.getPrescription().setDateIssued(LocalDateTime.now());
         this.save(makeEPrescriptionDTO.getPrescription());
@@ -62,7 +66,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     @Async
     public void notifyPharmacyAdmin(Collection<String> medications, PharmacyAdmin pharmacyAdmin){
         try {
-            emailService.sendMail("jovanzte@gmail.com", "No enough medications", "There are not enough drugs in stock : " + medications);
+            emailService.sendMail(pharmacyAdmin.getCredentials().getEmail(), "No enough medications", "There are not enough drugs in stock : " + medications);
         } catch (Exception e) {
             e.printStackTrace();
         }

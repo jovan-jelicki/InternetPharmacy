@@ -57,7 +57,7 @@ export default class ScheduleByDateTime extends React.Component {
                 "type" : 1
             })
             .then(res => alert("You have schedule new appointment!"))
-            .catch(res => alert("Cant get medications!"));
+            .catch(res => alert("Can't schedule new appointment because patient/examiner is not free at that period!"));
     }
     setTimeForNewAppointment = (date) => {
         this.setState({

@@ -81,7 +81,6 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
     @Async
     public void sendEmailToPatient(Patient patient) {
         try {
-            Thread.sleep(60000);
             emailService.sendMail(patient.getCredentials().getEmail(), "Medication confirmation", "You have successfully pick up a medication!");
         } catch (Exception e) {
             e.printStackTrace();
