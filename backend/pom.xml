@@ -17,6 +17,11 @@
 
 	<properties>
 		<java.version>11</java.version>
+
+		<sonar.projectKey>jovan-jelicki_InternetPharmacy</sonar.projectKey>
+		<sonar.organization>jovan-jelicki</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io/</sonar.host.url>
+
 	</properties>
 
 	<dependencies>
