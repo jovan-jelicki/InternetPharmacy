@@ -1,7 +1,7 @@
 package app.controller.impl;
 
+import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
-import app.model.medication.EPrescription;
 import app.service.EPrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ public class EPrescriptionControllerImpl {
     }
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<EPrescription> createEPrescription(@RequestBody MakeEPrescriptionDTO makeEPrescriptionDTO){
+    public ResponseEntity<EPrescriptionSimpleInfoDTO> createEPrescription(@RequestBody MakeEPrescriptionDTO makeEPrescriptionDTO){
         return new ResponseEntity<>(ePrescriptionService.reserveEPrescription(makeEPrescriptionDTO), HttpStatus.OK);
     }
 }

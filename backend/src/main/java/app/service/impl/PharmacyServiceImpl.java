@@ -24,12 +24,11 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
     private MedicationService medicationService;
-    private final MedicationPriceListService medicationPriceListService;
+    private MedicationPriceListService medicationPriceListService;
 
     @Autowired
-    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, MedicationPriceListService medicationPriceListService) {
+    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository) {
         this.pharmacyRepository = pharmacyRepository;
-        this.medicationPriceListService = medicationPriceListService;
     }
 
     @Override
@@ -38,6 +37,10 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
 
+    @Override
+    public void setMedicationPriceListService(MedicationPriceListServiceImpl medicationPriceListService) {
+        this.medicationPriceListService = medicationPriceListService;
+    }
 
     @Override
     public Pharmacy save(Pharmacy entity) {
@@ -152,6 +155,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         pharmacy.getMedicationQuantity().remove(medicationQuantity);
         return this.save(pharmacy) != null;
     }
+
 
 
 }

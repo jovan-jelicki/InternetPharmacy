@@ -125,7 +125,7 @@ export default class PharmacyPage extends React.Component{
             )
         else if (this.state.navbar === 'priceList')
             return (
-                <PriceList pharmacy = {this.state.pharmacy } />
+                <PriceList pharmacy = {this.state.pharmacy } mode = "showCurrentPriceLists"/>
             )
         else if (this.state.navbar === "employees")
             return (

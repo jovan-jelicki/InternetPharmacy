@@ -8,7 +8,9 @@ export default class PharmacyMedicationQueries extends React.Component{
     render() {
         return (
             <div className="container-fluid">
-                a
+                <br/><br/>
+                <h1>Medication queries</h1>
+
             </div>
         );
     }
