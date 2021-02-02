@@ -50,5 +50,11 @@ public interface AppointmentService extends CRUDService<Appointment>{
     Boolean patientDidNotShowUp(Long id);
     Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId);
 
+    Collection<Integer> getAppointmentsMonthlyReport(Long pharmacyId);
+
+    Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd ,Long pharmacyId);
+
+
+
 
 }

@@ -7,6 +7,7 @@ import app.dto.EventDTO;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.medication.Medication;
+import app.model.pharmacy.Pharmacy;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
@@ -22,10 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -311,4 +315,74 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date, Long pharmacyId) {
         return appointmentRepository.GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(examinerId,employeeType,date, pharmacyId);
     }
+
+    public LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
+        return Instant.ofEpochMilli(dateToConvert.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
+    public Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd, Long pharmacyId){
+        Collection<Appointment> temp = appointmentRepository.getSuccessfulAppointmentCountByPeriodAndPharmacy(dateStart, dateEnd, pharmacyId);
+        return temp;
+    }
+
+
+    public Collection<Integer> getAppointmentsMonthlyReport(Long pharmacyId) {
+        Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId).get();
+
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+        for (int i = 1; i <= 13; i++) {
+            String month_name1 = monthDate.format(cal.getTime());
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -1);
+        }
+
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        ArrayList<Integer> appointmentCountByMonth = new ArrayList<>();
+
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
+            appointmentCountByMonth.add(temp);
+        }
+
+        return appointmentCountByMonth;
+    }
+
+
 }
+
+//[2021-02-01, 2021-01-01, 2020-12-01, 2020-11-01, 2020-10-01, 2020-09-01, 2020-08-01, 2020-07-01, 2020-06-01, 2020-05-01, 2020-04-01, 2020-03-01]
+
+
+
+//    List<String> allDates = new ArrayList<>();
+//    String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+//    SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+//    Calendar cal = Calendar.getInstance();
+//        try {
+//                cal.setTime(monthDate.parse(maxDate));
+//                }
+//                catch (Exception e) {
+//                int a = 5;
+//                }
+//
+//                for (int i = 1; i <= 12; i++) {
+//                String month_name1 = monthDate.format(cal.getTime());
+//                allDates.add(month_name1);
+//                cal.add(Calendar.MONTH, -1);
+//                }
+//                System.out.println(allDates);

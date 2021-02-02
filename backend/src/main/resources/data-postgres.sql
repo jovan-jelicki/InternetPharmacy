@@ -185,6 +185,42 @@ insert into appointment (id,  examiner_id, appointment_status,  patient_id, peri
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
     values (9,2 ,0, 0, '2021-01-01 16:00:00', '2021-01-01 15:00:00', 0, null,null,1, true);
 
+
+-- NE DIRAJ MI OVO NI SLUCAJNO, TREBA MI ZA DUGOROCNI REPORT!!!!!  Potpis : David!!!
+insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (10,3,0, 0, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (11,3, 0, 6, '2021-01-01 14:00:00', '2021-01-01 13:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (12,3 ,0, 0, '2021-01-01 16:00:00', '2021-01-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (13,3 ,0, 0, '2020-12-01 16:00:00', '2020-12-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (14,3 ,0, 0, '2020-11-01 16:00:00', '2020-11-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (15,3 ,0, 0, '2020-10-01 16:00:00', '2020-10-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (16,3 ,0, 0, '2020-09-01 16:00:00', '2020-09-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (17,3 ,0, 0, '2020-08-01 16:00:00', '2020-08-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (18,3 ,0, 0, '2020-07-01 16:00:00', '2020-07-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (19,3 ,0, 0, '2020-06-01 16:00:00', '2020-06-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (20,3 ,0, 0, '2020-05-01 16:00:00', '2020-05-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (21,3 ,0, 0, '2020-04-01 16:00:00', '2020-04-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (22,3 ,0, 0, '2020-03-01 16:00:00', '2020-03-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (23,3 ,0, 0, '2020-02-01 16:00:00', '2020-02-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (24,3 ,0, 0, '2020-01-01 16:00:00', '2020-01-01 15:00:00', 1, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (25,3 ,0, 0, '2020-01-01 16:00:00', '2020-01-01 15:00:00', 1, null,null,0, true);
+--- kraj
+
 -- medication quantity only for medication orders
 INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (5, 100, 0);

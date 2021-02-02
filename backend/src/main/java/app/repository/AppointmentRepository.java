@@ -47,4 +47,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("select a from Appointment a where a.patient is null and a.period.periodStart >= ?1 and a.pharmacy.id=?2 and a.type=0 and a.isActive=true")
     Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(LocalDateTime date,Long pharmacyId);
+
+    @Query("select a from Appointment a where a.patient is not null and a.period.periodStart >= ?1 and a.period.periodEnd <= ?2 and a.pharmacy.id = ?3 and a.type=0 and a.appointmentStatus=0 and a.isActive=true")
+    Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd, Long pharmacyId);
 }

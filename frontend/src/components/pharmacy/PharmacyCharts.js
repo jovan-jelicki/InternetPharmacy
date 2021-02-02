@@ -41,8 +41,49 @@ export default class PharmacyCharts extends React.Component{
         return (
             <div className="container-fluid">
                 <br/><br/>
-                <h1>Pharmacy charts</h1>
+                <h1>Appointment report</h1>
+                <br/>
+                <BarChart
+                    width={500}
+                    height={300}
+                    data={data}
+                    margin={{
+                        top: 5, right: 30, left: 20, bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="pv" fill="#8884d8" />
 
+                </BarChart>
+
+
+                <br/><br/>
+                <h1>Medications report</h1>
+                <br/>
+                <BarChart
+                    width={500}
+                    height={300}
+                    data={data}
+                    margin={{
+                        top: 5, right: 30, left: 20, bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="pv" fill="#8884d8" />
+
+                </BarChart>
+
+                <br/><br/>
+                <h1>Income report</h1>
+                <br/>
                 <BarChart
                     width={500}
                     height={300}

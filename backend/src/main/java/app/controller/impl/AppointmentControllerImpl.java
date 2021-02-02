@@ -106,6 +106,7 @@ public class AppointmentControllerImpl {
     public ResponseEntity patientDidNotShowUp(@PathVariable Long id) {
         return new ResponseEntity(appointmentService.patientDidNotShowUp(id), HttpStatus.OK);
     }
+
     @GetMapping(value = "/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(@PathVariable Long id){
         ArrayList<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
@@ -116,5 +117,10 @@ public class AppointmentControllerImpl {
             appointmentListingDTOS.add(appointmentListingDTO);
         }
         return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAppointmentsMonthlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<Integer>> getAppointmentsMonthlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(appointmentService.getAppointmentsMonthlyReport(pharmacyId), HttpStatus.OK);
     }
 }
