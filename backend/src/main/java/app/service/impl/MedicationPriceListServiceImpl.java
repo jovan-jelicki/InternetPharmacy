@@ -111,4 +111,10 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
 
         return this.save(medicationPriceList) != null;
     }
+
+    @Override
+    public Double getMedicationPrice(Long pharmacyId, Long medicationId) {
+        return medicationPriceListRepository.getMedicationPrice(pharmacyId,medicationId,LocalDateTime.now());
+
+    }
 }

@@ -34,7 +34,6 @@ export default class MedicationListing extends React.Component {
     }
 
     search({name}) {
-        console.log(name)
         axios
             .post('http://localhost:8080/api/medications/search', {
                 'name' : name,
@@ -52,7 +51,7 @@ export default class MedicationListing extends React.Component {
         const medications = this.state.medications.map((medication, index) => {
             return (
                 <Col xs={4} key={index}>
-                <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '20rem' }}  className="mb-2">
+                <Card bg={'dark'} key={index} text={'white'} style={{ width: '30rem', height: '30rem' }}  className="mb-2">
                     <Card.Body>
                     <Card.Title>{medication.name}</Card.Title>
                         <Card.Subtitle className="mb-5 mt-2 text-muted">{medication.type}</Card.Subtitle>
@@ -63,10 +62,6 @@ export default class MedicationListing extends React.Component {
 
                         </Card.Text>
                     </Card.Body>
-
-
-
-
 
                     <Modal show={this.state.showModal} onHide={this.handleModal}>
                         <Modal.Header closeButton>

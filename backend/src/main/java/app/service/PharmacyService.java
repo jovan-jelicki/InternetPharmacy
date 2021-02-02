@@ -1,6 +1,7 @@
 package app.service;
 
 import app.dto.AddMedicationToPharmacyDTO;
+import app.dto.PharmacyMedicationDTO;
 import app.dto.PharmacyMedicationListingDTO;
 import app.dto.PharmacySearchDTO;
 import app.model.medication.MedicationQuantity;
@@ -23,5 +24,5 @@ public interface PharmacyService extends CRUDService<Pharmacy> {
 
     void setMedicationPriceListService(MedicationPriceListServiceImpl medicationPriceListService);
 
-    Collection<Pharmacy> getPharmacyByMedication(Long medicationId);
+    Collection<PharmacyMedicationDTO> getPharmacyByMedication(Long medicationId);
 }
