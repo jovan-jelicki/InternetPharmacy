@@ -1,7 +1,9 @@
 import React from 'react'
-import {Card, Col, Row} from "react-bootstrap";
+import {Button, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import axios from 'axios';
 import MedicationSearch from "./MedicationSearch";
+import MedicationSpecification from "./MedicationSpecification";
+import MedicationPharmacy from "./MedicationPharmacy";
 
 export default class MedicationListing extends React.Component {
     constructor() {
@@ -22,7 +24,6 @@ export default class MedicationListing extends React.Component {
             })
         })
         this.medicationsBackup = [...this.state.medications]
-
     }
 
     cancel() {
@@ -40,38 +41,50 @@ export default class MedicationListing extends React.Component {
 
             })
             .then((res) => {
-                console.log("NASAO JE")
                 this.setState({
                     medications : res.data
                 })
-                console.log("Printaj")
-                console.log(this.state.medications)
             })
-            .catch((res) => {
-                    console.log("PUKOOOO");
-                }
-            )
+
     }
 
     render() {
         const medications = this.state.medications.map((medication, index) => {
-            let ingredients = ''
-            medication.ingredient.forEach(i => ingredients += ' ' + i.name)
             return (
                 <Col xs={4} key={index}>
                 <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '20rem' }}  className="mb-2">
                     <Card.Body>
                     <Card.Title>{medication.name}</Card.Title>
-                        <Card.Subtitle className="mb-5 mt-2 text-muted">{medication.manufacturer}</Card.Subtitle>
+                        <Card.Subtitle className="mb-5 mt-2 text-muted">{medication.type}</Card.Subtitle>
                         <Card.Text>
-                            {medication.note}
+                            <Button variant="link"  onClick={this.handleModal} >Check medication specification</Button>
                             <hr style={{'background-color' : 'gray'}}/>
-                                {ingredients}
+                            <MedicationPharmacy medication={medication}></MedicationPharmacy>
+
                         </Card.Text>
                     </Card.Body>
+
+
+
+
+
+                    <Modal show={this.state.showModal} onHide={this.handleModal}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Medication specification</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <MedicationSpecification medication={medication}/>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="primary" onClick={this.handleModal}>
+                                Close
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+
+
                 </Card>
-                </Col>
-            )
+                </Col> )
         })
 
         return (
@@ -86,5 +99,10 @@ export default class MedicationListing extends React.Component {
             </div>
             
         )
+    }
+    handleModal = () => {
+        this.setState({
+            showModal : !this.state.showModal,
+        });
     }
 }

@@ -98,4 +98,16 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping(value = "/getPharmacyByMedication/")
+    public ResponseEntity<Collection<Pharmacy>> getPharmacyByMedication(@PathVariable Long medicationId) {
+        return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
+    }
+
+
+    /*@GetMapping(value = "/getPharmacyContainsMedication")
+    public ResponseEntity<Collection<Pharmacy>> getPharmacyMedicationListing(@PathVariable Long pharmacyId) {
+        return new ResponseEntity<>(pharmacyService.getPharmacyMedicationListingDTOs(pharmacyId), HttpStatus.OK);
+    }*/
+
+
 }

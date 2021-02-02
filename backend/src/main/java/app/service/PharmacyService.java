@@ -22,4 +22,6 @@ public interface PharmacyService extends CRUDService<Pharmacy> {
     Boolean editMedicationQuantity(PharmacyMedicationListingDTO pharmacyMedicationListingDTO);
 
     void setMedicationPriceListService(MedicationPriceListServiceImpl medicationPriceListService);
+
+    Collection<Pharmacy> getPharmacyByMedication(Long medicationId);
 }

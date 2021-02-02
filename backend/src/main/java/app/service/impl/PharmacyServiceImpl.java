@@ -45,6 +45,18 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    public Collection<Pharmacy> getPharmacyByMedication(Long medicationId) {
+        ArrayList<Pharmacy> pharmacies = new ArrayList<>();
+        read().forEach(p -> {
+            for(MedicationQuantity q : p.getMedicationQuantity()) {
+                    if(q.getMedication().getId()==medicationId){
+                        pharmacies.add(p);
+                    }
+        }});
+        return  pharmacies;
+    }
+
+    @Override
     public Pharmacy save(Pharmacy entity) {
         return pharmacyRepository.save(entity);
     }
