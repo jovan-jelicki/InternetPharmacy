@@ -11,7 +11,8 @@ export default class MedicationListing extends React.Component {
         super();
         this.state = {
             medications : [],
-            selectedOption:''
+            selectedOption:'',
+            modalMedicaiton:[]
         }
         this.search = this.search.bind(this)
         this.cancel = this.cancel.bind(this)
@@ -78,27 +79,11 @@ export default class MedicationListing extends React.Component {
                     <Card.Title>{medication.name}</Card.Title>
                         <Card.Subtitle className="mb-5 mt-2 text-muted">{medication.type}</Card.Subtitle>
                         <Card.Text>
-                            <Button variant="link"  onClick={this.handleModal} >Check medication specification</Button>
+                            <Button variant="link" onClick={() => this.handleModal(medication)} >Check medication specification</Button>
                             <hr style={{'background-color' : 'gray'}}/>
                             <MedicationPharmacy medication={medication}></MedicationPharmacy>
-
                         </Card.Text>
                     </Card.Body>
-
-                    <Modal show={this.state.showModal} onHide={this.handleModal}  >
-                        <Modal.Header closeButton style={{'background':'gray'}}>
-                            <Modal.Title>Medication specification</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body style={{'background':'gray'}}>
-                            <MedicationSpecification medication={medication}/>
-                        </Modal.Body>
-                        <Modal.Footer style={{'background':'gray'}}>
-                            <Button variant="primary" onClick={this.handleModal}>
-                                Close
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-
                 </Card>
                 </Col> )
         })
@@ -119,13 +104,35 @@ export default class MedicationListing extends React.Component {
                     No records found. Try again.
                     </Alert>
                 }
+
+                <Modal show={this.state.showModal} onHide={this.closeModal}  >
+                    <Modal.Header closeButton style={{'background':'gray'}}>
+                        <Modal.Title>Medication specification</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body style={{'background':'gray'}}>
+                        <MedicationSpecification medication={this.state.modalMedication}/>
+                    </Modal.Body>
+                    <Modal.Footer style={{'background':'gray'}}>
+                        <Button variant="primary" onClick={this.closeModal}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         )
     }
 
-    handleModal = () => {
+    handleModal = (medication) => {
         this.setState({
             showModal : !this.state.showModal,
+            modalMedication: medication
+        });
+        console.log(this.state.modalMedication)
+    }
+
+    closeModal=()=>{
+        this.setState({
+            showModal : !this.state.showModal
         });
     }
 }
