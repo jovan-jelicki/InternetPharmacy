@@ -20,7 +20,7 @@ class MedicationFilter extends React.Component {
         })
     }
     onTypeChange=(event) => {
-        console.log(event.target.id)
+        //console.log(event.target.id)
         var option = event.target.id
         this.setState({
             selectedOption: option,
@@ -30,6 +30,7 @@ class MedicationFilter extends React.Component {
             selectedOption :  option,
         })
     }
+
 
     render() {
         return (

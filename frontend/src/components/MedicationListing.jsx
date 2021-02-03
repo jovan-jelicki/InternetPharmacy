@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Card, Col, Form, Modal, Row} from "react-bootstrap";
+import {Alert, Button, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import axios from 'axios';
 import MedicationSearch from "./MedicationSearch";
 import MedicationSpecification from "./MedicationSpecification";
@@ -29,7 +29,7 @@ export default class MedicationListing extends React.Component {
     }
 
     cancel() {
-        console.log(this.medicationsBackup)
+        //console.log(this.medicationsBackup)
         this.setState({
             medications : this.medicationsBackup
         })
@@ -52,11 +52,9 @@ export default class MedicationListing extends React.Component {
     onTypeChange=({selectedOption}) => {
         if(selectedOption=="all"){
             this.cancel()
-
         }else {
-            this.setState({
-                medications : this.medicationsBack
-            })
+
+            this.state.medications=this.medicationsBackup;
             let filteredData = this.state.medications.filter(column => {
 
                 return column.type.toLowerCase().indexOf(selectedOption.toLowerCase()) !== -1;
@@ -68,7 +66,10 @@ export default class MedicationListing extends React.Component {
         }
     }
 
+
     render() {
+        console.log(this.state.medications)
+
         const medications = this.state.medications.map((medication, index) => {
             return (
                 <Col xs={4} key={index}>
@@ -109,9 +110,15 @@ export default class MedicationListing extends React.Component {
                 </Row>
                 <MedicationSearch search={this.search} cancel={this.cancel}/>
                 <MedicationFilter onTypeChange={this.onTypeChange}/>
-                <Row className={'mt-4'}>
-                    {medications}
-                </Row>
+                {this.state.medications.length != 0 ?
+                    <Row className={'mt-4'}>
+                            {medications}
+                    </Row>
+                    :
+                    <Alert variant='dark'  show={true}  style={({textAlignVertical: "center", textAlign: "center", marginLeft:'5rem',marginRight:'5rem', backgroundColor:'darkgray'})}>
+                    No records found. Try again.
+                    </Alert>
+                }
             </div>
         )
     }

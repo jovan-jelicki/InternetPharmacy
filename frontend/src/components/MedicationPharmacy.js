@@ -18,7 +18,7 @@ class MedicationPharmacy extends React.Component {
                 this.setState({
                     pharmacy : res.data
                 })
-                console.log(this.state.pharmacy);
+                //console.log(this.state.pharmacy);
             })
     }
 
