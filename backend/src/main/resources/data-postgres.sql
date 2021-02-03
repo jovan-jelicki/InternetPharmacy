@@ -406,6 +406,14 @@ values (9,2);
 INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
 values (10,2);
 
+
+insert into medication_lacking_event(id, employee_id, employee_type, event_date, medication_id, pharmacy_id)
+values (1, 3,0, '2021-01-01', 0,1);
+insert into medication_lacking_event(id, employee_id, employee_type, event_date, medication_id, pharmacy_id)
+values (2, 4,0, '2020-12-25', 3,1);
+insert into medication_lacking_event(id, employee_id, employee_type, event_date, medication_id, pharmacy_id)
+values (3, 1,1, '2021-02-03', 4,1);
+
 -- SELECT MAX(id) FROM appointment;
 --
 -- SELECT nextval('bookmarks_id_seq');

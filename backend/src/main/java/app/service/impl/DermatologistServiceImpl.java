@@ -57,7 +57,7 @@ public class DermatologistServiceImpl implements DermatologistService {
             if (dermatologist.getWorkingHours().size()!=0) {
                 boolean worksInPharmacy = false;
                 for (WorkingHours workingHours : dermatologist.getWorkingHours())
-                    if (workingHours.getPharmacy().getId() == id) {
+                    if (workingHours.getPharmacy().getId().equals(id)) {
                         worksInPharmacy = true;
                         break;
                     }
@@ -93,7 +93,7 @@ public class DermatologistServiceImpl implements DermatologistService {
             if (dermatologist.getWorkingHours().size()!=0) {
                 boolean worksInPharmacy = false;
                 for (WorkingHours workingHours : dermatologist.getWorkingHours())
-                    if (workingHours.getPharmacy().getId() == id) {
+                    if (workingHours.getPharmacy().getId().equals(id)) {
                         worksInPharmacy = true;
                         break;
                     }
@@ -107,7 +107,7 @@ public class DermatologistServiceImpl implements DermatologistService {
     public WorkingHours workingHoursInSpecificPharmacy(Long dermatologistId, Pharmacy pharmacy) {
         Dermatologist dermatologist = dermatologistRepository.findById(dermatologistId).get();
         for (WorkingHours workingHours : dermatologist.getWorkingHours()) {
-            if (workingHours.getPharmacy().getId() == pharmacy.getId()) {
+            if (workingHours.getPharmacy().getId().equals(pharmacy.getId())) {
                 return  workingHours;
             }
         }
@@ -165,7 +165,7 @@ public class DermatologistServiceImpl implements DermatologistService {
         //validate working hours not in the same pharmacy
         for (int i = 0; i < dermatologistDTO.getWorkingHours().size()-1; i++)
             for (int k = i+1; k < dermatologistDTO.getWorkingHours().size(); k++)
-                if(dermatologistDTO.getWorkingHours().get(i).getPharmacy().getId() == dermatologistDTO.getWorkingHours().get(k).getPharmacy().getId())
+                if(dermatologistDTO.getWorkingHours().get(i).getPharmacy().getId().equals(dermatologistDTO.getWorkingHours().get(k).getPharmacy().getId()))
                     return false;
 
         Dermatologist dermatologist = convertDTOtoEntity(dermatologistDTO);
