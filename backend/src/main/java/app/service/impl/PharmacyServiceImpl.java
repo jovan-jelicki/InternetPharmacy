@@ -117,7 +117,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         Medication medication = medicationService.read(addMedicationToPharmacyDTO.getMedicationId()).get();
 
         //TODO check if pharmacy already has that medication
-        if (pharmacy.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId() == medication.getId())
+        if (pharmacy.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId().equals(medication.getId()))
                 .collect(Collectors.toList()).size() != 0)
             return false;
 
@@ -151,7 +151,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         Pharmacy pharmacy = this.read(pharmacyMedicationListingDTO.getPharmacyId()).get();
 
         MedicationQuantity medicationQuantity = pharmacy.getMedicationQuantity().stream().
-                filter(medicationQuantityPharmacy -> medicationQuantityPharmacy.getId()==pharmacyMedicationListingDTO.getMedicationQuantityId())
+                filter(medicationQuantityPharmacy -> medicationQuantityPharmacy.getId().equals(pharmacyMedicationListingDTO.getMedicationQuantityId()))
                 .findFirst().get();
 
         medicationQuantity.setQuantity(pharmacyMedicationListingDTO.getQuantity());
@@ -159,16 +159,25 @@ public class PharmacyServiceImpl implements PharmacyService {
         return this.save(pharmacy)!= null;
     }
 
+    // izbrisem aspirin, dodam aspirin pa pokusam opet da izbrisem
     @Override
     public Boolean deleteMedicationFromPharmacy(PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
         Pharmacy pharmacy = this.read(pharmacyMedicationListingDTO.getPharmacyId()).get();
 
-        MedicationQuantity medicationQuantity = pharmacy.getMedicationQuantity().stream().
-                filter(medicationQuantityPharmacy -> medicationQuantityPharmacy.getId()==pharmacyMedicationListingDTO.getMedicationQuantityId())
-                .findFirst().get();
+        //ovde je greska kada se doda novi lek onda ne moze da se obrise
+//        MedicationQuantity medicationQuantity = pharmacy.getMedicationQuantity().stream().
+//                filter(medicationQuantityPharmacy -> medicationQuantityPharmacy.getId()==pharmacyMedicationListingDTO.getMedicationQuantityId())
+//                .findFirst().get();
+        MedicationQuantity medicationQuantity = new MedicationQuantity();
+        for (MedicationQuantity medicationQuantityFilter : pharmacy.getMedicationQuantity()) {
+            if (medicationQuantityFilter.getId().equals(pharmacyMedicationListingDTO.getMedicationQuantityId())) {
+                medicationQuantity = medicationQuantityFilter;
+                break;
+            }
+        }
 
         for (MedicationReservation medicationReservation : pharmacy.getMedicationReservation())
-            if (medicationReservation.getMedicationQuantity().getMedication().getId() == pharmacyMedicationListingDTO.getMedicationId()
+            if (medicationReservation.getMedicationQuantity().getMedication().getId().equals(pharmacyMedicationListingDTO.getMedicationId())
                 && medicationReservation.getStatus() == MedicationReservationStatus.requested)
                 return false;
 

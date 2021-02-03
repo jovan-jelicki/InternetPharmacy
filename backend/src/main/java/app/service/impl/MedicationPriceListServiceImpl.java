@@ -61,7 +61,14 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
 
     @Override
     public MedicationPriceList GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date) {
-        return medicationPriceListRepository.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationId,date);
+        ArrayList<MedicationPriceList> medicationPriceLists = (ArrayList<MedicationPriceList>) medicationPriceListRepository.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationId,date);
+        long maxId = (long) -1.0;
+        for (MedicationPriceList medicationPriceList : medicationPriceLists)
+            if (medicationPriceList.getId() > maxId)
+                maxId = medicationPriceList.getId();
+
+        long finalMaxId = maxId;
+        return medicationPriceLists.stream().filter(medicationPriceList -> medicationPriceList.getId()== finalMaxId).findFirst().get();
     }
 
     @Override
