@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, FormControl, Row} from "react-bootstrap";
+import {Button, Col, FormControl, Row, Table} from "react-bootstrap";
 import axios from "axios";
 import MedicationSearch from "./MedicationSearch";
 
@@ -24,24 +24,30 @@ class MedicationPharmacy extends React.Component {
 
     render() {
         return (
-            <table className="table table-hover" >
-                <thead>
-                <tr>
-                    <th scope="col">Pharmacy</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Price</th>
-                </tr>
-                </thead>
-                <tbody styles={{'overflow':'scroll', 'display': 'block','height': '300px'}}>
-                {this.state.pharmacy.map((pharmacy, index) => (
-                    <tr>
-                        <td>{pharmacy.name}</td>
-                        <td >{pharmacy.address.country} {pharmacy.address.town} {pharmacy.address.street}</td>
-                        <td>{pharmacy.medicationPrice}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            <div>
+                <h4 >Pharmacys</h4>
+                {this.state.pharmacy.length !=0 ?
+                    <Table  hover variant="dark">
+                        <thead style={{'color':'dimgrey '}}>
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Price</th>
+                        </tr>
+                        </thead>
+                        {this.state.pharmacy.map((pharmacy, index) => (
+                        <tbody styles={{'overflow':'scroll', 'display': 'block','height': '300px'}}>
+                            <tr>
+                                <td >{pharmacy.name}</td>
+                                <td >{pharmacy.address.country} {pharmacy.address.town} {pharmacy.address.street}</td>
+                                <td>{pharmacy.medicationPrice}</td>
+                            </tr>
+                        </tbody>
+                        ))}
+                    </Table>
+                    :
+                    <div>Medication isn't available</div>}
+                </div>
         )
     }
 
