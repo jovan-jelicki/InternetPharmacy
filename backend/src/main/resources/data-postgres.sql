@@ -82,6 +82,8 @@ INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (3, 1, 3);
 INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (4, 5, 4);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (20, 5, 4);
 
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (0, 2);
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (0, 4);
@@ -112,11 +114,19 @@ insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_st
 
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 VALUES (0, '2021-01-31', 3, 1,0);
+INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
+VALUES (1, '2021-01-28', 2, 4,0);
+INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
+VALUES (2, '2021-01-27', 2, 20,0);
 -- INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 -- VALUES (2, '2021-01-26', 3, 1,6);
 
 INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
 VALUES (0,0);
+INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
+VALUES (0,1);
+INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
+VALUES (0,2);
 INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
 VALUES (4,0);
 
@@ -160,6 +170,12 @@ insert into appointment (id,  examiner_id, appointment_status,  patient_id, peri
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
     values (6,1,0, null, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 0, null,null,1, true);
 
+insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+    values (10,1,1, 0, '2021-03-01 14:00:00', '2021-03-01 13:00:00', 1, null,null,1, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+    values (11,1,1, 0, '2021-03-08 08:00:00', '2021-03-08 09:00:00', 1, null,null,1, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+    values (12,1,1, 0, '2021-01-01 10:00:00', '2021-01-01 11:00:00', 0, null,null,1, true);
 
 -- NE DIRAJ MI OVA TRI!!!!!  Potpis : Jovan!!!
 insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)

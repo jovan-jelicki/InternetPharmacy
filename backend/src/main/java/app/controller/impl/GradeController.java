@@ -1,5 +1,7 @@
 package app.controller.impl;
 
+import app.dto.grade.AssetGradeDTO;
+import app.dto.grade.EmployeeGradeDTO;
 import app.model.grade.Grade;
 import app.service.GradeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +30,18 @@ public class GradeController {
             return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/patient/{id}")
-    public ResponseEntity<Collection<Grade>> findAllByPatientId(@PathVariable Long id) {
-        return new ResponseEntity<>(gradeService.findAllByPatientId(id), HttpStatus.OK);
+    @GetMapping(value = "/dermatologists/{id}")
+    public ResponseEntity<Collection<EmployeeGradeDTO>> findDermatologistsPatientCanGrade(@PathVariable Long id) {
+        return new ResponseEntity<>(gradeService.findDermatologistsPatientCanGrade(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/pharmacist/{id}")
+    public ResponseEntity<Collection<EmployeeGradeDTO>> findPharmacistsPatientCanGrade(@PathVariable Long id) {
+        return new ResponseEntity<>(gradeService.findPharmacistPatientCanGrade(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/medication/{id}")
+    public ResponseEntity<Collection<AssetGradeDTO>> findMedicationsPatientCanGrade(@PathVariable Long id) {
+        return new ResponseEntity<>(gradeService.findMedicationsPatientCanGrade(id), HttpStatus.OK);
     }
 }

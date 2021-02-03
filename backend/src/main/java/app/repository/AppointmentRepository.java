@@ -49,4 +49,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(LocalDateTime date,Long pharmacyId);
 
     int countAllByPharmacy_IdAndPatient_IdAndAppointmentStatus(Long pharmacyId, Long patientId, AppointmentStatus status);
+    Collection<Appointment> getAllByPatient_IdAndAppointmentStatusAndType(Long patientId, AppointmentStatus status, EmployeeType type);
 }

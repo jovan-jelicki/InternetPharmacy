@@ -1,9 +1,16 @@
 package app.service.impl;
 
+import app.dto.grade.AssetGradeDTO;
+import app.dto.grade.EmployeeGradeDTO;
+import app.model.appointment.AppointmentStatus;
 import app.model.grade.Grade;
 import app.model.grade.GradeType;
-import app.model.grade.StrategyName;
-import app.repository.GradeRepository;
+import app.model.medication.Medication;
+import app.model.medication.MedicationReservationStatus;
+import app.model.user.Dermatologist;
+import app.model.user.EmployeeType;
+import app.model.user.Pharmacist;
+import app.repository.*;
 import app.service.GradeService;
 import app.service.GradingStrategy;
 import app.service.PatientService;
@@ -11,33 +18,124 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GradeServiceImpl implements GradeService {
     private final GradeRepository gradeRepository;
     private final GradingStrategyFactory gradingStrategyFactory;
     private final PatientService patientService;
+    private final DermatologistRepository dermatologistRepository;
+    private final PharmacistRepository pharmacistRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final MedicationReservationRepository medicationReservationRepository;
+    private final EPrescriptionRepository ePrescriptionRepository;
 
     private GradingStrategy gradingStrategy;
 
     @Autowired
-    public GradeServiceImpl(GradeRepository gradeRepository, GradingStrategyFactory gradingStrategyFactory, PatientService patientService) {
+    public GradeServiceImpl(GradeRepository gradeRepository, GradingStrategyFactory gradingStrategyFactory, PatientService patientService, DermatologistRepository dermatologistRepository, PharmacistRepository pharmacistRepository, AppointmentRepository appointmentRepository, MedicationReservationRepository medicationReservationRepository, EPrescriptionRepository ePrescriptionRepository) {
         this.gradeRepository = gradeRepository;
         this.gradingStrategyFactory = gradingStrategyFactory;
         this.patientService = patientService;
+        this.dermatologistRepository = dermatologistRepository;
+        this.pharmacistRepository = pharmacistRepository;
+        this.appointmentRepository = appointmentRepository;
+        this.medicationReservationRepository = medicationReservationRepository;
+        this.ePrescriptionRepository = ePrescriptionRepository;
     }
 
     @Override
     public Grade save(Grade grade) {
-        GradeType gradeType = grade.getGradeType();
-        if(gradeType == GradeType.dermatologist || gradeType == GradeType.pharmacist)
-            gradingStrategy = gradingStrategyFactory.findStrategy(StrategyName.employee);
-        else
-            gradingStrategy = gradingStrategyFactory.findStrategy(StrategyName.asset);
+//        GradeType gradeType = grade.getGradeType();
+//        if(gradeType == GradeType.dermatologist || gradeType == GradeType.pharmacist)
+//            gradingStrategy = gradingStrategyFactory.findStrategy(StrategyName.employee);
+//        else
+//            gradingStrategy = gradingStrategyFactory.findStrategy(StrategyName.asset);
         grade.setPatient(patientService.read(grade.getPatient().getId()).get());
-        return gradingStrategy.grade(grade);
+        return gradeRepository.save(grade);
     }
 
+    @Override
+    public Collection<EmployeeGradeDTO> findDermatologistsPatientCanGrade(Long patientId) {
+        return appointmentRepository
+                .getAllByPatient_IdAndAppointmentStatusAndType(patientId, AppointmentStatus.patientPresent, EmployeeType.dermatologist)
+                .stream()
+                .map(a -> {
+                    Dermatologist dermatologist = dermatologistRepository.findById(a.getExaminerId()).get();
+                    EmployeeGradeDTO employee = new EmployeeGradeDTO(dermatologist.getId(), dermatologist.getFirstName(), dermatologist.getLastName(), GradeType.dermatologist);
+                    Grade grade = gradeRepository.findPatientGradeByGradedId(patientId, a.getExaminerId());
+                    if(grade != null) {
+                        employee.setGradeId(grade.getId());
+                        employee.setGrade(grade.getGrade());
+                    }
+                    return employee;
+                })
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<EmployeeGradeDTO> findPharmacistPatientCanGrade(Long patientId) {
+        return appointmentRepository
+                .getAllByPatient_IdAndAppointmentStatusAndType(patientId, AppointmentStatus.patientPresent, EmployeeType.pharmacist)
+                .stream()
+                .map(a -> {
+                    Pharmacist pharmacist = pharmacistRepository.findById(a.getExaminerId()).get();
+                    EmployeeGradeDTO employee = new EmployeeGradeDTO(pharmacist.getId(), pharmacist.getFirstName(), pharmacist.getLastName(), GradeType.pharmacist);
+                    Grade grade = gradeRepository.findPatientGradeByGradedId(patientId, a.getExaminerId());
+                    if(grade != null) {
+                        employee.setGradeId(grade.getId());
+                        employee.setGrade(grade.getGrade());
+                    }
+                    return employee;
+                })
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+//    public Grade findPharmaciesPatientCanGrade() {
+//
+//    }
+
+    @Override
+    public Collection<AssetGradeDTO> findMedicationsPatientCanGrade(Long patientId) {
+        Set<AssetGradeDTO> medications = new HashSet<>();
+        medicationReservationRepository
+                .findAllByPatient_IdAndStatus(patientId, MedicationReservationStatus.successful)
+                .stream()
+                .forEach(r -> {
+                    Medication medication = r.getMedicationQuantity().getMedication();
+                    getMedicationGrade(patientId, medications, medication);
+                });
+        ePrescriptionRepository
+                .findAllByPatient_Id(patientId)
+                .stream()
+                .forEach(p -> {
+                    p.getMedicationQuantity().forEach(m -> {
+                        Medication medication = m.getMedication();
+                        getMedicationGrade(patientId, medications, medication);
+                    });
+                });
+        return medications;
+
+    }
+
+    private void getMedicationGrade(Long patientId, Set<AssetGradeDTO> medications, Medication medication) {
+        AssetGradeDTO asset = new AssetGradeDTO(medication.getId(), medication.getName(), GradeType.medication);
+        Grade grade = gradeRepository.findPatientGradeByGradedId(patientId, medication.getId());
+        if(grade != null) {
+            asset.setGradeId(grade.getId());
+            asset.setGrade(grade.getGrade());
+        }
+        medications.add(asset);
+    }
+
+    public Grade findPatientGrade(Long patientId, Long gradedId) {
+        return gradeRepository.findPatientGradeByGradedId(patientId, gradedId);
+    }
     @Override
     public Collection<Grade> findAllByPatientId(Long id) {
         return gradeRepository.findAllByPatient_Id(id);

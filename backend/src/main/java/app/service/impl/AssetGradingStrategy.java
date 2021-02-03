@@ -73,4 +73,6 @@ public class AssetGradingStrategy implements GradingStrategy {
                 .stream()
                 .anyMatch(r -> r.getPatient().getId() == patientId);
     }
+
+
 }
