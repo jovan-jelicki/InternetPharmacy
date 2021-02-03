@@ -1,9 +1,12 @@
 import React from "react";
-import {Alert, Button, Col, Form, Modal} from "react-bootstrap";
+import { Button, Form, Modal} from "react-bootstrap";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
+import { createHashHistory } from 'history'
+import * as path from "path";
 
 
-export default class Login extends React.Component {
+class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -80,6 +83,7 @@ export default class Login extends React.Component {
                     user:res.data
                 })
                 this.redirect()
+                console.log(this.state.user)
             })
             .catch(
                 this.state.error = true
@@ -90,20 +94,59 @@ export default class Login extends React.Component {
     redirect=()=>{
         let type=this.state.user.type
         console.log(type)
-        if(type=="ROLE_patient"){ //ROLE_patient
-            window.location = '/patient-profile';
-        }else if(type=="ROLE_dermatologist"){ //ROLE_dermatologist
-            window.location = '/dermatologistHomePage';
-        }else if(type=="ROLE_pharmacist"){ //ROLE_pharmacist
-            window.location = '/pharmacistHomePage';
-        }else if(type=="ROLE_pharmacyAdmin"){ //ROLE_pharmacyAdmin
-            window.location = '/pharmacy-admin-profile';
-        }else if(type=="ROLE_supplier"){ //ROLE_supplier
-            window.location = '/supplierHomePage';
-        }else if(type=="ROLE_systemAdmin"){ //ROLE_systemAdmin
-            window.location = '/systemAdmin';
-        }
+        const history = createHashHistory()
 
+
+        if(type=="ROLE_patient"){ //ROLE_patient
+            this.props.history.push({
+                pathname: "/patient-profile",
+                state: {
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+
+        }else if(type=="ROLE_dermatologist"){ //ROLE_dermatologist
+            this.props.history.push({
+                pathname: "/dermatologistHomePage",
+                state: {
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+        }else if(type=="ROLE_pharmacist"){ //ROLE_pharmacist
+            this.props.history.push({
+                pathname: "//pharmacistHomePage",
+                state: {
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+        }else if(type=="ROLE_pharmacyAdmin"){ //ROLE_pharmacyAdmin
+            this.props.history.push({
+                pathname: "/pharmacy-admin-profile",
+                state: {
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+        }else if(type=="ROLE_supplier"){ //ROLE_supplier
+            this.props.history.push({
+                pathname: "/supplierHomePage",
+                state: {
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+        }else if(type=="ROLE_systemAdmin"){ //ROLE_systemAdmin
+            this.props.history.push({
+                pathname: "/systemAdmin",
+                state: {
+                email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+        }
     }
 
 
@@ -163,4 +206,4 @@ export default class Login extends React.Component {
     }
 
 
-}
+}export default withRouter(Login);
