@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Form, Modal} from "react-bootstrap";
+import {Alert, Button, Col, Form, Modal} from "react-bootstrap";
 import axios from "axios";
 
 
@@ -7,13 +7,16 @@ export default class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            'password': '',
-            'email': '',
+            user:null,
+            password: '',
+            email: '',
             errors: {
-                'email': 'Enter Email.',
-                'password': 'Enter Password.'
+                email: 'Enter Email.',
+                password: 'Enter Password.'
             },
-            submitted: false
+            submitted: false,
+            error: false,
+            errorText:'The email address or password that you have entered does not match any account. Please try again.'
         }
         this.handleInputChange = this.handleInputChange.bind(this);
     }
@@ -33,7 +36,7 @@ export default class Login extends React.Component {
         this.setState({
             showModal : !this.state.showModal,
             password: '',
-            'email': '',
+            email: '',
         });
     }
     validationErrorMessage = (event) => {
@@ -65,18 +68,47 @@ export default class Login extends React.Component {
     }
 
     async sendData() {
+        //console.log(this.state.email)
+        //console.log(this.state.password)
         axios
-            .post('http://localhost:8080/api/users', {
-                'email':this.state.user.email,
-                'password':this.state.user.password
+            .post('http://localhost:8080/auth/users', {
+                'email':this.state.email,
+                'password':this.state.password
             })
             .then(res => {
-
-            });
+                this.setState({
+                    user:res.data
+                })
+                this.redirect()
+            })
+            .catch(
+                this.state.error = true
+            );
 
     }
 
+    redirect=()=>{
+        let type=this.state.user.type
+        console.log(type)
+        if(type=="ROLE_patient"){ //ROLE_patient
+            window.location = '/patient-profile';
+        }else if(type=="ROLE_dermatologist"){ //ROLE_dermatologist
+            window.location = '/dermatologistHomePage';
+        }else if(type=="ROLE_pharmacist"){ //ROLE_pharmacist
+            window.location = '/pharmacistHomePage';
+        }else if(type=="ROLE_pharmacyAdmin"){ //ROLE_pharmacyAdmin
+            window.location = '/pharmacy-admin-profile';
+        }else if(type=="ROLE_supplier"){ //ROLE_supplier
+            window.location = '/supplierHomePage';
+        }else if(type=="ROLE_systemAdmin"){ //ROLE_systemAdmin
+            window.location = '/systemAdmin';
+        }
+
+    }
+
+
     loginForm = async (event) => {
+        this.state.error = false
         this.setState({ submitted: true });
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
@@ -107,6 +139,8 @@ export default class Login extends React.Component {
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control type="password"  name="password" placeholder="password"  value={this.state.password} onChange={(e) => { this.handleInputChange(e)} } />
                                 { this.state.submitted && this.state.errors.password.length > 0 &&  <span className="text-danger">{this.state.errors.password}</span>}
+
+                                {this.state.error &&  <span className="text-danger">{this.state.errorText}</span>}
 
                             </Form.Group>
                         </Form>
