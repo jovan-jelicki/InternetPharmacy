@@ -95,6 +95,18 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping(value = "/getPharmacyByMedication/{medicationId}")
+    public ResponseEntity<Collection<PharmacyMedicationDTO>> getPharmacyByMedication(@PathVariable Long medicationId) {
+        return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
+    }
+
+
+    /*@GetMapping(value = "/getPharmacyContainsMedication")
+    public ResponseEntity<Collection<Pharmacy>> getPharmacyMedicationListing(@PathVariable Long pharmacyId) {
+        return new ResponseEntity<>(pharmacyService.getPharmacyMedicationListingDTOs(pharmacyId), HttpStatus.OK);
+    }*/
+
+
     @PutMapping(value = "/deleteMedicationFromPharmacy", consumes = "application/json")
     public ResponseEntity<Boolean> deleteMedicationFromPharmacy(@RequestBody PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
         if(!pharmacyService.existsById(pharmacyMedicationListingDTO.getPharmacyId()))

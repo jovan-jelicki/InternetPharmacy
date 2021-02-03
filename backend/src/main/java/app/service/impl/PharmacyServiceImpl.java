@@ -1,9 +1,6 @@
 package app.service.impl;
 
-import app.dto.AddMedicationToPharmacyDTO;
-import app.dto.PharmacyMedicationListingDTO;
-import app.dto.PharmacySearchDTO;
-import app.dto.ReportsDTO;
+import app.dto.*;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
@@ -44,6 +41,26 @@ public class PharmacyServiceImpl implements PharmacyService {
     @Override
     public void setMedicationPriceListService(MedicationPriceListServiceImpl medicationPriceListService) {
         this.medicationPriceListService = medicationPriceListService;
+    }
+
+    @Override
+    public Collection<PharmacyMedicationDTO> getPharmacyByMedication(Long medicationId) {
+        ArrayList<PharmacyMedicationDTO> pharmacies = new ArrayList<>();
+        read().forEach(p -> {
+            for(MedicationQuantity q : p.getMedicationQuantity()) {
+                    if(q.getMedication().getId()==medicationId){
+                        PharmacyMedicationDTO pmDTO=new PharmacyMedicationDTO();
+                        pmDTO.setId(p.getId());
+                        pmDTO.setName(p.getName());
+                        pmDTO.setAddress(p.getAddress());
+                        pmDTO.setMedicationId(medicationId);
+
+                        double cena=medicationPriceListService.getMedicationPrice(p.getId(),medicationId);
+                        pmDTO.setMedicationPrice(cena);
+                        pharmacies.add(pmDTO);
+                    }
+        }});
+        return  pharmacies;
     }
 
     @Override

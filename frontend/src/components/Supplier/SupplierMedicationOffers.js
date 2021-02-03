@@ -113,7 +113,6 @@ export default class SupplierMedicationOffers extends React.Component{
                 <h2 style={{marginLeft:'2rem'}} >Offers</h2>
                 <div className="row" style={{marginTop: '1rem', marginLeft:'2rem'}} >
 
-
                     <div className="form-check">
                         <b >Filter by  :</b>
                         <label>

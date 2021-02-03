@@ -147,6 +147,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.findById(id).get().getActive();
     }
 
+    @Override
     public boolean validateAppointmentTimeRegardingWorkingHours(Appointment entity) {
         WorkingHours workingHoursInPharmacy = dermatologistService.workingHoursInSpecificPharmacy(entity.getExaminerId(), entity.getPharmacy());
         if (workingHoursInPharmacy.getPeriod().getPeriodStart().toLocalTime().isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
@@ -155,6 +156,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         return false;
     }
 
+    @Override
     public boolean validateAppointmentTimeRegardingAllWorkingHours(Appointment entity) {
         boolean ret = true;
         //ArrayList<WorkingHours> allWorkingHours = (ArrayList<WorkingHours>) dermatologistService.read(entity.getExaminerId()).get().getWorkingHours();
@@ -167,6 +169,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         return ret;
     }
 
+    @Override
     public boolean validateAppointmentTimeRegardingVacationRequests(Appointment entity) {
         boolean ret = true;
         for(VacationRequest vacationRequest : vacationRequestRepository.findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(entity.getExaminerId() ,EmployeeType.dermatologist, VacationRequestStatus.approved))
@@ -290,9 +293,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Boolean patientDidNotShowUp(Long id) {
         Appointment appointment = read(id).get();
         if(appointment != null){
-            appointment.setAppointmentStatus(AppointmentStatus.patientNotPresent);
-            save(appointment);
-            return true;
+            if(appointment.getPeriod().getPeriodEnd().isBefore(LocalDateTime.now())) {
+                appointment.setAppointmentStatus(AppointmentStatus.patientNotPresent);
+                Patient patient = patientService.read(appointment.getPatient().getId()).get();
+                patient.setPenaltyCount(patient.getPenaltyCount() + 1);
+                patientService.save(patient);
+                save(appointment);
+                return true;
+            }
+            throw new IllegalArgumentException("Appointment must pass!");
         }
         throw new IllegalArgumentException("Appointment do not exists!");
     }

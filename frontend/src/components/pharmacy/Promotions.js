@@ -39,11 +39,6 @@ export default class Promotions extends React.Component{
 
                         <button type="button" class="btn btn-info">Kreiraj promociju</button>
                         <div className="row">
-
-
-
-
-
                         {this.state.promotions.map((promotion, index) => (
                             <div className="row">
 

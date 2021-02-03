@@ -7,4 +7,5 @@ import java.util.Collection;
 public interface ExaminationService {
     Collection<Appointment> findPreviousByPatientId(Long patientId);
     Collection<Appointment> findUpcomingByPatientId(Long patientId);
-}
+    Boolean dermatologistScheduling(Appointment appointment);
+    }

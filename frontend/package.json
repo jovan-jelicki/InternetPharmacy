@@ -23,6 +23,7 @@
     "react-router": "^5.2.0",
     "react-scripts": "4.0.1",
     "react-select": "^3.2.0",
+    "react-table-scrollbar": "^0.1.9",
     "react-time-picker": "^4.1.2",
     "recharts": "^2.0.4",
     "rsuite": "^4.8.8",
