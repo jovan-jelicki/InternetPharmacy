@@ -11,8 +11,8 @@ class MedicationSpecification  extends React.Component {
     }
 
     render() {
-        console.log(this.props.medication.ingredient);
-        console.log(this.props.medication.sideEffect);
+        console.log(this.props.medication)
+
         const Ingredients = this.props.medication.ingredient.map((ingredient, key) =>
             <tr>{ingredient.name}</tr>
         )
