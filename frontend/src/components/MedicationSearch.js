@@ -23,10 +23,12 @@ class MedicationSearch extends React.Component {
         this.props.search({
             name : this.state.name,
         })
+        this.setState({ name: "" });
     }
 
     cancel=()=> {
         this.props.cancel()
+        this.setState({ name: "" });
     }
 
     render() {
@@ -37,10 +39,10 @@ class MedicationSearch extends React.Component {
                                  placeholder={'Medication Name'} onChange={this.handleInputChange}/>
                 </Col>
                 <Col className={'pt-2'} xs={{ span: 0.5  }}>
-                    <Button variant={'outline-dark'} onClick={this.cancel}>Cancel</Button>
+                    <Button style={{'marginLeft':'2rem'}} variant={'outline-dark'} onClick={this.cancel}>Cancel</Button>
                 </Col>
                 <Col className={'pt-2'} xs={{ span: 0.5 }}>
-                    <Button variant={'dark'} onClick={this.search}>Go</Button>
+                    <Button style={{'marginLeft':'1rem'}} variant={'dark'} onClick={this.search}>Go</Button>
                 </Col>
             </Row>
         )

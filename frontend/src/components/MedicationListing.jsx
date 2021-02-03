@@ -4,12 +4,14 @@ import axios from 'axios';
 import MedicationSearch from "./MedicationSearch";
 import MedicationSpecification from "./MedicationSpecification";
 import MedicationPharmacy from "./MedicationPharmacy";
+import MedicationFilter from "./MedicationFilter";
 
 export default class MedicationListing extends React.Component {
     constructor() {
         super();
         this.state = {
-            medications : []
+            medications : [],
+            selectedOption:''
         }
         this.search = this.search.bind(this)
         this.cancel = this.cancel.bind(this)
@@ -47,6 +49,24 @@ export default class MedicationListing extends React.Component {
             })
 
     }
+    onTypeChange=({selectedOption}) => {
+        if(selectedOption=="all"){
+            this.cancel()
+
+        }else {
+            this.setState({
+                medications : this.medicationsBack
+            })
+            let filteredData = this.state.medications.filter(column => {
+
+                return column.type.toLowerCase().indexOf(selectedOption.toLowerCase()) !== -1;
+            });
+
+            this.setState({
+                medications: filteredData
+            });
+        }
+    }
 
     render() {
         const medications = this.state.medications.map((medication, index) => {
@@ -78,7 +98,6 @@ export default class MedicationListing extends React.Component {
                         </Modal.Footer>
                     </Modal>
 
-
                 </Card>
                 </Col> )
         })
@@ -89,13 +108,14 @@ export default class MedicationListing extends React.Component {
                 <h2 className={'mt-5 ml-3'} id="medications">Medications</h2>
                 </Row>
                 <MedicationSearch search={this.search} cancel={this.cancel}/>
+                <MedicationFilter onTypeChange={this.onTypeChange}/>
                 <Row className={'mt-4'}>
                     {medications}
                 </Row>
             </div>
-            
         )
     }
+
     handleModal = () => {
         this.setState({
             showModal : !this.state.showModal,
