@@ -178,12 +178,11 @@ export default class PharmacyCharts extends React.Component{
 
         if (this.state.medicationConsumptionReportOptions === options[0])
             this.renderMedicationConsumptionMonthlyReport();
+        else if (this.state.medicationConsumptionReportOptions === options[1])
+            this.renderMedicationConsumptionQuarterlyReport();
 
-        // else if (this.state.medicationConsumptionReportOptions === options[1])
-        //     this.renderAppointmentQuarterlyReport();
-        //
-        // else
-        //     this.renderAppointmentYearlyReport();
+        else
+            this.renderMedicationConsumptionYearlyReport();
     }
 
     renderAppointmentMonthlyReport = () => {
@@ -240,6 +239,40 @@ export default class PharmacyCharts extends React.Component{
 
     renderMedicationConsumptionMonthlyReport = () => {
         axios.get("http://localhost:8080/api/pharmacy/getMedicationsConsumptionMonthlyReport/1")
+            .then((res) => {
+                let temp = [];
+                res.data.map(reportDTO => {
+                    let item = {
+                        name: reportDTO.chartName,  consumption:reportDTO.data
+                    };
+                    temp.push(item);
+                });
+
+                this.setState({
+                    medicationConsumptionReportData : temp
+                })
+            })
+    }
+
+    renderMedicationConsumptionQuarterlyReport = () => {
+        axios.get("http://localhost:8080/api/pharmacy/getMedicationsConsumptionQuarterlyReport/1")
+            .then((res) => {
+                let temp = [];
+                res.data.map(reportDTO => {
+                    let item = {
+                        name: reportDTO.chartName,  consumption:reportDTO.data
+                    };
+                    temp.push(item);
+                });
+
+                this.setState({
+                    medicationConsumptionReportData : temp
+                })
+            })
+    }
+
+    renderMedicationConsumptionYearlyReport = () => {
+        axios.get("http://localhost:8080/api/pharmacy/getMedicationsConsumptionYearlyReport/1")
             .then((res) => {
                 let temp = [];
                 res.data.map(reportDTO => {

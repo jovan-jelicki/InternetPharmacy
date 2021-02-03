@@ -27,4 +27,8 @@ public interface PharmacyService extends CRUDService<Pharmacy> {
     Boolean deleteMedicationFromPharmacy(PharmacyMedicationListingDTO pharmacyMedicationListingDTO);
 
     Collection<ReportsDTO> getMedicationsConsumptionMonthlyReport(Long pharmacyId);
+
+    Collection<ReportsDTO> getMedicationsConsumptionQuarterlyReport(Long pharmacyId);
+
+    Collection<ReportsDTO> getMedicationsConsumptionYearlyReport(Long pharmacyId);
 }

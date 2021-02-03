@@ -170,14 +170,13 @@ public class PharmacyServiceImpl implements PharmacyService {
         int temp = 0;
         for (MedicationReservation medicationReservation : pharmacy.getMedicationReservation())
             if (medicationReservation.getPickUpDate().isAfter(periodStart) && medicationReservation.getPickUpDate().isBefore(periodEnd))
-                temp++;
+                temp+= medicationReservation.getMedicationQuantity().getQuantity();
 
         return temp;
     }
 
     @Override
     public Collection<ReportsDTO> getMedicationsConsumptionMonthlyReport(Long pharmacyId) {
-
         List<LocalDate> allDates = new ArrayList<>();
         String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
         SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -209,34 +208,71 @@ public class PharmacyServiceImpl implements PharmacyService {
         }
         return medicationConsumptionByMonth;
     }
-}
 
-//    List<LocalDate> allDates = new ArrayList<>();
-//    String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
-//    SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
-//    Calendar cal = Calendar.getInstance();
-//        try {
-//                cal.setTime(monthDate.parse(maxDate));
-//                }
-//                catch (Exception e) {
-//                return null;
-//                }
-//
-//                for (int i = 1; i <= 13; i++) {
-//                allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
-//                cal.add(Calendar.MONTH, -1);
-//                }
-//
-//
-//                Collections.reverse(allDates);
-//                System.out.println(allDates);
-//
-//                ArrayList<ReportsDTO> appointmentCountByMonth = new ArrayList<>();
-//
-//        for (int i = 0; i < allDates.size()-1; i++) {
-//        int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
-//        String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
-//        appointmentCountByMonth.add(new ReportsDTO(monthName,temp));
-//        }
-//
-//        return appointmentCountByMonth;
+    @Override
+    public Collection<ReportsDTO> getMedicationsConsumptionQuarterlyReport(Long pharmacyId) {
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+        for (int i = 1; i <= 5; i++) {
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -3);
+        }
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        Pharmacy pharmacy = this.read(pharmacyId).get();
+
+        ArrayList<ReportsDTO> medicationConsumptionByMQuarter = new ArrayList<>();
+
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.filterMedicationReservationsByPeriod(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacy);
+            String monthNameStart = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
+            String monthNameEnd = allDates.get(i+1).format(DateTimeFormatter.ofPattern("MMM"));
+            medicationConsumptionByMQuarter.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd,temp));
+        }
+        return medicationConsumptionByMQuarter;
+    }
+
+    @Override
+    public Collection<ReportsDTO> getMedicationsConsumptionYearlyReport(Long pharmacyId) {
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+        for (int i = 1; i <= 11; i++) {
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -12);
+        }
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        Pharmacy pharmacy = this.read(pharmacyId).get();
+
+        ArrayList<ReportsDTO> medicationConsumptionByMQuarter = new ArrayList<>();
+
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.filterMedicationReservationsByPeriod(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacy);
+            String year = allDates.get(i).format(DateTimeFormatter.ofPattern("yyyy"));
+            medicationConsumptionByMQuarter.add(new ReportsDTO(year,temp));
+        }
+        return medicationConsumptionByMQuarter;
+    }
+}

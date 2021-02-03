@@ -109,4 +109,14 @@ public class PharmacyControllerImpl {
         return new ResponseEntity(pharmacyService.getMedicationsConsumptionMonthlyReport(pharmacyId), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/getMedicationsConsumptionQuarterlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionQuarterlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(pharmacyService.getMedicationsConsumptionQuarterlyReport(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getMedicationsConsumptionYearlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionYearlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(pharmacyService.getMedicationsConsumptionYearlyReport(pharmacyId), HttpStatus.OK);
+    }
+
 }
