@@ -60,8 +60,11 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
     }
 
     @Override
-    public MedicationPriceList GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date) {
-        return medicationPriceListRepository.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationId,date);
+    public Double GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date) {
+        MedicationPriceList temp = medicationPriceListRepository.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationId,date);
+        if (temp == null)
+            return 400.00; //TODO default medication price
+        return temp.getCost();
     }
 
     @Override

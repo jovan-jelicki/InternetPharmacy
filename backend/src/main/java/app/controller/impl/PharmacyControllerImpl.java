@@ -131,4 +131,11 @@ public class PharmacyControllerImpl {
         return new ResponseEntity(pharmacyService.getMedicationsConsumptionYearlyReport(pharmacyId), HttpStatus.OK);
     }
 
+    @PostMapping(value = "/getPharmacyIncomeReportByPeriod", consumes = "application/json")
+    public ResponseEntity<Collection<ReportsDTO>> getPharmacyIncomeReportByPeriod(@RequestBody PharmacyIncomeReportDTO pharmacyIncomeReportDTO) {
+        if (!pharmacyService.existsById(pharmacyIncomeReportDTO.getPharmacyId()) || pharmacyIncomeReportDTO.getPeriodStart().isAfter(pharmacyIncomeReportDTO.getPeriodEnd()))
+            return new ResponseEntity(null,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(pharmacyService.getPharmacyIncomeReportByPeriod(pharmacyIncomeReportDTO.getPeriodStart(),pharmacyIncomeReportDTO.getPeriodEnd(), pharmacyIncomeReportDTO.getPharmacyId()), HttpStatus.OK);
+    }
+
 }

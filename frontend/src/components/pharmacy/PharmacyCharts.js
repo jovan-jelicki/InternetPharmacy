@@ -1,38 +1,13 @@
 import React from 'react';
-import { PureComponent } from 'react';
 import {
-    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,LineChart, Line
 } from 'recharts';
-import {Button, Col} from "react-bootstrap";
-import {Modal} from "react-bootstrap";
-import {Navbar} from "react-bootstrap";
-import {Form} from "react-bootstrap";
-import {FormControl, Row} from "react-bootstrap";
-import axios from "axios";
 
-const data = [
-    {
-        name: 'Jan',  pv: 2400
-    },
-    {
-        name: 'Feb',  pv: 1398
-    },
-    {
-        name: 'Mar',  pv: 9800
-    },
-    {
-        name: 'Apr',  pv: 3908
-    },
-    {
-        name: 'May',  pv: 4800
-    },
-    {
-        name: 'June',  pv: 3800
-    },
-    {
-        name: 'July',  pv: 4300
-    },
-];
+import {Button, Col, Navbar} from "react-bootstrap";
+import {Form} from "react-bootstrap";
+import axios from "axios";
+import DatePicker from "react-datepicker";
+import moment from "moment";
 
 
 const options = [
@@ -48,7 +23,12 @@ export default class PharmacyCharts extends React.Component{
             appointmentsReportOptions: options[0],
             appointmentsReportData: [],
             medicationConsumptionReportOptions: options[0],
-            medicationConsumptionReportData: []
+            medicationConsumptionReportData: [],
+            incomePeriod : {
+                periodStart : "",
+                periodEnd : ""
+            },
+            incomePeriodData : []
         }
     }
 
@@ -127,13 +107,26 @@ export default class PharmacyCharts extends React.Component{
 
                 </BarChart>
 
-                <br/><br/>
+
                 <h1>Income report</h1>
                 <br/>
-                <BarChart
-                    width={500}
-                    height={300}
-                    data={data}
+                <Navbar bg="light" expand="lg">
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Form inline>
+                            <label style={{marginRight : '1rem'}}>Income period start</label>
+                            <DatePicker selected={this.state.incomePeriod.periodStart} dateFormat="dd MMMM yyyy"  name="priceDateStart" maxDate={new Date()} onChange={this.setIncomeDateStart} />
+                            <label style={{marginRight : '1rem', marginLeft : '3rem'}}>Income period end</label>
+                            <DatePicker selected={this.state.incomePeriod.periodEnd} dateFormat="dd MMMM yyyy"  name="priceDateStart" maxDate={new Date()} onChange={this.setIncomeDateEnd} />
+                            <Button type="button" className="btn btn-secondary" style={{marginLeft : '4rem'}} onClick={this.generateIncomeReport}>Generate</Button>
+                        </Form>
+                    </Navbar.Collapse>
+                </Navbar>
+                <br/><br/>
+                <LineChart
+                    width={1500}
+                    height={400}
+                    data={this.state.incomePeriodData}
                     margin={{
                         top: 5, right: 30, left: 20, bottom: 5,
                     }}
@@ -143,9 +136,8 @@ export default class PharmacyCharts extends React.Component{
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="pv" fill="#8884d8" />
-
-                </BarChart>
+                    <Line type="monotone" dataKey="income" stroke="#8884d8" activeDot={{ r: 8 }} />
+                </LineChart>
             </div>
         );
     }
@@ -287,4 +279,53 @@ export default class PharmacyCharts extends React.Component{
                 })
             })
     }
+
+    convertDates = (periodDate) => {
+        return moment(periodDate).format('YYYY-MM-DD');
+    }
+
+    generateIncomeReport = () => {
+        // let temp = this.state.incomePeriod;
+        // temp.periodStart = this.convertDates(temp.periodStart) + " 12:00:00";
+        // temp.periodEnd = this.convertDates(temp.periodEnd) + " 12:00:00";
+
+        axios.post("http://localhost:8080/api/pharmacy/getPharmacyIncomeReportByPeriod", {
+            periodStart : this.convertDates(this.state.incomePeriod.periodStart) + " 12:00:00",
+            periodEnd : this.convertDates(this.state.incomePeriod.periodEnd) + " 12:00:00",
+            pharmacyId : 1
+        })
+            .then((res) => {
+                let temp = [];
+                res.data.map(reportDTO => {
+                    let item = {
+                        name: reportDTO.chartName,  income:reportDTO.data
+                    };
+                    temp.push(item);
+                });
+
+                this.setState({
+                    incomePeriodData : temp
+                })
+            })
+            .catch(() => {
+                alert("End date must be after income start date.");
+            })
+    }
+
+    setIncomeDateStart = (date) => {
+        let incomePeriod = this.state.incomePeriod;
+        incomePeriod.periodStart = date;
+        this.setState({
+            incomePeriod : incomePeriod
+        })
+    }
+
+    setIncomeDateEnd = (date) => {
+        let incomePeriod = this.state.incomePeriod;
+        incomePeriod.periodEnd = date;
+        this.setState({
+            incomePeriod : incomePeriod
+        })
+    }
 }
+
