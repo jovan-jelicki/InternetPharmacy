@@ -59,7 +59,7 @@ public interface AppointmentService extends CRUDService<Appointment>{
 
     Collection<ReportsDTO> getAppointmentsYearlyReport(Long pharmacyId);
 
-    Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd ,Long pharmacyId);
+    Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd ,Long pharmacyId, EmployeeType employeeType);
 
 
 

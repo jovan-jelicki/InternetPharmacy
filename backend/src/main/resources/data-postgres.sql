@@ -315,64 +315,64 @@ insert into appointment (id,  examiner_id, appointment_status,  patient_id, peri
 
 -- NE DIRAJ MI OVO NI SLUCAJNO, TREBA MI ZA DUGOROCNI REPORT!!!!!  Potpis : David!!!
 insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (10,3,0, 0, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 1, null,null,0, true);
+values (10,3,1, 0, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (11,3, 0, 6, '2021-01-01 14:00:00', '2021-01-01 13:00:00', 1, null,null,0, true);
+values (11,3, 1, 6, '2021-01-01 14:00:00', '2021-01-01 13:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (12,3 ,0, 0, '2021-01-01 16:00:00', '2021-01-01 15:00:00', 1, null,null,0, true);
+values (12,3 ,1, 0, '2021-01-01 16:00:00', '2021-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (13,3 ,0, 0, '2020-12-01 16:00:00', '2020-12-01 15:00:00', 1, null,null,0, true);
+values (13,3 ,1, 0, '2020-12-01 16:00:00', '2020-12-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (14,3 ,0, 0, '2020-11-01 16:00:00', '2020-11-01 15:00:00', 1, null,null,0, true);
+values (14,3 ,1, 0, '2020-11-01 16:00:00', '2020-11-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (15,3 ,0, 0, '2020-10-01 16:00:00', '2020-10-01 15:00:00', 1, null,null,0, true);
+values (15,3 ,1, 0, '2020-10-01 16:00:00', '2020-10-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (16,3 ,0, 0, '2020-09-01 16:00:00', '2020-09-01 15:00:00', 1, null,null,0, true);
+values (16,3 ,1, 0, '2020-09-01 16:00:00', '2020-09-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (17,3 ,0, 0, '2020-08-01 16:00:00', '2020-08-01 15:00:00', 1, null,null,0, true);
+values (17,3 ,1, 0, '2020-08-01 16:00:00', '2020-08-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (18,3 ,0, 0, '2020-07-01 16:00:00', '2020-07-01 15:00:00', 1, null,null,0, true);
+values (18,3 ,1, 0, '2020-07-01 16:00:00', '2020-07-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (19,3 ,0, 0, '2020-06-01 16:00:00', '2020-06-01 15:00:00', 1, null,null,0, true);
+values (19,3 ,1, 0, '2020-06-01 16:00:00', '2020-06-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (20,3 ,0, 0, '2020-05-01 16:00:00', '2020-05-01 15:00:00', 1, null,null,0, true);
+values (20,3 ,1, 0, '2020-05-01 16:00:00', '2020-05-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (21,3 ,0, 0, '2020-04-01 16:00:00', '2020-04-01 15:00:00', 1, null,null,0, true);
+values (21,3 ,1, 0, '2020-04-01 16:00:00', '2020-04-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (22,3 ,0, 0, '2020-03-01 16:00:00', '2020-03-01 15:00:00', 1, null,null,0, true);
+values (22,3 ,1, 0, '2020-03-01 16:00:00', '2020-03-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (23,3 ,0, 0, '2020-02-01 16:00:00', '2020-02-01 15:00:00', 1, null,null,0, true);
+values (23,3 ,1, 0, '2020-02-01 16:00:00', '2020-02-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (24,3 ,0, 0, '2020-01-01 16:00:00', '2020-01-01 15:00:00', 1, null,null,0, true);
+values (24,3 ,1, 0, '2020-01-01 16:00:00', '2020-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (25,3 ,0, 0, '2020-01-01 16:00:00', '2020-01-01 15:00:00', 1, null,null,0, true);
+values (25,3 ,1, 0, '2020-01-01 16:00:00', '2020-01-01 15:00:00', 1, null,null,0, true);
 
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (26,3 ,0, 0, '2019-01-01 16:00:00', '2019-01-01 15:00:00', 1, null,null,0, true);
+values (26,3 ,1, 0, '2019-01-01 16:00:00', '2019-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (27,3 ,0, 0, '2019-01-01 16:00:00', '2019-01-01 15:00:00', 1, null,null,0, true);
+values (27,3 ,1, 0, '2019-01-01 16:00:00', '2019-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (28,3 ,0, 0, '2019-01-01 16:00:00', '2019-01-01 15:00:00', 1, null,null,0, true);
+values (28,3 ,1, 0, '2019-01-01 16:00:00', '2019-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (38,3 ,0, 0, '2018-01-01 16:00:00', '2018-01-01 15:00:00', 1, null,null,0, true);
+values (38,3 ,1, 0, '2018-01-01 16:00:00', '2018-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (29,3 ,0, 0, '2017-01-01 16:00:00', '2017-01-01 15:00:00', 1, null,null,0, true);
+values (29,3 ,1, 0, '2017-01-01 16:00:00', '2017-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (30,3 ,0, 0, '2016-01-01 16:00:00', '2016-01-01 15:00:00', 1, null,null,0, true);
+values (30,3 ,1, 0, '2016-01-01 16:00:00', '2016-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (31,3 ,0, 0, '2015-01-01 16:00:00', '2015-01-01 15:00:00', 1, null,null,0, true);
+values (31,3 ,1, 0, '2015-01-01 16:00:00', '2015-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (32,3 ,0, 0, '2014-01-01 16:00:00', '2014-01-01 15:00:00', 1, null,null,0, true);
+values (32,3 ,1, 0, '2014-01-01 16:00:00', '2014-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (33,3 ,0, 0, '2013-01-01 16:00:00', '2013-01-01 15:00:00', 1, null,null,0, true);
+values (33,3 ,1, 0, '2013-01-01 16:00:00', '2013-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (34,3 ,0, 0, '2012-01-01 16:00:00', '2012-01-01 15:00:00', 1, null,null,0, true);
+values (34,3 ,1, 0, '2012-01-01 16:00:00', '2012-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (35,3 ,0, 0, '2011-01-01 16:00:00', '2011-01-01 15:00:00', 1, null,null,0, true);
+values (35,3 ,1, 0, '2011-01-01 16:00:00', '2011-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (36,3 ,0, 0, '2011-01-01 16:00:00', '2011-01-01 15:00:00', 1, null,null,0, true);
+values (36,3 ,1, 0, '2011-01-01 16:00:00', '2011-01-01 15:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-values (37,3 ,0, 0, '2010-01-01 16:00:00', '2010-01-01 15:00:00', 1, null,null,0, true);
+values (37,3 ,1, 0, '2010-01-01 16:00:00', '2010-01-01 15:00:00', 1, null,null,0, true);
 
 --- kraj
 
