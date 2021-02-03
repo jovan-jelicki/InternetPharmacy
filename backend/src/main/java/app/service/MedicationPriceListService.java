@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public interface MedicationPriceListService extends CRUDService<MedicationPriceList>{
 
-    MedicationPriceList GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date);
+    Double GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date);
 
     Collection<MedicationPriceListDTO> getCurrentPriceListsByPharmacy(Long pharmacyId);
 

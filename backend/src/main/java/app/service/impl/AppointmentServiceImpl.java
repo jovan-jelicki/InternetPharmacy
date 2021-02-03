@@ -328,8 +328,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd, Long pharmacyId){
-        Collection<Appointment> temp = appointmentRepository.getSuccessfulAppointmentCountByPeriodAndPharmacy(dateStart, dateEnd, pharmacyId);
+    public Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd, Long pharmacyId, EmployeeType employeeType){
+        Collection<Appointment> temp = appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dateStart, dateEnd, pharmacyId, employeeType);
         return temp;
     }
 
@@ -358,7 +358,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByMonth = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
             String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
             appointmentCountByMonth.add(new ReportsDTO(monthName,temp));
         }
@@ -391,7 +391,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByQuarter = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
             String monthNameStart = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
             String monthNameEnd = allDates.get(i+1).format(DateTimeFormatter.ofPattern("MMM"));
             appointmentCountByQuarter.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd,temp));
@@ -425,7 +425,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByYear = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
             String year = allDates.get(i).format(DateTimeFormatter.ofPattern("yyyy"));
             appointmentCountByYear.add(new ReportsDTO(year,temp));
         }
