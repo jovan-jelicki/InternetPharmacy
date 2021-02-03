@@ -92,14 +92,13 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
     private boolean isOverlapping (Period periodA, Period periodB) {
         //A A, B B
         //B B, A A
-        if (periodA.getPeriodStart().isBefore(periodB.getPeriodStart()) && periodA.getPeriodStart().isBefore(periodB.getPeriodEnd())
-            && periodA.getPeriodEnd().isBefore(periodB.getPeriodStart()) && periodA.getPeriodEnd().isBefore(periodB.getPeriodEnd()))
+        if (periodA.getPeriodStart().minusMinutes(1).isBefore(periodB.getPeriodStart()) && periodA.getPeriodStart().minusMinutes(1).isBefore(periodB.getPeriodEnd())
+            && periodA.getPeriodEnd().minusMinutes(1).isBefore(periodB.getPeriodStart()) && periodA.getPeriodEnd().minusMinutes(1).isBefore(periodB.getPeriodEnd()))
             return false;
-        else if (periodB.getPeriodStart().isBefore(periodA.getPeriodStart()) && periodB.getPeriodStart().isBefore(periodA.getPeriodEnd())
-            && periodB.getPeriodEnd().isBefore(periodA.getPeriodStart()) && periodB.getPeriodEnd().isBefore(periodA.getPeriodEnd()))
+        else if (periodB.getPeriodStart().minusMinutes(1).isBefore(periodA.getPeriodStart()) && periodB.getPeriodStart().minusMinutes(1).isBefore(periodA.getPeriodEnd())
+            && periodB.getPeriodEnd().minusMinutes(1).isBefore(periodA.getPeriodStart()) && periodB.getPeriodEnd().minusMinutes(1).isBefore(periodA.getPeriodEnd()))
             return false;
-        else
-            return true;
+        return true;
     }
 
     @Override
