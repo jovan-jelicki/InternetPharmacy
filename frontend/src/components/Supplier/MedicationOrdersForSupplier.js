@@ -2,6 +2,7 @@ import React from "react";
 import {Button, Modal} from "react-bootstrap";
 import {ButtonGroup, Input} from "rsuite";
 import Dropdown from "react-dropdown";
+import axios from "axios";
 
 
 const options = [
@@ -22,40 +23,18 @@ export default class MedicationOrdersForSupplier extends React.Component {
             radioProcessed : '3',
         }
     }
-
-    componentDidMount() {
-
-        let medicationOrders = [
-            {
-                pharmacyAdmin : {
-                    firstName : 'Mirko',
-                    lastName : 'Mirkovic'
-                },
-                deadLine : '21.3.2021.',
-                medicationQuantity: {
-
-                },
-                status : 'pending',
-                medicationOffers : []
-            },
-            {
-                pharmacyAdmin : {
-                    firstName : 'Jelena',
-                    lastName : 'Rozga'
-                },
-                deadLine : '13.5.2021.',
-                medicationQuantity: {
-
-                },
-                status : 'processed',
-                medicationOffers : []
-            }
-        ];
-
-        this.setState({
-            medicationOrders : medicationOrders
-        })
+    async componentDidMount() {
+        await axios
+            .get('http://localhost:8080/api/medicationOrder/getAll')
+            .then((res) => {
+                this.setState({
+                    medicationOrders : res.data
+                })
+                console.log(this.state.medicationOrders);
+            })
     }
+
+
 
     render() {
 
@@ -63,8 +42,6 @@ export default class MedicationOrdersForSupplier extends React.Component {
             <div className="container-fluid">
 
                 <h1>Medication orders</h1>
-
-
                 <br/>
                 <table className="table table-hover">
                     <thead>
@@ -82,9 +59,13 @@ export default class MedicationOrdersForSupplier extends React.Component {
                         <tr>
                             <th scope="row">{index+1}</th>
                             <td>{medicationOrder.pharmacyAdmin.firstName + ' ' + medicationOrder.pharmacyAdmin.lastName}</td>
-                            <td>{medicationOrder.deadLine}</td>
+                            <td>{medicationOrder.deadline.split("T")[0]}</td>
                             <td>
-                                <Dropdown options={options}  value={defaultOption} />
+                                {medicationOrder.medicationQuantity.map((e, key) => {
+                                   return <option key={key} value={e.medication}>{e.medication.name} | {e.quantity}</option>
+
+                                })
+                            }
                             </td>
                             <td>
                                 <Button variant="primary" onClick={this.showOffersButtonClick}>

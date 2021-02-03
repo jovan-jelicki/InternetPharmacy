@@ -84,4 +84,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
         return medicationOrderRepository.getAllMedicationOrdersByPharmacy(pharmacyId).stream()
                 .map(medicationOrder -> new MedicationOrderDTO(medicationOrder)).collect(Collectors.toList());
     }
+
+    @Override
+    public Collection<MedicationOrderDTO> getMedicationOrderByPharmacyAdmin(Long pharmacyAdminId) { return medicationOrderRepository.getMedicationOrderByPharmacyAdmin(pharmacyAdminId);}
 }
