@@ -18,7 +18,7 @@ export default class ReviewedClients extends React.Component {
     componentDidMount() {
         axios
             .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getFinishedByExaminer', {
-                id : 3,
+                id : 2,
                 type : 1
             })
             .then(res => {
@@ -51,6 +51,8 @@ export default class ReviewedClients extends React.Component {
                     <Button onClick={this.sortByDateOfAppointment} style={{height : 40}} type="button" className="btn btn-secondary"> Sort by date of appointment</Button>
                     <FormControl className="mt-2 mb-2" style={{width : 200, marginLeft : 200}} value={this.state.query} placeholder={"Search clients..."} onChange={this.handleInputChange} />
                 </FormGroup>
+                <hr className="mt-2 mb-3"/>
+
                 <Table style={{"borderWidth":"1px", 'borderColor':"#aaaaaa", 'borderStyle':'solid'}} striped hover>
                     <tbody>
                         <tr>

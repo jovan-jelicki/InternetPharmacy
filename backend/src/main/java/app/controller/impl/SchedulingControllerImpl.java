@@ -5,12 +5,15 @@ import app.dto.AppointmentSearchDTO;
 import app.dto.CounselingSearchDTO;
 import app.model.appointment.Appointment;
 import app.model.user.EmployeeType;
+import app.model.user.Patient;
 import app.service.CounselingService;
+import app.service.EmailService;
 import app.service.ExaminationService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,15 +23,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "api/scheduling")
 public class SchedulingControllerImpl {
-    private CounselingService counselingService;
-    private ExaminationService examinationService;
-    private PharmacistService pharmacistService;
+    private final CounselingService counselingService;
+    private final ExaminationService examinationService;
+    private final PharmacistService pharmacistService;
+    private final EmailService emailService;
 
     @Autowired
-    public SchedulingControllerImpl(CounselingService counselingService, PharmacistService pharmacistService, ExaminationService examinationService) {
+    public SchedulingControllerImpl(EmailService emailService, CounselingService counselingService, PharmacistService pharmacistService, ExaminationService examinationService) {
         this.counselingService = counselingService;
         this.pharmacistService = pharmacistService;
         this.examinationService = examinationService;
+        this.emailService = emailService;
     }
 
     @PostMapping(value = "/search", consumes = "application/json")
@@ -47,9 +52,25 @@ public class SchedulingControllerImpl {
 
     @PostMapping(value = "/pharmacistScheduling", consumes = "application/json")
     public ResponseEntity<Boolean> pharmacistScheduling(@RequestBody Appointment appointment){
-        if(counselingService.pharmacistScheduling(appointment))
+        if(counselingService.pharmacistScheduling(appointment)) {
+            sendNotificationToPatient(appointment.getPatient());
             return new ResponseEntity<>(true, HttpStatus.OK);
+        }
         return new ResponseEntity<>(false, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @Async
+    public void sendNotificationToPatient(Patient patient){
+        try {
+            new Thread(new Runnable() {
+                public void run(){
+                    emailService.sendMail(patient.getCredentials().getEmail(), "New appointemnt", "You have new appointment scheduled!");
+                }
+            }).start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @GetMapping(value = "/counseling-upcoming/{id}")
