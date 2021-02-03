@@ -1,11 +1,12 @@
 import React from "react";
-import { Container, Button} from "react-bootstrap";
+import {Container, Button, Modal} from "react-bootstrap";
 import ReviewedClients from "../ReviewedClients";
 import VacationRequest from "../VacationRequest";
 import PharmacistProfilePage from "./PharmacistProfilePage";
 import PharmacistWorkingHours from "./PharmacistWorkingHours";
 import PharmacistConsultationStart from "./PharmacistConsultationStart";
 import PharmacistGiveMedicine from "./PharmacistGiveMedicine";
+import axios from "axios";
 
 export default class PharmacistHomePage extends React.Component {
     constructor(props) {
@@ -13,8 +14,25 @@ export default class PharmacistHomePage extends React.Component {
         this.state = {
             role: this.props.role,
             Id: this.props.Id,
-            navbar : "reviewedClients"
+            navbar : "reviewedClients",
+            showModal : false,
+            oldPw : "",
+            newPw : "",
+            repeatPw : ""
         }
+    }
+
+    componentDidMount() {
+        axios
+            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/pharmacist/isAccountApproved/' + 1)
+            .then(res => {
+                if(!res.data){
+                    this.setState({
+                        showModal : true
+                    })
+                }
+            })
+            .catch(res => alert("Greska!"));
     }
 
     render() {
@@ -46,8 +64,55 @@ export default class PharmacistHomePage extends React.Component {
                     </ul>
                 </Container>
                 {this.renderNavbar()}
+                {this.showModalDialog()}
             </div>
         );
+    }
+
+    showModalDialog = () => {
+        return (
+            <Modal backdrop="static" show={this.state.showModal} onHide={this.handleModal}>
+                <Modal.Header>
+                    <Modal.Title>Verify account!</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p> You have to change password when you log in for first time.</p> <br/>
+                    <p> First password : </p> <input name="oldPw" onChange={this.handleInputChange} value={this.state.oldPw} type={"password"}/>
+                    <p> New password : </p> <input name="newPw" onChange={this.handleInputChange} value={this.state.newPw} type={"password"}/>
+                    <p> Repeat new password : </p> <input name="repeatPw" onChange={this.handleInputChange} value={this.state.repeatPw} type={"password"}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={this.sendData}>
+                        Send
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        )
+    }
+
+    sendData = () => {
+        axios
+            .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/pharmacist/pass', {
+                'userId' : 1,
+                'oldPassword' : this.state.oldPw,
+                'newPassword' : this.state.newPw,
+                'repeatedPassword' : this.state.repeatPw
+             })
+            .then(res => {
+                if(!res.data){
+                    this.setState({
+                        showModal : false
+                    })
+                }
+            })
+            .catch(res => alert("Greska!"));
+    }
+
+    handleInputChange = (event) => {
+        const target = event.target;
+        this.setState({
+            [target.name] : target.value
+        })
     }
 
     handleChange = (event) => {

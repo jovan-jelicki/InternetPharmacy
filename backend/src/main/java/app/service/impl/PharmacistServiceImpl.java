@@ -39,6 +39,7 @@ public class PharmacistServiceImpl implements PharmacistService {
         Pharmacist user = _user.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());
+        user.setApprovedAccount(true);
         save(user);
     }
 
@@ -55,6 +56,7 @@ public class PharmacistServiceImpl implements PharmacistService {
     @Override
     public Pharmacist save(Pharmacist entity) {
         entity.getWorkingHours().setPharmacy(pharmacyRepository.findById(entity.getWorkingHours().getPharmacy().getId()).get());
+        entity.setApprovedAccount(true);
         return pharmacistRepository.save(entity);
     }
 

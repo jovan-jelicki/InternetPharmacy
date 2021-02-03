@@ -39,7 +39,10 @@ public class DermatologistControllerImpl implements DermatologistController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(dermatologistService.save(convertDTOtoEntity(entity)), HttpStatus.CREATED);
     }
-
+    @GetMapping(value = "/isAccountApproved/{id}")
+    public ResponseEntity<Boolean> isAccountApproved(@PathVariable Long id){
+        return new ResponseEntity<>(dermatologistService.read(id).get().getApprovedAccount(), HttpStatus.OK);
+    }
 
     @GetMapping
     public ResponseEntity<ArrayList<DermatologistDTO>> read() {
