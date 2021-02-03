@@ -1,19 +1,25 @@
 import React from "react";
-import {Button, Col, Form, Modal} from "react-bootstrap";
+import { Button, Form, Modal} from "react-bootstrap";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
+import { createHashHistory } from 'history'
+import * as path from "path";
 
 
-export default class Login extends React.Component {
+class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            'password': '',
-            'email': '',
+            user:null,
+            password: '',
+            email: '',
             errors: {
-                'email': 'Enter Email.',
-                'password': 'Enter Password.'
+                email: 'Enter Email.',
+                password: 'Enter Password.'
             },
-            submitted: false
+            submitted: false,
+            error: false,
+            errorText:'The email address or password that you have entered does not match any account. Please try again.'
         }
         this.handleInputChange = this.handleInputChange.bind(this);
     }
@@ -33,7 +39,7 @@ export default class Login extends React.Component {
         this.setState({
             showModal : !this.state.showModal,
             password: '',
-            'email': '',
+            email: '',
         });
     }
     validationErrorMessage = (event) => {
@@ -65,18 +71,87 @@ export default class Login extends React.Component {
     }
 
     async sendData() {
+        //console.log(this.state.email)
+        //console.log(this.state.password)
         axios
-            .post('http://localhost:8080/api/users', {
-                'email':this.state.user.email,
-                'password':this.state.user.password
+            .post('http://localhost:8080/auth/users', {
+                'email':this.state.email,
+                'password':this.state.password
             })
             .then(res => {
-
-            });
+                this.setState({
+                    user:res.data
+                })
+                this.redirect()
+                console.log(this.state.user)
+            })
+            .catch(
+                this.state.error = true
+            );
 
     }
 
+    redirect=()=>{
+        let type=this.state.user.type
+        console.log(type)
+        const history = createHashHistory()
+
+
+        if(type=="ROLE_patient"){ //ROLE_patient
+            this.props.history.push({
+                pathname: "/patient-profile",
+                state: {
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+
+        }else if(type=="ROLE_dermatologist"){ //ROLE_dermatologist
+            this.props.history.push({
+                pathname: "/dermatologistHomePage",
+                state: {
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+        }else if(type=="ROLE_pharmacist"){ //ROLE_pharmacist
+            this.props.history.push({
+                pathname: "//pharmacistHomePage",
+                state: {
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+        }else if(type=="ROLE_pharmacyAdmin"){ //ROLE_pharmacyAdmin
+            this.props.history.push({
+                pathname: "/pharmacy-admin-profile",
+                state: {
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+        }else if(type=="ROLE_supplier"){ //ROLE_supplier
+            this.props.history.push({
+                pathname: "/supplierHomePage",
+                state: {
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+        }else if(type=="ROLE_systemAdmin"){ //ROLE_systemAdmin
+            this.props.history.push({
+                pathname: "/systemAdmin",
+                state: {
+                email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    userId: this.state.user.id
+                }
+            });
+        }
+    }
+
+
     loginForm = async (event) => {
+        this.state.error = false
         this.setState({ submitted: true });
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
@@ -108,6 +183,8 @@ export default class Login extends React.Component {
                                 <Form.Control type="password"  name="password" placeholder="password"  value={this.state.password} onChange={(e) => { this.handleInputChange(e)} } />
                                 { this.state.submitted && this.state.errors.password.length > 0 &&  <span className="text-danger">{this.state.errors.password}</span>}
 
+                                {this.state.error &&  <span className="text-danger">{this.state.errorText}</span>}
+
                             </Form.Group>
                         </Form>
                     </Modal.Body>
@@ -129,4 +206,4 @@ export default class Login extends React.Component {
     }
 
 
-}
+}export default withRouter(Login);
