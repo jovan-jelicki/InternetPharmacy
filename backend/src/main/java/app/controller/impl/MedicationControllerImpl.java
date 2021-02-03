@@ -1,9 +1,7 @@
 package app.controller.impl;
 
 import app.dto.MedicationSearchDTO;
-import app.dto.PharmacySearchDTO;
 import app.model.medication.Medication;
-import app.model.pharmacy.Pharmacy;
 import app.service.MedicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

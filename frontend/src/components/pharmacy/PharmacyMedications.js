@@ -284,6 +284,18 @@ export default class PharmacyMedications extends React.Component{
 
     deleteMedication = (medication) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + medication.name + ' from your medications list?');
+        if (isBoss) {
+            console.log(medication);
+            axios.put("http://localhost:8080/api/pharmacy/deleteMedicationFromPharmacy", medication)
+                .then((res) => {
+                    alert("Medication deleted successfully from pharmacay!");
+                    this.fetchNotContainedMedicationsInPharmacy();
+                    this.fetchPharmacyMedicationListingDTOs();
+                })
+                .catch(() => {
+                    alert("Medication was not deleted due to requested medication reservations.");
+                })
+        }
     }
 
     editMedication = (medication) => {

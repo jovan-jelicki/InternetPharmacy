@@ -1,9 +1,7 @@
 package app.dto;
 
 import app.model.medication.EPrescription;
-import app.model.medication.Medication;
 import app.model.medication.MedicationQuantity;
-import app.model.time.Period;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

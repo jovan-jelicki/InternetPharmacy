@@ -1,10 +1,9 @@
 package app.service;
 
+import app.dto.AppointmentSearchDTO;
 import app.model.appointment.Appointment;
 import app.model.user.Pharmacist;
-import app.dto.AppointmentSearchDTO;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface CounselingService {

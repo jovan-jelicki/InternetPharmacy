@@ -107,4 +107,28 @@ public class PharmacyControllerImpl {
     }*/
 
 
+    @PutMapping(value = "/deleteMedicationFromPharmacy", consumes = "application/json")
+    public ResponseEntity<Boolean> deleteMedicationFromPharmacy(@RequestBody PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
+        if(!pharmacyService.existsById(pharmacyMedicationListingDTO.getPharmacyId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (pharmacyService.deleteMedicationFromPharmacy(pharmacyMedicationListingDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value = "/getMedicationsConsumptionMonthlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionMonthlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(pharmacyService.getMedicationsConsumptionMonthlyReport(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getMedicationsConsumptionQuarterlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionQuarterlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(pharmacyService.getMedicationsConsumptionQuarterlyReport(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getMedicationsConsumptionYearlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionYearlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(pharmacyService.getMedicationsConsumptionYearlyReport(pharmacyId), HttpStatus.OK);
+    }
+
 }
