@@ -11,6 +11,7 @@ import PharmacyReports from "../components/pharmacy/PharmacyReports";
 import AppointmentsList from "../components/pharmacy/AppointmentsList";
 import PharmacyProfile from "../components/pharmacy/PharmacyProfile";
 import axios from "axios";
+import PharmacyCharts from "../components/pharmacy/PharmacyCharts";
 
 
 export default class PharmacyPage extends React.Component{
@@ -86,6 +87,9 @@ export default class PharmacyPage extends React.Component{
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="editPharmacyProfile" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Edit pharmacy profile</a>
                     </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="charts" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Charts</a>
+                    </li>
                 </ul>
                 {this.renderNavbar()}
             </div>
@@ -146,6 +150,10 @@ export default class PharmacyPage extends React.Component{
         else if (this.state.navbar === 'medicationQueries')
             return (
                 <PharmacyMedicationQueries />
+            );
+        else if (this.state.navbar === 'charts')
+            return (
+                <PharmacyCharts />
             );
     }
 

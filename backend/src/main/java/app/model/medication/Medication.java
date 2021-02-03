@@ -1,7 +1,6 @@
 package app.model.medication;
 
 import app.dto.MedicationSearchDTO;
-import app.dto.PharmacySearchDTO;
 
 import javax.persistence.*;
 import java.util.Set;

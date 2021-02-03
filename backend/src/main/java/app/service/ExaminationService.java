@@ -1,8 +1,6 @@
 package app.service;
 
-import app.dto.AppointmentSearchDTO;
 import app.model.appointment.Appointment;
-import app.model.user.Pharmacist;
 
 import java.util.Collection;
 

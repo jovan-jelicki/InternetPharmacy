@@ -1,7 +1,6 @@
 package app.service.impl;
 
 import app.dto.MedicationSearchDTO;
-import app.dto.PharmacySearchDTO;
 import app.model.medication.Ingredient;
 import app.model.medication.Medication;
 import app.model.medication.MedicationQuantity;
