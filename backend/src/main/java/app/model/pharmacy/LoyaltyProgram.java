@@ -5,7 +5,8 @@ import javax.persistence.*;
 @Entity
 public class LoyaltyProgram {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "loyalty_program_generator")
+    @SequenceGenerator(name="loyalty_program_generator", sequenceName = "loyalty_program_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     @Column(nullable = false)

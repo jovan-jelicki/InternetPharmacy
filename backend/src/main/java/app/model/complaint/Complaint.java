@@ -8,7 +8,8 @@ import javax.persistence.*;
 public class Complaint {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "complaint_generator")
+   @SequenceGenerator(name="complaint_generator", sequenceName = "complaint_seq", allocationSize=50, initialValue = 1000)
    private Long id;
 
    @ManyToOne

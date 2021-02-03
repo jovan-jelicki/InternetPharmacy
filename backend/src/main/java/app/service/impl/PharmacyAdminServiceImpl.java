@@ -19,6 +19,11 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
     }
 
     @Override
+    public PharmacyAdmin getPharmacyAdminByPharmacy(Long pharmacyId) {
+        return pharmacyAdminRepository.getPharmacyAdminByPharmacy(pharmacyId);
+    }
+
+    @Override
     public PharmacyAdmin save(PharmacyAdmin entity) {
         return pharmacyAdminRepository.save(entity);
     }
@@ -61,4 +66,11 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         else if(!passwordKit.getNewPassword().equals(passwordKit.getRepeatedPassword()))
             throw new IllegalArgumentException("Entered passwords doesn't match");
     }
+    public PharmacyAdmin findByEmailAndPassword(String email, String password) { return pharmacyAdminRepository.findByEmailAndPassword(email, password);}
+
+    @Override
+    public PharmacyAdmin findByEmail(String email) {
+        return pharmacyAdminRepository.findByEmail(email);
+    }
+
 }

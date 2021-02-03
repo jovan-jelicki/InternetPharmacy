@@ -8,7 +8,8 @@ import javax.persistence.*;
 public class Promotion {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "promotion_generator")
+    @SequenceGenerator(name="promotion_generator", sequenceName = "promotion_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     private Period period;

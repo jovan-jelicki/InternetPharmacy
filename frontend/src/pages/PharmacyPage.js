@@ -8,6 +8,10 @@ import PharmacyMedicationQueries from "../components/pharmacy/PharmacyMedication
 import PharmacyDescription from "../components/pharmacy/PharmacyDescription";
 import PriceList from "../components/pharmacy/PriceList";
 import PharmacyReports from "../components/pharmacy/PharmacyReports";
+import AppointmentsList from "../components/pharmacy/AppointmentsList";
+import PharmacyProfile from "../components/pharmacy/PharmacyProfile";
+import axios from "axios";
+import PharmacyCharts from "../components/pharmacy/PharmacyCharts";
 
 
 export default class PharmacyPage extends React.Component{
@@ -25,10 +29,7 @@ export default class PharmacyPage extends React.Component{
                     longitude : -0.127758
                 },
                 description : "",
-                dermatologist : [],
-                pharmacist : [],
                 medicationQuantity : [],
-                medicationReservation : [],
                 grade : 0
             },
             navbar : "description",
@@ -38,38 +39,7 @@ export default class PharmacyPage extends React.Component{
     }
 
     componentDidMount() {
-        let pharmacy = {
-            id: 0,
-            name: "Jankovic",
-            grade : 3.89,
-            address: {
-                street: "Gunduliceva 1A",
-                town: "Novi Sad",
-                country: "Serbia",
-                longitude: -0.118092,
-                latitude: 51.509865
-            },
-            description: "Apoteka za sve!",
-            dermatologist: [
-                {
-                    id: 0,
-                    firstName: "Marko",
-                    lastName: "Markovic",
-                    userType: "dermatologist"
-                }
-            ],
-            pharmacist: [
-                {
-                    id: 0,
-                    firstName: "Dragana",
-                    lastName: "Markovic",
-                    userType: "dermatologist"
-                }
-            ],
-        }
-        this.setState({
-            pharmacy : pharmacy
-        })
+       this.fetchPharmacy();
     }
 
 
@@ -91,6 +61,9 @@ export default class PharmacyPage extends React.Component{
                         <a className="nav-link active" href='#' onClick={this.handleChange} name="employees">Dermatolozi & farmaceuti</a>
                     </li>
                     <li className="nav-item">
+                        <a className="nav-link active" href='#' onClick={this.handleChange} name="appointments">Pregledi dermatologa</a>
+                    </li>
+                    <li className="nav-item">
                         <a className="nav-link" href="#" name="medications" onClick={this.handleChange}>Lekovi</a>
                     </li>
                     <li className="nav-item">
@@ -110,6 +83,12 @@ export default class PharmacyPage extends React.Component{
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="reports" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Reports</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="editPharmacyProfile" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Edit pharmacy profile</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="charts" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Charts</a>
                     </li>
                 </ul>
                 {this.renderNavbar()}
@@ -136,13 +115,21 @@ export default class PharmacyPage extends React.Component{
             return (
                 <PharmacyDescription pharmacy = {this.state.pharmacy } />
             )
+        else if (this.state.navbar === 'editPharmacyProfile')
+            return (
+                <PharmacyProfile pharmacy = {this.state.pharmacy} triggerPharmacyDataChange={this.fetchPharmacy}/>
+            )
+        else if (this.state.navbar === 'appointments')
+            return (
+                <AppointmentsList pharmacy = {this.state.pharmacy } />
+            )
         else if (this.state.navbar === 'reports')
             return (
                 <PharmacyReports pharmacy = {this.state.pharmacy } />
             )
         else if (this.state.navbar === 'priceList')
             return (
-                <PriceList pharmacy = {this.state.pharmacy } />
+                <PriceList pharmacy = {this.state.pharmacy } mode = "showCurrentPriceLists"/>
             )
         else if (this.state.navbar === "employees")
             return (
@@ -164,5 +151,18 @@ export default class PharmacyPage extends React.Component{
             return (
                 <PharmacyMedicationQueries />
             );
+        else if (this.state.navbar === 'charts')
+            return (
+                <PharmacyCharts />
+            );
+    }
+
+    fetchPharmacy = () => {
+        axios.get("http://localhost:8080/api/pharmacy/1")
+            .then((res) => {
+                this.setState({
+                    pharmacy : res.data
+                })
+            })
     }
 }

@@ -10,7 +10,8 @@ import java.util.List;
 @Entity
 public class EPrescription {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prescription_generator")
+    @SequenceGenerator(name="prescription_generator", sequenceName = "prescription_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     @Column
@@ -20,7 +21,7 @@ public class EPrescription {
     @JoinColumn
     private Patient patient;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<MedicationQuantity> medicationQuantity;
 
     public EPrescription() {

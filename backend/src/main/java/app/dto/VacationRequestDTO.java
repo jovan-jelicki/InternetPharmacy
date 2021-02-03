@@ -31,6 +31,8 @@ public class VacationRequestDTO {
         this.period = vacationRequest.getPeriod();
         this.vacationRequestStatus = vacationRequest.getVacationRequestStatus();
         this.pharmacy = vacationRequest.getPharmacy();
+        this.pharmacy.setMedicationQuantity(null);
+        this.pharmacy.setMedicationReservation(null);
         this.rejectionNote = vacationRequest.getRejectionNote();
         this.vacationNote = vacationRequest.getVacationNote();
         this.employeeType = vacationRequest.getEmployeeType();

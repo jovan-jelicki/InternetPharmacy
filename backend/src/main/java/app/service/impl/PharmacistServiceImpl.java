@@ -2,32 +2,39 @@ package app.service.impl;
 
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
+import app.model.appointment.Appointment;
+import app.model.user.EmployeeType;
 import app.model.user.Pharmacist;
 import app.repository.PharmacistRepository;
 import app.repository.PharmacyRepository;
+import app.service.AppointmentService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PharmacistServiceImpl implements PharmacistService {
     private final PharmacistRepository pharmacistRepository;
     private final PharmacyRepository pharmacyRepository;
+    private final AppointmentService appointmentService;
 
     @Autowired
-    public PharmacistServiceImpl(PharmacistRepository pharmacistRepository, PharmacyRepository pharmacyRepository) {
+    public PharmacistServiceImpl(PharmacistRepository pharmacistRepository, PharmacyRepository pharmacyRepository, AppointmentService appointmentService) {
         this.pharmacistRepository = pharmacistRepository;
         this.pharmacyRepository = pharmacyRepository;
+        this.appointmentService = appointmentService;
     }
 
     @Override
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<Pharmacist> _user = pharmacistRepository.findById(passwordKit.getUserId());
-        if(_user.isEmpty())
+        if(_user.isEmpty() || !_user.get().getActive())
             throw new NullPointerException("User not found");
         Pharmacist user = _user.get();
         validatePassword(passwordKit, user);
@@ -53,27 +60,40 @@ public class PharmacistServiceImpl implements PharmacistService {
 
     @Override
     public Collection<Pharmacist> read() {
-        return pharmacistRepository.findAll();
+        return pharmacistRepository.findAll().stream().filter(pharmacist -> pharmacist.getActive()).collect(Collectors.toList());
     }
 
     @Override
     public PharmacyNameIdDTO getPharmacyOfPharmacist(Long id) {
-        return new PharmacyNameIdDTO(pharmacistRepository.findById(id).get().getWorkingHours().getPharmacy());
+        return new PharmacyNameIdDTO(pharmacistRepository.findById(id).filter(pharmacist -> pharmacist.getActive()).get().getWorkingHours().getPharmacy());
     }
 
     @Override
     public Optional<Pharmacist> read(Long id) {
-        return pharmacistRepository.findById(id);
+        Pharmacist pharmacist = pharmacistRepository.findById(id).get();
+        if (pharmacist.getActive())
+            return pharmacistRepository.findById(id);
+        return Optional.empty();
     }
 
     @Override
     public void delete(Long id) {
-        pharmacistRepository.deleteById(id);
+        Collection<Appointment> ret = appointmentService.GetAllScheduledAppointmentsByExaminerIdAfterDate(id, EmployeeType.pharmacist, LocalDateTime.now());
+        if (ret.size() != 0)
+            return;
+
+        for (Appointment appointment : appointmentService.GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(id, EmployeeType.pharmacist, LocalDateTime.now()))
+            appointmentService.delete(appointment.getId());
+
+        Pharmacist pharmacist = this.read(id).get();
+        pharmacist.setActive(false);
+        pharmacistRepository.save(pharmacist);
     }
 
     @Override
     public boolean existsById(Long id) {
-        return pharmacistRepository.existsById(id);
+        Pharmacist pharmacist = pharmacistRepository.findById(id).get();
+        return pharmacist.getActive();
     }
 
     @Override
@@ -86,4 +106,11 @@ public class PharmacistServiceImpl implements PharmacistService {
         }
         return ret;
     }
+    public Pharmacist findByEmailAndPassword(String email, String password) { return pharmacistRepository.findByEmailAndPassword(email, password);}
+
+    @Override
+    public Pharmacist findByEmail(String email) {
+        return pharmacistRepository.findByEmail(email);
+    }
+
 }

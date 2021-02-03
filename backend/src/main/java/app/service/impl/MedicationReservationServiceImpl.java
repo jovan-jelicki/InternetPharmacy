@@ -1,13 +1,20 @@
 package app.service.impl;
 
 import app.dto.GetMedicationReservationDTO;
+import app.dto.MakeMedicationReservationDTO;
+import app.model.medication.MedicationQuantity;
 import app.model.medication.MedicationReservation;
 import app.model.medication.MedicationReservationStatus;
+import app.model.pharmacy.Pharmacy;
+import app.model.user.Patient;
 import app.model.user.Pharmacist;
 import app.repository.MedicationReservationRepository;
-import app.repository.PharmacistRepository;
+import app.repository.PharmacyRepository;
+import app.service.EmailService;
 import app.service.MedicationReservationService;
+import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,12 +25,18 @@ import java.util.Optional;
 @Service
 public class MedicationReservationServiceImpl implements MedicationReservationService {
     private final MedicationReservationRepository medicationReservationRepository;
-    private final PharmacistRepository pharmacistRepository;
+    private final PharmacistService pharmacistService;
+    private final PharmacyRepository pharmacyRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public MedicationReservationServiceImpl(PharmacistRepository pharmacistRepository,MedicationReservationRepository medicationReservationRepository) {
+    public MedicationReservationServiceImpl(EmailService emailService,PharmacistService pharmacistService,
+                                            MedicationReservationRepository medicationReservationRepository,
+                                            PharmacyRepository pharmacyRepository) {
         this.medicationReservationRepository = medicationReservationRepository;
-        this.pharmacistRepository = pharmacistRepository;
+        this.pharmacistService = pharmacistService;
+        this.pharmacyRepository = pharmacyRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -48,17 +61,36 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
 
     @Override
     public MedicationReservation getMedicationReservationFromPharmacy(GetMedicationReservationDTO getMedicationReservationDTO) {
-        Pharmacist pharmacist = pharmacistRepository.findById(getMedicationReservationDTO.getPharmacistId()).get();
+        Pharmacist pharmacist = pharmacistService.read(getMedicationReservationDTO.getPharmacistId()).get();
         List<MedicationReservation> medicationReservationSet = pharmacist.getWorkingHours().getPharmacy().getMedicationReservation();
         try {
             MedicationReservation medicationReservation = medicationReservationSet.stream().filter(m -> m.getId() == getMedicationReservationDTO.getMedicationId()).findFirst().get();
-            if(!checkMedicationReservationValid(medicationReservation))
+            if(!checkMedicationReservationValid(medicationReservation)){
+                getMedicationQuantityBack(pharmacist.getWorkingHours().getPharmacy() , medicationReservation.getMedicationQuantity());
                 return null;
+            }
             return medicationReservation;
         } catch(Exception e) {
-            e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    @Async
+    public void sendEmailToPatient(Patient patient) {
+        try {
+            emailService.sendMail(patient.getCredentials().getEmail(), "Medication confirmation", "You have successfully pick up a medication!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getMedicationQuantityBack(Pharmacy pharmacy, MedicationQuantity medicationQuantity) {
+        pharmacy.getMedicationQuantity().forEach(quantity -> {
+            if(medicationQuantity.getMedication().getId() == quantity.getMedication().getId())
+                quantity.addQuantity(medicationQuantity.getQuantity());
+        });
+        pharmacyRepository.save(pharmacy);
     }
 
     private boolean checkMedicationReservationValid(MedicationReservation medicationReservation){
@@ -73,5 +105,25 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
     @Override
     public boolean existsById(Long id) {
         return medicationReservationRepository.existsById(id);
+    }
+
+    @Override
+    public MedicationReservation reserve(MakeMedicationReservationDTO entity) {
+        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(entity.getPharmacyId());
+        if(pharmacy.isEmpty())
+            throw new IllegalArgumentException("Pharmacy Id does not exist");
+        MedicationReservation medicationReservation = this.save(entity.getMedicationReservation());
+        pharmacy.get().getMedicationReservation().add(medicationReservation);
+        updateMedicationQuantity(pharmacy.get().getMedicationQuantity(),
+                medicationReservation.getMedicationQuantity());
+        pharmacyRepository.save(pharmacy.get());
+        return medicationReservation;
+    }
+
+    private void updateMedicationQuantity(List<MedicationQuantity> quantities, MedicationQuantity medicationQuantity) {
+        quantities.forEach(quantity -> {
+            if(medicationQuantity.getMedication().getId() == quantity.getMedication().getId())
+                quantity.subtractQuantity(medicationQuantity.getQuantity());
+        });
     }
 }

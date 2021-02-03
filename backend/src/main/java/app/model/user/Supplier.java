@@ -10,7 +10,8 @@ import java.util.List;
 public class Supplier extends User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "supplier_generator")
+    @SequenceGenerator(name="supplier_generator", sequenceName = "supplier_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     @ManyToMany
@@ -22,7 +23,6 @@ public class Supplier extends User {
     public Supplier() {
     }
 
-    @Override
     public Long getId() {
         return id;
     }

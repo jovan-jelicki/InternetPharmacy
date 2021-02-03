@@ -2,11 +2,8 @@ import React from "react";
 import {Button, Modal} from "react-bootstrap";
 import {ButtonGroup, Input} from "rsuite";
 import Dropdown from "react-dropdown";
-
-const options = [
-    'Xanax | 3', 'Brufen | 4', 'Linex | 100'
-];
-const defaultOption = options[0];
+import axios from "axios";
+import moment from "moment";
 
 export default class MedicationOrdersList extends React.Component {
     constructor() {
@@ -23,36 +20,7 @@ export default class MedicationOrdersList extends React.Component {
     }
 
     componentDidMount() {
-        let medicationOrders = [
-            {
-                pharmacyAdmin : {
-                    firstName : 'Mirko',
-                    lastName : 'Mirkovic'
-                },
-                deadLine : '21.3.2021.',
-                medicationQuantity: {
-
-                },
-                status : 'pending',
-                medicationOffers : []
-            },
-            {
-                pharmacyAdmin : {
-                    firstName : 'Jelena',
-                    lastName : 'Rozga'
-                },
-                deadLine : '13.5.2021.',
-                medicationQuantity: {
-
-                },
-                status : 'processed',
-                medicationOffers : []
-            }
-        ];
-
-        this.setState({
-            medicationOrders : medicationOrders
-        })
+        this.fetchMedicationOrders();
     }
 
     render() {
@@ -95,10 +63,11 @@ export default class MedicationOrdersList extends React.Component {
                     {this.state.medicationOrders.map((medicationOrder, index) => (
                         <tr>
                             <th scope="row">{index+1}</th>
-                            <td>{medicationOrder.pharmacyAdmin.firstName + ' ' + medicationOrder.pharmacyAdmin.lastName}</td>
-                            <td>{medicationOrder.deadLine}</td>
+                            <td>{medicationOrder.pharmacyAdminFirstName + ' ' + medicationOrder.pharmacyAdminLastName}</td>
+                            <td>{moment(medicationOrder.deadline).format('DD.MM.YYYY')}</td>
                             <td>
-                                <Dropdown options={options}  value={defaultOption} />
+                                <Dropdown options={medicationOrder.medicationQuantity.map((medicationQuantityItem, index) =>
+                                    medicationQuantityItem.medication.name + "  |  " + medicationQuantityItem.quantity)}  value={medicationOrder.medicationQuantity[0].medication.name + "  |  " + medicationOrder.medicationQuantity[0].quantity} />
                             </td>
                             <td>{medicationOrder.status}</td>
                             <td>
@@ -137,6 +106,15 @@ export default class MedicationOrdersList extends React.Component {
                 </Modal>
             </div>
         );
+    }
+
+    fetchMedicationOrders = () => {
+        axios.get("http://localhost:8080/api/medicationOrder/getAllMedicationOrdersByPharmacy/1")
+            .then((res) => {
+                this.setState({
+                    medicationOrders : res.data
+                })
+            })
     }
 
     handleModal = () => {

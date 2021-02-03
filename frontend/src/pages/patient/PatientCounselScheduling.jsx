@@ -4,32 +4,57 @@ import DateTime from "../../components/DateTime";
 import {Container, Row} from "react-bootstrap";
 import ScheduleCounsel from "../../components/ScheduleCounsel";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
+
 
 class PatientCounselScheduling extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            pharmacies : []
+            pharmacies : [],
+            pharmacists : [],
+            dateTime : ''
         }
         this.search = this.search.bind(this)
+        this.schedule = this.schedule.bind(this)
     }
 
     search(dateTime) {
         axios
             .post('http://localhost:8080/api/scheduling/search', {
                 'timeSlot' : dateTime,
-                'employeeType' : 'pharmacist'
+                'employeeType' : 'pharmacist',
+                'patientId' : 0
             })
             .then(res => {
                 this.setState({
-                    pharmacies : [...new Set(res.data.map(p => p.workingHours.pharmacy))],
-                    pharmacists : res.data
+                    'pharmacies' : [...new Set(res.data.map(x => x.pharmacyDTO))],
+                    'pharmacists' : res.data,
+                    'dateTime' : dateTime
                 })
-            });
+            })
     }
 
-    removeDuplicates(pharmacists) {
-
+    schedule(pharmacyId, pharmacistId) {
+        axios
+        .post('http://localhost:8080/api/appointment/counseling', {
+            'examinerId' : pharmacistId,
+            'type' : 'pharmacist',
+            'active' : true,
+            'appointmentStatus' : 'available',
+            'pharmacy' : {
+                'id' : pharmacyId
+            },
+            'patient' : {
+                'id' : 0
+            },
+            'period' : {
+                'periodStart' : this.state.dateTime
+            }
+        })
+        .then(res => {
+            this.props.history.push('/scheduled-appointments')
+        });
     }
 
     render() {
@@ -40,11 +65,11 @@ class PatientCounselScheduling extends React.Component {
                         <h2>Choose what date & time fits you the best</h2>
                     </Row>
                     <DateTime search={this.search}/>
-                    <ScheduleCounsel data={this.state.pharmacies} pharmacists={this.state.pharmacists}/>
+                    <ScheduleCounsel data={this.state.pharmacies} pharmacists={this.state.pharmacists} schedule={this.schedule}/>
                 </Container>
             </PatientLayout>
         )
     }
 }
 
-export default PatientCounselScheduling
+export default withRouter(PatientCounselScheduling)

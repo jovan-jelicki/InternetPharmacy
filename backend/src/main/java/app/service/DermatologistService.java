@@ -1,5 +1,6 @@
 package app.service;
 
+import app.dto.DermatologistDTO;
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
 import app.model.pharmacy.Pharmacy;
@@ -17,4 +18,11 @@ public interface DermatologistService extends CRUDService<Dermatologist> {
 
     WorkingHours workingHoursInSpecificPharmacy(Long dermatologistId, Pharmacy pharmacy);
 
+    Boolean addDermatologistToPharmacy (DermatologistDTO dermatologistDTO);
+    Dermatologist findByEmailAndPassword(String email, String password);
+    Dermatologist findByEmail(String email);
+
+    Boolean deleteDermatologistFromPharmacy(Long pharmacyId, DermatologistDTO dermatologistDTO);
+
+    void setAppointmentService(AppointmentService appointmentService);
 }

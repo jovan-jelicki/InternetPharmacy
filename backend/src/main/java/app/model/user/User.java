@@ -1,17 +1,18 @@
 package app.model.user;
 
-import javax.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import static javax.persistence.InheritanceType.TABLE_PER_CLASS;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
+import java.util.ArrayList;
+import java.util.Collection;
 
-@Entity
-@Inheritance(strategy=TABLE_PER_CLASS)
-public class User {
 
-    @Id
-    @SequenceGenerator(name = "mySeqGen", sequenceName = "mySeq", initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGen")
-    private Long id;
+@MappedSuperclass
+public abstract class User implements UserDetails {
 
     @Column(nullable = false)
     private String firstName;
@@ -28,13 +29,44 @@ public class User {
 
     public User() {}
 
-    public Long getId() {
-        return id;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<Authority> authorities = new ArrayList<>();
+        Authority authority = new Authority();
+        authority.setName(this.userType.name());
+        authorities.add(authority);
+        return authorities;
+    }
+    @Override
+    public String getPassword() {
+        return this.getCredentials().getPassword();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public String getUsername() {
+        return this.getCredentials().getEmail();
     }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 
     public String getFirstName() {
         return firstName;
@@ -52,9 +84,7 @@ public class User {
         this.lastName = lastName;
     }
 
-    public Credentials getCredentials() {
-        return credentials;
-    }
+    public Credentials getCredentials() {return credentials; }
 
     public void setCredentials(Credentials credentials) {
         this.credentials = credentials;

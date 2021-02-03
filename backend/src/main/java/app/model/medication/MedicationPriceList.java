@@ -7,8 +7,10 @@ import javax.persistence.*;
 
 @Entity
 public class MedicationPriceList {
+
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medication_pricelist_generator")
+   @SequenceGenerator(name="medication_pricelist_generator", sequenceName = "medication_pricelist_seq", allocationSize=50, initialValue = 1000)
    Long id;
 
    @JoinColumn
@@ -25,6 +27,13 @@ public class MedicationPriceList {
    private Pharmacy pharmacy;
 
    public MedicationPriceList() {
+   }
+
+   public MedicationPriceList(Medication medication, double cost, Period period, Pharmacy pharmacy) {
+      this.medication = medication;
+      this.cost = cost;
+      this.period = period;
+      this.pharmacy = pharmacy;
    }
 
    public Long getId() {

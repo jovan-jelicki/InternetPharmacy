@@ -1,7 +1,6 @@
 package app.controller.impl;
 
-import app.dto.PharmacyDTO;
-import app.dto.PharmacySearchDTO;
+import app.dto.*;
 import app.model.pharmacy.Pharmacy;
 import app.service.PharmacyService;
 import app.util.DTO;
@@ -61,9 +60,75 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(new PharmacyDTO(pharmacyService.save(entity)), HttpStatus.CREATED);
     }
 
+    @PutMapping(value = "/editPharmacyProfile", consumes = "application/json")
+    public ResponseEntity<PharmacyDTO> editPharmacyProfile(@DTO(PharmacyDTO.class) Pharmacy pharmacy) {
+        if(!pharmacyService.existsById(pharmacy.getId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new PharmacyDTO(pharmacyService.save(pharmacy)), HttpStatus.CREATED);
+    }
+
     @PostMapping(value = "/dto")
     public void newPharmacyDTOMapping(@DTO(PharmacyDTO.class) Pharmacy pharmacy) {
         pharmacyService.save(pharmacy);
+    }
+
+    @PutMapping(value = "/addNewMedication", consumes = "application/json")
+    public ResponseEntity<Boolean> addNewMedication(@RequestBody AddMedicationToPharmacyDTO addMedicationToPharmacyDTO) {
+        if(!pharmacyService.existsById(addMedicationToPharmacyDTO.getPharmacyId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (pharmacyService.addNewMedication(addMedicationToPharmacyDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value = "/getPharmacyMedicationListing/{pharmacyId}")
+    public ResponseEntity<Collection<PharmacyMedicationListingDTO>> getPharmacyMedicationListing(@PathVariable Long pharmacyId) {
+        return new ResponseEntity<>(pharmacyService.getPharmacyMedicationListingDTOs(pharmacyId), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/editMedicationQuantity", consumes = "application/json")
+    public ResponseEntity<Boolean> editMedicationQuantity(@RequestBody PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
+        if(!pharmacyService.existsById(pharmacyMedicationListingDTO.getPharmacyId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (pharmacyService.editMedicationQuantity(pharmacyMedicationListingDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value = "/getPharmacyByMedication/{medicationId}")
+    public ResponseEntity<Collection<PharmacyMedicationDTO>> getPharmacyByMedication(@PathVariable Long medicationId) {
+        return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
+    }
+
+
+    /*@GetMapping(value = "/getPharmacyContainsMedication")
+    public ResponseEntity<Collection<Pharmacy>> getPharmacyMedicationListing(@PathVariable Long pharmacyId) {
+        return new ResponseEntity<>(pharmacyService.getPharmacyMedicationListingDTOs(pharmacyId), HttpStatus.OK);
+    }*/
+
+
+    @PutMapping(value = "/deleteMedicationFromPharmacy", consumes = "application/json")
+    public ResponseEntity<Boolean> deleteMedicationFromPharmacy(@RequestBody PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
+        if(!pharmacyService.existsById(pharmacyMedicationListingDTO.getPharmacyId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (pharmacyService.deleteMedicationFromPharmacy(pharmacyMedicationListingDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value = "/getMedicationsConsumptionMonthlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionMonthlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(pharmacyService.getMedicationsConsumptionMonthlyReport(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getMedicationsConsumptionQuarterlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionQuarterlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(pharmacyService.getMedicationsConsumptionQuarterlyReport(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getMedicationsConsumptionYearlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionYearlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(pharmacyService.getMedicationsConsumptionYearlyReport(pharmacyId), HttpStatus.OK);
     }
 
 }

@@ -1,8 +1,9 @@
 import React from "react";
-import {Button, Container, FormControl} from "react-bootstrap";
+import {Alert, Button, Container, FormControl} from "react-bootstrap";
 import "../App.css";
 import Script from "react-load-script";
 import axios from "axios";
+import {Redirect} from "react-router";
 
 
 export default class Registration extends React.Component {
@@ -10,6 +11,7 @@ export default class Registration extends React.Component {
         super(props);
         this.state = {
             user: {
+                id:'',
                 email: '',
                 password: '',
                 firstName: '',
@@ -22,7 +24,6 @@ export default class Registration extends React.Component {
                     longitude: -0.127758
                 },
                 telephone: '',
-
             },
             rePassword : '',
             addressPom: {
@@ -45,13 +46,85 @@ export default class Registration extends React.Component {
             },
             validForm: false,
             submitted: false,
-
-
+            buttonConfirm: false,
+            buttonSubmit:false
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.isValidPassword = this.isValidPassword.bind(this);
+    }
+    componentDidMount() {
+        localStorage.setItem("confirmed", JSON.stringify(false));
+    }
+
+    async sendParams() {
+        axios
+            .post('http://localhost:8080/api/patients/save', {
+                'id':'',
+                'firstName' : this.state.user.firstName,
+                'lastName' : this.state.user.lastName,
+                'userType' : 4,
+                'credentials' : {
+                    'email' : this.state.user.email,
+                    'password' : this.state.user.password
+                },
+                'contact' : {
+                    'phoneNumber' : this.state.user.telephone,
+                    'address' : {
+                        'street' : this.state.user.address.street,
+                        'town' : this.state.user.address.town,
+                        'country' : this.state.user.address.country,
+                        'latitude' : this.state.user.address.latitude,
+                        'longitude' : this.state.user.address.longitude
+                    }
+                }
+            })
+            .then(res => {
+
+            });
 
     }
+    async sendMail() {
+        axios
+            .put('http://localhost:8080/api/email/confirm', {
+                'to':"t.kovacevic98@gmail.com",
+                'subject':"Confirm registration",
+                'body':"Hi "+this.state.user.firstName+" You've created a InternetPharmacy account."+
+                        " Please take a moment to confirm your account. Please click the confirmation link.",
+                'link':"http://localhost:3000/confirmRegistration"
+            })
+            .then(res => {
+
+            });
+    }
+
+    confirmForm = (event) => {
+        if(!!localStorage.getItem("confirmed") ? JSON.parse(localStorage.getItem("confirmed")) : false) {
+            this.sendParams();
+            window.location = '/';
+            localStorage.setItem("confirmed", JSON.stringify(false));
+        }
+    }
+
+    submitForm =  (event) => {
+        this.setState({ submitted: true });
+        const user = this.state.user;
+        console.log(this.state.user)
+
+        event.preventDefault();
+        if (this.validateForm(this.state.errors)) {
+            console.info('Valid Form')
+            this.state.buttonSubmit=true;
+            this.state.buttonConfirm=true;
+            this.sendMail();
+            //zakljucaj button
+            //this.sendParams()
+        } else {
+            console.log('Invalid Form')
+        }
+        console.log(this.state.user)
+
+    }
+
 
     handleInputChange = (event) => {
         console.log(event.target.value)
@@ -69,9 +142,9 @@ export default class Registration extends React.Component {
         console.log("dosao")
         console.log(event.target.value)
         this.state.rePassword=event.target.value;
-       // this.setState({
-       //     rePassword: event.target.value
-       // });
+        // this.setState({
+        //     rePassword: event.target.value
+        // });
         console.log(this.state.rePassword)
         this.validationErrorMessage(event);
     }
@@ -96,18 +169,18 @@ export default class Registration extends React.Component {
                 if (this.setAddressParams(address)) {
                     this.setState(
                         {
-                                addressPom: {
-                                    street: this.state.streetP,
-                                    town: this.state.townP,
-                                    country: this.state.countryP,
-                                    latitude: addressObject.geometry.location.lat(),
-                                    longitude: addressObject.geometry.location.lng(),
+                            addressPom: {
+                                street: this.state.streetP,
+                                town: this.state.townP,
+                                country: this.state.countryP,
+                                latitude: addressObject.geometry.location.lat(),
+                                longitude: addressObject.geometry.location.lng(),
 
 
                             },
                         }
                     );
-                  this.state.user.address=this.state.addressPom;
+                    this.state.user.address=this.state.addressPom;
                 }
             } else {
                 this.addressErrors(false)
@@ -158,19 +231,8 @@ export default class Registration extends React.Component {
         }
         this.setState({errors});
     }
-    submitForm = async (event) => {
-        this.setState({ submitted: true });
-        const user = this.state.user;
-        console.log(this.state.user)
 
-        event.preventDefault();
-        if (this.validateForm(this.state.errors)) {
-            console.info('Valid Form')
-        } else {
-            console.log('Invalid Form')
-        }
-        this.sendParams()
-    }
+
 
     validationErrorMessage = (event) => {
         const { name, value } = event.target;
@@ -208,13 +270,8 @@ export default class Registration extends React.Component {
         this.setState({ errors });
     }
 
-    async sendParams() {
-        console.log("DOSAO")
-        await axios
-            .post('http://localhost:8080/api/patients/save',
-                );
 
-    }
+
     validateForm = (errors) => {
         let valid = true;
         Object.entries(errors.user).forEach(item => {
@@ -244,86 +301,121 @@ export default class Registration extends React.Component {
 
             <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
                 <div className="container">
-                    <h1 style={({marginTop: '5rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
+                    <h1 style={({marginTop: '1rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
                 </div>
+                {
+                    this.state.buttonConfirm &&
+                    <Alert variant='success' show={true}  style={({textAlignVertical: "center", textAlign: "center"})}>
+                        Please click on the link that has just been sent to your email to verify your account and
+                        finish the registration process.
+                    </Alert>
+                }
 
-                <div className="row" style={{marginTop: '3rem', marginLeft:'20rem',display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
-                    <label className="col-sm-2 col-form-label">Name</label>
-                    <div className="col-sm-3 mb-2">
-                        <input type="text" value={this.state.user.firstName} name="firstName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="First Name" />
-                        { this.state.submitted && this.state.errors.user.firstName.length > 0 &&  <span className="text-danger">{this.state.errors.user.firstName}</span>}
+                    <div className="row" style={{
+                        marginTop: '3rem',
+                        marginLeft: '20rem',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                        <label className="col-sm-2 col-form-label">Name</label>
+                        <div className="col-sm-3 mb-2">
+                            <input type="text" value={this.state.user.firstName} name="firstName" onChange={(e) => {
+                                this.handleInputChange(e)
+                            }} className="form-control" placeholder="First Name"/>
+                            {this.state.submitted && this.state.errors.user.firstName.length > 0 &&
+                            <span className="text-danger">{this.state.errors.user.firstName}</span>}
 
-                    </div>
-                    <div className="col-sm-3 mb-2" >
-                        <input type="text" value={this.state.lastName} name="lastName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Last Name" />
-                        { this.state.submitted && this.state.errors.user.lastName.length > 0 &&  <span className="text-danger">{this.state.errors.user.lastName}</span>}
+                        </div>
+                        <div className="col-sm-3 mb-2">
+                            <input type="text" value={this.state.lastName} name="lastName" onChange={(e) => {
+                                this.handleInputChange(e)
+                            }} className="form-control" placeholder="Last Name"/>
+                            {this.state.submitted && this.state.errors.user.lastName.length > 0 &&
+                            <span className="text-danger">{this.state.errors.user.lastName}</span>}
 
+                        </div>
+                        <div className="col-sm-4">
+                        </div>
                     </div>
-                    <div className="col-sm-4">
-                    </div>
-                </div>
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Email</label>
                     <div className="col-sm-6 mb-2">
-                        <input type="email" value={this.state.user.email} name="email" onChange={(e) => { this.handleInputChange(e)} }className="form-control" id="email" placeholder="example@gmail.com" />
-                        { this.state.submitted && this.state.errors.user.email.length > 0 && <span className="text-danger">{this.state.errors.user.email}</span>}
+                    <input type="email" value={this.state.user.email} name="email" onChange={(e) => {this.handleInputChange(e)}}className="form-control" id="email" placeholder="example@gmail.com" />
+                        {this.state.submitted && this.state.errors.user.email.length > 0 && <span className="text-danger">{this.state.errors.user.email}</span>}
 
                     </div>
                     <div className="col-sm-4">
                     </div>
-                </div>
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    </div>
+                    <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Tel</label>
                     <div className="col-sm-6 mb-2">
-                        <input type="text" value={this.state.user.telephone} name="telephone" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="telephone" placeholder="+3810640333489" />
-                        { this.state.submitted && this.state.errors.user.telephone.length > 0 && <span className="text-danger">{this.state.errors.user.telephone}</span>}
+                    <input type="text" value={this.state.user.telephone} name="telephone" onChange={(e) => {this.handleInputChange(e)}}  className="form-control" id="telephone" placeholder="+3810640333489" />
+                        {this.state.submitted && this.state.errors.user.telephone.length > 0 && <span className="text-danger">{this.state.errors.user.telephone}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
-                </div>
+                    </div>
 
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Address</label>
                     <div className="col-sm-6 mb-2">
-                        <Script type="text/javascript" url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
-                        <input type="text" id="street" placeholder="Enter Address" value={this.query}/>
+                    <Script type="text/javascript" url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
+                    <input type="text" id="street" placeholder="Enter Address" value={this.query}/>
                         {this.state.submitted && this.state.errors.user.address.length > 0 &&  <span className="text-danger">{this.state.errors.user.address}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
-                </div>
+                    </div>
 
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label className="col-sm-2 col-form-label">Password</label>
                     <div className="col-sm-6 mb-2">
-                        <FormControl name="password" type="password" placeholder="Password"  value={this.state.user.password} onChange={(e) => { this.handleInputChange(e)} }/>
-                        { this.state.submitted && this.state.errors.user.password.length > 0 &&  <span className="text-danger">{this.state.errors.user.password}</span>}
+                    <FormControl name="password" type="password" placeholder="Password"  value={this.state.user.password} onChange={(e) => {this.handleInputChange(e)}}/>
+                     {this.state.submitted && this.state.errors.user.password.length > 0 &&  <span className="text-danger">{this.state.errors.user.password}</span>}
 
                     </div>
                     <div className="col-sm-4">
                     </div>
-                </div>
+                    </div>
 
-                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Repeat password</label>
                     <div className="col-sm-6 mb-2">
-                        <FormControl name="rePassword" type="password" placeholder="Repeat new Password" value={this.state.rePassword} onChange={(e) => { this.handlePassChange(e)} }/>
-                        { this.state.submitted && this.state.errors.user.rePassword.length > 0 &&  <span className="text-danger">{this.state.errors.user.rePassword}</span>}
+                    <FormControl name="rePassword" type="password" placeholder="Repeat new Password" value={this.state.rePassword} onChange={(e) => {this.handlePassChange(e)}}/>
+                     {this.state.submitted && this.state.errors.user.rePassword.length > 0 &&  <span className="text-danger">{this.state.errors.user.rePassword}</span>}
 
                     </div>
                     <div className="col-sm-4">
                     </div>
-                </div>
-
-                <div className="row"style={{marginTop: '1rem'}}>
-                    <div className="col-sm-5 mb-2">
                     </div>
-                    <div className="col-sm-4">
-                        <Button variant="primary" onClick={this.submitForm} >Submit</Button>
-                    </div>
-                </div>
 
-            </div>
+                    <div className="row" style={{marginTop: '1rem'}}>
+                        <div className="col-sm-5 mb-2">
+                        </div>
+                        {
+                            !this.state.buttonConfirm &&
+                            <div className="col-sm-4">
+                                <Button disabled={this.state.buttonSubmit} variant="primary"
+                                        onClick={this.submitForm}>Submit</Button>
+                            </div>
+                        }
+                        {
+                            this.state.buttonConfirm &&
+                            <div className="row" style={{marginTop: '1rem'}}>
+                                <div className="col-sm-5 mb-2">
+                                </div>
+                                <div className="col-sm-4">
+                                    <Button  variant="success" onClick={this.confirmForm}>Confirm</Button>
+                                </div>
+
+                            </div>
+
+                        }
+                    </div>
+
+                </div>
         );
     }
 

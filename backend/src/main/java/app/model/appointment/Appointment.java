@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Appointment {
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointment_generator")
+   @SequenceGenerator(name="appointment_generator", sequenceName = "appointment_seq", allocationSize=50, initialValue = 1000)
    private Long id;
 
    @Column
@@ -20,28 +21,28 @@ public class Appointment {
    @Column
    private String report;
 
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn
    private Pharmacy pharmacy;
 
    @Enumerated(EnumType.ORDINAL)
    private AppointmentStatus appointmentStatus;
 
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn
    private Patient patient;
 
    @Enumerated(EnumType.ORDINAL)
    private EmployeeType type;
 
-   @Column
-   private double cost;
-
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn
    private Therapy therapy;
    
    private Period period;
+
+   @Column
+   private Boolean isActive;
 
    public Appointment() {
    }
@@ -102,14 +103,6 @@ public class Appointment {
       this.type = type;
    }
 
-   public double getCost() {
-      return cost;
-   }
-
-   public void setCost(double cost) {
-      this.cost = cost;
-   }
-
    public Therapy getTherapy() {
       return therapy;
    }
@@ -126,9 +119,18 @@ public class Appointment {
       this.period = period;
    }
 
+   public Boolean getActive() {
+      return isActive;
+   }
+
+   public void setActive(Boolean active) {
+      isActive = active;
+   }
+
    public boolean isOverlapping(LocalDateTime timeSlot) {
-      if(period.getPeriodStart().isBefore(timeSlot) && period.getPeriodEnd().isAfter(timeSlot))
-         return true;
-      return false;
+      LocalDateTime start = period.getPeriodStart().minusMinutes(1);
+      LocalDateTime end = period.getPeriodEnd().plusMinutes(1);
+      return (start.isBefore(timeSlot) && end.isAfter(timeSlot)) ||
+              (start.isBefore(timeSlot.plusHours(1)) && end.isAfter(timeSlot.plusHours(1)));
    }
 }

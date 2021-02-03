@@ -6,7 +6,8 @@ import javax.persistence.*;
 public class LoyaltyScale {
 
    @Id
-   @Enumerated(EnumType.ORDINAL)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "loyalty_scale_generator")
+   @SequenceGenerator(name="loyalty_scale_generator", sequenceName = "loyalty_scale_seq", allocationSize=50, initialValue = 1000)
    private LoyaltyCategory category;
 
    @Column

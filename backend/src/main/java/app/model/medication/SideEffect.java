@@ -6,7 +6,8 @@ import javax.persistence.*;
 public class SideEffect {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "side_effect_generator")
+    @SequenceGenerator(name="side_effect_generator", sequenceName = "side_effect_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     @Column

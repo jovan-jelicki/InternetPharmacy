@@ -21,7 +21,7 @@ export default class OrderQuantityListing extends React.Component{
                         <Button variant="primary" className="mr-3 p-0" style={{width: '1rem'}} onClick={ () => this.removeQuantity(quantity.medication)}>
                             X
                         </Button>
-                        <label className='text-light'>{quantity.medication + "  |  " + quantity.quantity}</label>
+                        <label className='text-light'>{quantity.medication.name + "  |  " + quantity.quantity}</label>
                     </div>
                 </Col>
             )

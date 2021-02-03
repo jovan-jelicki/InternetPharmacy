@@ -6,7 +6,8 @@ import javax.persistence.*;
 public class MedicationQuantity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medication_quantity_generator")
+    @SequenceGenerator(name="medication_quantity_generator", sequenceName = "medication_quantity_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
     @ManyToOne
@@ -17,6 +18,11 @@ public class MedicationQuantity {
     private int quantity;
 
     public MedicationQuantity() {
+    }
+
+    public MedicationQuantity(Medication medication, int quantity) {
+        this.medication = medication;
+        this.quantity = quantity;
     }
 
     public Long getId() {
@@ -41,5 +47,13 @@ public class MedicationQuantity {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void addQuantity(int quantity) {
+        this.quantity = this.quantity + quantity;
+    }
+
+    public void subtractQuantity(int quantity) {
+        this.quantity = this.quantity - quantity;
     }
 }

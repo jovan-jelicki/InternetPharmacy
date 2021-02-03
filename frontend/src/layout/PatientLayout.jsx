@@ -20,8 +20,9 @@ class PatientLayout extends React.Component {
                             </NavDropdown>
                             <NavDropdown title="Schedule" id="collasible-nav-dropdow">
                                 <NavDropdown.Item href="javascript:;">Dermatologist Examination</NavDropdown.Item>
-                                <NavDropdown.Item href="javascript:;">Pharmacist Counceling</NavDropdown.Item>
-                                <NavDropdown.Item href="javascript:;">All Schedules</NavDropdown.Item>
+                                <NavDropdown.Item as={NavLink} to='/patient-counsel-schedule'>Pharmacist Counseling</NavDropdown.Item>
+                                <NavDropdown.Item as={NavLink} to='/scheduled-appointments'>Upcoming Appointments</NavDropdown.Item>
+                                <NavDropdown.Item as={NavLink} to='/scheduled-appointments-history'>Appointment History</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Medications" id="collasible-nav-dropdow">
                                 <NavDropdown.Item href="javascript:;">Reservations</NavDropdown.Item>

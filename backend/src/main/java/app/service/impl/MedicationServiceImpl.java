@@ -1,22 +1,46 @@
 package app.service.impl;
 
+import app.dto.MedicationSearchDTO;
+import app.model.medication.Ingredient;
 import app.model.medication.Medication;
+import app.model.medication.MedicationQuantity;
+import app.model.pharmacy.Pharmacy;
 import app.repository.MedicationRepository;
 import app.service.MedicationService;
+import app.service.PatientService;
+import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 @Service
 public class MedicationServiceImpl implements MedicationService {
     private final MedicationRepository medicationRepository;
+    private final PatientService patientService;
+    private PharmacyService pharmacyService;
 
     @Autowired
-    public MedicationServiceImpl(MedicationRepository medicationRepository) {
+    public MedicationServiceImpl(MedicationRepository medicationRepository, PatientService patientService, PharmacyService pharmacyService) {
         this.medicationRepository = medicationRepository;
+        this.patientService = patientService;
+        this.pharmacyService = pharmacyService;
+    }
+
+    @Override
+    public Collection<Medication> getAllMedicationsPatientIsNotAllergicTo(Long patientId){
+        Collection<Medication> medications = new ArrayList<>();
+        Collection<Ingredient> ingredients = patientService.getPatientAllergieIngridients(patientId);
+        for(Medication m : read())
+            if(!m.getIngredient().stream().anyMatch(ingredients::contains))
+                medications.add(m);
+        return medications;
+    }
+
+    @PostConstruct
+    public void init() {
+        pharmacyService.setMedicationService(this);
     }
 
     @Override
@@ -50,5 +74,34 @@ public class MedicationServiceImpl implements MedicationService {
         if(patient.isPresent())
             return patient.get().getAlternatives();
         return new ArrayList<>();
+    }
+
+    @Override
+    public Collection<Medication> getMedicationsNotContainedInPharmacy(Long pharmacyId) {
+        Pharmacy pharmacy = pharmacyService.read(pharmacyId).get();
+        Set<Medication> pharmacyMedications = new HashSet<>();
+        Set<Medication> allMedications = new HashSet<Medication>(this.read());
+
+        for (MedicationQuantity medicationQuantity : pharmacy.getMedicationQuantity()) {
+            pharmacyMedications.add(medicationQuantity.getMedication());
+        }
+
+        allMedications.removeAll(pharmacyMedications);
+        return allMedications;
+    }
+
+    @Override
+    public Medication getMedicationByName(String name) {
+        return medicationRepository.getMedicationByName(name);
+    }
+
+    @Override
+    public Collection<Medication> getMedicationByNameIsContaining(MedicationSearchDTO name) {
+        ArrayList<Medication> medications = new ArrayList<>();
+        read().forEach(m -> {
+            if(m.isEqual(name))
+                medications.add(m);
+        });
+        return medications;
     }
 }

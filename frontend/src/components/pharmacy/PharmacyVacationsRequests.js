@@ -1,6 +1,8 @@
 import React from 'react';
 import {Button, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import axios from "axios";
+import moment from "moment";
+
 
 export default class PharmacyVacationsRequests extends React.Component{
     constructor() {
@@ -16,50 +18,7 @@ export default class PharmacyVacationsRequests extends React.Component{
     }
 
     componentDidMount() {
-        let vacationRequests = [
-            {
-                periodStart : '21.2.2021.',
-                periodEnd : '03.03.2021.',
-                vacationNote : 'Bahami',
-                employeeFirstName : 'Marko',
-                employeeLastName : 'Jugovic',
-                vacationRequestStatus : 'requested',
-                employeeType : 'pharmacist',
-                rejectionNote : ''
-            },
-            {
-                periodStart : '21.5.2021.',
-                periodEnd : '03.06.2021.',
-                vacationNote : 'Covid-19',
-                employeeFirstName : 'Dejan',
-                employeeLastName : 'Petrovic',
-                vacationRequestStatus : 'approved',
-                employeeType : 'dermatologist',
-                rejectionNote : ''
-            },
-            {
-                periodStart : '21.2.2021.',
-                periodEnd : '03.10.2021.',
-                vacationNote : 'Beba',
-                employeeFirstName : 'Dijana',
-                employeeLastName : 'Jankovic',
-                vacationRequestStatus : 'rejected',
-                employeeType : 'pharmacist',
-                rejectionNote : ''
-            }
-        ];
-
-        axios
-            .get('http://localhost:8080/api/vacationRequest/findByPharmacyAndEmployeeType/1/pharmacist') //todo change pharmacyId
-            .then(res => {
-                this.setState({
-                    vacationRequests : res.data
-                })
-            });
-
-        // this.setState({
-        //     vacationRequests : vacationRequests
-        // })
+        this.fetchVacationRequests();
     }
 
     render() {
@@ -93,8 +52,8 @@ export default class PharmacyVacationsRequests extends React.Component{
                                 <td>{vacationRequest.employeeLastName}</td>
                                 <td>{vacationRequest.employeeType}</td>
                                 <td>{vacationRequest.vacationNote}</td>
-                                <td>{vacationRequest.period.periodStart}</td>
-                                <td>{vacationRequest.period.periodEnd}</td>
+                                <td>{moment(vacationRequest.period.periodStart).format('DD.MM.YYYY') }</td>
+                                <td>{moment(vacationRequest.period.periodEnd).format('DD.MM.YYYY') }</td>
                                 <td>{vacationRequest.vacationRequestStatus}</td>
 
                                 <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
@@ -171,9 +130,11 @@ export default class PharmacyVacationsRequests extends React.Component{
     acceptVacationRequest = (vacationRequest) => {
         let answer = window.confirm('Are you sure you want to accept the vacation request from ' + vacationRequest.employeeFirstName + '?');
         if (answer) {
-            let path = "http://localhost:8080/api/vacationRequest/confirmVacationRequest/" + vacationRequest.id
-            axios.get(path).then(() => this.fetchVacationRequests());
-
+            let path = "http://localhost:8080/api/vacationRequest/confirmVacationRequest/";
+            axios.put(path, vacationRequest).then(() => this.fetchVacationRequests())
+                .catch(() => {
+                    alert("Request cannot be accepted because pharmacist has scheduled appointments for that period.");
+                });
         }
     }
 
