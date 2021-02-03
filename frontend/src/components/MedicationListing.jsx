@@ -43,6 +43,7 @@ export default class MedicationListing extends React.Component {
                 this.setState({
                     medications : res.data
                 })
+
             })
 
     }
@@ -63,14 +64,14 @@ export default class MedicationListing extends React.Component {
                         </Card.Text>
                     </Card.Body>
 
-                    <Modal show={this.state.showModal} onHide={this.handleModal}>
-                        <Modal.Header closeButton>
+                    <Modal show={this.state.showModal} onHide={this.handleModal}  >
+                        <Modal.Header closeButton style={{'background':'gray'}}>
                             <Modal.Title>Medication specification</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>
+                        <Modal.Body style={{'background':'gray'}}>
                             <MedicationSpecification medication={medication}/>
                         </Modal.Body>
-                        <Modal.Footer>
+                        <Modal.Footer style={{'background':'gray'}}>
                             <Button variant="primary" onClick={this.handleModal}>
                                 Close
                             </Button>
