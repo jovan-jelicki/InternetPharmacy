@@ -7,6 +7,7 @@ import app.model.grade.Grade;
 import app.model.grade.GradeType;
 import app.model.medication.Medication;
 import app.model.medication.MedicationReservationStatus;
+import app.model.pharmacy.Pharmacy;
 import app.model.user.Dermatologist;
 import app.model.user.EmployeeType;
 import app.model.user.Pharmacist;
@@ -29,6 +30,7 @@ public class GradeServiceImpl implements GradeService {
     private final PatientService patientService;
     private final DermatologistRepository dermatologistRepository;
     private final PharmacistRepository pharmacistRepository;
+    private final PharmacyRepository pharmacyRepository;
     private final AppointmentRepository appointmentRepository;
     private final MedicationReservationRepository medicationReservationRepository;
     private final EPrescriptionRepository ePrescriptionRepository;
@@ -36,12 +38,13 @@ public class GradeServiceImpl implements GradeService {
     private GradingStrategy gradingStrategy;
 
     @Autowired
-    public GradeServiceImpl(GradeRepository gradeRepository, GradingStrategyFactory gradingStrategyFactory, PatientService patientService, DermatologistRepository dermatologistRepository, PharmacistRepository pharmacistRepository, AppointmentRepository appointmentRepository, MedicationReservationRepository medicationReservationRepository, EPrescriptionRepository ePrescriptionRepository) {
+    public GradeServiceImpl(GradeRepository gradeRepository, GradingStrategyFactory gradingStrategyFactory, PatientService patientService, DermatologistRepository dermatologistRepository, PharmacistRepository pharmacistRepository, PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository, MedicationReservationRepository medicationReservationRepository, EPrescriptionRepository ePrescriptionRepository) {
         this.gradeRepository = gradeRepository;
         this.gradingStrategyFactory = gradingStrategyFactory;
         this.patientService = patientService;
         this.dermatologistRepository = dermatologistRepository;
         this.pharmacistRepository = pharmacistRepository;
+        this.pharmacyRepository = pharmacyRepository;
         this.appointmentRepository = appointmentRepository;
         this.medicationReservationRepository = medicationReservationRepository;
         this.ePrescriptionRepository = ePrescriptionRepository;
@@ -96,23 +99,17 @@ public class GradeServiceImpl implements GradeService {
                 .collect(Collectors.toList());
     }
 
-//    public Grade findPharmaciesPatientCanGrade() {
-//
-//    }
-
     @Override
     public Collection<AssetGradeDTO> findMedicationsPatientCanGrade(Long patientId) {
         Set<AssetGradeDTO> medications = new HashSet<>();
         medicationReservationRepository
                 .findAllByPatient_IdAndStatus(patientId, MedicationReservationStatus.successful)
-                .stream()
                 .forEach(r -> {
                     Medication medication = r.getMedicationQuantity().getMedication();
                     getMedicationGrade(patientId, medications, medication);
                 });
         ePrescriptionRepository
                 .findAllByPatient_Id(patientId)
-                .stream()
                 .forEach(p -> {
                     p.getMedicationQuantity().forEach(m -> {
                         Medication medication = m.getMedication();
@@ -121,6 +118,45 @@ public class GradeServiceImpl implements GradeService {
                 });
         return medications;
 
+    }
+
+    public Collection<AssetGradeDTO> findPharmacyPatientCanGrade(Long patientId) {
+        Set<AssetGradeDTO> pharmacies = new HashSet<>();
+        appointmentRepository
+                .getAllByPatient_IdAndAppointmentStatus(patientId, AppointmentStatus.patientPresent)
+                .forEach(a -> {
+                    Pharmacy pharmacy = a.getPharmacy();
+                    getPharmacyGrade(patientId, pharmacies, pharmacy);
+                });
+
+        pharmacyRepository
+                .findAll()
+                .forEach(p -> {
+                    if(hasReservationInPharmacy(p, patientId)) {
+                        getPharmacyGrade(patientId, pharmacies, p);
+                    }
+                });
+
+        //TODO EPrescription check
+
+        return pharmacies;
+    }
+
+    private void getPharmacyGrade(Long patientId, Set<AssetGradeDTO> pharmacies, Pharmacy pharmacy) {
+        AssetGradeDTO asset = new AssetGradeDTO(pharmacy.getId(), pharmacy.getName(), GradeType.pharmacy);
+        Grade grade = gradeRepository.findPatientGradeByGradedId(patientId, pharmacy.getId());
+        if(grade != null) {
+            asset.setGradeId(grade.getId());
+            asset.setGrade(grade.getGrade());
+        }
+        pharmacies.add(asset);
+    }
+
+    private boolean hasReservationInPharmacy(Pharmacy pharmacy, Long patientId) {
+        return pharmacy
+                .getMedicationReservation()
+                .stream()
+                .anyMatch(r -> r.getPatient().getId() == patientId);
     }
 
     private void getMedicationGrade(Long patientId, Set<AssetGradeDTO> medications, Medication medication) {
