@@ -1,9 +1,6 @@
 package app.service.impl;
 
-import app.dto.AppointmentFinishedDTO;
-import app.dto.AppointmentScheduledDTO;
-import app.dto.AppointmentUpdateDTO;
-import app.dto.EventDTO;
+import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.medication.Medication;
@@ -13,7 +10,6 @@ import app.model.time.WorkingHours;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
 import app.repository.AppointmentRepository;
-import app.repository.PatientRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
 import app.service.AppointmentService;
@@ -23,10 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -320,5 +319,117 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date, Long pharmacyId) {
         return appointmentRepository.GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(examinerId,employeeType,date, pharmacyId);
+    }
+
+    private LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
+        return Instant.ofEpochMilli(dateToConvert.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
+    @Override
+    public Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd, Long pharmacyId){
+        Collection<Appointment> temp = appointmentRepository.getSuccessfulAppointmentCountByPeriodAndPharmacy(dateStart, dateEnd, pharmacyId);
+        return temp;
+    }
+
+    @Override
+    public Collection<ReportsDTO> getAppointmentsMonthlyReport(Long pharmacyId) {
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+        for (int i = 1; i <= 13; i++) {
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -1);
+        }
+
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        ArrayList<ReportsDTO> appointmentCountByMonth = new ArrayList<>();
+
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
+            String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
+            appointmentCountByMonth.add(new ReportsDTO(monthName,temp));
+        }
+
+        return appointmentCountByMonth;
+    }
+
+    @Override
+    public Collection<ReportsDTO> getAppointmentsQuarterlyReport(Long pharmacyId) {
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+        for (int i = 1; i <= 5; i++) {
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -3);
+        }
+
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        ArrayList<ReportsDTO> appointmentCountByQuarter = new ArrayList<>();
+
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
+            String monthNameStart = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
+            String monthNameEnd = allDates.get(i+1).format(DateTimeFormatter.ofPattern("MMM"));
+            appointmentCountByQuarter.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd,temp));
+        }
+
+        return appointmentCountByQuarter;
+    }
+
+    @Override
+    public Collection<ReportsDTO> getAppointmentsYearlyReport(Long pharmacyId) {
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).withDayOfYear(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+        for (int i = 1; i <= 11; i++) {
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -12);
+        }
+
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        ArrayList<ReportsDTO> appointmentCountByYear = new ArrayList<>();
+
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId).size();
+            String year = allDates.get(i).format(DateTimeFormatter.ofPattern("yyyy"));
+            appointmentCountByYear.add(new ReportsDTO(year,temp));
+        }
+
+        return appointmentCountByYear;
     }
 }

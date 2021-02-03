@@ -14,7 +14,6 @@ import app.service.EmailService;
 import app.service.MedicationReservationService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class MedicationReservationServiceImpl implements MedicationReservationService {
