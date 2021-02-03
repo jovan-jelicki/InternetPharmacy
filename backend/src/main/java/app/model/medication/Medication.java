@@ -1,5 +1,8 @@
 package app.model.medication;
 
+import app.dto.MedicationSearchDTO;
+import app.dto.PharmacySearchDTO;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -141,5 +144,16 @@ public class Medication {
 
    public void setAlternatives(Set<Medication> alternatives) {
       this.alternatives = alternatives;
+   }
+
+   public boolean isEqual(MedicationSearchDTO medicationSearchDTO) {
+      return searchCondition(medicationSearchDTO.getName(), name);
+   }
+
+   private boolean searchCondition(String searched, String actual) {
+      if(searched.trim().isEmpty())
+         return true;
+      else
+         return actual.toLowerCase().contains(searched.toLowerCase());
    }
 }
