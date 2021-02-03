@@ -33,13 +33,11 @@ public class EmployeeGradingStrategy implements GradingStrategy {
     }
 
     private boolean hasAttendedAppointments(Grade grade) {
-        Collection<Appointment> appointments = appointmentRepository
+        return appointmentRepository
                 .getAllByExaminerAndAppointmentStatus(grade.getGradedId(),
                         mapGradeTypeToEmployeeType(grade.getGradeType()), AppointmentStatus.patientPresent)
                 .stream()
-                .filter(a -> a.getPatient().getId() == grade.getPatient().getId())
-                .collect(Collectors.toList());
-        return !appointments.isEmpty();
+                .anyMatch(a -> a.getPatient().getId() == grade.getPatient().getId());
     }
 
     private EmployeeType mapGradeTypeToEmployeeType(GradeType gradeType) {
