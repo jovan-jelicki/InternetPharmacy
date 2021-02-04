@@ -6,6 +6,7 @@ import app.model.user.Patient;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class EPrescription {
@@ -57,5 +58,10 @@ public class EPrescription {
 
     public void setMedicationQuantity(List<MedicationQuantity> medicationQuantity) {
         this.medicationQuantity = medicationQuantity;
+    }
+
+    public boolean isMedicationInEPrescription(Long medicationId) {
+        return medicationQuantity
+                .stream().anyMatch(m -> m.getMedication().getId() == medicationId);
     }
 }

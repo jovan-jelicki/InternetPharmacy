@@ -21,16 +21,30 @@ class PatientPreviousAppointments extends React.Component {
                 counselings : res.data
             })
         })
+
+        axios
+        .get('http://localhost:8080/api/scheduling/examination-previous/0')
+        .then(res => {
+            this.setState({
+                examinations : res.data
+            })
+        })
     }
 
     render() {
         return (
             <PatientLayout>
-                <Row className={'ml-2 mt-5 mb-4'}>
+                    <Row className={'ml-2 mt-5 mb-4'}>
                         <h2>Pharmacist Counselings</h2>
                     </Row>
                     <Row className={'m-2'}>
                         <AppointmentListing appointments={this.state.counselings} view={true}/>
+                    </Row>
+                    <Row className={'ml-2 mt-5 mb-4'}>
+                        <h2>Dermatologist Examinations</h2>
+                    </Row>
+                    <Row className={'m-2'}>
+                        <AppointmentListing appointments={this.state.examinations} view={true}/>
                     </Row>
             </PatientLayout>
         )
