@@ -9,7 +9,6 @@ public class MedicationOffer {
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medication_offer_generator")
    @SequenceGenerator(name="medication_offer_generator", sequenceName = "medication_offer_seq", allocationSize=50, initialValue = 1000)
    private Long id;
-
    @Column
    private double cost;
 

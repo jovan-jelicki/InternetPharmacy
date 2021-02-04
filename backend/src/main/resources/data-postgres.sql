@@ -414,6 +414,10 @@ values (2, 4,0, '2020-12-25', 3,1);
 insert into medication_lacking_event(id, employee_id, employee_type, event_date, medication_id, pharmacy_id)
 values (3, 1,1, '2021-02-03', 4,1);
 
+insert into supplier (id,country , latitude, longitude,street, town,phone_number,email,password,  first_name, last_name, user_type)
+VALUES (1,'SRB', 41, 87, 'Avenue 3rd', 'Belgrade',  '0605435487','jovancica@gmail.com','jole123','Jovana', 'Markovic',1);
+
+
 -- SELECT MAX(id) FROM appointment;
 --
 -- SELECT nextval('bookmarks_id_seq');

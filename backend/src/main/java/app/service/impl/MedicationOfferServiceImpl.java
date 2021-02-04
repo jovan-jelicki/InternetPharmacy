@@ -61,4 +61,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
 
         return this.save(medicationOffer) !=null;
     }
+
+    //@Override
+   // public Collection<MedicationOffer> getMedicationOfferBySupplier(Long supplierId) { return medicationOfferRepository.getMedicationOfferBySupplier(supplierId);}
 }

@@ -81,7 +81,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
                     </tbody>
                 </table>
 
-                <Modal show={this.state.showModal} onHide={this.closeModal}  >
+                <Modal show={this.state.showModal} onHide={this.closeModal}  style={{'height':850}} >
                     <Modal.Header closeButton style={{'background':'silver'}}>
                         <Modal.Title>Create new offer</Modal.Title>
                     </Modal.Header>

@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.model.medication.MedicationOffer;
 import app.model.user.Supplier;
 import app.repository.SupplierRepository;
 import app.service.SupplierService;
@@ -44,5 +45,8 @@ public class SupplierServiceImpl implements SupplierService{
     public Supplier findByEmail(String email) {
         return supplierRepository.findByEmail(email);
     }
+
+    @Override
+    public Collection<MedicationOffer> getMedicationOffersBySupplier(Long supplierId) { return supplierRepository.getMedicationOffersBySupplier( supplierId);}
 
 }

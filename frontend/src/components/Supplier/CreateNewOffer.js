@@ -1,6 +1,6 @@
 import React from "react";
 import DatePicker from "react-datepicker";
-import {Button, Modal} from "react-bootstrap";
+import {Alert, Button, Modal} from "react-bootstrap";
 import axios from "axios";
 
 
@@ -18,7 +18,9 @@ export default class CreateNewOffer extends React.Component{
                     cost: 'Enter cost',
                     shippingDate: 'Choose shipping date',
                 }
-            }
+            },
+            boolMessage:false,
+            boolButton:true
         }
     }
     handleInputChange = (event) => {
@@ -60,6 +62,8 @@ export default class CreateNewOffer extends React.Component{
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form')
             console.log(this.state.medicationOffer.shippingDate)
+            this.state.boolMessage=true;
+            this.state.boolButton=false;
             this.sendParams()
         } else {
             console.log('Invalid Form')
@@ -130,6 +134,12 @@ export default class CreateNewOffer extends React.Component{
                     </div>
                 </div>
                 <div className="card" style={{ background: '#ABB8C3', color: 'rgb(0, 92, 230)', marginTop:'5rem', marginBottom:'3rem'}}>
+                    {
+                        this.state.boolMessage &&
+                        <Alert variant='success' show={true}  style={({textAlignVertical: "center", textAlign: "center"})}>
+                            Thank you. You have successfully created your offer.
+                        </Alert>
+                    }
                     <h2 style={{marginTop: '1rem', marginLeft:'12rem'}}>Offer</h2>
 
                     <div className="row"style={{marginTop: '1rem'}}>
@@ -156,11 +166,16 @@ export default class CreateNewOffer extends React.Component{
                 <div className="row" style={{marginTop: '1rem'}}>
                     <div className="col-sm-5 mb-2">
                     </div>
-                    <div className="row">
 
-                        <Button style={{marginLeft: '7rem'}} variant="primary" onClick={this.submitForm} >Submit</Button>
+                    <div className="row">
+                        {
+                            this.state.boolButton &&
+                            <Button style={{marginLeft: '7rem'}} variant="primary"
+                                    onClick={this.submitForm}>Submit</Button>
+                        }
                     </div>
                 </div>
+
 
             </div>
         );

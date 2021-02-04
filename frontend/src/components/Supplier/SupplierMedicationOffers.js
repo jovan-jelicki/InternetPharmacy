@@ -1,10 +1,8 @@
 import React from "react";
-import UnregisteredLayout from "../../layout/UnregisteredLayout";
-import PharmacyListing from "../pharmacy/PharmacyListing";
-import MedicationListing from "../MedicationListing";
 import {Button, Modal} from "react-bootstrap";
 import Dropdown from "react-dropdown";
-import {ButtonGroup, Input} from "rsuite";
+import axios from "axios";
+
 const options = [
     'Xanax | 3', 'Brufen | 4', 'Linex | 100'
 ];
@@ -20,7 +18,7 @@ export default class SupplierMedicationOffers extends React.Component{
         }
     }
 
-    componentDidMount() {
+  /*  componentDidMount() {
 
         let medicationOffers = [
             {
@@ -78,6 +76,17 @@ export default class SupplierMedicationOffers extends React.Component{
             medicationOffers : medicationOffers,
             medicationOffersPom:medicationOffers
         })
+    }*/
+
+    async componentDidMount() {
+        await axios
+            .get('http://localhost:8080/api/medicationOrder/getAll')
+            .then((res) => {
+                this.setState({
+                    medicationOrders : res.data
+                })
+                console.log(this.state.medicationOrders);
+            })
     }
 
     onValueChange=(event) =>{
