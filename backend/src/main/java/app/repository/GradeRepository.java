@@ -14,6 +14,5 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     @Query("select avg(g.grade) from Grade g where g.gradedId = ?1 and g.gradeType = ?2")
     double findAverageGradeForEntity(Long id, GradeType gradeType);
 
-    @Query("select g from Grade g where g.patient.id = ?1 and g.gradedId = ?2")
-    Grade findPatientGradeByGradedId(Long patientId, Long gradedId);
+    Grade findAllByPatient_IdAndGradedIdAndGradeType(Long patientId, Long gradedId, GradeType type);
 }

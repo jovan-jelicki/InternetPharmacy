@@ -13,7 +13,6 @@ import app.model.user.EmployeeType;
 import app.model.user.Pharmacist;
 import app.repository.*;
 import app.service.GradeService;
-import app.service.GradingStrategy;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,7 +59,7 @@ public class GradeServiceImpl implements GradeService {
                 .map(a -> {
                     Dermatologist dermatologist = dermatologistRepository.findById(a.getExaminerId()).get();
                     EmployeeGradeDTO employee = new EmployeeGradeDTO(dermatologist.getId(), dermatologist.getFirstName(), dermatologist.getLastName(), GradeType.dermatologist);
-                    Grade grade = gradeRepository.findPatientGradeByGradedId(patientId, a.getExaminerId());
+                    Grade grade = gradeRepository.findAllByPatient_IdAndGradedIdAndGradeType(patientId, a.getExaminerId(), GradeType.dermatologist);
                     if(grade != null) {
                         employee.setGradeId(grade.getId());
                         employee.setGrade(grade.getGrade());
@@ -79,7 +78,7 @@ public class GradeServiceImpl implements GradeService {
                 .map(a -> {
                     Pharmacist pharmacist = pharmacistRepository.findById(a.getExaminerId()).get();
                     EmployeeGradeDTO employee = new EmployeeGradeDTO(pharmacist.getId(), pharmacist.getFirstName(), pharmacist.getLastName(), GradeType.pharmacist);
-                    Grade grade = gradeRepository.findPatientGradeByGradedId(patientId, a.getExaminerId());
+                    Grade grade = gradeRepository.findAllByPatient_IdAndGradedIdAndGradeType(patientId, a.getExaminerId(), GradeType.pharmacist);
                     if(grade != null) {
                         employee.setGradeId(grade.getId());
                         employee.setGrade(grade.getGrade());
@@ -136,7 +135,7 @@ public class GradeServiceImpl implements GradeService {
 
     private void getPharmacyGrade(Long patientId, Set<AssetGradeDTO> pharmacies, Pharmacy pharmacy) {
         AssetGradeDTO asset = new AssetGradeDTO(pharmacy.getId(), pharmacy.getName(), GradeType.pharmacy);
-        Grade grade = gradeRepository.findPatientGradeByGradedId(patientId, pharmacy.getId());
+        Grade grade = gradeRepository.findAllByPatient_IdAndGradedIdAndGradeType(patientId, pharmacy.getId(), GradeType.pharmacy);
         if(grade != null) {
             asset.setGradeId(grade.getId());
             asset.setGrade(grade.getGrade());
@@ -154,7 +153,7 @@ public class GradeServiceImpl implements GradeService {
 
     private void getMedicationGrade(Long patientId, Set<AssetGradeDTO> medications, Medication medication) {
         AssetGradeDTO asset = new AssetGradeDTO(medication.getId(), medication.getName(), GradeType.medication);
-        Grade grade = gradeRepository.findPatientGradeByGradedId(patientId, medication.getId());
+        Grade grade = gradeRepository.findAllByPatient_IdAndGradedIdAndGradeType(patientId, medication.getId(), GradeType.medication);
         if(grade != null) {
             asset.setGradeId(grade.getId());
             asset.setGrade(grade.getGrade());
@@ -162,9 +161,6 @@ public class GradeServiceImpl implements GradeService {
         medications.add(asset);
     }
 
-    public Grade findPatientGrade(Long patientId, Long gradedId) {
-        return gradeRepository.findPatientGradeByGradedId(patientId, gradedId);
-    }
     @Override
     public Collection<Grade> findAllByPatientId(Long id) {
         return gradeRepository.findAllByPatient_Id(id);
