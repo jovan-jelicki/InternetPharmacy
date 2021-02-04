@@ -41,7 +41,7 @@ export default class PharmacyMedications extends React.Component{
 
     componentDidMount() {
         this.fetchPharmacyMedicationListingDTOs();
-        this.fetchNotContainedMedicationsInPharmacy();
+        //this.fetchNotContainedMedicationsInPharmacy();
         this.setState({
             userType : "pharmacyAdmin"
         })
@@ -232,7 +232,7 @@ export default class PharmacyMedications extends React.Component{
                     }
                 })
                 this.fetchPharmacyMedicationListingDTOs();
-                this.fetchNotContainedMedicationsInPharmacy();
+                // this.fetchNotContainedMedicationsInPharmacy();
             })
             .catch(() => {
                 alert("Medication was not added successfully!")
@@ -263,7 +263,8 @@ export default class PharmacyMedications extends React.Component{
         this.handleEditModal();
     }
 
-    openAddMedicationModal = () => {
+    openAddMedicationModal = async () => {
+        await this.fetchNotContainedMedicationsInPharmacy();
         if (this.state.notContainedMedications.length === 0) {
             alert ("No medications to add!");
             return;
@@ -289,7 +290,7 @@ export default class PharmacyMedications extends React.Component{
             axios.put("http://localhost:8080/api/pharmacy/deleteMedicationFromPharmacy", medication)
                 .then((res) => {
                     alert("Medication deleted successfully from pharmacay!");
-                    this.fetchNotContainedMedicationsInPharmacy();
+
                     this.fetchPharmacyMedicationListingDTOs();
                 })
                 .catch(() => {
@@ -356,8 +357,8 @@ export default class PharmacyMedications extends React.Component{
         })
     }
 
-    fetchNotContainedMedicationsInPharmacy = () => {
-        axios.get("http://localhost:8080/api/medications/getMedicationsNotContainedInPharmacy/1").then(res => {
+    fetchNotContainedMedicationsInPharmacy = async () => {
+        await axios.get("http://localhost:8080/api/medications/getMedicationsNotContainedInPharmacy/1").then(res => {
             this.setState({
                 notContainedMedications : res.data
             });
