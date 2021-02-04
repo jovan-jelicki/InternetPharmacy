@@ -88,7 +88,9 @@ export default class Appointment extends React.Component {
                         quantity : 700
                     }
                     ]
-                }
+                },
+                'examinerId' : 1,
+                'employeeType' : 1
             })
             .then(res => {
                 alert("You created ePrescription!");
