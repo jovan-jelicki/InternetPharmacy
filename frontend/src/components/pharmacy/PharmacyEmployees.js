@@ -182,11 +182,6 @@ export default class PharmacyEmployees extends React.Component{
                                </Button>
                            </td >
                            <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                               <Button variant="warning" onClick={this.handleModalAddDermatologist}>
-                                   Definisi slobodne termine
-                               </Button>
-                           </td>
-                           <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="danger" onClick={() => this.deletePharmacist(pharmacist)}>
                                    Izbrisi farmaceuta
                                </Button>
@@ -448,7 +443,8 @@ export default class PharmacyEmployees extends React.Component{
     deletePharmacist = (pharmacist) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + pharmacist.firstName + ' ' + pharmacist.lastName + ' from your employees list?');
         if (isBoss) {
-            axios.delete("http://localhost:8080/api/pharmacist/1").then((res) => {
+            const path = "http://localhost:8080/api/pharmacist/" + pharmacist.id;
+            axios.delete(path).then((res) => {
                 if (res.status === 200) {
                     alert("Pharmacist deleted successfully!");
                     this.fetchPharmacists();
