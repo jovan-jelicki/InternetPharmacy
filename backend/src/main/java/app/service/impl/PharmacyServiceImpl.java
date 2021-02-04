@@ -348,8 +348,10 @@ public class PharmacyServiceImpl implements PharmacyService {
             ArrayList<MedicationReservation> medicationReservations = (ArrayList<MedicationReservation>) pharmacy.getMedicationReservation().stream().filter(medicationReservation -> medicationReservation.getPickUpDate().toLocalDate().isEqual(dayStart.toLocalDate()))
                     .collect(Collectors.toList());
             for (MedicationReservation medicationReservation : medicationReservations) {
-                income += medicationReservation.getMedicationQuantity().getQuantity() *
-                        medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId, medicationReservation.getMedicationQuantity().getMedication().getId(), dayEnd);
+                double medicationPrice = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId, medicationReservation.getMedicationQuantity().getMedication().getId(), dayEnd);
+                if (medicationReservation.getDiscounted())
+                    income += medicationReservation.getMedicationQuantity().getQuantity() * medicationPrice / 2;
+                income += medicationReservation.getMedicationQuantity().getQuantity() * medicationPrice;
             }
 
             reportsDTOS.add(new ReportsDTO(dayStart.toLocalDate().format(DateTimeFormatter.ofPattern("dd MMM yyyy")), income));

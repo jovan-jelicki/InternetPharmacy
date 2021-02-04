@@ -23,7 +23,7 @@ public class MedicationReservation {
    private LocalDateTime pickUpDate;
 
    //dodaj kolicinu popusta
-   @Column
+   @Column(columnDefinition = "boolean default false")
    private Boolean isDiscounted;
 
    @JoinColumn
