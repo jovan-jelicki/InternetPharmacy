@@ -156,7 +156,7 @@ export default class CreateNewOffer extends React.Component{
                     <div className="row"style={{marginTop: '1rem'}}>
                         <label  className="col-sm-4 col-form-label">Shipping date</label>
                         <div className="col-sm-6 mb-2">
-                            <DatePicker  selected={this.state.medicationOffer.shippingDate} minDate={new Date()} maxDate={new Date(this.props.order.deadline)} onChange={date => this.changeDatePicker(date)} />
+                            <DatePicker  selected={this.state.medicationOffer.shippingDate} minDate={new Date()} onChange={date => this.changeDatePicker(date)} />
                             { this.state.submitted && this.state.errors.medicationOffer.shippingDate.length > 0 &&  <span className="text-danger">{this.state.errors.medicationOffer.shippingDate}</span>}
 
                         </div>

@@ -46,7 +46,6 @@ export default class SupplierMedicationOffers extends React.Component{
         this.state.selectedOption=option;
 
         if(this.state.selectedOption=="all"){
-            console.log("aj")
             this.cancel()
         }else {
             this.state.medicationOffers=this.offersBackup;
@@ -69,11 +68,12 @@ export default class SupplierMedicationOffers extends React.Component{
                 <fieldset>
                     <Form>
                         <Form.Group as={Row}>
-                            <label style={{'marginLeft':'2rem'}}> Order status </label>
-                            <Row sm={10} style={{'marginLeft':'3rem'}}>
+                            <label style={{'marginLeft':'2rem'}}> Order status:</label>
+                            <Row sm={10} style={{'marginLeft':'1rem'}}>
                                 <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="all" name="formHorizontalRadios"id="all" onChange={this.onTypeChange} />
                                 <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="pending" name="formHorizontalRadios"id="pending" onChange={this.onTypeChange} />
-                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="anesthetic" name="formHorizontalRadios" id="anesthetic" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="approved" name="formHorizontalRadios" id="approved" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="rejected" name="formHorizontalRadios" id="rejected" onChange={this.onTypeChange} />
                             </Row>
                         </Form.Group>
                     </Form>
