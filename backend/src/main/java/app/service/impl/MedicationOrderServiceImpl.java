@@ -10,6 +10,7 @@ import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -84,4 +85,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
         return medicationOrderRepository.getAllMedicationOrdersByPharmacy(pharmacyId).stream()
                 .map(medicationOrder -> new MedicationOrderDTO(medicationOrder)).collect(Collectors.toList());
     }
+
+    @Override
+    public Collection<MedicationOrderDTO> getMedicationOrderByPharmacyAdmin(Long pharmacyAdminId) { return medicationOrderRepository.getMedicationOrderByPharmacyAdmin(pharmacyAdminId);}
 }

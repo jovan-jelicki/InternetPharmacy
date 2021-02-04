@@ -1,10 +1,8 @@
 import React from "react";
-import UnregisteredLayout from "../../layout/UnregisteredLayout";
-import PharmacyListing from "../pharmacy/PharmacyListing";
-import MedicationListing from "../MedicationListing";
-import {Button, Modal} from "react-bootstrap";
+import {Button, Form, Modal, Row, Table} from "react-bootstrap";
 import Dropdown from "react-dropdown";
-import {ButtonGroup, Input} from "rsuite";
+import axios from "axios";
+
 const options = [
     'Xanax | 3', 'Brufen | 4', 'Linex | 100'
 ];
@@ -20,156 +18,113 @@ export default class SupplierMedicationOffers extends React.Component{
         }
     }
 
-    componentDidMount() {
 
-        let medicationOffers = [
-            {
-                price : 12443,
-                shippingDate : '20.2.2021.',
-                status : 'pending',
-                medicationOrder:{
-                    pharmacyAdmin : {
-                        firstName : 'Mirko',
-                        lastName : 'Mirkovic'
-                    },
-                    deadLine : '21.3.2021.',
-                    medicationQuantity: {
+    async componentDidMount() {
+        await axios
+            .get('http://localhost:8080/api/suppliers/getAllBySupplier/'+1)
+            .then((res) => {
+                this.setState({
+                    medicationOffers : res.data
+                })
+                console.log("USEO")
+                console.log(this.state.medicationOffers);
+            })
+        this.offersBackup = [...this.state.medicationOffers]
+    }
 
-                    },
-                    status : 'pending',
-                }
-            },
-            {
-                price : 23533,
-                shippingDate : '30.3.2021.',
-                status : 'approved',
-                medicationOrder:  {
-                    pharmacyAdmin : {
-                        firstName : 'Jelena',
-                            lastName : 'Rozga'
-                    },
-                    deadLine : '13.5.2021.',
-                        medicationQuantity: {
-
-                    },
-                    status : 'processed',
-                }
-            },
-            {
-                price : 12400,
-                shippingDate : '10.2.2021.',
-                status : 'rejected',
-                medicationOrder:
-                    {
-                        pharmacyAdmin : {
-                            firstName : 'Jovana',
-                                lastName : 'Tipsin'
-                        },
-                        deadLine : '23.04.2021.',
-                            medicationQuantity: {
-
-                    },
-                status : 'processed',
-            }
-            }
-        ]
-
+    cancel() {
+        console.log("BACKUP")
+        console.log(this.offersBackup)
         this.setState({
-            medicationOffers : medicationOffers,
-            medicationOffersPom:medicationOffers
+            medicationOffers : this.offersBackup
         })
     }
 
-    onValueChange=(event) =>{
-        var option=event.target.value
-        console.log(option)
-        this.setState({
-            selectedOption : option,
-        })
-        console.log(option)
-        if(option=="All"){
-            this.setState({
-                medicationOffers: this.state.medicationOffersPom
-            });
+    onTypeChange=(event) => {
+        var option = event.target.id
 
-            console.log("dosao");
-            return this.state.medicationOffers;
+        this.state.selectedOption=option;
 
+        if(this.state.selectedOption=="all"){
+            this.cancel()
         }else {
+            this.state.medicationOffers=this.offersBackup;
             let filteredData = this.state.medicationOffers.filter(column => {
-
-                return column.status.toLowerCase().indexOf(option.toLowerCase()) !== -1;
+                return column.orderStatus.toLowerCase().indexOf(this.state.selectedOption.toLowerCase()) !== -1;
             });
             this.setState({
                 medicationOffers: filteredData
             });
         }
 
+
     }
+
 
     render() {
         return (
             <div>
-                <h2 style={{marginLeft:'2rem'}} >Offers</h2>
-                <div className="row" style={{marginTop: '1rem', marginLeft:'2rem'}} >
-
-                    <div className="form-check">
-                        <b >Filter by  :</b>
-                        <label>
-                            <input type="radio" value="All" checked={this.state.selectedOption === "all"}onChange={this.onValueChange} />
-                            All
-                        </label>
-                    </div>
-                    <div className="radio">
-                        <label>
-                            <input type="radio" value="Pending" checked={this.state.selectedOption === "pending"}onChange={this.onValueChange} />
-                            Pending
-                        </label>
-                    </div>
-                    <div className="radio">
-                        <label>
-                            <input  type="radio"  value="Approved" checked={this.state.selectedOption === "approved"} onChange={this.onValueChange}/>
-                            Approved
-                        </label>
-                    </div>
-                    <div className="radio">
-                        <label>
-                            <input type="radio" value="Rejected" checked={this.state.selectedOption === "rejected"} onChange={this.onValueChange}/>
-                            Rejected
-                        </label>
-                    </div>
-                </div>
-
-                <table className="table table-hover" >
+                <h2 style={({marginTop: '1rem', textAlignVertical: "center", textAlign: "center"})}  >Offers</h2>
+                <fieldset>
+                    <Form>
+                        <Form.Group as={Row}>
+                            <label style={{'marginLeft':'2rem'}}> Order status:</label>
+                            <Row sm={10} style={{'marginLeft':'1rem'}}>
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="all" name="formHorizontalRadios"id="all" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="pending" name="formHorizontalRadios"id="pending" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="approved" name="formHorizontalRadios" id="approved" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="rejected" name="formHorizontalRadios" id="rejected" onChange={this.onTypeChange} />
+                            </Row>
+                        </Form.Group>
+                    </Form>
+                </fieldset>
+        <div style={{marginRight:'5rem', marginLeft:'5rem'}}>
+                <Table striped bordered hover variant="dark" >
                     <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Created by</th>
                         <th scope="col">Dead line</th>
-                        <th scope="col">Medications</th>
+                        <th scope="col">Medication name</th>
+                        <th scope="col">Medication quantity</th>
                         <th scope="col">Price</th>
                         <th scope="col">Shipping date</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Offer status</th>
+                        <th scope="col">Order status</th>
                     </tr>
                     </thead>
                     <tbody>
+
                     {this.state.medicationOffers.map((medicationOffer, index) => (
                         <tr>
                             <th scope="row">{index+1}</th>
-                            <td>{medicationOffer.medicationOrder.pharmacyAdmin.firstName + ' ' + medicationOffer.medicationOrder.pharmacyAdmin.lastName}</td>
-                            <td>{medicationOffer.medicationOrder.deadLine}</td>
+                            <td>{medicationOffer.pharmacyAdminId}</td>
+                            <td>{medicationOffer.deadline.split("T")[0]}</td>
                             <td>
-                                <Dropdown options={options}  value={defaultOption} />
+                                {medicationOffer.medicationQuantity.map((e, key) => {
+                                    return <option key={key} value={e.medication}>{e.medication.name} </option>
+
+                                })
+                                }
                             </td>
-                            <td>{medicationOffer.price}</td>
-                            <td>{medicationOffer.shippingDate}</td>
-                            <td>{medicationOffer.status}</td>
+                            <td>
+                                {medicationOffer.medicationQuantity.map((e, key) => {
+                                    return <option key={key} value={e.medication}> {e.quantity}</option>
+
+                                })
+                                }
+                            </td>
+                            <td>{medicationOffer.cost}</td>
+                            <td>{medicationOffer.shippingDate.split("T")[0]}</td>
+                            <td>{medicationOffer.offerStatus}</td>
+                            <td>{medicationOffer.orderStatus}</td>
                         </tr>
 
                     ))}
-                    </tbody>
-                </table>
 
+                    </tbody>
+                </Table>
+            </div>
                 <Modal show={this.state.showModal} onHide={this.handleModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Modal heading</Modal.Title>
