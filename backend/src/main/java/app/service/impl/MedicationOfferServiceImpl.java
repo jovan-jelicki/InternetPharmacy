@@ -59,10 +59,14 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         medicationOffer.setStatus(medicationOfferDTO.getStatus());
         medicationOffer.setMedicationOrder(medicationOrder);
 
+        this.save(medicationOffer);
+
         Supplier supplier=supplierService.read(medicationOfferDTO.getSupplierId()).get();
         supplier.getMedicationOffer().add(medicationOffer);
 
-        return this.save(medicationOffer) !=null;
+        supplierService.save(supplier);
+
+        return medicationOffer !=null;
     }
 
     //@Override

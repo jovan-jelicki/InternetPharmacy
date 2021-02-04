@@ -11,6 +11,6 @@ import java.util.Collection;
 public interface SupplierService extends CRUDService<Supplier> {
     Supplier findByEmailAndPassword(String email, String password);
     Supplier findByEmail(String email);
-    Collection<MedicationOffer> getMedicationOffersBySupplier(Long supplierId);
+    Collection<MedicationOfferDTO> getMedicationOffersBySupplier(Long supplierId);
 
 }

@@ -3,6 +3,7 @@ package app.service.impl;
 import app.dto.MedicationOfferDTO;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOrder;
+import app.model.medication.MedicationQuantity;
 import app.model.user.Supplier;
 import app.repository.SupplierRepository;
 import app.service.MedicationOfferService;
@@ -10,6 +11,7 @@ import app.service.MedicationOrderService;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -34,7 +36,6 @@ public class SupplierServiceImpl implements SupplierService{
         return supplierRepository.findAll();
     }
 
-
     @Override
     public Optional<Supplier> read(Long id){return supplierRepository.findById(id); }
     @Override
@@ -54,26 +55,23 @@ public class SupplierServiceImpl implements SupplierService{
     }
 
     @Override
-    public Collection<MedicationOffer> getMedicationOffersBySupplier(Long supplierId) { return supplierRepository.getMedicationOffersBySupplier( supplierId);}
+    public Collection<MedicationOfferDTO> getMedicationOffersBySupplier(Long supplierId){
+        ArrayList<MedicationOfferDTO> offers=new ArrayList<>();
+        read().forEach(p -> {
+            if (p.getId().equals(supplierId)) {
+                for(MedicationOffer m : p.getMedicationOffer()) {
+                    MedicationOfferDTO offerDTO = new MedicationOfferDTO();
 
+                    offerDTO.setId(m.getId());
+                    offerDTO.setCost(m.getCost());
+                    offerDTO.setShippingDate(m.getShippingDate());
+                    offerDTO.setMedicationOrderId(m.getMedicationOrder().getId());
+                    offerDTO.setSupplierId(supplierId);
 
-/*
-    @Override
-    public Boolean createNewMedicationOffer(MedicationOfferDTO medicationOfferDTO) {
-        Supplier supplier=this.read(medicationOfferDTO.getSupplierId()).get();
-
-        MedicationOrder medicationOrder=medicationOrderService.read(medicationOfferDTO.getMedicationOrderId()).get();
-
-        MedicationOffer medicationOffer=new MedicationOffer();
-        medicationOffer.setCost(medicationOfferDTO.getCost());
-        medicationOffer.setShippingDate(medicationOfferDTO.getShippingDate());
-        medicationOffer.setStatus(medicationOfferDTO.getStatus());
-        medicationOffer.setMedicationOrder(medicationOrder);
-        medicationOffer.setId(800L);
-        supplier.getMedicationOffer().add(medicationOffer);
-        this.save(supplier);
-
-        return medicationOfferService.save(medicationOffer) !=null;
+                    offers.add(offerDTO);
+                }
+            }});
+    return offers;
     }
-*/
+
 }

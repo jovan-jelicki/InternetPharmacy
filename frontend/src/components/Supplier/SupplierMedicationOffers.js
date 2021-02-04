@@ -80,11 +80,12 @@ export default class SupplierMedicationOffers extends React.Component{
 
     async componentDidMount() {
         await axios
-            .get('http://localhost:8080/api/medicationOrder/getAll')
+            .get('http://localhost:8080/api/suppliers/getAllBySupplier/'+1)
             .then((res) => {
                 this.setState({
                     medicationOrders : res.data
                 })
+                console.log("USEO")
                 console.log(this.state.medicationOrders);
             })
     }

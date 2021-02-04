@@ -14,6 +14,4 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
     @Query("select d from Supplier d where d.credentials.email = ?1")
     Supplier findByEmail(String email);
 
-    @Query("select d from Supplier d where d.medicationOffer = ?1")
-    Collection<MedicationOffer> getMedicationOffersBySupplier(Long supplierId);
 }
