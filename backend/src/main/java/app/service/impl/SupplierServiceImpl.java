@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationOfferDTO;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOrder;
@@ -55,23 +56,27 @@ public class SupplierServiceImpl implements SupplierService{
     }
 
     @Override
-    public Collection<MedicationOfferDTO> getMedicationOffersBySupplier(Long supplierId){
-        ArrayList<MedicationOfferDTO> offers=new ArrayList<>();
+    public Collection<MedicationOfferAndOrderDTO> getMedicationOffersBySupplier(Long supplierId){
+        ArrayList<MedicationOfferAndOrderDTO> offersAndOrder=new ArrayList<>();
         read().forEach(p -> {
             if (p.getId().equals(supplierId)) {
                 for(MedicationOffer m : p.getMedicationOffer()) {
-                    MedicationOfferDTO offerDTO = new MedicationOfferDTO();
+                    MedicationOfferAndOrderDTO offerDTO = new MedicationOfferAndOrderDTO();
 
-                    offerDTO.setId(m.getId());
                     offerDTO.setCost(m.getCost());
                     offerDTO.setShippingDate(m.getShippingDate());
-                    offerDTO.setMedicationOrderId(m.getMedicationOrder().getId());
-                    offerDTO.setSupplierId(supplierId);
+                    offerDTO.setOfferStatus(m.getStatus());
 
-                    offers.add(offerDTO);
+                    MedicationOrder medicationOrder=m.getMedicationOrder();
+                    offerDTO.setDeadline(medicationOrder.getDeadline());
+                    offerDTO.setMedicationQuantity(medicationOrder.getMedicationQuantity());
+                    offerDTO.setOrderStatus(medicationOrder.getStatus());
+                    offerDTO.setPharmacyAdminId(medicationOrder.getPharmacyAdmin().getPharmacy().getName());
+
+                    offersAndOrder.add(offerDTO);
                 }
             }});
-    return offers;
+    return offersAndOrder;
     }
 
 }

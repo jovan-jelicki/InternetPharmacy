@@ -1,5 +1,6 @@
 package app.controller.impl;
 
+import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationOfferDTO;
 import app.dto.PharmacyMedicationListingDTO;
 import app.model.medication.MedicationOffer;
@@ -23,7 +24,7 @@ public class SupplierControllerImpl {
     }
 
     @GetMapping(value = "/getAllBySupplier/{supplierId}")
-    public ResponseEntity<Collection<MedicationOfferDTO>> getMedicationOffersBySupplier(@PathVariable Long supplierId) {
+    public ResponseEntity<Collection<MedicationOfferAndOrderDTO>> getMedicationOffersBySupplier(@PathVariable Long supplierId) {
         return new ResponseEntity<>(supplierService.getMedicationOffersBySupplier(supplierId), HttpStatus.OK);
     }
 

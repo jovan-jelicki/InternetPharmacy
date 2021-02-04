@@ -83,10 +83,10 @@ export default class SupplierMedicationOffers extends React.Component{
             .get('http://localhost:8080/api/suppliers/getAllBySupplier/'+1)
             .then((res) => {
                 this.setState({
-                    medicationOrders : res.data
+                    medicationOffers : res.data
                 })
                 console.log("USEO")
-                console.log(this.state.medicationOrders);
+                console.log(this.state.medicationOffers);
             })
     }
 
@@ -159,24 +159,32 @@ export default class SupplierMedicationOffers extends React.Component{
                         <th scope="col">Medications</th>
                         <th scope="col">Price</th>
                         <th scope="col">Shipping date</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Offer status</th>
+                        <th scope="col">Offer status</th>
                     </tr>
                     </thead>
                     <tbody>
+
                     {this.state.medicationOffers.map((medicationOffer, index) => (
                         <tr>
                             <th scope="row">{index+1}</th>
-                            <td>{medicationOffer.medicationOrder.pharmacyAdmin.firstName + ' ' + medicationOffer.medicationOrder.pharmacyAdmin.lastName}</td>
-                            <td>{medicationOffer.medicationOrder.deadLine}</td>
+                            <td>{medicationOffer.pharmacyAdminId}</td>
+                            <td>{medicationOffer.deadline.split("T")[0]}</td>
                             <td>
-                                <Dropdown options={options}  value={defaultOption} />
+                                {medicationOffer.medicationQuantity.map((e, key) => {
+                                    return <option key={key} value={e.medication}>{e.medication.name} | {e.quantity}</option>
+
+                                })
+                                }
                             </td>
-                            <td>{medicationOffer.price}</td>
-                            <td>{medicationOffer.shippingDate}</td>
-                            <td>{medicationOffer.status}</td>
+                            <td>{medicationOffer.cost}</td>
+                            <td>{medicationOffer.shippingDate.split("T")[0]}</td>
+                            <td>{medicationOffer.offerStatus}</td>
+                            <td>{medicationOffer.orderStatus}</td>
                         </tr>
 
                     ))}
+
                     </tbody>
                 </table>
 
