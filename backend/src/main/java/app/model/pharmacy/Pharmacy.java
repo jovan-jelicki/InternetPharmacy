@@ -25,11 +25,6 @@ public class Pharmacy {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private List<Dermatologist> dermatologist;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private List<Pharmacist> pharmacist;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MedicationQuantity> medicationQuantity;
@@ -77,22 +72,6 @@ public class Pharmacy {
     public void setDescription(String description) {
         this.description = description;
     }
-
-//    public List<Dermatologist> getDermatologist() {
-//        return dermatologist;
-//    }
-//
-//    public void setDermatologist(List<Dermatologist> dermatologist) {
-//        this.dermatologist = dermatologist;
-//    }
-//
-//    public List<Pharmacist> getPharmacist() {
-//        return pharmacist;
-//    }
-//
-//    public void setPharmacist(List<Pharmacist> pharmacist) {
-//        this.pharmacist = pharmacist;
-//    }
 
     public List<MedicationQuantity> getMedicationQuantity() {
         return medicationQuantity;

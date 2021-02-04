@@ -22,6 +22,9 @@ public class MedicationReservation {
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
    private LocalDateTime pickUpDate;
 
+   //dodaj kolicinu popusta
+
+
    @JoinColumn
    @ManyToOne
    private Patient patient;
