@@ -80,6 +80,7 @@ export default class CreateNewOffer extends React.Component{
                 'shippingDate' : this.state.medicationOffer.shippingDate,
                 'status' : 0,
                 'medicationOrderId' : 2,
+                'supplierId': 1
             })
             .then(res => {
 

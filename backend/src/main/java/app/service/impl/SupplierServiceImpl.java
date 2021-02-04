@@ -1,8 +1,12 @@
 package app.service.impl;
 
+import app.dto.MedicationOfferDTO;
 import app.model.medication.MedicationOffer;
+import app.model.medication.MedicationOrder;
 import app.model.user.Supplier;
 import app.repository.SupplierRepository;
+import app.service.MedicationOfferService;
+import app.service.MedicationOrderService;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +16,12 @@ import java.util.Optional;
 @Service
 public class SupplierServiceImpl implements SupplierService{
     private SupplierRepository supplierRepository;
+    private final MedicationOrderService medicationOrderService;
 
-    public SupplierServiceImpl(SupplierRepository supplierRepository) {
+
+    public SupplierServiceImpl(SupplierRepository supplierRepository, MedicationOrderService medicationOrderService) {
         this.supplierRepository = supplierRepository;
+        this.medicationOrderService = medicationOrderService;
     }
 
     @Override
@@ -49,4 +56,24 @@ public class SupplierServiceImpl implements SupplierService{
     @Override
     public Collection<MedicationOffer> getMedicationOffersBySupplier(Long supplierId) { return supplierRepository.getMedicationOffersBySupplier( supplierId);}
 
+
+/*
+    @Override
+    public Boolean createNewMedicationOffer(MedicationOfferDTO medicationOfferDTO) {
+        Supplier supplier=this.read(medicationOfferDTO.getSupplierId()).get();
+
+        MedicationOrder medicationOrder=medicationOrderService.read(medicationOfferDTO.getMedicationOrderId()).get();
+
+        MedicationOffer medicationOffer=new MedicationOffer();
+        medicationOffer.setCost(medicationOfferDTO.getCost());
+        medicationOffer.setShippingDate(medicationOfferDTO.getShippingDate());
+        medicationOffer.setStatus(medicationOfferDTO.getStatus());
+        medicationOffer.setMedicationOrder(medicationOrder);
+        medicationOffer.setId(800L);
+        supplier.getMedicationOffer().add(medicationOffer);
+        this.save(supplier);
+
+        return medicationOfferService.save(medicationOffer) !=null;
+    }
+*/
 }

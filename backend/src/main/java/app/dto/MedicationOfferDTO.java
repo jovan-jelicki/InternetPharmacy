@@ -11,16 +11,26 @@ public class MedicationOfferDTO {
     private LocalDateTime shippingDate;
     private MedicationOfferStatus status;
     private Long medicationOrderId;
+    private Long supplierId;
 
     public MedicationOfferDTO(){}
-
-    public MedicationOfferDTO(Long id, double cost, LocalDateTime shippingDate, MedicationOfferStatus status,Long medicationOrderId) {
+    public MedicationOfferDTO(Long id, double cost, LocalDateTime shippingDate, MedicationOfferStatus status,Long medicationOrderId,Long supplierId) {
         this.id = id;
         this.cost = cost;
         this.shippingDate = shippingDate;
         this.status = status;
         this.medicationOrderId =medicationOrderId;
+        this.supplierId=supplierId;
     }
+
+    public Long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Long supplierId) {
+        this.supplierId = supplierId;
+    }
+
 
     public Long getMedicationOrderId() {
         return medicationOrderId;

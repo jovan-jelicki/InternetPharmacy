@@ -1,5 +1,6 @@
 package app.service;
 
+import app.dto.MedicationOfferDTO;
 import app.model.medication.MedicationOffer;
 import app.model.user.Supplier;
 import app.model.user.SystemAdmin;
@@ -11,4 +12,5 @@ public interface SupplierService extends CRUDService<Supplier> {
     Supplier findByEmailAndPassword(String email, String password);
     Supplier findByEmail(String email);
     Collection<MedicationOffer> getMedicationOffersBySupplier(Long supplierId);
+
 }

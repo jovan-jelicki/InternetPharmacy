@@ -5,13 +5,11 @@ import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOrder;
 import app.model.user.Supplier;
 import app.repository.MedicationOfferRepository;
-import app.repository.MedicationOrderRepository;
 import app.service.MedicationOfferService;
 import app.service.MedicationOrderService;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -19,10 +17,12 @@ import java.util.Optional;
 public class MedicationOfferServiceImpl implements MedicationOfferService {
     private final MedicationOfferRepository medicationOfferRepository;
     private final MedicationOrderService medicationOrderService;
+    private final SupplierService supplierService;
 
-    public MedicationOfferServiceImpl(MedicationOfferRepository medicationOfferRepository, MedicationOrderService medicationOrderService) {
+    public MedicationOfferServiceImpl(MedicationOfferRepository medicationOfferRepository, MedicationOrderService medicationOrderService, SupplierService supplierService) {
         this.medicationOfferRepository = medicationOfferRepository;
         this.medicationOrderService = medicationOrderService;
+        this.supplierService = supplierService;
     }
 
     @Override
@@ -58,6 +58,9 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         medicationOffer.setShippingDate(medicationOfferDTO.getShippingDate());
         medicationOffer.setStatus(medicationOfferDTO.getStatus());
         medicationOffer.setMedicationOrder(medicationOrder);
+
+        Supplier supplier=supplierService.read(medicationOfferDTO.getSupplierId()).get();
+        supplier.getMedicationOffer().add(medicationOffer);
 
         return this.save(medicationOffer) !=null;
     }
