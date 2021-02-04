@@ -191,19 +191,19 @@ public class DermatologistServiceImpl implements DermatologistService {
     private boolean validateWorkingHoursRegardingOtherWorkingHours(WorkingHours workingHours, WorkingHours workingHoursIsOverlapping) {
         boolean isOverlapping = false;
 
-        if (workingHours.getPeriod().getPeriodStart().minusMinutes(1).toLocalTime().isBefore(workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime()) &&
-                workingHours.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
+        if (workingHours.getPeriod().getPeriodStart().toLocalTime().isBefore(workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime()) &&
+                workingHours.getPeriod().getPeriodEnd().toLocalTime().isAfter(workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
             isOverlapping = true;
-        else if (workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(workingHours.getPeriod().getPeriodStart().toLocalTime()) &&
-                workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(workingHours.getPeriod().getPeriodEnd().toLocalTime())) //E A A E
+        else if (workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime().isBefore(workingHours.getPeriod().getPeriodStart().toLocalTime()) &&
+                workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime().isAfter(workingHours.getPeriod().getPeriodEnd().toLocalTime())) //E A A E
             isOverlapping = true;
-        else if (workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(workingHours.getPeriod().getPeriodStart().toLocalTime()) &&
-                workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime().minusMinutes(1).isBefore(workingHours.getPeriod().getPeriodEnd().toLocalTime()) &&
-                workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(workingHours.getPeriod().getPeriodStart().toLocalTime())) //E A E A
+        else if (workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime().isBefore(workingHours.getPeriod().getPeriodStart().toLocalTime()) &&
+                workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime().isBefore(workingHours.getPeriod().getPeriodEnd().toLocalTime()) &&
+                workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime().isAfter(workingHours.getPeriod().getPeriodStart().toLocalTime())) //E A E A
             isOverlapping = true;
-        else if (workingHours.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime()) &&
-                workingHours.getPeriod().getPeriodEnd().toLocalTime().minusMinutes(1).isBefore(workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime()) &&
-                workingHours.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime())) //A E A E
+        else if (workingHours.getPeriod().getPeriodStart().toLocalTime().isBefore(workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime()) &&
+                workingHours.getPeriod().getPeriodEnd().toLocalTime().isBefore(workingHoursIsOverlapping.getPeriod().getPeriodEnd().toLocalTime()) &&
+                workingHours.getPeriod().getPeriodEnd().toLocalTime().isAfter(workingHoursIsOverlapping.getPeriod().getPeriodStart().toLocalTime())) //A E A E
             isOverlapping = true;
 
         return isOverlapping;
