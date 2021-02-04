@@ -23,7 +23,8 @@ public class MedicationReservation {
    private LocalDateTime pickUpDate;
 
    //dodaj kolicinu popusta
-
+   @Column
+   private Boolean isDiscounted;
 
    @JoinColumn
    @ManyToOne
@@ -73,5 +74,13 @@ public class MedicationReservation {
 
    public void setPickUpDate(LocalDateTime pickUpDate) {
       this.pickUpDate = pickUpDate;
+   }
+
+   public Boolean getDiscounted() {
+      return isDiscounted;
+   }
+
+   public void setDiscounted(Boolean discounted) {
+      isDiscounted = discounted;
    }
 }

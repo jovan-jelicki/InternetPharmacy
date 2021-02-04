@@ -414,6 +414,17 @@ values (2, 4,0, '2020-12-25', 3,1);
 insert into medication_lacking_event(id, employee_id, employee_type, event_date, medication_id, pharmacy_id)
 values (3, 1,1, '2021-02-03', 4,1);
 
+insert into promotion(id, content, period_end, period_start, pharmacy_id)
+values (1, 'Ovi lekovi su na popustu : Bromazepan, Aspirin, Xanax', '2021-03-1', '2021-01-01', 1);
+insert into promotion_medications_on_promotion(promotion_id, medications_on_promotion_id)
+values (1, 0);
+insert into promotion_medications_on_promotion(promotion_id, medications_on_promotion_id)
+values (1, 1);
+insert into promotion_medications_on_promotion(promotion_id, medications_on_promotion_id)
+values (1, 4);
+
+insert into patient_promotions(patient_id, promotions_id) values (0,1);
+
 -- SELECT MAX(id) FROM appointment;
 --
 -- SELECT nextval('bookmarks_id_seq');

@@ -4,7 +4,9 @@ import app.model.medication.Medication;
 import app.model.pharmacy.Pharmacy;
 import app.model.pharmacy.Promotion;
 import app.model.time.Period;
+import app.model.user.Patient;
 import app.repository.PromotionRepository;
+import app.service.PatientService;
 import app.service.PharmacyService;
 import app.service.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,13 @@ import java.util.*;
 public class PromotionServiceImpl implements PromotionService {
     private final PromotionRepository promotionRepository;
     private final PharmacyService pharmacyService;
+    private final PatientService patientService;
 
     @Autowired
-    public PromotionServiceImpl(PromotionRepository promotionRepository, PharmacyService pharmacyService) {
+    public PromotionServiceImpl(PromotionRepository promotionRepository, PharmacyService pharmacyService, PatientService patientService) {
         this.promotionRepository = promotionRepository;
         this.pharmacyService = pharmacyService;
+        this.patientService = patientService;
     }
 
 
@@ -103,5 +107,34 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public Collection<Promotion> getCurrentPromotionsByPharmacyAndDate(Long pharmacyId, LocalDateTime date) {
         return promotionRepository.getCurrentPromotionsByPharmacyAndDate(pharmacyId, date);
+    }
+
+    @Override
+    public Boolean checkPatientSubscribedToPromotion(Long pharmacyId, Long patientId, Long medicationId) {
+        ArrayList<Promotion> promotions = (ArrayList<Promotion>) promotionRepository.getCurrentPromotionsByPharmacyAndDate(pharmacyId, LocalDateTime.now());
+        Patient patient = patientService.read(patientId).get();
+        for (Promotion promotionPatient : patient.getPromotions())
+            for (Promotion promotionPharmacy : promotions)
+                if (promotionPatient.getId().equals(promotionPharmacy.getId()) && promotionPharmacy.getMedicationsOnPromotion()
+                        .stream().filter(medication -> medication.getId().equals(medicationId)).count() != 0)
+                    return true;
+
+        return false;
+    }
+
+    @Override
+    public Boolean subscribeToPromotion(Long patientId, Long promotionId) {
+        Patient patient = patientService.read(patientId).get();
+        Promotion promotion = this.read(promotionId).get();
+
+        //checks if the promotion is still valid
+        if (promotion.getPeriod().getPeriodEnd().isBefore(LocalDateTime.now()))
+            return false;
+
+        patient.getPromotions().add(promotion);
+
+        //TODO send an email of confirmation to the patient
+
+        return patientService.save(patient) != null;
     }
 }
