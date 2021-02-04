@@ -71,7 +71,7 @@ export default class MedicationOrdersList extends React.Component {
                             </td>
                             <td>{medicationOrder.status}</td>
                             <td>
-                                <Button variant="primary" onClick={this.showOffersButtonClick}>
+                                <Button variant="primary" onClick={() => this.showOffersButtonClick(medicationOrder)}>
                                     Pregledaj ponude
                                 </Button>
                             </td>
@@ -123,7 +123,8 @@ export default class MedicationOrdersList extends React.Component {
         });
     }
 
-    showOffersButtonClick = () => {
+    showOffersButtonClick = (medicationOrder) => {
+        this.props.updateClickedMedicationOrder(medicationOrder);
         this.props.showOffers('showOffers');
     }
 

@@ -28,6 +28,12 @@ public class MedicationOfferControllerImpl {
         return new ResponseEntity<>(medicationOfferService.getOffersByOrderId(orderId), HttpStatus.OK);
     }
 
+    @PutMapping(consumes = "application/json", value = "/acceptOffer/{pharmacyAdminId}")
+    public ResponseEntity<Boolean> acceptOffer(@RequestBody MedicationOfferDTO medicationOffer, @PathVariable Long pharmacyAdminId){
+        if (medicationOfferService.acceptOffer(medicationOffer, pharmacyAdminId))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);    }
+
     /*
     @GetMapping(value = "/getAllBySupplier")
     public ResponseEntity<Collection<MedicationOffer>> getMedicationOfferBySupplier(@RequestBody Long supplierId) {

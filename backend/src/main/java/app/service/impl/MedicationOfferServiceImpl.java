@@ -2,11 +2,15 @@ package app.service.impl;
 
 import app.dto.MedicationOfferDTO;
 import app.model.medication.MedicationOffer;
+import app.model.medication.MedicationOfferStatus;
 import app.model.medication.MedicationOrder;
+import app.model.medication.MedicationQuantity;
+import app.model.pharmacy.Pharmacy;
 import app.model.user.Supplier;
 import app.repository.MedicationOfferRepository;
 import app.service.MedicationOfferService;
 import app.service.MedicationOrderService;
+import app.service.PharmacyService;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +23,13 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     private final MedicationOfferRepository medicationOfferRepository;
     private final MedicationOrderService medicationOrderService;
     private final SupplierService supplierService;
+    private final PharmacyService pharmacyService;
 
-    public MedicationOfferServiceImpl(MedicationOfferRepository medicationOfferRepository, MedicationOrderService medicationOrderService, SupplierService supplierService) {
+    public MedicationOfferServiceImpl(MedicationOfferRepository medicationOfferRepository, MedicationOrderService medicationOrderService, SupplierService supplierService, PharmacyService pharmacyService) {
         this.medicationOfferRepository = medicationOfferRepository;
         this.medicationOrderService = medicationOrderService;
         this.supplierService = supplierService;
+        this.pharmacyService = pharmacyService;
     }
 
     @Override
@@ -81,6 +87,43 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         }
         return medicationOfferDTOS;
     }
+    private void updatePharmacyMedicationQuantity(MedicationOffer medicationOffer, MedicationOrder medicationOrder) {
+        Pharmacy pharmacy = pharmacyService.read(medicationOrder.getPharmacyAdmin().getPharmacy().getId()).get();
+        for (MedicationQuantity medicationQuantityPharmacy : pharmacy.getMedicationQuantity())
+            for (MedicationQuantity medicationQuantityOrder : medicationOrder.getMedicationQuantity())
+                if (medicationQuantityOrder.getMedication().getId().equals(medicationQuantityPharmacy.getMedication().getId()))
+                    medicationQuantityPharmacy.setQuantity(medicationQuantityPharmacy.getQuantity() + medicationQuantityOrder.getQuantity());
+
+        pharmacyService.save(pharmacy);
+    }
+
+    @Override
+    public Boolean acceptOffer(MedicationOfferDTO medicationOfferDTO, Long pharmacyAdminId) {
+        MedicationOrder medicationOrder = medicationOrderService.read(medicationOfferDTO.getMedicationOrderId()).get();
+        if (!medicationOrder.getPharmacyAdmin().getId().equals(pharmacyAdminId))
+            return false;
+
+        //TODO uncomment this for final version
+//        if (LocalDateTime.now().toLocalDate().isBefore(medicationOrder.getDeadline().toLocalDate()))
+//            return false;
+
+        for (MedicationOffer medicationOffer : medicationOfferRepository.getMedicationOffersByMedicationOrder(medicationOfferDTO.getMedicationOrderId())) {
+            if (medicationOffer.getId().equals(medicationOfferDTO.getId()) && medicationOffer.getStatus() == MedicationOfferStatus.pending) {
+                medicationOffer.setStatus(MedicationOfferStatus.approved);
+                this.save(medicationOffer);
+
+                //TODO send confirmation email to supplier
+
+                updatePharmacyMedicationQuantity(medicationOffer, medicationOrder);
+                continue;
+            }
+            medicationOffer.setStatus(MedicationOfferStatus.rejected);
+            this.save(medicationOffer);
+        }
+        return true;
+    }
+
+
 
     //@Override
    // public Collection<MedicationOffer> getMedicationOfferBySupplier(Long supplierId) { return medicationOfferRepository.getMedicationOfferBySupplier(supplierId);}
