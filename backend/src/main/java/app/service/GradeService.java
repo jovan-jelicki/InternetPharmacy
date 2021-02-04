@@ -8,15 +8,11 @@ import app.model.grade.GradeType;
 import java.util.Collection;
 
 public interface GradeService {
-    public Grade save(Grade grade);
-
+    Grade save(Grade grade);
     Collection<EmployeeGradeDTO> findDermatologistsPatientCanGrade(Long patientId);
-
     Collection<EmployeeGradeDTO> findPharmacistPatientCanGrade(Long patientId);
-
     Collection<AssetGradeDTO> findMedicationsPatientCanGrade(Long patientId);
-
+    Collection<AssetGradeDTO> findPharmacyPatientCanGrade(Long patientId);
     Collection<Grade> findAllByPatientId(Long id);
     double findAverageGradeForEntity(Long id, GradeType gradeType);
-    void setGradingStrategy(GradingStrategy gradingStrategy);
 }

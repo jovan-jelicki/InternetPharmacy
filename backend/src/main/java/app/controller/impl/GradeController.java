@@ -24,7 +24,7 @@ public class GradeController {
 
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Void> save(@RequestBody Grade grade) {
-        if(gradeService.save(grade) == null)
+        if (gradeService.save(grade) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         else
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -43,5 +43,10 @@ public class GradeController {
     @GetMapping(value = "/medication/{id}")
     public ResponseEntity<Collection<AssetGradeDTO>> findMedicationsPatientCanGrade(@PathVariable Long id) {
         return new ResponseEntity<>(gradeService.findMedicationsPatientCanGrade(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/pharmacy/{id}")
+    public ResponseEntity<Collection<AssetGradeDTO>> findPharmacyPatientCanGrade(@PathVariable Long id) {
+        return new ResponseEntity<>(gradeService.findPharmacyPatientCanGrade(id), HttpStatus.OK);
     }
 }

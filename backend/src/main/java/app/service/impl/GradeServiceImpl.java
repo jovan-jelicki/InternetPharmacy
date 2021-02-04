@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @Service
 public class GradeServiceImpl implements GradeService {
     private final GradeRepository gradeRepository;
-    private final GradingStrategyFactory gradingStrategyFactory;
     private final PatientService patientService;
     private final DermatologistRepository dermatologistRepository;
     private final PharmacistRepository pharmacistRepository;
@@ -35,12 +34,9 @@ public class GradeServiceImpl implements GradeService {
     private final MedicationReservationRepository medicationReservationRepository;
     private final EPrescriptionRepository ePrescriptionRepository;
 
-    private GradingStrategy gradingStrategy;
-
     @Autowired
-    public GradeServiceImpl(GradeRepository gradeRepository, GradingStrategyFactory gradingStrategyFactory, PatientService patientService, DermatologistRepository dermatologistRepository, PharmacistRepository pharmacistRepository, PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository, MedicationReservationRepository medicationReservationRepository, EPrescriptionRepository ePrescriptionRepository) {
+    public GradeServiceImpl(GradeRepository gradeRepository, PatientService patientService, DermatologistRepository dermatologistRepository, PharmacistRepository pharmacistRepository, PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository, MedicationReservationRepository medicationReservationRepository, EPrescriptionRepository ePrescriptionRepository) {
         this.gradeRepository = gradeRepository;
-        this.gradingStrategyFactory = gradingStrategyFactory;
         this.patientService = patientService;
         this.dermatologistRepository = dermatologistRepository;
         this.pharmacistRepository = pharmacistRepository;
@@ -52,11 +48,6 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public Grade save(Grade grade) {
-//        GradeType gradeType = grade.getGradeType();
-//        if(gradeType == GradeType.dermatologist || gradeType == GradeType.pharmacist)
-//            gradingStrategy = gradingStrategyFactory.findStrategy(StrategyName.employee);
-//        else
-//            gradingStrategy = gradingStrategyFactory.findStrategy(StrategyName.asset);
         grade.setPatient(patientService.read(grade.getPatient().getId()).get());
         return gradeRepository.save(grade);
     }
@@ -120,6 +111,7 @@ public class GradeServiceImpl implements GradeService {
 
     }
 
+    @Override
     public Collection<AssetGradeDTO> findPharmacyPatientCanGrade(Long patientId) {
         Set<AssetGradeDTO> pharmacies = new HashSet<>();
         appointmentRepository
@@ -156,7 +148,8 @@ public class GradeServiceImpl implements GradeService {
         return pharmacy
                 .getMedicationReservation()
                 .stream()
-                .anyMatch(r -> r.getPatient().getId() == patientId);
+                .anyMatch(r -> r.getPatient().getId() == patientId &&
+                        r.getStatus() == MedicationReservationStatus.successful);
     }
 
     private void getMedicationGrade(Long patientId, Set<AssetGradeDTO> medications, Medication medication) {
@@ -180,10 +173,5 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public double findAverageGradeForEntity(Long id, GradeType gradeType) {
         return gradeRepository.findAverageGradeForEntity(id, gradeType);
-    }
-
-    @Override
-    public void setGradingStrategy(GradingStrategy gradingStrategy) {
-
     }
 }
