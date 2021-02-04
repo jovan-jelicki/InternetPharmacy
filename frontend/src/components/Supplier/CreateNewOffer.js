@@ -1,6 +1,7 @@
 import React from "react";
 import DatePicker from "react-datepicker";
 import {Button, Modal} from "react-bootstrap";
+import axios from "axios";
 
 
 export default class CreateNewOffer extends React.Component{
@@ -8,28 +9,13 @@ export default class CreateNewOffer extends React.Component{
         super(props);
         this.state = {
             modalClose:false,
-            // order : this.props.order,
-            medicationOrder : {
-                pharmacyAdmin : {
-                    firstName : 'Mirko',
-                    lastName : 'Mirkovic'
-                },
-                deadLine : '21.3.2021.',
-                medicationQuantity: {
-
-                },
-                status : 'pending',
-            },
-
             medicationOffer:   {
-                supplier : "",
-                price : 1,
+                cost : 1,
                 shippingDate : '',
-                status : ''
             },
             errors: {
                 medicationOffer: {
-                    price: 'Enter price',
+                    cost: 'Enter cost',
                     shippingDate: 'Choose shipping date',
                 }
             }
@@ -62,25 +48,39 @@ export default class CreateNewOffer extends React.Component{
     validationErrorMessage = (event) => {
         const { name, value } = event.target;
         let errors = this.state.errors;
-        errors.medicationOffer.price = value.length < 1 ? 'Enter price' : '';
+        errors.medicationOffer.cost = value.length < 1 ? 'Enter cost' : '';
         this.setState({ errors });
     }
 
 
     submitForm = async (event) => {
-        console.log(this.state.medicationOffer)
-
-
         this.setState({ submitted: true });
         const medicationOffer = this.state.medicationOffer;
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form')
-            this.setState({
-            })
+            console.log(this.state.medicationOffer.shippingDate)
+            this.sendParams()
         } else {
             console.log('Invalid Form')
         }
+    }
+
+
+    async sendParams() {
+        let orderId=this.props.order.id;
+        axios
+            .post('http://localhost:8080/api/medicationOffer/new', {
+                'id':'',
+                'cost' : this.state.medicationOffer.cost,
+                'shippingDate' : this.state.medicationOffer.shippingDate,
+                'status' : 0,
+                'medicationOrderId' : 2,
+            })
+            .then(res => {
+
+            });
+
     }
 
     validateForm = (errors) => {
@@ -94,7 +94,6 @@ export default class CreateNewOffer extends React.Component{
 
 
     render() {
-        console.log(this.props.order)
         return (
             <div className="jumbotron jumbotron-fluid"  style={{ background: 'silver', color: 'rgb(0, 92, 230)'}}>
                 <div>
@@ -136,8 +135,8 @@ export default class CreateNewOffer extends React.Component{
                     <div className="row"style={{marginTop: '1rem'}}>
                         <label  className="col-sm-4 col-form-label">Price</label>
                         <div className="col-sm-6 mb-2">
-                            <input type="number"  name="price" className="form-control" id="price" placeholder="Enter price" onChange={(e) => { this.handleInputChange(e)} } className="form-control"/>
-                            { this.state.submitted && this.state.errors.medicationOffer.price.length > 0 &&  <span className="text-danger">{this.state.errors.medicationOffer.price}</span>}
+                            <input type="number"  name="cost" className="form-control" id="cost" placeholder="Enter cost" onChange={(e) => { this.handleInputChange(e)} } className="form-control"/>
+                            { this.state.submitted && this.state.errors.medicationOffer.cost.length > 0 &&  <span className="text-danger">{this.state.errors.medicationOffer.cost}</span>}
 
                         </div>
                         <div className="col-sm-4">

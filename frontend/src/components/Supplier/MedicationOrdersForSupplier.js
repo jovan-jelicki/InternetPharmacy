@@ -96,13 +96,11 @@ export default class MedicationOrdersForSupplier extends React.Component {
     }
 
     handleModal = (medicationOrder) => {
-        console.log("BLA")
-        console.log(medicationOrder)
+
         this.setState({
             showModal : !this.state.showModal,
             order: medicationOrder
         });
-     //   console.log(this.state.order)
     }
 
     closeModal=()=>{
