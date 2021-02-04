@@ -1,5 +1,6 @@
 package app.controller.impl;
 
+import app.dto.MedicationSearchDTO;
 import app.model.medication.Medication;
 import app.service.MedicationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,11 @@ public class MedicationControllerImpl {
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Medication> save(@RequestBody Medication entity) {
         return new ResponseEntity<>(medicationService.save(entity), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/search")
+    public ResponseEntity<Collection<Medication>> search(@RequestBody MedicationSearchDTO medicationName) {
+        return new ResponseEntity<>(medicationService.getMedicationByNameIsContaining(medicationName),HttpStatus.OK);
     }
 
     @GetMapping
@@ -64,4 +70,6 @@ public class MedicationControllerImpl {
     public ResponseEntity<Collection<Medication>> getMedicationsNotContainedInPharmacy(@PathVariable Long pharmacyId){
         return new ResponseEntity<>(medicationService.getMedicationsNotContainedInPharmacy(pharmacyId), HttpStatus.OK);
     }
+
+
 }

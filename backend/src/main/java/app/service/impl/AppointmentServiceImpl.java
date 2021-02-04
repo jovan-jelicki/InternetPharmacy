@@ -1,9 +1,6 @@
 package app.service.impl;
 
-import app.dto.AppointmentFinishedDTO;
-import app.dto.AppointmentScheduledDTO;
-import app.dto.AppointmentUpdateDTO;
-import app.dto.EventDTO;
+import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.medication.Medication;
@@ -13,7 +10,6 @@ import app.model.time.WorkingHours;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
 import app.repository.AppointmentRepository;
-import app.repository.PatientRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
 import app.service.AppointmentService;
@@ -23,10 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -151,8 +147,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public boolean validateAppointmentTimeRegardingWorkingHours(Appointment entity) {
         WorkingHours workingHoursInPharmacy = dermatologistService.workingHoursInSpecificPharmacy(entity.getExaminerId(), entity.getPharmacy());
-        if (workingHoursInPharmacy.getPeriod().getPeriodStart().toLocalTime().isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-            workingHoursInPharmacy.getPeriod().getPeriodEnd().toLocalTime().isAfter(entity.getPeriod().getPeriodEnd().toLocalTime()))
+        if (workingHoursInPharmacy.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
+            workingHoursInPharmacy.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime()))
             return true;
         return false;
     }
@@ -161,11 +157,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     public boolean validateAppointmentTimeRegardingAllWorkingHours(Appointment entity) {
         boolean ret = true;
         //ArrayList<WorkingHours> allWorkingHours = (ArrayList<WorkingHours>) dermatologistService.read(entity.getExaminerId()).get().getWorkingHours();
-        for (WorkingHours workingHours : dermatologistService.read(entity.getExaminerId()).get().getWorkingHours()) {
-            if (!workingHours.getPeriod().getPeriodStart().toLocalTime().isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-                    !workingHours.getPeriod().getPeriodEnd().toLocalTime().isAfter(entity.getPeriod().getPeriodEnd().toLocalTime()))
+        for (WorkingHours workingHours : dermatologistService.read(entity.getExaminerId()).get().getWorkingHours())
+            if (!workingHours.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
+                    !workingHours.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime()))
                 ret = false;
-        }
+
 
         return ret;
     }
@@ -184,19 +180,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         boolean ret = true;
         for(Appointment appointment : this.getAllAppointmentsByExaminerIdAndType(entity.getExaminerId(), entity.getType())) {
             if (appointment.getPeriod().getPeriodStart().toLocalDate().equals(entity.getPeriod().getPeriodStart().toLocalDate())) {
-                if (appointment.getPeriod().getPeriodStart().toLocalTime().isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-                    appointment.getPeriod().getPeriodEnd().toLocalTime().isAfter(entity.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
+                if (appointment.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
+                    appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
                     ret = false;
-                else if (entity.getPeriod().getPeriodStart().toLocalTime().isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
-                        entity.getPeriod().getPeriodEnd().toLocalTime().isAfter(appointment.getPeriod().getPeriodEnd().toLocalTime())) //E A A E
+                else if (entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
+                        entity.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(appointment.getPeriod().getPeriodEnd().toLocalTime())) //E A A E
                     ret = false;
-                else if (entity.getPeriod().getPeriodStart().toLocalTime().isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
-                        entity.getPeriod().getPeriodEnd().toLocalTime().isBefore(appointment.getPeriod().getPeriodEnd().toLocalTime()) &&
-                        entity.getPeriod().getPeriodEnd().toLocalTime().isAfter(appointment.getPeriod().getPeriodStart().toLocalTime())) //E A E A
+                else if (entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
+                        entity.getPeriod().getPeriodEnd().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodEnd().toLocalTime()) &&
+                        entity.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(appointment.getPeriod().getPeriodStart().toLocalTime())) //E A E A
                     ret = false;
-                else if (appointment.getPeriod().getPeriodStart().toLocalTime().isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-                        appointment.getPeriod().getPeriodEnd().toLocalTime().isBefore(entity.getPeriod().getPeriodEnd().toLocalTime()) &&
-                        appointment.getPeriod().getPeriodEnd().toLocalTime().isAfter(entity.getPeriod().getPeriodStart().toLocalTime())) //A E A E
+                else if (appointment.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
+                        appointment.getPeriod().getPeriodEnd().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodEnd().toLocalTime()) &&
+                        appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodStart().toLocalTime())) //A E A E
                     ret = false;
             }
         }
@@ -218,7 +214,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             return false;
         else if (!validateAppointmentTimeRegardingOtherAppointments(entity))
             return false;
-        else if (!entity.getPeriod().getPeriodStart().toLocalTime().isBefore(entity.getPeriod().getPeriodEnd().toLocalTime()))
+        else if (!entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodEnd().toLocalTime()))
+            return false;
+        else if (Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) > 60 ||
+                Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) <10)
             return false;
 
         return this.save(entity) != null;
@@ -320,5 +319,117 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(Long examinerId, EmployeeType employeeType, LocalDateTime date, Long pharmacyId) {
         return appointmentRepository.GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(examinerId,employeeType,date, pharmacyId);
+    }
+
+    private LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
+        return Instant.ofEpochMilli(dateToConvert.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
+    @Override
+    public Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd, Long pharmacyId, EmployeeType employeeType){
+        Collection<Appointment> temp = appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dateStart, dateEnd, pharmacyId, employeeType);
+        return temp;
+    }
+
+    @Override
+    public Collection<ReportsDTO> getAppointmentsMonthlyReport(Long pharmacyId) {
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+        for (int i = 1; i <= 13; i++) {
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -1);
+        }
+
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        ArrayList<ReportsDTO> appointmentCountByMonth = new ArrayList<>();
+
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
+            appointmentCountByMonth.add(new ReportsDTO(monthName,temp));
+        }
+
+        return appointmentCountByMonth;
+    }
+
+    @Override
+    public Collection<ReportsDTO> getAppointmentsQuarterlyReport(Long pharmacyId) {
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+        for (int i = 1; i <= 5; i++) {
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -3);
+        }
+
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        ArrayList<ReportsDTO> appointmentCountByQuarter = new ArrayList<>();
+
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            String monthNameStart = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
+            String monthNameEnd = allDates.get(i+1).format(DateTimeFormatter.ofPattern("MMM"));
+            appointmentCountByQuarter.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd,temp));
+        }
+
+        return appointmentCountByQuarter;
+    }
+
+    @Override
+    public Collection<ReportsDTO> getAppointmentsYearlyReport(Long pharmacyId) {
+        List<LocalDate> allDates = new ArrayList<>();
+        String maxDate = LocalDateTime.now().withDayOfMonth(1).withDayOfYear(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(monthDate.parse(maxDate));
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+        for (int i = 1; i <= 11; i++) {
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -12);
+        }
+
+
+        Collections.reverse(allDates);
+        System.out.println(allDates);
+
+        ArrayList<ReportsDTO> appointmentCountByYear = new ArrayList<>();
+
+        for (int i = 0; i < allDates.size()-1; i++) {
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            String year = allDates.get(i).format(DateTimeFormatter.ofPattern("yyyy"));
+            appointmentCountByYear.add(new ReportsDTO(year,temp));
+        }
+
+        return appointmentCountByYear;
     }
 }

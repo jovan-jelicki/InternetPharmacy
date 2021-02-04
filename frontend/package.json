@@ -12,6 +12,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "google-maps-react": "^2.0.6",
+    "history": "^5.0.0",
     "moment": "^2.29.1",
     "react": "^17.0.1",
     "react-big-calendar": "^0.30.0",
@@ -23,7 +24,9 @@
     "react-router": "^5.2.0",
     "react-scripts": "4.0.1",
     "react-select": "^3.2.0",
+    "react-table-scrollbar": "^0.1.9",
     "react-time-picker": "^4.1.2",
+    "recharts": "^2.0.4",
     "rsuite": "^4.8.8",
     "web-vitals": "^0.2.4"
   },

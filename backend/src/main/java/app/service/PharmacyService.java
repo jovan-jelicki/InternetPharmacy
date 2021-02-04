@@ -1,12 +1,11 @@
 package app.service;
 
-import app.dto.AddMedicationToPharmacyDTO;
-import app.dto.PharmacyMedicationListingDTO;
-import app.dto.PharmacySearchDTO;
+import app.dto.*;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
 import app.service.impl.MedicationPriceListServiceImpl;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface PharmacyService extends CRUDService<Pharmacy> {
@@ -22,4 +21,16 @@ public interface PharmacyService extends CRUDService<Pharmacy> {
     Boolean editMedicationQuantity(PharmacyMedicationListingDTO pharmacyMedicationListingDTO);
 
     void setMedicationPriceListService(MedicationPriceListServiceImpl medicationPriceListService);
+
+    Boolean deleteMedicationFromPharmacy(PharmacyMedicationListingDTO pharmacyMedicationListingDTO);
+
+    Collection<ReportsDTO> getMedicationsConsumptionMonthlyReport(Long pharmacyId);
+
+    Collection<ReportsDTO> getMedicationsConsumptionQuarterlyReport(Long pharmacyId);
+
+    Collection<ReportsDTO> getMedicationsConsumptionYearlyReport(Long pharmacyId);
+
+    Collection<PharmacyMedicationDTO> getPharmacyByMedication(Long medicationId);
+
+    Collection<ReportsDTO> getPharmacyIncomeReportByPeriod(LocalDateTime periodStart, LocalDateTime periodEnd, Long pharmacyId);
 }

@@ -60,8 +60,18 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
     }
 
     @Override
-    public MedicationPriceList GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date) {
-        return medicationPriceListRepository.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationId,date);
+    public Double GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date) {
+        ArrayList<MedicationPriceList> medicationPriceLists = (ArrayList<MedicationPriceList>) medicationPriceListRepository.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationId,date);
+        long maxId = (long) -1.0;
+        for (MedicationPriceList medicationPriceList : medicationPriceLists)
+            if (medicationPriceList.getId() > maxId)
+                maxId = medicationPriceList.getId();
+
+        long finalMaxId = maxId;
+        if (medicationPriceLists.size()>0)
+            return medicationPriceLists.stream().filter(medicationPriceList -> medicationPriceList.getId() == finalMaxId).findFirst().get().getCost();
+
+        return 400.00; //TODO default price
     }
 
     @Override
@@ -110,5 +120,11 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
                 return false;
 
         return this.save(medicationPriceList) != null;
+    }
+
+    @Override
+    public Double getMedicationPrice(Long pharmacyId, Long medicationId) {
+        return medicationPriceListRepository.getMedicationPrice(pharmacyId,medicationId,LocalDateTime.now());
+
     }
 }
