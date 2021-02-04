@@ -1,11 +1,14 @@
 package app.controller.impl;
 
 import app.model.medication.MedicationOffer;
+import app.model.user.Patient;
+import app.model.user.Supplier;
 import app.service.SupplierService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -23,5 +26,10 @@ public class SupplierControllerImpl {
     @GetMapping(value = "/getAllBySupplier")
     public ResponseEntity<Collection<MedicationOffer>> getMedicationOffersBySupplier(@RequestBody Long supplierId) {
         return new ResponseEntity<>(supplierService.getMedicationOffersBySupplier(supplierId), HttpStatus.OK);
+    }
+
+    @PostMapping(value="/save", consumes = "application/json")
+    public ResponseEntity<Supplier> save(@RequestBody Supplier entity) {
+        return new ResponseEntity<>(supplierService.save(entity), HttpStatus.CREATED);
     }
 }
