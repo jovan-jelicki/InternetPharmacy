@@ -50,8 +50,8 @@ public class Pharmacist extends User {
 
     public boolean isOverlapping(LocalDateTime timeSlot) {
         WorkingHours wh = getWorkingHours();
-        LocalTime start = wh.getPeriod().getPeriodStart().toLocalTime();
-        LocalTime end = wh.getPeriod().getPeriodEnd().toLocalTime();
+        LocalTime start = wh.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1);
+        LocalTime end = wh.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1);
         return start.isBefore(timeSlot.toLocalTime()) && end.isAfter(timeSlot.toLocalTime()) &&
                 start.isBefore(timeSlot.toLocalTime().plusHours(1)) && end.isAfter(timeSlot.toLocalTime().plusHours(1));
     }

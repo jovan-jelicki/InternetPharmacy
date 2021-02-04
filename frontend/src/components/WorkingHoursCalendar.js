@@ -18,7 +18,7 @@ export default class WorkingHoursCalendar extends React.Component {
                 <Calendar
                     localizer={momentLocalizer(moment)}
                     events={this.props.events}
-                    popup = {false}
+                    popup = {true}
                     views={Object.keys(Views).map(k => Views[k])}
                     step={20}
                     timeslots={2}

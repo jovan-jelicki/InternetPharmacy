@@ -4,17 +4,19 @@ import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
 import app.model.medication.EPrescription;
 import app.model.medication.Medication;
+import app.model.medication.MedicationLackingEvent;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
+import app.model.user.PharmacyAdmin;
 import app.repository.EPrescriptionRepository;
-import app.service.EPrescriptionService;
-import app.service.PatientService;
-import app.service.PharmacyService;
+import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,12 +25,18 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     private final EPrescriptionRepository ePrescriptionRepository;
     private final PharmacyService pharmacyService;
     private final PatientService patientService;
+    private final PharmacyAdminService pharmacyAdminService;
+    private final EmailService emailService;
+    private final MedicationLackingEventService medicationLackingEventService;
 
     @Autowired
-    public EPrescriptionServiceImpl(PatientService patientService, EPrescriptionRepository ePrescriptionRepository, PharmacyService pharmacyService) {
+    public EPrescriptionServiceImpl(EmailService emailService,MedicationLackingEventService medicationLackingEventService ,PharmacyAdminService pharmacyAdminService, PatientService patientService, EPrescriptionRepository ePrescriptionRepository, PharmacyService pharmacyService) {
         this.ePrescriptionRepository = ePrescriptionRepository;
         this.pharmacyService = pharmacyService;
         this.patientService = patientService;
+        this.pharmacyAdminService = pharmacyAdminService;
+        this.emailService = emailService;
+        this.medicationLackingEventService = medicationLackingEventService;
     }
 
     @Override
@@ -37,15 +45,37 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         Collection<Medication> medications = makeEPrescriptionDTO.getPrescription().getMedicationQuantity().stream().map(medicationQuantity -> medicationQuantity.getMedication()).collect(Collectors.toList());
         if(patientService.isPatientAllergic(medications, makeEPrescriptionDTO.getPrescription().getPatient().getId()))
             throw new IllegalArgumentException("Patient is allergic!");
+
         if(pharmacy == null)
             throw new IllegalArgumentException("Pharmacy does not exists!");
-        if(!pharmacyService.checkMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy))
-            throw new IllegalArgumentException("No enough medication!");
+
+        if(!pharmacyService.checkMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy)) {
+            for (MedicationQuantity m : makeEPrescriptionDTO.getPrescription().getMedicationQuantity())
+                medicationLackingEventService.save(new MedicationLackingEvent(makeEPrescriptionDTO.getExaminerId(), makeEPrescriptionDTO.getEmployeeType(), m.getMedication() , LocalDateTime.now() , makeEPrescriptionDTO.getPharmacyId()));
+            PharmacyAdmin pharmacyAdmin = pharmacyAdminService.getPharmacyAdminByPharmacy(pharmacy.getId());
+            List<String> namesList = medications.stream().map(Medication::getName).collect(Collectors.toList());
+            new Thread(new Runnable() {
+                public void run(){
+                    notifyPharmacyAdmin(namesList, pharmacyAdmin);
+                }
+            }).start();
+            return null;
+        }
         makeEPrescriptionDTO.getPrescription().setDateIssued(LocalDateTime.now());
-        this.save(makeEPrescriptionDTO.getPrescription());
+        EPrescription ePrescription =  this.save(makeEPrescriptionDTO.getPrescription());
         updateMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy.getMedicationQuantity());
+        pharmacy.getPrescriptions().add(ePrescription);
         pharmacyService.save(pharmacy);
         return new EPrescriptionSimpleInfoDTO(makeEPrescriptionDTO.getPrescription());
+    }
+
+    @Async
+    public void notifyPharmacyAdmin(Collection<String> medications, PharmacyAdmin pharmacyAdmin){
+        try {
+            emailService.sendMail(pharmacyAdmin.getCredentials().getEmail(), "No enough medications", "There are not enough drugs in stock : " + medications);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateMedicationQuantity(Collection<MedicationQuantity> medicationQuantities, Collection<MedicationQuantity> medicationQuantitiesOfPharmacy){

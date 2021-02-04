@@ -10,9 +10,13 @@ import Registration from "../../pages/Registration";
 import CreatePharmacistModal from "./CreatePharmacistModal";
 import axios from "axios";
 import AddAppointmentModal from "./AddAppointmentModal";
+import Dropdown from "react-dropdown";
 
 
-
+const options = [
+    'Any', '1 - 2', '2 - 3', '3 - 4', ' > 4'
+];
+const defaultOption = options[0];
 
 export default class PharmacyEmployees extends React.Component{
     constructor(props) {
@@ -27,7 +31,13 @@ export default class PharmacyEmployees extends React.Component{
             dermatologistModalAddAppointment : {},
             searchPharmacist : {
                 firstName : '',
-                lastName : ''
+                lastName : '',
+                filterGradesPharmacist : options[0]
+            },
+            searchDermatologist : {
+                firstName : '',
+                lastName : '',
+                filterGradesDermatologist : options[0]
             },
             backupPharmacists : [],
             backupDermatologists : [],
@@ -55,7 +65,6 @@ export default class PharmacyEmployees extends React.Component{
 
         console.log(this.state.pharmacists);
         await this.fetchDermatologistNotWorkingInThisPharmacy();
-
     }
 
     render() {
@@ -72,9 +81,14 @@ export default class PharmacyEmployees extends React.Component{
                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
                    <Navbar.Collapse id="basic-navbar-nav">
                        <Form inline>
-                           <FormControl type="text" placeholder="Search by first name" className="mr-sm-2" />
-                           <FormControl type="text" placeholder="Search by last name" className="mr-sm-2" />
-                           <Button variant="outline-success">Search</Button>
+                           <FormControl type="text" placeholder="Search by first name" className="mr-sm-2" name={'firstName'} value={this.state.searchDermatologist.firstName} onChange={this.changeSearchDermatologist}/>
+                           <FormControl type="text" placeholder="Search by last name" className="mr-sm-2" name={'lastName'} value={this.state.searchDermatologist.lastName} onChange={this.changeSearchDermatologist}/>
+                           <label style={{marginRight : '1rem'}}>Filter by grade : </label>
+                           <select  name="filterGradesDermatologist" onChange={this.handleFilterGradesDermatologistChange} value={this.state.searchDermatologist.filterGradesDermatologist}>
+                               {options.map((option,index) => <option key={index} value={option}>{option}</option>)}
+                           </select>
+                           <Button variant="outline-success" onClick={this.searchDermatologist} style={{marginLeft : '1rem'}}>Search</Button>
+                           <Button variant="outline-info" onClick={this.resetSearchDermatologist} style={{marginLeft : '1rem'}}>Reset</Button>
                        </Form>
                    </Navbar.Collapse>
                </Navbar>
@@ -131,8 +145,12 @@ export default class PharmacyEmployees extends React.Component{
                        <Form inline>
                            <FormControl type="text" placeholder="Search by first name" className="mr-sm-2" name={'firstName'} value={this.state.searchPharmacist.firstName} onChange={this.changeSearchPharmacist}/>
                            <FormControl type="text" placeholder="Search by last name" className="mr-sm-2" name={'lastName'} value={this.state.searchPharmacist.lastName} onChange={this.changeSearchPharmacist}/>
-                           <Button variant="outline-success" onClick={this.searchPharmacist}>Search</Button>
-                           <Button variant="outline-info" onClick={this.resetSearchPharmacist}>Reset</Button>
+                           <label style={{marginRight : '1rem'}}>Filter by grade : </label>
+                           <select  name="filterGradesPharmacist" onChange={this.handleFilterGradesChange} value={this.state.searchPharmacist.filterGradesPharmacist}>
+                               {options.map((option,index) => <option key={index} value={option}>{option}</option>)}
+                           </select>
+                           <Button variant="outline-success" onClick={this.searchPharmacist} style={{marginLeft : '1rem'}}>Search</Button>
+                           <Button variant="outline-info" onClick={this.resetSearchPharmacist} style={{marginLeft : '1rem'}}>Reset</Button>
 
                        </Form>
                    </Navbar.Collapse>
@@ -164,11 +182,6 @@ export default class PharmacyEmployees extends React.Component{
                                </Button>
                            </td >
                            <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                               <Button variant="warning" onClick={this.handleModalAddDermatologist}>
-                                   Definisi slobodne termine
-                               </Button>
-                           </td>
-                           <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="danger" onClick={() => this.deletePharmacist(pharmacist)}>
                                    Izbrisi farmaceuta
                                </Button>
@@ -189,6 +202,30 @@ export default class PharmacyEmployees extends React.Component{
 // <option disabled>select medication</option>
 // {this.props.medications.map((medication) => <option key={medication.id} value={medication.name}>{medication.name}</option>)}
 // </select>
+
+    handleFilterGradesDermatologistChange = (event) => {
+        const target = event.target;
+        let value = event.target.value;
+
+        this.setState({
+            searchDermatologist : {
+                ...this.state.searchDermatologist,
+                filterGradesDermatologist : value
+            }
+        })
+    }
+
+    handleFilterGradesChange = (event) => {
+        const target = event.target;
+        let value = event.target.value;
+
+        this.setState({
+            searchPharmacist : {
+                ...this.state.searchPharmacist,
+                filterGradesPharmacist : value
+            }
+        })
+    }
 
     handleDermatologistForAddingChange = async (event) => {
         const target = event.target;
@@ -406,7 +443,8 @@ export default class PharmacyEmployees extends React.Component{
     deletePharmacist = (pharmacist) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + pharmacist.firstName + ' ' + pharmacist.lastName + ' from your employees list?');
         if (isBoss) {
-            axios.delete("http://localhost:8080/api/pharmacist/1").then((res) => {
+            const path = "http://localhost:8080/api/pharmacist/" + pharmacist.id;
+            axios.delete(path).then((res) => {
                 if (res.status === 200) {
                     alert("Pharmacist deleted successfully!");
                     this.fetchPharmacists();
@@ -439,6 +477,14 @@ export default class PharmacyEmployees extends React.Component{
             });
     }
 
+    changeSearchDermatologist = (event) => {
+        const { name, value } = event.target;
+        const searchDermatologist = this.state.searchDermatologist;
+        searchDermatologist[name] = value;
+
+        this.setState({ searchDermatologist });
+    }
+
     changeSearchPharmacist = (event) => {
         const { name, value } = event.target;
         const searchPharmacist = this.state.searchPharmacist;
@@ -450,14 +496,47 @@ export default class PharmacyEmployees extends React.Component{
         this.setState({
             searchPharmacist : {
                 firstName : '',
-                lastName : ''
+                lastName : '',
+                filterGradesPharmacist : options[0]
             },
+
             pharmacists : this.state.backupPharmacists
         })
     }
 
+    resetSearchDermatologist= () => {
+        this.setState({
+            searchDermatologist : {
+                firstName : '',
+                lastName : '',
+                filterGradesDermatologist : options[0]
+            },
+
+            dermatologists : this.state.backupDermatologists
+        })
+    }
+
     searchPharmacist = async () => {
-        let filterPharmacists = await this.state.pharmacists.filter(pharmacist => {
+        let minRequiredGrade = 0;
+        let maxRequiredGrade = 0;
+        if (this.state.searchPharmacist.filterGradesPharmacist === options[1]) {
+            minRequiredGrade = 1;
+            maxRequiredGrade = 2;
+        }
+        else if (this.state.searchPharmacist.filterGradesPharmacist === options[2]) {
+            minRequiredGrade = 2;
+            maxRequiredGrade = 3;
+        }
+        else if (this.state.searchPharmacist.filterGradesPharmacist === options[3]) {
+            minRequiredGrade = 3;
+            maxRequiredGrade = 4;
+        }
+        else if (this.state.searchPharmacist.filterGradesPharmacist === options[4]) {
+            minRequiredGrade = 4;
+            maxRequiredGrade = 5;
+        }
+
+        let filterPharmacists = await this.state.backupPharmacists.filter(pharmacist => {
             if (this.state.searchPharmacist.firstName !== '' && this.state.searchPharmacist.lastName !== '')
                 return pharmacist.firstName.includes(this.state.searchPharmacist.firstName) && pharmacist.lastName.includes(this.state.searchPharmacist.lastName);
             else if (this.state.searchPharmacist.firstName !== '')
@@ -466,8 +545,54 @@ export default class PharmacyEmployees extends React.Component{
                 return pharmacist.lastName.includes(this.state.searchPharmacist.lastName);
             return true;
         });
+
+        let filterPharmacistsGrades = filterPharmacists.filter(pharmacist => {
+            if (minRequiredGrade === 0 && maxRequiredGrade === 0)
+                return pharmacist;
+            return pharmacist.grade > minRequiredGrade && pharmacist.grade < maxRequiredGrade;
+        })
         this.setState({
-            pharmacists : filterPharmacists
+            pharmacists : filterPharmacistsGrades
+        })
+    }
+
+    searchDermatologist = async () => {
+        let minRequiredGrade = 0;
+        let maxRequiredGrade = 0;
+        if (this.state.searchDermatologist.filterGradesDermatologist === options[1]) {
+            minRequiredGrade = 1;
+            maxRequiredGrade = 2;
+        }
+        else if (this.state.searchDermatologist.filterGradesDermatologist === options[2]) {
+            minRequiredGrade = 2;
+            maxRequiredGrade = 3;
+        }
+        else if (this.state.searchDermatologist.filterGradesDermatologist === options[3]) {
+            minRequiredGrade = 3;
+            maxRequiredGrade = 4;
+        }
+        else if (this.state.searchDermatologist.filterGradesDermatologist === options[4]) {
+            minRequiredGrade = 4;
+            maxRequiredGrade = 5;
+        }
+
+        let filterDermatologists = await this.state.backupDermatologists.filter(dermatologist => {
+            if (this.state.searchDermatologist.firstName !== '' && this.state.searchDermatologist.lastName !== '')
+                return dermatologist.firstName.includes(this.state.searchDermatologist.firstName) && dermatologist.lastName.includes(this.state.searchDermatologist.lastName);
+            else if (this.state.searchDermatologist.firstName !== '')
+                return dermatologist.firstName.includes(this.state.searchDermatologist.firstName);
+            else if (this.state.searchDermatologist.lastName !== '')
+                return dermatologist.lastName.includes(this.state.searchDermatologist.lastName);
+            return true;
+        });
+
+        let filterDermatologistsGrades = filterDermatologists.filter(dermatologist => {
+            if (minRequiredGrade === 0 && maxRequiredGrade === 0)
+                return dermatologist;
+            return dermatologist.grade > minRequiredGrade && dermatologist.grade < maxRequiredGrade;
+        })
+        this.setState({
+            dermatologists : filterDermatologistsGrades
         })
     }
 

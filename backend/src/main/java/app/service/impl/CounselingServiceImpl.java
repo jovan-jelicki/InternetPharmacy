@@ -1,11 +1,9 @@
 package app.service.impl;
 
 import app.dto.AppointmentSearchDTO;
-
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.time.Period;
-
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.user.EmployeeType;
@@ -16,10 +14,8 @@ import app.service.CounselingService;
 import app.service.PatientService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.StyledEditorKit;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;

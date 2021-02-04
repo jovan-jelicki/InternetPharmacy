@@ -1,37 +1,52 @@
 import React from 'react';
-import {Button} from "react-bootstrap";
+
+import PriceHistory from "./PriceHistory";
+import CurrentPriceLists from "./CurrentPriceLists";
+
 
 export default class PriceList extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            userType : 'pharmacyAdmin'
+            userType : 'pharmacyAdmin',
+            priceLists : [],
+            mode : "showCurrentPriceLists",
+            priceListingHistory : {}
         }
     }
 
     componentDidMount() {
+
     }
 
     render() {
         return (
-            <div className="container-fluid">
-                <div className="row">
-                    <div>
-                        <h3>
-                            Price List
-                        </h3>
-
-                        <button type="button" class="btn btn-info">Kreiraj promociju</button>
-                        <div className="row">
-
-
-
-
-
-                        </div>
-                    </div>
-                </div>
+            <div>
+                {this.handleContent()}
             </div>
         );
+    }
+
+    handleContent = () => {
+        if (this.state.mode === 'showCurrentPriceLists')
+            return (
+                <CurrentPriceLists showHistory={this.changeContent} showHistoryClick = {this.showHistoryClick} />
+            );
+        else if (this.state.mode === 'showPriceHistory')
+            return (
+                <PriceHistory  showCurrentPriceLists={this.changeContent} priceListingHistory={this.state.priceListingHistory} />
+            );
+    }
+
+    changeContent = (content) => {
+        this.setState({
+            mode : content
+        })
+    }
+
+    showHistoryClick = (priceListing) => {
+        this.setState({
+            priceListingHistory : priceListing
+        })
     }
 }

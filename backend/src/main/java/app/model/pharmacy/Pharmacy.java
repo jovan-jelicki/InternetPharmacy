@@ -2,6 +2,7 @@ package app.model.pharmacy;
 
 
 import app.dto.PharmacySearchDTO;
+import app.model.medication.EPrescription;
 import app.model.medication.MedicationQuantity;
 import app.model.medication.MedicationReservation;
 import app.model.user.Address;
@@ -37,6 +38,9 @@ public class Pharmacy {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MedicationReservation> medicationReservation;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<EPrescription> prescriptions;
+
     @Column
     private int pharmacistCost;
 
@@ -44,6 +48,18 @@ public class Pharmacy {
     private int dermatologistCost;
 
     public Pharmacy() {
+    }
+
+    public List<EPrescription> getPrescriptions() {
+        return prescriptions;
+    }
+
+    public void setPrescriptions(List<EPrescription> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
+
+    public void setDermatologistCost(int dermatologistCost) {
+        this.dermatologistCost = dermatologistCost;
     }
 
     public Long getId() {

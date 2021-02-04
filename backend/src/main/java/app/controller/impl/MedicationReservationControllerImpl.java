@@ -56,6 +56,12 @@ public class MedicationReservationControllerImpl implements MedicationReservatio
         if(medicationReservation == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         medicationReservation.setStatus(MedicationReservationStatus.successful);
+        new Thread(new Runnable() {
+            public void run(){
+                medicationReservationService.sendEmailToPatient(medicationReservation.getPatient());
+            }
+        }).start();
+
         medicationReservationService.save(medicationReservation);
         return new ResponseEntity<>(HttpStatus.OK);
     }

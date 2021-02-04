@@ -3,13 +3,13 @@ package app.dto;
 import app.model.medication.MedicationQuantity;
 import app.model.medication.MedicationReservation;
 import app.model.medication.MedicationReservationStatus;
-import app.model.user.Patient;
 
 import java.time.LocalDateTime;
 
 public class MedicationReservationSimpleInfoDTO {
     private Long id;
-    private Patient patient = new Patient();
+    private String firstName;
+    private String lastName;
     private MedicationQuantity medicationQuantity;
     private LocalDateTime pickUpDate;
     private MedicationReservationStatus status;
@@ -17,9 +17,8 @@ public class MedicationReservationSimpleInfoDTO {
 
     public MedicationReservationSimpleInfoDTO(MedicationReservation medicationReservation) {
         this.id = medicationReservation.getId();
-        this.patient.setId(medicationReservation.getPatient().getId());
-        this.patient.setFirstName(medicationReservation.getPatient().getFirstName());
-        this.patient.setLastName(medicationReservation.getPatient().getLastName());
+        this.firstName = medicationReservation.getPatient().getFirstName();
+        this.lastName = medicationReservation.getPatient().getLastName();
         this.medicationQuantity = medicationReservation.getMedicationQuantity();
         this.pickUpDate = medicationReservation.getPickUpDate();
         this.status = medicationReservation.getStatus();
@@ -36,12 +35,20 @@ public class MedicationReservationSimpleInfoDTO {
         this.id = id;
     }
 
-    public Patient getPatient() {
-        return patient;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public MedicationQuantity getMedicationQuantity() {

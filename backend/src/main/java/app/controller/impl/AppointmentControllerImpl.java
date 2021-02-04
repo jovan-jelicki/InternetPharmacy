@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -114,6 +113,7 @@ public class AppointmentControllerImpl {
     public ResponseEntity patientDidNotShowUp(@PathVariable Long id) {
         return new ResponseEntity(appointmentService.patientDidNotShowUp(id), HttpStatus.OK);
     }
+
     @GetMapping(value = "/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(@PathVariable Long id){
         ArrayList<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
@@ -124,5 +124,20 @@ public class AppointmentControllerImpl {
             appointmentListingDTOS.add(appointmentListingDTO);
         }
         return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAppointmentsMonthlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getAppointmentsMonthlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(appointmentService.getAppointmentsMonthlyReport(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAppointmentsQuarterlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getAppointmentsQuarterlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(appointmentService.getAppointmentsQuarterlyReport(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAppointmentsYearlyReport/{pharmacyId}")
+    public ResponseEntity<Collection<ReportsDTO>> getAppointmentsYearlyReport(@PathVariable Long pharmacyId) {
+        return new ResponseEntity(appointmentService.getAppointmentsYearlyReport(pharmacyId), HttpStatus.OK);
     }
 }

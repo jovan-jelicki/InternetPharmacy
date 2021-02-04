@@ -85,10 +85,12 @@ export default class Appointment extends React.Component {
                     'patient' : {id : this.props.appointment.patientId},
                     'medicationQuantity' : [{
                         medication: this.state.medication,
-                        quantity : 2
+                        quantity : 700
                     }
                     ]
-                }
+                },
+                'examinerId' : 1,
+                'employeeType' : 1
             })
             .then(res => {
                 alert("You created ePrescription!");

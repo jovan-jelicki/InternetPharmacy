@@ -1,14 +1,10 @@
 package app.service;
 
-import app.dto.AppointmentFinishedDTO;
-import app.dto.AppointmentScheduledDTO;
-import app.dto.AppointmentUpdateDTO;
-import app.dto.EventDTO;
+import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.user.EmployeeType;
 
-import javax.swing.text.StyledEditorKit;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -53,5 +49,21 @@ public interface AppointmentService extends CRUDService<Appointment>{
     Boolean patientDidNotShowUp(Long id);
     Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId);
 
+    boolean validateAppointmentTimeRegardingWorkingHours(Appointment entity);
+     boolean validateAppointmentTimeRegardingAllWorkingHours(Appointment entity);
 
-}
+    boolean validateAppointmentTimeRegardingVacationRequests(Appointment entity);
+
+
+    Collection<ReportsDTO> getAppointmentsMonthlyReport(Long pharmacyId);
+
+    Collection<ReportsDTO> getAppointmentsQuarterlyReport(Long pharmacyId);
+
+    Collection<ReportsDTO> getAppointmentsYearlyReport(Long pharmacyId);
+
+    Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd ,Long pharmacyId, EmployeeType employeeType);
+
+
+
+
+    }

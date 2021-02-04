@@ -51,4 +51,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     int countAllByPharmacy_IdAndPatient_IdAndAppointmentStatus(Long pharmacyId, Long patientId, AppointmentStatus status);
     Collection<Appointment> getAllByPatient_IdAndAppointmentStatusAndType(Long patientId, AppointmentStatus status, EmployeeType type);
     Collection<Appointment> getAllByPatient_IdAndAppointmentStatus(Long patientId, AppointmentStatus status);
+    @Query("select a from Appointment a where a.patient is not null and a.period.periodStart >= ?1 and a.period.periodEnd <= ?2 and a.pharmacy.id = ?3 and a.type=?4 and a.appointmentStatus=1 and a.isActive=true")
+    Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd, Long pharmacyId, EmployeeType employeeType);
 }

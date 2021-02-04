@@ -19,6 +19,7 @@ public class PharmacistDTO {
     private String lastName;
     private Contact contact;
     private UserType userType;
+    private double grade = 4.3; //TODO fetch grade
 
     public PharmacistDTO(Pharmacist pharmacist) {
         this.id = pharmacist.getId();
@@ -26,9 +27,10 @@ public class PharmacistDTO {
         this.lastName = pharmacist.getLastName();
         this.contact = pharmacist.getContact();
         this.userType = pharmacist.getUserType();
-
+        this.grade = 4.3; //TODO fetch grade
         this.workingHours = pharmacist.getWorkingHours();
         workingHours.getPharmacy().setMedicationReservation(null);
+        workingHours.getPharmacy().setPrescriptions(null);
 
     }
 }

@@ -42,6 +42,11 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(pharmacistService.getPharmacyOfPharmacist(id), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/isAccountApproved/{id}")
+    public ResponseEntity<Boolean> isAccountApproved(@PathVariable Long id){
+        return new ResponseEntity<>(pharmacistService.read(id).get().getApprovedAccount(), HttpStatus.OK);
+    }
+
     @PutMapping(value = "/pass")
     public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
         try {

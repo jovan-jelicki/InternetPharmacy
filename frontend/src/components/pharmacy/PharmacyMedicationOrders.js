@@ -78,7 +78,7 @@ export default class PharmacyMedicationOrders extends React.Component{
             );
         else if (this.state.showContent === 'showOffers')
             return (
-              <MedicationOffers order = {this.state.medicationOrders[0]}  />
+              <MedicationOffers order = {this.state.medicationOrders[0]}  showListOrders={this.changeContent}/>
             );
         else if (this.state.showContent === 'showCreateOrder')
             return (
