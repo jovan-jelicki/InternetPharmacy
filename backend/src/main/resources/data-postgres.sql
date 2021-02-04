@@ -432,6 +432,16 @@ insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
 VALUES(1,10);
 insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
 VALUES(1,11);
+
+insert into medication_offer(id, cost,shipping_date,status,medication_order_id)
+VALUES(1,111,'2022-02-03',0,1);
+insert into medication_offer(id, cost,shipping_date,status,medication_order_id)
+VALUES(2,96,'2022-02-03',0,2);
+
+insert into supplier_medication_offer(supplier_id, medication_offer_id)
+VALUES(1,1);
+insert into supplier_medication_offer(supplier_id, medication_offer_id)
+VALUES(1,2);
 -- SELECT MAX(id) FROM appointment;
 --
 -- SELECT nextval('bookmarks_id_seq');
