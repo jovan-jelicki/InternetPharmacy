@@ -1,7 +1,5 @@
 package app.model.grade;
 
-import app.model.medication.MedicationType;
-import app.model.user.Dermatologist;
 import app.model.user.Patient;
 
 import javax.persistence.*;

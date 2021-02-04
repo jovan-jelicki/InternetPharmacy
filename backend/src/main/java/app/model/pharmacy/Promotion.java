@@ -1,8 +1,10 @@
 package app.model.pharmacy;
 
+import app.model.medication.Medication;
 import app.model.time.Period;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Promotion {
@@ -17,11 +19,21 @@ public class Promotion {
     @Column
     private String content;
 
-    @ManyToOne
-    @JoinColumn
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    private List<Medication> medicationsOnPromotion;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Pharmacy pharmacy;
 
     public Promotion() { }
+
+
+    public Promotion(Period period, String content, List<Medication> medicationsOnPromotion, Pharmacy pharmacy) {
+        this.period = period;
+        this.content = content;
+        this.medicationsOnPromotion = medicationsOnPromotion;
+        this.pharmacy = pharmacy;
+    }
 
     public Period getPeriod() {
         return period;
@@ -53,5 +65,13 @@ public class Promotion {
 
     public void setPharmacy(Pharmacy pharmacy) {
         this.pharmacy = pharmacy;
+    }
+
+    public List<Medication> getMedicationsOnPromotion() {
+        return medicationsOnPromotion;
+    }
+
+    public void setMedicationsOnPromotion(List<Medication> medicationsOnPromotion) {
+        this.medicationsOnPromotion = medicationsOnPromotion;
     }
 }

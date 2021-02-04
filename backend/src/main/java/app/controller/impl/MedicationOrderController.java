@@ -1,7 +1,6 @@
 package app.controller.impl;
 
 import app.dto.MedicationOrderDTO;
-import app.model.medication.Medication;
 import app.model.medication.MedicationOrder;
 import app.service.MedicationOrderService;
 import org.springframework.beans.factory.annotation.Autowired;

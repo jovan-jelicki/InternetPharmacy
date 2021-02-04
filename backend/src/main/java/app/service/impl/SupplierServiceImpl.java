@@ -1,14 +1,12 @@
 package app.service.impl;
 
 import app.dto.MedicationOfferAndOrderDTO;
-import app.dto.MedicationOfferDTO;
 import app.dto.MedicationQuantityDTO;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOrder;
 import app.model.medication.MedicationQuantity;
 import app.model.user.Supplier;
 import app.repository.SupplierRepository;
-import app.service.MedicationOfferService;
 import app.service.MedicationOrderService;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;

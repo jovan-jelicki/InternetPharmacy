@@ -1,7 +1,6 @@
 package app.dto;
 
 import app.model.medication.MedicationOfferStatus;
-import app.model.medication.MedicationOrder;
 
 import java.time.LocalDateTime;
 

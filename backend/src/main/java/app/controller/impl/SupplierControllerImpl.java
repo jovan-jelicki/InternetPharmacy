@@ -1,12 +1,7 @@
 package app.controller.impl;
 
 import app.dto.MedicationOfferAndOrderDTO;
-import app.dto.MedicationOfferDTO;
 import app.dto.MedicationQuantityDTO;
-import app.dto.PharmacyMedicationListingDTO;
-import app.model.medication.MedicationOffer;
-import app.model.medication.MedicationQuantity;
-import app.model.user.Patient;
 import app.model.user.Supplier;
 import app.service.SupplierService;
 import org.springframework.http.HttpStatus;

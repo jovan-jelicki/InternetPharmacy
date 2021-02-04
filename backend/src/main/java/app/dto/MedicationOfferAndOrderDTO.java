@@ -3,7 +3,6 @@ package app.dto;
 import app.model.medication.MedicationOfferStatus;
 import app.model.medication.MedicationOrderStatus;
 import app.model.medication.MedicationQuantity;
-import app.model.user.PharmacyAdmin;
 
 import java.time.LocalDateTime;
 import java.util.List;

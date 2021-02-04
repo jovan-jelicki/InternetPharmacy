@@ -2,7 +2,6 @@ package app.service;
 
 import app.dto.MedicationOrderDTO;
 import app.model.medication.MedicationOrder;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Collection;
 
