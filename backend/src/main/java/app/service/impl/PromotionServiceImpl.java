@@ -56,20 +56,10 @@ public class PromotionServiceImpl implements PromotionService {
     private List<Medication> getRandomElement(List<Medication> list, int totalItems)
     {
         Random rand = new Random();
-
-        // create a temporary list for storing
-        // selected element
         List<Medication> newList = new ArrayList<>();
         for (int i = 0; i < totalItems; i++) {
-
-            // take a raundom index between 0 to size
-            // of given List
             int randomIndex = rand.nextInt(list.size());
-
-            // add element in temporary list
             newList.add(list.get(randomIndex));
-
-            // Remove selected element from orginal list
             list.remove(randomIndex);
         }
         return newList;
@@ -86,7 +76,7 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     //jednom mesecno se runnuje - svake srede 50% popusta na ova 3 leka
-    @Scheduled(fixedRate=10000, initialDelay = 5000)
+    @Scheduled(fixedRate=50000, initialDelay = 5000)
     public void createNewPromotionsForAllPharmacies() {
         Period promotionPeriod = new Period(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0), LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).plusDays(7));
         System.out.println("aa");
@@ -101,5 +91,10 @@ public class PromotionServiceImpl implements PromotionService {
             Promotion promotion = new Promotion(promotionPeriod, generatePromotionContent(medicationsOnPromotion), medicationsOnPromotion, pharmacy);
             promotionRepository.save(promotion);
         }
+    }
+
+    @Override
+    public Collection<Promotion> getCurrentPromotionsByPharmacyAndDate(Long pharmacyId, LocalDateTime date) {
+        return promotionRepository.getCurrentPromotionsByPharmacyAndDate(pharmacyId, date);
     }
 }
