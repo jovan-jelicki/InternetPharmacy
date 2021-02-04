@@ -30,6 +30,7 @@ public class PharmacistDTO {
         this.grade = 4.3; //TODO fetch grade
         this.workingHours = pharmacist.getWorkingHours();
         workingHours.getPharmacy().setMedicationReservation(null);
+        workingHours.getPharmacy().setPrescriptions(null);
 
     }
 }

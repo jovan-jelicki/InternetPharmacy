@@ -47,6 +47,7 @@ public class DermatologistServiceImpl implements DermatologistService {
         Dermatologist user = _user.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());
+        user.setApprovedAccount(true);
         save(user);
     }
 
@@ -125,6 +126,7 @@ public class DermatologistServiceImpl implements DermatologistService {
     }
     @Override
     public Dermatologist save(Dermatologist entity) {
+        entity.setApprovedAccount(true);
         return dermatologistRepository.save(entity);
     }
 
@@ -169,6 +171,7 @@ public class DermatologistServiceImpl implements DermatologistService {
                     return false;
 
         Dermatologist dermatologist = convertDTOtoEntity(dermatologistDTO);
+        dermatologist.setApprovedAccount(true);
         return this.save(dermatologist) != null;
     }
 

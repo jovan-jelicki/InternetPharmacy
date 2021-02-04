@@ -4,6 +4,7 @@ import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
 import app.model.medication.EPrescription;
 import app.model.medication.Medication;
+import app.model.medication.MedicationLackingEvent;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.PharmacyAdmin;
@@ -26,14 +27,16 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     private final PatientService patientService;
     private final PharmacyAdminService pharmacyAdminService;
     private final EmailService emailService;
+    private final MedicationLackingEventService medicationLackingEventService;
 
     @Autowired
-    public EPrescriptionServiceImpl(EmailService emailService, PharmacyAdminService pharmacyAdminService, PatientService patientService, EPrescriptionRepository ePrescriptionRepository, PharmacyService pharmacyService) {
+    public EPrescriptionServiceImpl(EmailService emailService,MedicationLackingEventService medicationLackingEventService ,PharmacyAdminService pharmacyAdminService, PatientService patientService, EPrescriptionRepository ePrescriptionRepository, PharmacyService pharmacyService) {
         this.ePrescriptionRepository = ePrescriptionRepository;
         this.pharmacyService = pharmacyService;
         this.patientService = patientService;
         this.pharmacyAdminService = pharmacyAdminService;
         this.emailService = emailService;
+        this.medicationLackingEventService = medicationLackingEventService;
     }
 
     @Override
@@ -47,7 +50,9 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
             throw new IllegalArgumentException("Pharmacy does not exists!");
 
         if(!pharmacyService.checkMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy)) {
-             PharmacyAdmin pharmacyAdmin = pharmacyAdminService.getPharmacyAdminByPharmacy(pharmacy.getId());
+            for (MedicationQuantity m : makeEPrescriptionDTO.getPrescription().getMedicationQuantity())
+                medicationLackingEventService.save(new MedicationLackingEvent(makeEPrescriptionDTO.getExaminerId(), makeEPrescriptionDTO.getEmployeeType(), m.getMedication() , LocalDateTime.now() , makeEPrescriptionDTO.getPharmacyId()));
+            PharmacyAdmin pharmacyAdmin = pharmacyAdminService.getPharmacyAdminByPharmacy(pharmacy.getId());
             List<String> namesList = medications.stream().map(Medication::getName).collect(Collectors.toList());
             new Thread(new Runnable() {
                 public void run(){
@@ -57,8 +62,9 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
             return null;
         }
         makeEPrescriptionDTO.getPrescription().setDateIssued(LocalDateTime.now());
-        this.save(makeEPrescriptionDTO.getPrescription());
+        EPrescription ePrescription =  this.save(makeEPrescriptionDTO.getPrescription());
         updateMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy.getMedicationQuantity());
+        pharmacy.getPrescriptions().add(ePrescription);
         pharmacyService.save(pharmacy);
         return new EPrescriptionSimpleInfoDTO(makeEPrescriptionDTO.getPrescription());
     }

@@ -31,8 +31,10 @@ public class DermatologistDTO {
         this.workingHours = dermatologist.getWorkingHours();
         this.grade = 4.3;
 
-        for (WorkingHours workingHours : this.workingHours)
+        for (WorkingHours workingHours : this.workingHours) {
             workingHours.getPharmacy().setMedicationReservation(null);
+            workingHours.getPharmacy().setPrescriptions(null);
+        }
     }
 
     public DermatologistDTO() {}
