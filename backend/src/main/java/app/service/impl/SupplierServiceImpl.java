@@ -93,5 +93,14 @@ public class SupplierServiceImpl implements SupplierService{
         return medicationParams;
     }
 
+    @Override
+    public Supplier getSupplierByMedicationOffer(MedicationOffer medicationOffer) {
+        for(Supplier supplier : this.read())
+            if (supplier.getMedicationOffer().contains(medicationOffer))
+                return  supplier;
+
+        return null;
+    }
+
 
 }

@@ -10,6 +10,7 @@ import app.service.MedicationOrderService;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -67,6 +68,18 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         supplierService.save(supplier);
 
         return medicationOffer !=null;
+    }
+
+    @Override
+    public Collection<MedicationOfferDTO> getOffersByOrderId(Long orderId) {
+        ArrayList<MedicationOfferDTO> medicationOfferDTOS = new ArrayList<>();
+        for (MedicationOffer medicationOffer : medicationOfferRepository.getMedicationOffersByMedicationOrder(orderId)) {
+            Supplier supplier = supplierService.getSupplierByMedicationOffer(medicationOffer);
+            MedicationOfferDTO medicationOfferDTO = new MedicationOfferDTO(supplier, medicationOffer);
+            medicationOfferDTO.setMedicationOrderId(orderId);
+            medicationOfferDTOS.add(medicationOfferDTO);
+        }
+        return medicationOfferDTOS;
     }
 
     //@Override
