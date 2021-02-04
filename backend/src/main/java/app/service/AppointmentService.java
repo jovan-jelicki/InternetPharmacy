@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface AppointmentService extends CRUDService<Appointment>{
+
+    Collection<Appointment> getAllFinishedByPatientAndExaminerType(Long patientId, EmployeeType type);
     Appointment cancelCounseling(Long appointmentId);
 
     Collection<Appointment> getAllByExaminerAndAppointmentStatus(Long examinerId, EmployeeType type, AppointmentStatus status);

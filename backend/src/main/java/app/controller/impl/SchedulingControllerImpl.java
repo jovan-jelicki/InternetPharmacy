@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.dto.AppointmentListingDTO;
 import app.dto.AppointmentSearchDTO;
+import app.dto.AppointmentUpdateDTO;
 import app.dto.CounselingSearchDTO;
 import app.model.appointment.Appointment;
 import app.model.user.EmployeeType;
@@ -48,6 +49,11 @@ public class SchedulingControllerImpl {
         else
             // ZA DERMATOLOGE KASNIJE DODATI
             return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/dermatologistSchedulingCreatedAppointment", consumes = "application/json")
+    public ResponseEntity<Boolean> dermatologistSchedulingCreatedAppointment(@RequestBody AppointmentUpdateDTO appointmentUpdateDTO){
+        return new ResponseEntity<>(examinationService.dermatologistSchedulingCreatedAppointment(appointmentUpdateDTO), HttpStatus.OK);
     }
 
     @PostMapping(value = "/pharmacistScheduling", consumes = "application/json")

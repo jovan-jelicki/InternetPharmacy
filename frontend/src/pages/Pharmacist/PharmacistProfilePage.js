@@ -102,7 +102,7 @@ export default class PharmacistProfilePage extends React.Component {
                     'password' : this.state.newPass
                 })
             })
-            .catch(e => alert('Nisam pijana i nece moci!!!'));
+            .catch(e => alert('Some password is not correct'));
     }
 
     handleInputChange = (event) => {

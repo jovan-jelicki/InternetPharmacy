@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.dto.*;
 import app.model.appointment.Appointment;
+import app.model.user.EmployeeType;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,14 @@ public class AppointmentControllerImpl {
         catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping(value = "/getAllFinishedByPatientAndExaminer", consumes = "application/json")
+    public ResponseEntity<Collection<AppointmentScheduledDTO>> getAllFinishedByPatientAndExaminerType(@RequestBody PatientAppointmentsSearch patientAppointmentsSearch){
+        Collection<AppointmentScheduledDTO> appointmentScheduledDTOS = new ArrayList<>();
+        for(Appointment a : appointmentService.getAllFinishedByPatientAndExaminerType(patientAppointmentsSearch.getPatientId(), patientAppointmentsSearch.getType()))
+            appointmentScheduledDTOS.add(new AppointmentScheduledDTO(a));
+        return new ResponseEntity<>(appointmentScheduledDTOS, HttpStatus.OK);
     }
 
     @PutMapping(consumes = "application/json", value = "/finishAppointment")
