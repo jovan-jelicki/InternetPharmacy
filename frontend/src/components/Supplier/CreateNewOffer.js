@@ -20,9 +20,14 @@ export default class CreateNewOffer extends React.Component{
                 }
             },
             boolMessage:false,
-            boolButton:true
+            boolButton:true,
+            medicationList:[],
+            boolMedications:true,
         }
     }
+
+
+
     handleInputChange = (event) => {
 
         const { name, value } = event.target;
@@ -64,7 +69,8 @@ export default class CreateNewOffer extends React.Component{
             console.log(this.state.medicationOffer.shippingDate)
             this.state.boolMessage=true;
             this.state.boolButton=false;
-            this.sendParams()
+            this.sendParams();
+
         } else {
             console.log('Invalid Form')
         }
@@ -99,6 +105,7 @@ export default class CreateNewOffer extends React.Component{
 
 
     render() {
+
         return (
             <div className="jumbotron jumbotron-fluid"  style={{ background: 'silver', color: 'rgb(0, 92, 230)'}}>
                 <div>
@@ -134,6 +141,8 @@ export default class CreateNewOffer extends React.Component{
                         </div>
                     </div>
                 </div>
+
+                { this.state.boolMedications ?
                 <div className="card" style={{ background: '#ABB8C3', color: 'rgb(0, 92, 230)', marginTop:'5rem', marginBottom:'3rem'}}>
                     {
                         this.state.boolMessage &&
@@ -141,44 +150,52 @@ export default class CreateNewOffer extends React.Component{
                             Thank you. You have successfully created your offer.
                         </Alert>
                     }
+
                     <h2 style={{marginTop: '1rem', marginLeft:'12rem'}}>Offer</h2>
+                    <div>
+                        <div className="row"style={{marginTop: '1rem'}}>
+                            <label  className="col-sm-4 col-form-label">Price</label>
+                            <div className="col-sm-6 mb-2">
+                                <input type="number" min="0" name="cost" className="form-control" id="cost" placeholder="Enter cost" onChange={(e) => { this.handleInputChange(e)} } className="form-control"/>
+                                { this.state.submitted && this.state.errors.medicationOffer.cost.length > 0 &&  <span className="text-danger">{this.state.errors.medicationOffer.cost}</span>}
 
-                    <div className="row"style={{marginTop: '1rem'}}>
-                        <label  className="col-sm-4 col-form-label">Price</label>
-                        <div className="col-sm-6 mb-2">
-                            <input type="number" min="0" name="cost" className="form-control" id="cost" placeholder="Enter cost" onChange={(e) => { this.handleInputChange(e)} } className="form-control"/>
-                            { this.state.submitted && this.state.errors.medicationOffer.cost.length > 0 &&  <span className="text-danger">{this.state.errors.medicationOffer.cost}</span>}
+                            </div>
+                            <div className="col-sm-4">
+                            </div>
+                        </div>
+                        <div className="row"style={{marginTop: '1rem'}}>
+                            <label  className="col-sm-4 col-form-label">Shipping date</label>
+                            <div className="col-sm-6 mb-2">
+                                <DatePicker  selected={this.state.medicationOffer.shippingDate} minDate={new Date()} onChange={date => this.changeDatePicker(date)} />
+                                { this.state.submitted && this.state.errors.medicationOffer.shippingDate.length > 0 &&  <span className="text-danger">{this.state.errors.medicationOffer.shippingDate}</span>}
 
+                            </div>
+                            <div className="col-sm-4">
+                            </div>
                         </div>
-                        <div className="col-sm-4">
-                        </div>
-                    </div>
-                    <div className="row"style={{marginTop: '1rem'}}>
-                        <label  className="col-sm-4 col-form-label">Shipping date</label>
-                        <div className="col-sm-6 mb-2">
-                            <DatePicker  selected={this.state.medicationOffer.shippingDate} minDate={new Date()} onChange={date => this.changeDatePicker(date)} />
-                            { this.state.submitted && this.state.errors.medicationOffer.shippingDate.length > 0 &&  <span className="text-danger">{this.state.errors.medicationOffer.shippingDate}</span>}
 
-                        </div>
-                        <div className="col-sm-4">
+                        <div className="row" style={{marginTop: '1rem'}}>
+                            <div className="col-sm-5 mb-2">
+                            </div>
+
+                            <div className="row">
+                                {
+                                    this.state.boolButton &&
+                                    <Button style={{marginLeft: '7rem'}} variant="primary"
+                                            onClick={this.submitForm}>Submit</Button>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="row" style={{marginTop: '1rem'}}>
-                    <div className="col-sm-5 mb-2">
+
+                    :
+                    <div>
+                        Ne moze
                     </div>
-
-                    <div className="row">
-                        {
-                            this.state.boolButton &&
-                            <Button style={{marginLeft: '7rem'}} variant="primary"
-                                    onClick={this.submitForm}>Submit</Button>
-                        }
-                    </div>
-                </div>
-
-
+                }
             </div>
+
         );
     }
 

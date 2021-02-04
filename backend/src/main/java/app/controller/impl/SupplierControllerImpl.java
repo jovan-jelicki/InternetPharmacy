@@ -2,8 +2,10 @@ package app.controller.impl;
 
 import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationOfferDTO;
+import app.dto.MedicationQuantityDTO;
 import app.dto.PharmacyMedicationListingDTO;
 import app.model.medication.MedicationOffer;
+import app.model.medication.MedicationQuantity;
 import app.model.user.Patient;
 import app.model.user.Supplier;
 import app.service.SupplierService;
@@ -31,6 +33,11 @@ public class SupplierControllerImpl {
     @PostMapping(value="/save", consumes = "application/json")
     public ResponseEntity<Supplier> save(@RequestBody Supplier entity) {
         return new ResponseEntity<>(supplierService.save(entity), HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/getSuppliersMedicationList/{supplierId}")
+    public ResponseEntity<Collection<MedicationQuantityDTO>> getSuppliersMedicationList(@PathVariable Long supplierId) {
+        return new ResponseEntity<>(supplierService.getSuppliersMedicationList(supplierId), HttpStatus.OK);
     }
 
 

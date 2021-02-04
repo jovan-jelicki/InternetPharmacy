@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Modal} from "react-bootstrap";
+import {Button, Modal, Table} from "react-bootstrap";
 import {ButtonGroup, Input} from "rsuite";
 import Dropdown from "react-dropdown";
 import axios from "axios";
@@ -16,7 +16,9 @@ export default class MedicationOrdersForSupplier extends React.Component {
             radioAll : '1',
             radioPending : '2',
             radioProcessed : '3',
-            order:[]
+            order:[],
+            medicationList:[],
+            boolMedications:true,
 
         }
     }
@@ -27,8 +29,36 @@ export default class MedicationOrdersForSupplier extends React.Component {
                 this.setState({
                     medicationOrders : res.data
                 })
+                console.log("pokupi")
                 console.log(this.state.medicationOrders);
             })
+        this.state.boolMedications=false;
+
+        await axios
+            .get('http://localhost:8080/api/suppliers/getSuppliersMedicationList/'+1)
+            .then((res) => {
+                this.setState({
+                    medicationList : res.data
+                })
+                console.log("LEkovi koje imam")
+                console.log(this.state.medicationList);
+               // this.state.boolMedications=true;
+
+            })
+
+    }
+
+    checkMedication(){
+        for (var j = 0, l = this.state.order.medicationQuantity.length; j < l; j++) {
+            if(!this.state.medicationList.some(item => item.medicationName === this.state.order.medicationQuantity[j].medication.name)){
+                    this.state.boolMedications = false;
+
+            }else {
+
+                this.state.boolMedications = true;
+            }
+        }
+        console.log(this.state.boolMedications)
     }
 
 
@@ -37,12 +67,17 @@ export default class MedicationOrdersForSupplier extends React.Component {
         const orders= this.state.medicationOrders.map((medicationOrder, index) => (
                 <tr>
                     <th scope="row">{index+1}</th>
-                    <td>{medicationOrder.pharmacyAdmin.firstName + ' ' + medicationOrder.pharmacyAdmin.lastName}</td>
+                    <td>{medicationOrder.pharmacyAdmin.pharmacy.name}</td>
                     <td>{medicationOrder.deadline.split("T")[0]}</td>
                     <td>
                         {medicationOrder.medicationQuantity.map((e, key) => {
-                            return <option key={key} value={e.medication}>{e.medication.name} | {e.quantity}</option>
-
+                            return <option key={key} value={e.medication}>{e.medication.name} </option>
+                        })
+                        }
+                    </td>
+                    <td>
+                        {medicationOrder.medicationQuantity.map((e, key) => {
+                            return <option key={key} value={e.medication}> {e.quantity}</option>
                         })
                         }
                     </td>
@@ -57,32 +92,37 @@ export default class MedicationOrdersForSupplier extends React.Component {
         return (
             <div className="container-fluid">
 
-                <h1>Medication orders</h1>
+                <h3>Medication orders</h3>
                 <br/>
-                <table className="table table-hover">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Created by</th>
-                        <th scope="col">Dead line</th>
-                        <th scope="col">Medications</th>
-                        <th scope="col">Offer</th>
-
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {orders}
-                    </tbody>
-                </table>
+                <div style={{marginRight:'5rem', marginLeft:'5rem'}}>
+                    <Table striped bordered hover variant="dark">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Created by</th>
+                            <th scope="col">Dead line</th>
+                            <th scope="col">Medication name</th>
+                            <th scope="col">Medication quantity</th>
+                            <th scope="col">Offer</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {orders}
+                        </tbody>
+                    </Table>
+                </div>
 
                 <Modal show={this.state.showModal} onHide={this.closeModal}  style={{'height':850}} >
                     <Modal.Header closeButton style={{'background':'silver'}}>
                         <Modal.Title>Create new offer</Modal.Title>
                     </Modal.Header>
                     <Modal.Body style={{'background':'silver'}}>
-                        <CreateNewOffer order={this.state.order} />
+                        { this.state.boolMedications ?
+                        <CreateNewOffer order={this.state.order}/>
+                        :
+                            <div> You dont have enought medications.</div>
+                        }
                     </Modal.Body>
-
                 </Modal>
 
             </div>
@@ -90,19 +130,20 @@ export default class MedicationOrdersForSupplier extends React.Component {
     }
 
     handleModal = (medicationOrder) => {
+        this.setState({
+            order: medicationOrder,
+        });
+        this.state.order=medicationOrder;
+        this.checkMedication();
 
         this.setState({
-            showModal : !this.state.showModal,
-            order: medicationOrder
+            showModal: !this.state.showModal,
         });
     }
 
     closeModal=()=>{
-
         this.setState({
             showModal : !this.state.showModal
         });
     }
-
-
 }

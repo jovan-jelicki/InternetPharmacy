@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Form, Modal, Row} from "react-bootstrap";
+import {Button, Form, Modal, Row, Table} from "react-bootstrap";
 import Dropdown from "react-dropdown";
 import axios from "axios";
 
@@ -78,14 +78,15 @@ export default class SupplierMedicationOffers extends React.Component{
                         </Form.Group>
                     </Form>
                 </fieldset>
-
-                <table className="table table-hover" >
+        <div style={{marginRight:'5rem', marginLeft:'5rem'}}>
+                <Table striped bordered hover variant="dark" >
                     <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Created by</th>
                         <th scope="col">Dead line</th>
-                        <th scope="col">Medications</th>
+                        <th scope="col">Medication name</th>
+                        <th scope="col">Medication quantity</th>
                         <th scope="col">Price</th>
                         <th scope="col">Shipping date</th>
                         <th scope="col">Offer status</th>
@@ -101,7 +102,14 @@ export default class SupplierMedicationOffers extends React.Component{
                             <td>{medicationOffer.deadline.split("T")[0]}</td>
                             <td>
                                 {medicationOffer.medicationQuantity.map((e, key) => {
-                                    return <option key={key} value={e.medication}>{e.medication.name} | {e.quantity}</option>
+                                    return <option key={key} value={e.medication}>{e.medication.name} </option>
+
+                                })
+                                }
+                            </td>
+                            <td>
+                                {medicationOffer.medicationQuantity.map((e, key) => {
+                                    return <option key={key} value={e.medication}> {e.quantity}</option>
 
                                 })
                                 }
@@ -115,8 +123,8 @@ export default class SupplierMedicationOffers extends React.Component{
                     ))}
 
                     </tbody>
-                </table>
-
+                </Table>
+            </div>
                 <Modal show={this.state.showModal} onHide={this.handleModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Modal heading</Modal.Title>

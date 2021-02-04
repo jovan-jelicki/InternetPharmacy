@@ -389,11 +389,16 @@ INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (10, 1342, 4);
 INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (11, 5123, 3);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (12, 6000, 3);
+
 
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
 VALUES (1, '2021-03-04', 1, 0);
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
 VALUES (2, '2021-03-10', 1, 0);
+INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
+VALUES (3, '2021-03-10', 1, 0);
 
 INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
 values (6,1);
@@ -404,7 +409,9 @@ values (8,1);
 INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
 values (9,2);
 INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
-values (10,2);
+values (10,3);
+INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
+values (12,3);
 
 
 insert into medication_lacking_event(id, employee_id, employee_type, event_date, medication_id, pharmacy_id)
@@ -417,7 +424,14 @@ values (3, 1,1, '2021-02-03', 4,1);
 insert into supplier (id,country , latitude, longitude,street, town,phone_number,email,password,  first_name, last_name, user_type)
 VALUES (1,'SRB', 41, 87, 'Avenue 3rd', 'Belgrade',  '0605435487','jovancica@gmail.com','jole123','Jovana', 'Markovic',1);
 
-
+insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
+VALUES(1,1);
+insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
+VALUES(1,2);
+insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
+VALUES(1,10);
+insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
+VALUES(1,11);
 -- SELECT MAX(id) FROM appointment;
 --
 -- SELECT nextval('bookmarks_id_seq');

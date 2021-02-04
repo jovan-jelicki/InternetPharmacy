@@ -2,6 +2,7 @@ package app.service.impl;
 
 import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationOfferDTO;
+import app.dto.MedicationQuantityDTO;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOrder;
 import app.model.medication.MedicationQuantity;
@@ -78,5 +79,21 @@ public class SupplierServiceImpl implements SupplierService{
             }});
     return offersAndOrder;
     }
+
+    @Override
+    public Collection<MedicationQuantityDTO> getSuppliersMedicationList(Long supplierId) {
+        ArrayList<MedicationQuantityDTO> medicationParams = new ArrayList<>();
+
+        for (MedicationQuantity m : read(supplierId).get().getMedicationQuantity()) {
+            MedicationQuantityDTO medicationQuantityDTO =new MedicationQuantityDTO();
+            medicationQuantityDTO.setMedicationName(m.getMedication().getName());
+            medicationQuantityDTO.setMedicationQuantity(m.getQuantity());
+
+            medicationParams.add(medicationQuantityDTO);
+        }
+
+        return medicationParams;
+    }
+
 
 }
