@@ -36,6 +36,14 @@ public class MedicationLackingEvent {
     public MedicationLackingEvent() {
     }
 
+    public MedicationLackingEvent(Long employeeId, EmployeeType employeeType, Medication medication, LocalDateTime eventDate, Long pharmacyId) {
+        this.employeeId = employeeId;
+        this.employeeType = employeeType;
+        this.medication = medication;
+        this.eventDate = eventDate;
+        this.pharmacyId = pharmacyId;
+    }
+
     public MedicationLackingEvent(Dermatologist dermatologist, Medication medication, LocalDateTime localDateTime, Long pharmacyId) {
         this.employeeId = dermatologist.getId();
         this.employeeType = EmployeeType.dermatologist;

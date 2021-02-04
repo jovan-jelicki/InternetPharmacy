@@ -58,4 +58,9 @@ public class EPrescription {
     public void setMedicationQuantity(List<MedicationQuantity> medicationQuantity) {
         this.medicationQuantity = medicationQuantity;
     }
+
+    public boolean isMedicationInEPrescription(Long medicationId) {
+        return medicationQuantity
+                .stream().anyMatch(m -> m.getMedication().getId() == medicationId);
+    }
 }
