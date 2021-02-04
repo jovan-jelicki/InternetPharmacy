@@ -294,7 +294,7 @@ export default class PharmacyMedications extends React.Component{
                     this.fetchPharmacyMedicationListingDTOs();
                 })
                 .catch(() => {
-                    alert("Medication was not deleted due to requested medication reservations.");
+                    alert("Medication was not deleted due to requested medication reservations or it is a part of current promotions.");
                 })
         }
     }

@@ -91,6 +91,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Appointment cancelExamination(Long appointmentId) {
+        Appointment entity = appointmentRepository.findById(appointmentId).get();
+        Appointment newEntity = new Appointment(entity);
+        if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
+            return null;
+        entity.setAppointmentStatus(AppointmentStatus.cancelled);
+        entity.setActive(false);
+        entity.setPatient(patientService.read(entity.getPatient().getId()).get());
+        save(entity);
+        return save(newEntity);
+    }
+
+    @Override
     public Collection<Appointment> read() {
         return appointmentRepository.findAll().stream().filter(appointment -> appointment.getActive()).collect(Collectors.toList());
     }

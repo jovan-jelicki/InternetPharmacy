@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "api/medicationReservation")
-public class MedicationReservationControllerImpl implements MedicationReservationController {
+public class  MedicationReservationControllerImpl implements MedicationReservationController {
     private final MedicationReservationService medicationReservationService;
 
     @Autowired

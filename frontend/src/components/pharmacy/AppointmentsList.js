@@ -31,6 +31,7 @@ export default class AppointmentsList extends React.Component{
                         <th scope="col">Datum i vreme</th>
                         <th scope="col">Cena</th>
                         <th scope="col">Ocena dermatologa</th>
+                        <th>{' '}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -41,7 +42,7 @@ export default class AppointmentsList extends React.Component{
                             <td>{moment(appointment.period.periodStart).format('DD.MM.YYYY hh:mm a') + " - " + moment(appointment.period.periodEnd).format('hh:mm a')}</td>
                             <td>{appointment.cost}</td>
                             <td>{appointment.dermatologistGrade}</td>
-
+                            <td><Button variant={'outline-dark'} onClick={() => this.scheduleAppointment(appointment.id)}>Schedule</Button></td>
                         </tr>
                     ))}
                     </tbody>
@@ -56,5 +57,15 @@ export default class AppointmentsList extends React.Component{
                 appointments : res.data
             });
         })
+    }
+
+    scheduleAppointment = (id) => {
+        axios
+        .put('http://localhost:8080/api/appointment/update', {
+            'patientId' : 0,
+            'appointmentId' : id
+        })
+        .then(res => alert('success'))
+        
     }
 }

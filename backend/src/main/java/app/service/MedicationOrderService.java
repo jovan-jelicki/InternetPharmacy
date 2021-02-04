@@ -10,4 +10,6 @@ public interface MedicationOrderService extends CRUDService<MedicationOrder> {
     Boolean createNewMedicationOrder(MedicationOrderDTO medicationOrderDTO);
 
     Collection<MedicationOrderDTO> getAllMedicationOrdersByPharmacy(Long pharmacyId);
+
+    Collection<MedicationOrderDTO> getMedicationOrderByPharmacyAdmin(Long pharmacyAdminId);
 }

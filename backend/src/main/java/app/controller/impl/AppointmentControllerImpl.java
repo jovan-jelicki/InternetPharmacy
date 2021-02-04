@@ -89,6 +89,13 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping(value = "/cancel-examination/{id}")
+    public ResponseEntity<Void> cancelExamination(@PathVariable Long id) {
+        if(appointmentService.cancelExamination(id) == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping(value = "/getEvents")
     public ResponseEntity<Collection<EventDTO>> getEventsByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getAllEventsOfExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);

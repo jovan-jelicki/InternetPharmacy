@@ -1,5 +1,6 @@
 package app.repository;
 
+import app.dto.MedicationOrderDTO;
 import app.model.medication.MedicationOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,4 +11,7 @@ public interface MedicationOrderRepository extends JpaRepository<MedicationOrder
 
     @Query("select m from MedicationOrder m where m.pharmacyAdmin.pharmacy.id = ?1")
     Collection<MedicationOrder> getAllMedicationOrdersByPharmacy(Long pharmacyId);
+
+    Collection<MedicationOrderDTO> getMedicationOrderByPharmacyAdmin(Long pharmacyAdminId);
+
 }
