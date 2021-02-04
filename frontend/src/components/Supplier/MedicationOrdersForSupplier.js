@@ -32,7 +32,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
                 console.log("pokupi")
                 console.log(this.state.medicationOrders);
             })
-        this.state.boolMedications=false;
+        this.state.boolMedications=true;
 
         await axios
             .get('http://localhost:8080/api/suppliers/getSuppliersMedicationList/'+1)
@@ -49,17 +49,64 @@ export default class MedicationOrdersForSupplier extends React.Component {
     }
 
     checkMedication(){
-        for (var j = 0, l = this.state.order.medicationQuantity.length; j < l; j++) {
-            if(!this.state.medicationList.some(item => item.medicationName === this.state.order.medicationQuantity[j].medication.name)){
-                    this.state.boolMedications = false;
-
-            }else {
-
+        let myMedications=this.state.medicationList;
+        let orderMedications=this.state.order.medicationQuantity;
+        console.log("UHUH")
+        console.log(myMedications)
+        console.log("UHUH")
+        console.log(orderMedications)
+/*
+        if(orderMedications.length==1){
+            if(!myMedications.some(item => item.medicationName === orderMedications[0].medication.name)){
+                this.state.boolMedications = false;
+            }else{
                 this.state.boolMedications = true;
+                for (var i = 0, l = this.state.medicationList.length; i < l; i++) {
+                    if((myMedications[i].medicationName)===(orderMedications[0].medication.name)){
+                        if(myMedications[i].medicationQuantity<orderMedications[0].quantity){
+                            this.state.boolMedications = false;
+                            break;
+                        }else{
+                            this.state.boolMedications = true;
+                            break;
+                        }
+                    }
+                }
             }
-        }
-        console.log(this.state.boolMedications)
+        }else {
+
+ */
+            for (var j = 0, l = orderMedications.length; j < l; j++) {
+                let myMedications = this.state.medicationList;
+                let orderMedications = this.state.order.medicationQuantity;
+                console.log(orderMedications.length)
+                console.log("AJ")
+                console.log(j)
+                console.log(orderMedications[j])
+                if(j<orderMedications.length) {
+                    if (!myMedications.some(item => item.medicationName === orderMedications[j].medication.name)) {
+                        this.state.boolMedications = false;
+                        break;
+                    } else {
+                        this.state.boolMedications = true;
+                        for (var i = 0, l = this.state.medicationList.length; i < l; i++) {
+                            if ((myMedications[i].medicationName) === (orderMedications[j].medication.name)) {
+                                if (myMedications[i].medicationQuantity < orderMedications[j].quantity) {
+                                    this.state.boolMedications = false;
+                                    break;
+                                } else {
+                                    this.state.boolMedications = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+       // console.log(this.state.boolMedications)
     }
+
 
 
 
