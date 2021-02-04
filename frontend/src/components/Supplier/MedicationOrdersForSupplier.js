@@ -3,6 +3,7 @@ import {Button, Modal} from "react-bootstrap";
 import {ButtonGroup, Input} from "rsuite";
 import Dropdown from "react-dropdown";
 import axios from "axios";
+import CreateNewOffer from "./CreateNewOffer";
 
 
 const options = [
@@ -21,6 +22,8 @@ export default class MedicationOrdersForSupplier extends React.Component {
             radioAll : '1',
             radioPending : '2',
             radioProcessed : '3',
+            order:[]
+
         }
     }
     async componentDidMount() {
@@ -37,6 +40,25 @@ export default class MedicationOrdersForSupplier extends React.Component {
 
 
     render() {
+        const orders= this.state.medicationOrders.map((medicationOrder, index) => (
+                <tr>
+                    <th scope="row">{index+1}</th>
+                    <td>{medicationOrder.pharmacyAdmin.firstName + ' ' + medicationOrder.pharmacyAdmin.lastName}</td>
+                    <td>{medicationOrder.deadline.split("T")[0]}</td>
+                    <td>
+                        {medicationOrder.medicationQuantity.map((e, key) => {
+                            return <option key={key} value={e.medication}>{e.medication.name} | {e.quantity}</option>
+
+                        })
+                        }
+                    </td>
+                    <td>
+                        <Button variant="primary" onClick={() => this.handleModal(medicationOrder)}>
+                            Create offer
+                        </Button>
+                    </td>
+                </tr>
+            ))
 
         return (
             <div className="container-fluid">
@@ -55,35 +77,40 @@ export default class MedicationOrdersForSupplier extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {this.state.medicationOrders.map((medicationOrder, index) => (
-                        <tr>
-                            <th scope="row">{index+1}</th>
-                            <td>{medicationOrder.pharmacyAdmin.firstName + ' ' + medicationOrder.pharmacyAdmin.lastName}</td>
-                            <td>{medicationOrder.deadline.split("T")[0]}</td>
-                            <td>
-                                {medicationOrder.medicationQuantity.map((e, key) => {
-                                   return <option key={key} value={e.medication}>{e.medication.name} | {e.quantity}</option>
-
-                                })
-                            }
-                            </td>
-                            <td>
-                                <Button variant="primary" onClick={this.showOffersButtonClick}>
-                                    Create offer
-                                </Button>
-                            </td>
-                        </tr>
-                    ))}
+                    {orders}
                     </tbody>
                 </table>
+
+                <Modal show={this.state.showModal} onHide={this.closeModal}  >
+                    <Modal.Header closeButton style={{'background':'silver'}}>
+                        <Modal.Title>Create new offer</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body style={{'background':'silver'}}>
+                        <CreateNewOffer order={this.state.order} />
+                    </Modal.Body>
+
+                </Modal>
 
             </div>
         );
     }
-    showOffersButtonClick = () => {
 
+    handleModal = (medicationOrder) => {
+        console.log("BLA")
+        console.log(medicationOrder)
+        this.setState({
+            showModal : !this.state.showModal,
+            order: medicationOrder
+        });
+     //   console.log(this.state.order)
     }
 
+    closeModal=()=>{
+
+        this.setState({
+            showModal : !this.state.showModal
+        });
+    }
 
 
 }
