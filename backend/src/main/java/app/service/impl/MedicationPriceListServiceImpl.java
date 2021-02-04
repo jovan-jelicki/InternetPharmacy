@@ -60,7 +60,7 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
     }
 
     @Override
-    public MedicationPriceList GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date) {
+    public Double GetMedicationPriceInPharmacyByDate(Long pharmacyId, Long medicationId, LocalDateTime date) {
         ArrayList<MedicationPriceList> medicationPriceLists = (ArrayList<MedicationPriceList>) medicationPriceListRepository.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationId,date);
         long maxId = (long) -1.0;
         for (MedicationPriceList medicationPriceList : medicationPriceLists)
@@ -68,7 +68,10 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
                 maxId = medicationPriceList.getId();
 
         long finalMaxId = maxId;
-        return medicationPriceLists.stream().filter(medicationPriceList -> medicationPriceList.getId()== finalMaxId).findFirst().get();
+        if (medicationPriceLists.size()>0)
+            return medicationPriceLists.stream().filter(medicationPriceList -> medicationPriceList.getId() == finalMaxId).findFirst().get().getCost();
+
+        return 400.00; //TODO default price
     }
 
     @Override
@@ -92,19 +95,20 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
     private boolean isOverlapping (Period periodA, Period periodB) {
         //A A, B B
         //B B, A A
-        if (periodA.getPeriodStart().minusMinutes(1).isBefore(periodB.getPeriodStart()) && periodA.getPeriodStart().minusMinutes(1).isBefore(periodB.getPeriodEnd())
-            && periodA.getPeriodEnd().minusMinutes(1).isBefore(periodB.getPeriodStart()) && periodA.getPeriodEnd().minusMinutes(1).isBefore(periodB.getPeriodEnd()))
+        if (periodA.getPeriodStart().isBefore(periodB.getPeriodStart()) && periodA.getPeriodStart().isBefore(periodB.getPeriodEnd())
+            && periodA.getPeriodEnd().isBefore(periodB.getPeriodStart()) && periodA.getPeriodEnd().isBefore(periodB.getPeriodEnd()))
             return false;
-        else if (periodB.getPeriodStart().minusMinutes(1).isBefore(periodA.getPeriodStart()) && periodB.getPeriodStart().minusMinutes(1).isBefore(periodA.getPeriodEnd())
-            && periodB.getPeriodEnd().minusMinutes(1).isBefore(periodA.getPeriodStart()) && periodB.getPeriodEnd().minusMinutes(1).isBefore(periodA.getPeriodEnd()))
+        else if (periodB.getPeriodStart().isBefore(periodA.getPeriodStart()) && periodB.getPeriodStart().isBefore(periodA.getPeriodEnd())
+            && periodB.getPeriodEnd().isBefore(periodA.getPeriodStart()) && periodB.getPeriodEnd().isBefore(periodA.getPeriodEnd()))
             return false;
-        return true;
+        else
+            return true;
     }
 
     @Override
     public Boolean createNewPriceList(MedicationPriceListDTO medicationPriceListDTO) {
         Pharmacy pharmacy = pharmacyService.read(medicationPriceListDTO.getPharmacyId()).get();
-        Medication medication = pharmacy.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId().equals(medicationPriceListDTO.getMedicationId())).findFirst().get().getMedication();
+        Medication medication = pharmacy.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId()==medicationPriceListDTO.getMedicationId()).findFirst().get().getMedication();
         MedicationPriceList medicationPriceList = new MedicationPriceList(medication, medicationPriceListDTO.getCost(), medicationPriceListDTO.getPeriod(), pharmacy);
 
 
