@@ -5,12 +5,6 @@ import Dropdown from "react-dropdown";
 import axios from "axios";
 import CreateNewOffer from "./CreateNewOffer";
 
-
-const options = [
-    'Xanax | 3', 'Brufen | 4', 'Linex | 100'
-];
-const defaultOption = options[0];
-
 export default class MedicationOrdersForSupplier extends React.Component {
     constructor() {
         super();

@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Modal} from "react-bootstrap";
+import {Button, Form, Modal, Row} from "react-bootstrap";
 import Dropdown from "react-dropdown";
 import axios from "axios";
 
@@ -18,65 +18,6 @@ export default class SupplierMedicationOffers extends React.Component{
         }
     }
 
-  /*  componentDidMount() {
-
-        let medicationOffers = [
-            {
-                price : 12443,
-                shippingDate : '20.2.2021.',
-                status : 'pending',
-                medicationOrder:{
-                    pharmacyAdmin : {
-                        firstName : 'Mirko',
-                        lastName : 'Mirkovic'
-                    },
-                    deadLine : '21.3.2021.',
-                    medicationQuantity: {
-
-                    },
-                    status : 'pending',
-                }
-            },
-            {
-                price : 23533,
-                shippingDate : '30.3.2021.',
-                status : 'approved',
-                medicationOrder:  {
-                    pharmacyAdmin : {
-                        firstName : 'Jelena',
-                            lastName : 'Rozga'
-                    },
-                    deadLine : '13.5.2021.',
-                        medicationQuantity: {
-
-                    },
-                    status : 'processed',
-                }
-            },
-            {
-                price : 12400,
-                shippingDate : '10.2.2021.',
-                status : 'rejected',
-                medicationOrder:
-                    {
-                        pharmacyAdmin : {
-                            firstName : 'Jovana',
-                                lastName : 'Tipsin'
-                        },
-                        deadLine : '23.04.2021.',
-                            medicationQuantity: {
-
-                    },
-                status : 'processed',
-            }
-            }
-        ]
-
-        this.setState({
-            medicationOffers : medicationOffers,
-            medicationOffersPom:medicationOffers
-        })
-    }*/
 
     async componentDidMount() {
         await axios
@@ -88,67 +29,55 @@ export default class SupplierMedicationOffers extends React.Component{
                 console.log("USEO")
                 console.log(this.state.medicationOffers);
             })
+        this.offersBackup = [...this.state.medicationOffers]
     }
 
-    onValueChange=(event) =>{
-        var option=event.target.value
-        console.log(option)
+    cancel() {
+        console.log("BACKUP")
+        console.log(this.offersBackup)
         this.setState({
-            selectedOption : option,
+            medicationOffers : this.offersBackup
         })
-        console.log(option)
-        if(option=="All"){
-            this.setState({
-                medicationOffers: this.state.medicationOffersPom
-            });
+    }
 
-            console.log("dosao");
-            return this.state.medicationOffers;
+    onTypeChange=(event) => {
+        var option = event.target.id
 
+        this.state.selectedOption=option;
+
+        if(this.state.selectedOption=="all"){
+            console.log("aj")
+            this.cancel()
         }else {
+            this.state.medicationOffers=this.offersBackup;
             let filteredData = this.state.medicationOffers.filter(column => {
-
-                return column.status.toLowerCase().indexOf(option.toLowerCase()) !== -1;
+                return column.orderStatus.toLowerCase().indexOf(this.state.selectedOption.toLowerCase()) !== -1;
             });
             this.setState({
                 medicationOffers: filteredData
             });
         }
 
+
     }
+
 
     render() {
         return (
             <div>
-                <h2 style={{marginLeft:'2rem'}} >Offers</h2>
-                <div className="row" style={{marginTop: '1rem', marginLeft:'2rem'}} >
-
-                    <div className="form-check">
-                        <b >Filter by  :</b>
-                        <label>
-                            <input type="radio" value="All" checked={this.state.selectedOption === "all"}onChange={this.onValueChange} />
-                            All
-                        </label>
-                    </div>
-                    <div className="radio">
-                        <label>
-                            <input type="radio" value="Pending" checked={this.state.selectedOption === "pending"}onChange={this.onValueChange} />
-                            Pending
-                        </label>
-                    </div>
-                    <div className="radio">
-                        <label>
-                            <input  type="radio"  value="Approved" checked={this.state.selectedOption === "approved"} onChange={this.onValueChange}/>
-                            Approved
-                        </label>
-                    </div>
-                    <div className="radio">
-                        <label>
-                            <input type="radio" value="Rejected" checked={this.state.selectedOption === "rejected"} onChange={this.onValueChange}/>
-                            Rejected
-                        </label>
-                    </div>
-                </div>
+                <h2 style={({marginTop: '1rem', textAlignVertical: "center", textAlign: "center"})}  >Offers</h2>
+                <fieldset>
+                    <Form>
+                        <Form.Group as={Row}>
+                            <label style={{'marginLeft':'2rem'}}> Order status </label>
+                            <Row sm={10} style={{'marginLeft':'3rem'}}>
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="all" name="formHorizontalRadios"id="all" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="pending" name="formHorizontalRadios"id="pending" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="anesthetic" name="formHorizontalRadios" id="anesthetic" onChange={this.onTypeChange} />
+                            </Row>
+                        </Form.Group>
+                    </Form>
+                </fieldset>
 
                 <table className="table table-hover" >
                     <thead>
@@ -160,7 +89,7 @@ export default class SupplierMedicationOffers extends React.Component{
                         <th scope="col">Price</th>
                         <th scope="col">Shipping date</th>
                         <th scope="col">Offer status</th>
-                        <th scope="col">Offer status</th>
+                        <th scope="col">Order status</th>
                     </tr>
                     </thead>
                     <tbody>

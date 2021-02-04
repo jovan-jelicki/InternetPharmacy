@@ -391,9 +391,9 @@ INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (11, 5123, 3);
 
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
-VALUES (1, '2020-03-04', 1, 0);
+VALUES (1, '2021-03-04', 1, 0);
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
-VALUES (2, '2020-03-10', 1, 0);
+VALUES (2, '2021-03-10', 1, 0);
 
 INSERT INTO medication_order_medication_quantity(medication_quantity_id, medication_order_id)
 values (6,1);

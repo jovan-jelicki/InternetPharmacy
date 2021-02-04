@@ -146,7 +146,7 @@ export default class CreateNewOffer extends React.Component{
                     <div className="row"style={{marginTop: '1rem'}}>
                         <label  className="col-sm-4 col-form-label">Price</label>
                         <div className="col-sm-6 mb-2">
-                            <input type="number"  name="cost" className="form-control" id="cost" placeholder="Enter cost" onChange={(e) => { this.handleInputChange(e)} } className="form-control"/>
+                            <input type="number" min="0" name="cost" className="form-control" id="cost" placeholder="Enter cost" onChange={(e) => { this.handleInputChange(e)} } className="form-control"/>
                             { this.state.submitted && this.state.errors.medicationOffer.cost.length > 0 &&  <span className="text-danger">{this.state.errors.medicationOffer.cost}</span>}
 
                         </div>
@@ -156,7 +156,7 @@ export default class CreateNewOffer extends React.Component{
                     <div className="row"style={{marginTop: '1rem'}}>
                         <label  className="col-sm-4 col-form-label">Shipping date</label>
                         <div className="col-sm-6 mb-2">
-                            <DatePicker  selected={this.state.medicationOffer.shippingDate} minDate={new Date()} onChange={date => this.changeDatePicker(date)} />
+                            <DatePicker  selected={this.state.medicationOffer.shippingDate} minDate={new Date()} maxDate={new Date(this.props.order.deadline)} onChange={date => this.changeDatePicker(date)} />
                             { this.state.submitted && this.state.errors.medicationOffer.shippingDate.length > 0 &&  <span className="text-danger">{this.state.errors.medicationOffer.shippingDate}</span>}
 
                         </div>
