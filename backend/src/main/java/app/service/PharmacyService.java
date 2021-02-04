@@ -33,4 +33,6 @@ public interface PharmacyService extends CRUDService<Pharmacy> {
     Collection<PharmacyMedicationDTO> getPharmacyByMedication(Long medicationId);
 
     Collection<ReportsDTO> getPharmacyIncomeReportByPeriod(LocalDateTime periodStart, LocalDateTime periodEnd, Long pharmacyId);
+
+    void setPromotionService(PromotionService promotionService);
 }

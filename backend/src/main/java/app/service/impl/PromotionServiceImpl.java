@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -25,6 +26,12 @@ public class PromotionServiceImpl implements PromotionService {
     public PromotionServiceImpl(PromotionRepository promotionRepository, PharmacyService pharmacyService) {
         this.promotionRepository = promotionRepository;
         this.pharmacyService = pharmacyService;
+    }
+
+
+    @PostConstruct
+    public void init() {
+        pharmacyService.setPromotionService(this);
     }
 
 
