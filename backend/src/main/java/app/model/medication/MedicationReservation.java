@@ -27,7 +27,7 @@ public class MedicationReservation {
    private Boolean isDiscounted;
 
    @JoinColumn
-   @ManyToOne
+   @ManyToOne(cascade = CascadeType.ALL)
    private Patient patient;
 
    @Enumerated(EnumType.ORDINAL)
