@@ -28,25 +28,24 @@ export default class DermatologistsProfilePage extends React.Component {
     async componentDidMount() {
 
         await axios
-            .get('http://localhost:8080/api/dermatologists/1')
+            .get('http://localhost:8080/api/dermatologists/'  + 3)
             .then(res => {
-                let patient = res.data;
-                console.log(patient)
+                let dermatologist = res.data;
+                console.log(dermatologist)
                 this.setState({
-                    'id' : patient.id,
-                    'firstName' : patient.firstName,
-                    'lastName' : patient.lastName,
-                    'email' : patient.credentials.email,
-                    'password' : patient.credentials.password,
-                    'userType' : patient.userType,
+                    'id' : dermatologist.id,
+                    'firstName' : dermatologist.firstName,
+                    'lastName' : dermatologist.lastName,
+                    'email' : dermatologist.email,
+                    'userType' : dermatologist.userType,
                     'editMode' : false,
                     'changePasswordMode' : false,
-                    'address' : patient.contact.address.street,
-                    'longitude' : patient.contact.address.longitude,
-                    'latitude' : patient.contact.address.latitude,
-                    'town' : patient.contact.address.town,
-                    'country' : patient.contact.address.country,
-                    'phoneNumber' : patient.contact.phoneNumber
+                    'address' : dermatologist.contact.address.street,
+                    'longitude' : dermatologist.contact.address.longitude,
+                    'latitude' : dermatologist.contact.address.latitude,
+                    'town' : dermatologist.contact.address.town,
+                    'country' : dermatologist.contact.address.country,
+                    'phoneNumber' : dermatologist.contact.phoneNumber
                 })
             });
 
@@ -137,10 +136,8 @@ export default class DermatologistsProfilePage extends React.Component {
                 'lastName' : this.state.lastName,
                 'userType' : this.state.userType,
                 'credentials' : {
-                    'email' : this.state.email,
-                    'password' : this.state.password
+                    'email': this.state.email,
                 },
-                'penaltyCount' : this.state.penaltyCount,
                 'contact' : {
                     'phoneNumber' : this.state.phoneNumber,
                     'address' : {

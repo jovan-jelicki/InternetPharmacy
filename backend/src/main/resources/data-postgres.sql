@@ -134,7 +134,7 @@ insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_st
     (15,3,1, 230, '2018-01-01', '2018-02-20');
 
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
- VALUES (0, '2021-01-31', 3, 1,0);
+ VALUES (0, '2021-03-31', 3, 1,0);
 -- INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 -- VALUES (1, '2021-01-28', 2, 4,0);
 -- INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
