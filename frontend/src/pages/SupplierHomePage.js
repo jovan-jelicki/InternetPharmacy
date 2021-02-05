@@ -13,6 +13,7 @@ import CreateOrder from "../components/pharmacy/CreateOrder";
 import CreateNewOffer from "../components/Supplier/CreateNewOffer";
 import SupplierMedicationOffers from "../components/Supplier/SupplierMedicationOffers";
 import SupplierProfile from "../components/Supplier/SupplierProfile";
+import SupplierMedicationListing from "../components/Supplier/SupplierMedicationListing";
 
 export default class SupplierHomePage extends React.Component {
     constructor(props) {
@@ -53,6 +54,9 @@ export default class SupplierHomePage extends React.Component {
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="profile" onClick={this.handleChange}>Profile</a>
                     </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="medications" onClick={this.handleChange}>Medication Listing</a>
+                    </li>
                 </ul>
                 {this.renderNavbar()}
             </div>
@@ -80,6 +84,10 @@ export default class SupplierHomePage extends React.Component {
         else if (this.state.navbar === "profile")
             return (
                 <SupplierProfile/>
+            );
+        else if (this.state.navbar === "medications")
+            return (
+                <SupplierMedicationListing/>
             );
 
     }

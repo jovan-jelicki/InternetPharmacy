@@ -2,11 +2,9 @@ import React from "react";
 import {Button, Form, Modal, Row, Table} from "react-bootstrap";
 import Dropdown from "react-dropdown";
 import axios from "axios";
+import MedicationSpecification from "../MedicationSpecification";
+import EditOffer from "./EditOffer";
 
-const options = [
-    'Xanax | 3', 'Brufen | 4', 'Linex | 100'
-];
-const defaultOption = options[0];
 
 export default class SupplierMedicationOffers extends React.Component{
     constructor(props) {
@@ -14,7 +12,7 @@ export default class SupplierMedicationOffers extends React.Component{
         this.state = {
             medicationOffers : [],
             selectedOption:"",
-            medicationOffersPom:[]
+            medicationOffersPom:[],
         }
     }
 
@@ -56,10 +54,7 @@ export default class SupplierMedicationOffers extends React.Component{
                 medicationOffers: filteredData
             });
         }
-
-
     }
-
 
     render() {
         return (
@@ -91,6 +86,7 @@ export default class SupplierMedicationOffers extends React.Component{
                         <th scope="col">Shipping date</th>
                         <th scope="col">Offer status</th>
                         <th scope="col">Order status</th>
+                        <th scope="col">Edit offer</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -118,6 +114,10 @@ export default class SupplierMedicationOffers extends React.Component{
                             <td>{medicationOffer.shippingDate.split("T")[0]}</td>
                             <td>{medicationOffer.offerStatus}</td>
                             <td>{medicationOffer.orderStatus}</td>
+                            <td> <Button variant="primary" onClick={() => this.handleModal(medicationOffer)}>
+                                Edit offer {medicationOffer.cost}
+                            </Button>
+                            </td>
                         </tr>
 
                     ))}
@@ -125,13 +125,16 @@ export default class SupplierMedicationOffers extends React.Component{
                     </tbody>
                 </Table>
             </div>
-                <Modal show={this.state.showModal} onHide={this.handleModal}>
+
+                <Modal show={this.state.showModal} onHide={this.closeModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Modal heading</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                    <Modal.Body>
+                        <EditOffer modalOffer={this.state.modalOffer}/>
+                    </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleModal}>
+                        <Button variant="secondary" onClick={this.closeModal}>
                             Close
                         </Button>
                         <Button variant="primary" onClick={this.handleModal}>
@@ -143,7 +146,20 @@ export default class SupplierMedicationOffers extends React.Component{
         )
     }
 
-    handleModal = () => {
+    handleModal = (medicationOffer) => {
+        console.log(medicationOffer)
+        this.setState({
+            modalOffer: medicationOffer,
+
+        });
+        console.log("AJAJJAJA")
+        console.log(this.state.modalOffer)
+        this.setState({
+            showModal : !this.state.showModal
+
+        });
+    }
+    closeModal=()=>{
         this.setState({
             showModal : !this.state.showModal
         });

@@ -55,27 +55,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
         console.log(myMedications)
         console.log("UHUH")
         console.log(orderMedications)
-/*
-        if(orderMedications.length==1){
-            if(!myMedications.some(item => item.medicationName === orderMedications[0].medication.name)){
-                this.state.boolMedications = false;
-            }else{
-                this.state.boolMedications = true;
-                for (var i = 0, l = this.state.medicationList.length; i < l; i++) {
-                    if((myMedications[i].medicationName)===(orderMedications[0].medication.name)){
-                        if(myMedications[i].medicationQuantity<orderMedications[0].quantity){
-                            this.state.boolMedications = false;
-                            break;
-                        }else{
-                            this.state.boolMedications = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }else {
 
- */
             for (var j = 0, l = orderMedications.length; j < l; j++) {
                 let myMedications = this.state.medicationList;
                 let orderMedications = this.state.order.medicationQuantity;
