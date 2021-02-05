@@ -36,10 +36,10 @@ export default class MedicationOrdersList extends React.Component {
 
                 <b>Filter by :</b>
                 <ButtonGroup>
-                    <Button>All
-                        <Input ref="input1" type="radio" name="radioButtonSet" value='input1' standalone defaultChecked/>
+                    <Button style={{marginRight : '1rem'}}>All
+                        <Input ref="input1" type="radio" name="radioButtonSet" value='input1' standalone defaultChecked />
                     </Button>
-                    <Button>Pending
+                    <Button style={{marginRight : '1rem'}}>Pending
                         <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
                     </Button>
                     <Button>Processed
@@ -76,7 +76,7 @@ export default class MedicationOrdersList extends React.Component {
                                 </Button>
                             </td>
                             <td>
-                                <Button variant="info" >
+                                <Button variant="info" onClick={() => this.editOrder(medicationOrder)}>
                                     Izmeni
                                 </Button>
                             </td>
@@ -126,6 +126,11 @@ export default class MedicationOrdersList extends React.Component {
     showOffersButtonClick = (medicationOrder) => {
         this.props.updateClickedMedicationOrder(medicationOrder);
         this.props.showOffers('showOffers');
+    }
+
+    editOrder = (medicationOrder) => {
+        this.props.updateClickedMedicationOrder(medicationOrder);
+        this.props.showOffers('editOrder');
     }
 
     createOrder = () => {

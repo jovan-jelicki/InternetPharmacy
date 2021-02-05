@@ -39,6 +39,27 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
         this.medicationOfferService = medicationOfferService;
     }
 
+    @Override
+    public Boolean editMedicationOrder(MedicationOrderDTO medicationOrderDTO) {
+        MedicationOrder medicationOrder = this.read(medicationOrderDTO.getId()).get();
+
+        if (medicationOfferService.getOffersByOrderId(medicationOrder.getId()).size() != 0)
+            return false;
+
+        medicationOrder.setDeadline(medicationOrderDTO.getDeadline());
+
+
+        ArrayList<MedicationQuantity> medicationQuantities = new ArrayList<>();
+        for (MedicationQuantity medicationQuantity : medicationOrderDTO.getMedicationQuantity()) {
+            Medication medication = medicationService.getMedicationByName(medicationQuantity.getMedication().getName());
+            medicationQuantities.add(medicationQuantityService.save(new MedicationQuantity(medication, medicationQuantity.getQuantity())));
+        }
+
+        medicationOrder.setMedicationQuantity(medicationQuantities);
+
+        return this.save(medicationOrder) != null;
+    }
+
 
     @Override
     public MedicationOrder save(MedicationOrder entity) {
@@ -90,7 +111,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
         }
 
         medicationOrder.setMedicationQuantity(medicationQuantities);
-
+        medicationOrder.setActive(true);
         return this.save(medicationOrder) != null;
     }
 

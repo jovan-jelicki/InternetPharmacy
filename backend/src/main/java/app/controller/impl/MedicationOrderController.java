@@ -28,7 +28,15 @@ public class MedicationOrderController {
 
     @PostMapping(consumes = "application/json", value = "/newMedicationOrder")
     public ResponseEntity<Boolean> newMedicationOrder(@RequestBody MedicationOrderDTO medicationOrderDTO){
-        return new ResponseEntity<>(medicationOrderService.createNewMedicationOrder(medicationOrderDTO), HttpStatus.OK);
+        if (medicationOrderService.createNewMedicationOrder(medicationOrderDTO))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);    }
+
+    @PostMapping(consumes = "application/json", value = "/editMedicationOrder")
+    public ResponseEntity<Boolean> editMedicationOrder(@RequestBody MedicationOrderDTO medicationOrderDTO){
+        if (medicationOrderService.editMedicationOrder(medicationOrderDTO))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/getAllMedicationOrdersByPharmacy/{pharmacyId}")
