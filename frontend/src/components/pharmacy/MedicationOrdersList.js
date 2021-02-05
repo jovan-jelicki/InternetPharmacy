@@ -13,9 +13,7 @@ export default class MedicationOrdersList extends React.Component {
             medicationOrders : [],
             showModal : false,
             showContent : 'listOrders',
-            radioAll : '1',
-            radioPending : '2',
-            radioProcessed : '3'
+            backupMedicationOrders : [],
         }
     }
 
@@ -37,13 +35,13 @@ export default class MedicationOrdersList extends React.Component {
                 <b>Filter by :</b>
                 <ButtonGroup>
                     <Button style={{marginRight : '1rem'}}>All
-                        <Input ref="input1" type="radio" name="radioButtonSet" value='input1' standalone defaultChecked />
+                        <Input ref="input1" type="radio" name="radioButtonSet" value='filterAll' onChange={this.filterButton} standalone defaultChecked/>
                     </Button>
                     <Button style={{marginRight : '1rem'}}>Pending
-                        <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='pending' standalone onChange={this.filterButton} />
                     </Button>
                     <Button>Processed
-                        <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='processed' standalone onChange={this.filterButton} />
                     </Button>
                 </ButtonGroup>
                 <br/>
@@ -108,11 +106,27 @@ export default class MedicationOrdersList extends React.Component {
         );
     }
 
+    filterButton = (event) => {
+        //filtriraj po buttonima
+        console.log(event);
+        if (event === 'filterAll') {
+            this.setState({
+                medicationOrders: this.state.backupMedicationOrders
+            });
+            return;
+        }
+        this.setState({
+            medicationOrders: this.state.backupMedicationOrders.filter(medicationOrder => medicationOrder.status === event)
+        });
+
+    }
+
     fetchMedicationOrders = () => {
         axios.get("http://localhost:8080/api/medicationOrder/getAllMedicationOrdersByPharmacy/1")
             .then((res) => {
                 this.setState({
-                    medicationOrders : res.data
+                    medicationOrders : res.data,
+                    backupMedicationOrders : res.data
                 })
             })
     }
