@@ -24,6 +24,9 @@ public class EPrescription {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<MedicationQuantity> medicationQuantity;
 
+    @Enumerated(EnumType.ORDINAL)
+    EPrescriptionStatus status;
+
     public EPrescription() {
     }
 
@@ -59,8 +62,11 @@ public class EPrescription {
         this.medicationQuantity = medicationQuantity;
     }
 
-    public boolean isMedicationInEPrescription(Long medicationId) {
-        return medicationQuantity
-                .stream().anyMatch(m -> m.getMedication().getId() == medicationId);
+    public EPrescriptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EPrescriptionStatus status) {
+        this.status = status;
     }
 }

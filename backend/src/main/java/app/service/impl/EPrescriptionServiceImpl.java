@@ -2,10 +2,7 @@ package app.service.impl;
 
 import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
-import app.model.medication.EPrescription;
-import app.model.medication.Medication;
-import app.model.medication.MedicationLackingEvent;
-import app.model.medication.MedicationQuantity;
+import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.PharmacyAdmin;
 import app.repository.EPrescriptionRepository;
@@ -62,7 +59,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
             return null;
         }
         makeEPrescriptionDTO.getPrescription().setDateIssued(LocalDateTime.now());
-        EPrescription ePrescription =  this.save(makeEPrescriptionDTO.getPrescription());
+        EPrescription ePrescription =  this.save(makeEPrescriptionDTO.getPrescription().setStatus(EPrescriptionStatus.pending););
         updateMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy.getMedicationQuantity());
         pharmacy.getPrescriptions().add(ePrescription);
         pharmacyService.save(pharmacy);
