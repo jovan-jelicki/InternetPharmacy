@@ -13,6 +13,7 @@ export default class SupplierMedicationOffers extends React.Component{
             medicationOffers : [],
             selectedOption:"",
             medicationOffersPom:[],
+            timeBool: true
         }
     }
 
@@ -28,6 +29,35 @@ export default class SupplierMedicationOffers extends React.Component{
                 console.log(this.state.medicationOffers);
             })
         this.offersBackup = [...this.state.medicationOffers]
+
+        console.log(this.state.medicationOffers[0].deadline)
+    }
+
+    checkTime=(deadline)=>{
+        let periodStart= new Date()
+        let day = periodStart.getDate();
+        let month = parseInt(periodStart.getMonth())+1;
+        if (month < 10)
+            month = "0" + month;
+        if (parseInt(day)<10)
+            day = "0"+day;
+        let hours = parseInt(periodStart.getHours());
+        if(hours < 10)
+            hours = "0" + hours;
+        let minutes = parseInt(periodStart.getMinutes());
+        if(minutes < 10)
+            minutes = "0" + minutes;
+
+        let fullYearStart = periodStart.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes + ":00";
+       // console.log(fullYearStart)
+
+           if(fullYearStart>deadline){
+               this.state.timeBool=false;
+           }else{
+               this.state.timeBool=true;
+           }
+
+
     }
 
     cancel() {
@@ -114,10 +144,12 @@ export default class SupplierMedicationOffers extends React.Component{
                             <td>{medicationOffer.shippingDate.split("T")[0]}</td>
                             <td>{medicationOffer.offerStatus}</td>
                             <td>{medicationOffer.orderStatus}</td>
-                            <td> <Button variant="primary" onClick={() => this.handleModal(medicationOffer)}>
-                                Edit offer {medicationOffer.cost}
-                            </Button>
-                            </td>
+
+                                <td><Button variant="primary" onClick={() => this.handleModal(medicationOffer)}>
+                                    Edit offer
+                                    </Button>
+                                </td>
+
                         </tr>
 
                     ))}
@@ -127,19 +159,19 @@ export default class SupplierMedicationOffers extends React.Component{
             </div>
 
                 <Modal show={this.state.showModal} onHide={this.closeModal}>
-                    <Modal.Header closeButton>
+                    <Modal.Header closeButton style={{'background':'gray'}} >
                         <Modal.Title>Modal heading</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
-                        <EditOffer modalOffer={this.state.modalOffer}/>
+                    <Modal.Body style={{'background':'gray'}} >
+                        {
+                            this.state.timeBool ?
+                            <EditOffer modalOffer={this.state.modalOffer}/>
+                            :
+                                <div> You dont have enought medications.</div>
+                        }
                     </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.closeModal}>
-                            Close
-                        </Button>
-                        <Button variant="primary" onClick={this.handleModal}>
-                            Save Changes
-                        </Button>
+                    <Modal.Footer style={{'background':'gray'}}>
+
                     </Modal.Footer>
                 </Modal>
             </div>
@@ -147,17 +179,15 @@ export default class SupplierMedicationOffers extends React.Component{
     }
 
     handleModal = (medicationOffer) => {
-        console.log(medicationOffer)
         this.setState({
+            showModal : !this.state.showModal,
             modalOffer: medicationOffer,
 
         });
         console.log("AJAJJAJA")
+        this.state.modalOffer=medicationOffer;
         console.log(this.state.modalOffer)
-        this.setState({
-            showModal : !this.state.showModal
-
-        });
+        this.checkTime(this.state.modalOffer.deadline)
     }
     closeModal=()=>{
         this.setState({

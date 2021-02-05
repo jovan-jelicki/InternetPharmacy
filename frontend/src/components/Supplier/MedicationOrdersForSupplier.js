@@ -32,7 +32,6 @@ export default class MedicationOrdersForSupplier extends React.Component {
                 console.log("pokupi")
                 console.log(this.state.medicationOrders);
             })
-        this.state.boolMedications=true;
 
         await axios
             .get('http://localhost:8080/api/suppliers/getSuppliersMedicationList/'+1)
@@ -42,7 +41,6 @@ export default class MedicationOrdersForSupplier extends React.Component {
                 })
                 console.log("LEkovi koje imam")
                 console.log(this.state.medicationList);
-               // this.state.boolMedications=true;
 
             })
 

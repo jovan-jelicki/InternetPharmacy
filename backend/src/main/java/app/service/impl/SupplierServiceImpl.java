@@ -67,13 +67,14 @@ public class SupplierServiceImpl implements SupplierService{
                     offerDTO.setCost(m.getCost());
                     offerDTO.setShippingDate(m.getShippingDate());
                     offerDTO.setOfferStatus(m.getStatus());
+                    offerDTO.setOfferId(m.getId());
 
                     MedicationOrder medicationOrder=m.getMedicationOrder();
                     offerDTO.setDeadline(medicationOrder.getDeadline());
                     offerDTO.setMedicationQuantity(medicationOrder.getMedicationQuantity());
                     offerDTO.setOrderStatus(medicationOrder.getStatus());
                     offerDTO.setPharmacyAdminId(medicationOrder.getPharmacyAdmin().getPharmacy().getName());
-
+                    offerDTO.setOrderId(medicationOrder.getId());
                     offersAndOrder.add(offerDTO);
                 }
             }});

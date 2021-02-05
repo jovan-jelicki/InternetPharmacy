@@ -76,14 +76,17 @@ export default class EditOffer extends React.Component{
 
 
     async sendParams() {
-        let orderId=this.props.order.id;
+       // console.log("OFFER")
+        //console.log(this.props.modalOffer)
+        //console.log("OFFER")
         axios
-            .post('http://localhost:8080/api/medicationOffer/new', {
+            .post('http://localhost:8080/api/medicationOffer/edit', {
                 'id':'',
                 'cost' : this.state.medicationOffer.cost,
                 'shippingDate' : this.state.medicationOffer.shippingDate,
                 'status' : 0,
-                'medicationOrderId' : 2,
+                'orderId' : this.props.modalOffer.orderId,
+                'offerId' :this.props.modalOffer.offerId,
                 'supplierId': 1
             })
             .then(res => {
@@ -107,7 +110,8 @@ export default class EditOffer extends React.Component{
 
         return (
             <div className="jumbotron jumbotron-fluid"  style={{ background: 'silver', color: 'rgb(0, 92, 230)'}}>
-                <h2 style={{marginTop: '1rem', marginLeft:'12rem'}}>Offer</h2>
+
+                <h2 style={{marginTop: '1rem', marginLeft:'10rem'}}>Set new offer </h2>
                 <div>
                     <div className="row"style={{marginTop: '1rem'}}>
                         <label  className="col-sm-4 col-form-label">Price</label>

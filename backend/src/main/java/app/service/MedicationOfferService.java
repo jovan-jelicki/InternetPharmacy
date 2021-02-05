@@ -1,6 +1,7 @@
 package app.service;
 
 
+import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationOfferDTO;
 import app.dto.MedicationOrderDTO;
 import app.model.medication.MedicationOffer;
@@ -11,5 +12,6 @@ import java.util.Collection;
 
 public interface MedicationOfferService extends CRUDService<MedicationOffer>{
     Boolean createNewMedicationOffer(MedicationOfferDTO medicationOffer);
+    Boolean editMedicationOffer(MedicationOfferAndOrderDTO medicationOffer);
     //Collection<MedicationOffer> getMedicationOfferBySupplier(Long supplierId);
 }

@@ -1,5 +1,6 @@
 package app.controller.impl;
 
+import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationOfferDTO;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOrder;
@@ -26,6 +27,11 @@ public class MedicationOfferControllerImpl {
     @PostMapping(consumes = "application/json", value = "/new")
     public ResponseEntity<Boolean> createNewMedicationOffer(@RequestBody MedicationOfferDTO medicationOffer){
         return new ResponseEntity<>(medicationOfferService.createNewMedicationOffer(medicationOffer), HttpStatus.OK);
+    }
+
+    @PostMapping(consumes = "application/json", value = "/edit")
+    public ResponseEntity<Boolean> editMedicationOffer(@RequestBody MedicationOfferAndOrderDTO medicationOffer){
+        return new ResponseEntity<>(medicationOfferService.editMedicationOffer(medicationOffer), HttpStatus.OK);
     }
 
     /*
