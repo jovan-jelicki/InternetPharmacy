@@ -2,6 +2,7 @@
 package app.model.medication;
 
 import app.model.user.Patient;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class EPrescription {
     private Long id;
 
     @Column
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateIssued;
 
     @ManyToOne

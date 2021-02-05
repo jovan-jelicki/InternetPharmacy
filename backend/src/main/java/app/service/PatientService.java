@@ -1,5 +1,6 @@
 package app.service;
 
+import app.dto.PharmacyPlainDTO;
 import app.dto.UserPasswordDTO;
 import app.model.medication.Ingredient;
 import app.model.medication.Medication;
@@ -17,5 +18,6 @@ public interface PatientService extends CRUDService<Patient> {
      Patient findByEmailAndPassword(String email, String password);
     Patient findByEmail(String email);
 
+    Collection<PharmacyPlainDTO> getPromotionPharmacies(Long patientId);
 }
 

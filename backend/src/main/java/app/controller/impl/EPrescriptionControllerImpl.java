@@ -2,8 +2,6 @@ package app.controller.impl;
 
 import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
-import app.dto.MedicationPlainDTO;
-import app.model.medication.EPrescription;
 import app.service.EPrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "api/eprescriptions")
@@ -31,12 +30,11 @@ public class EPrescriptionControllerImpl {
     }
 
     @GetMapping(value = "/patient/{id}")
-    public ResponseEntity<Collection<EPrescription>> findAllByPatientId(Long id) {
-        return new ResponseEntity<>(ePrescriptionService.findAllByPatientId(id), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/medications/{id}")
-    public ResponseEntity<Collection<MedicationPlainDTO>> findAllMedicationsInEPrescriptionByPatientId(Long id) {
-        return new ResponseEntity<>(ePrescriptionService.findAllMedicationsInEPrescriptionByPatientId(id), HttpStatus.OK);
+    public ResponseEntity<Collection<EPrescriptionSimpleInfoDTO>> findAllByPatientId(@PathVariable Long id) {
+        Collection<EPrescriptionSimpleInfoDTO> prescriptions = ePrescriptionService.findAllByPatientId(id)
+                .stream()
+                .map(EPrescriptionSimpleInfoDTO::new)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(prescriptions, HttpStatus.OK);
     }
 }

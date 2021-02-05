@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "api/medicationReservation")
@@ -101,8 +102,13 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
     }
 
     @GetMapping(value = "/patient/{id}")
-    public ResponseEntity<Collection<MedicationReservation>> findAllByPatientId(Long id) {
-        return new ResponseEntity<>(medicationReservationService.findAllByPatientId(id), HttpStatus.OK);
+    public ResponseEntity<Collection<MedicationReservationSimpleInfoDTO>> findAllByPatientId(@PathVariable Long id) {
+        return new ResponseEntity<>(
+                medicationReservationService.findAllByPatientId(id)
+                .stream()
+                .map(MedicationReservationSimpleInfoDTO::new)
+                .collect(Collectors.toList()),
+                HttpStatus.OK);
     }
 
 }
