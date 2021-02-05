@@ -20,11 +20,13 @@ export default class EditOrder extends React.Component{
                 medicationQuantity : []
             },
             quantities : this.props.order.medicationQuantity,
-            deadline : moment(this.props.order.deadline).toDate()
+            deadline : moment(this.props.order.deadline).toDate(),
+            isEditable : false
         }
     }
 
     componentDidMount() {
+        this.checkIfOrderIsEditable();
         console.log(this.props.order);
         this.fetchMedication();
     }
@@ -33,26 +35,49 @@ export default class EditOrder extends React.Component{
         return (
             <div className="container-fluid" style={({ marginLeft: '1rem' })}>
                 <div className="row">
-                    <div>
-                        <h1>
-                            Edit order
-                        </h1>
-                        <Button variant={"outline-info"} onClick={() => this.props.showListOrders("listOrders")}>{"←"}</Button>
-                        <br/><br/>
-                        Choose deadline for medication offers: <i/><i/><i/>
-                        <DatePicker  selected={this.state.deadline}  minDate={new Date()} onChange={this.changeDatePicker} />
+                    {
+                        this.state.isEditable &&
+                        <div>
+                            <h1>
+                                Edit order
+                            </h1>
+                            <Button variant={"outline-info"} onClick={() => this.props.showListOrders("listOrders")}>{"←"}</Button>
+                            <br/><br/>
+                            Choose deadline for medication offers: <i/><i/><i/>
+                            <DatePicker  selected={this.state.deadline}  minDate={new Date()} onChange={this.changeDatePicker} />
 
-                        <AddMedicationQuantity addQuantity={this.addQuantity} medications = {this.state.medications} />
+                            <AddMedicationQuantity addQuantity={this.addQuantity} medications = {this.state.medications} />
 
-                        <OrderQuantityListing quantities={this.state.quantities} removeQuantity ={this.removeQuantity}/>
+                            <OrderQuantityListing quantities={this.state.quantities} removeQuantity ={this.removeQuantity}/>
 
 
-                        <Button variant={"dark"} onClick={this.handleSubmit}>Submit</Button>
+                            <Button variant={"dark"} onClick={this.handleSubmit}>Submit</Button>
 
-                    </div>
+                        </div>
+                    }
+                    {
+                        !this.state.isEditable &&
+                            <div>
+                                <h1>
+                                    Cannot edit this order because suppliers have already made offers for it.
+                                </h1>
+                                <Button variant={"outline-info"} onClick={() => this.props.showListOrders("listOrders")}>{"←"}</Button>
+                            </div>
+                    }
+
                 </div>
             </div>
         );
+    }
+
+    checkIfOrderIsEditable = () => {
+        const path = "http://localhost:8080/api/medicationOrder/checkIfOrderIsEditable/" + this.props.order.id;
+        axios.get(path)
+            .then((res) => {
+                this.setState({
+                    isEditable : res.data
+                })
+            })
     }
 
     fetchMedication = () => {
@@ -110,6 +135,6 @@ export default class EditOrder extends React.Component{
                 alert("Medication order edited successfully!");
                 this.props.showListOrders("listOrders")
             })
-            .catch(() => alert("Medication order was not edited successfully because it already has offersS!"))
+            .catch(() => alert("Medication order was not edited successfully! Please try again later."))
     }
 }

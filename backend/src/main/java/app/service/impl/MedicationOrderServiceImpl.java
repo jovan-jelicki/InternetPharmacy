@@ -60,6 +60,11 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
         return this.save(medicationOrder) != null;
     }
 
+    @Override
+    public Boolean checkIfOrderIsEditable(Long orderId) {
+        return medicationOfferService.getOffersByOrderId(orderId).size() == 0;
+    }
+
 
     @Override
     public MedicationOrder save(MedicationOrder entity) {

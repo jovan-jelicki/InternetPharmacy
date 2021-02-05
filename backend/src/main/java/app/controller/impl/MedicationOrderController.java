@@ -49,6 +49,11 @@ public class MedicationOrderController {
         return new ResponseEntity<>(medicationOrderService.getMedicationOrderByPharmacyAdmin(pharmacyAdminId), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/checkIfOrderIsEditable/{orderId}")
+    public ResponseEntity<Boolean> checkIfOrderIsEditable(@PathVariable Long orderId){
+        return new ResponseEntity<>(medicationOrderService.checkIfOrderIsEditable(orderId), HttpStatus.OK);
+    }
+
     @DeleteMapping(value = "/deleteMedicationOrder/{orderId}")
     public ResponseEntity<Boolean> deleteMedicationOrder(@PathVariable Long orderId){
         if (medicationOrderService.deleteMedicationOrder(orderId))
