@@ -26,6 +26,9 @@ public class MedicationOrder {
    @ManyToMany
    private List<MedicationQuantity> medicationQuantity;
 
+   @Column(nullable = false, columnDefinition = "boolean default true")
+   private Boolean isActive;
+
    public MedicationOrder() {
    }
 
@@ -67,5 +70,13 @@ public class MedicationOrder {
 
    public void setDeadline(LocalDateTime deadline) {
       this.deadline = deadline;
+   }
+
+   public Boolean getActive() {
+      return isActive;
+   }
+
+   public void setActive(Boolean active) {
+      isActive = active;
    }
 }

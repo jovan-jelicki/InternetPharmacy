@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class MedicationOrderDTO {
+    private Long id;
     private String pharmacyAdminFirstName;
     private String pharmacyAdminLastName;
     private Long pharmacyAdminId;
@@ -23,6 +24,7 @@ public class MedicationOrderDTO {
     }
 
     public MedicationOrderDTO(MedicationOrder medicationOrder) {
+        this.id = medicationOrder.getId();
         this.pharmacyAdminFirstName = medicationOrder.getPharmacyAdmin().getFirstName();
         this.pharmacyAdminLastName = medicationOrder.getPharmacyAdmin().getLastName();
         this.pharmacyAdminId = medicationOrder.getPharmacyAdmin().getId();

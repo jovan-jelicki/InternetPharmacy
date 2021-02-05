@@ -71,7 +71,7 @@ export default class MedicationOrdersList extends React.Component {
                             </td>
                             <td>{medicationOrder.status}</td>
                             <td>
-                                <Button variant="primary" onClick={this.showOffersButtonClick}>
+                                <Button variant="primary" onClick={() => this.showOffersButtonClick(medicationOrder)}>
                                     Pregledaj ponude
                                 </Button>
                             </td>
@@ -123,7 +123,8 @@ export default class MedicationOrdersList extends React.Component {
         });
     }
 
-    showOffersButtonClick = () => {
+    showOffersButtonClick = (medicationOrder) => {
+        this.props.updateClickedMedicationOrder(medicationOrder);
         this.props.showOffers('showOffers');
     }
 
@@ -132,6 +133,14 @@ export default class MedicationOrdersList extends React.Component {
     }
 
     deleteOrder = (order) => {
-        let isBoss = window.confirm('Are you sure you want to delete the order from your order list?');
+        if (window.confirm('Are you sure you want to delete the order from your order list?')) {
+            const path = "http://localhost:8080/api/medicationOrder/deleteMedicationOrder/" + order.id;
+            axios.delete(path)
+                .then((res) => {
+                    alert("Order deleted successfully!");
+                    this.fetchMedicationOrders();
+                })
+                .catch(() => alert("Cannot delete this order because it already has offers!"));
+        }
     }
 }

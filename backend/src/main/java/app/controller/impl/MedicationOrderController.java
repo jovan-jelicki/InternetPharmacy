@@ -40,4 +40,11 @@ public class MedicationOrderController {
     public ResponseEntity<Collection<MedicationOrderDTO>> getMedicationOrderByPharmacyAdmin(@PathVariable Long pharmacyAdminId){
         return new ResponseEntity<>(medicationOrderService.getMedicationOrderByPharmacyAdmin(pharmacyAdminId), HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/deleteMedicationOrder/{orderId}")
+    public ResponseEntity<Boolean> deleteMedicationOrder(@PathVariable Long orderId){
+        if (medicationOrderService.deleteMedicationOrder(orderId))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
 }

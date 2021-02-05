@@ -34,8 +34,10 @@ export default class PharmacyMedications extends React.Component{
                 name : "",
                 quantity : ""
             },
+            searchMedicationName : "",
             notContainedMedications: [],
-            pharmacyMedicationListingDTOs: []
+            pharmacyMedicationListingDTOs: [],
+            backupMedications : []
         }
     }
 
@@ -61,8 +63,9 @@ export default class PharmacyMedications extends React.Component{
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Form inline>
-                            <FormControl type="text" placeholder="Search by name" className="mr-sm-2" />
-                            <Button variant="outline-success">Search</Button>
+                            <FormControl type="text" placeholder="Search by name" className="mr-sm-2" value={this.state.searchMedicationName} onChange={this.changeSearchMedicationName}/>
+                            <Button variant="outline-success" onClick={this.SearchMedication} style={{marginLeft : '1rem'}}>Search</Button>
+                            <Button variant="outline-info" onClick={this.resetSearchMedication} style={{marginLeft : '1rem'}}>Reset</Button>
                         </Form>
                     </Navbar.Collapse>
                 </Navbar>
@@ -380,8 +383,28 @@ export default class PharmacyMedications extends React.Component{
     fetchPharmacyMedicationListingDTOs = () => {
         axios.get("http://localhost:8080/api/pharmacy/getPharmacyMedicationListing/1").then(res => { //todo change pharmacyid
             this.setState({
-                pharmacyMedicationListingDTOs : res.data
+                pharmacyMedicationListingDTOs : res.data,
+                backupMedications : res.data
             })
         });
+    }
+    changeSearchMedicationName = (event) => {
+        this.setState({
+            searchMedicationName : event.target.value
+        })
+    }
+
+    SearchMedication = () => {
+        let filtered = this.state.pharmacyMedicationListingDTOs.filter((medication) => medication.name.toLowerCase().includes(this.state.searchMedicationName.toLowerCase()));
+        this.setState({
+            pharmacyMedicationListingDTOs : filtered
+        })
+    }
+
+    resetSearchMedication = () => {
+        this.setState({
+            searchMedicationName : "",
+            pharmacyMedicationListingDTOs : this.state.backupMedications
+        })
     }
 }

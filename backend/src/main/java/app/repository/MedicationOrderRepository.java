@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public interface MedicationOrderRepository extends JpaRepository<MedicationOrder, Long> {
 
-    @Query("select m from MedicationOrder m where m.pharmacyAdmin.pharmacy.id = ?1")
+    @Query("select m from MedicationOrder m where m.pharmacyAdmin.pharmacy.id = ?1 and m.isActive=true")
     Collection<MedicationOrder> getAllMedicationOrdersByPharmacy(Long pharmacyId);
 
     Collection<MedicationOrderDTO> getMedicationOrderByPharmacyAdmin(Long pharmacyAdminId);

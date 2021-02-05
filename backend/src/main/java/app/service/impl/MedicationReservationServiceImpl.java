@@ -13,6 +13,7 @@ import app.repository.PharmacyRepository;
 import app.service.EmailService;
 import app.service.MedicationReservationService;
 import app.service.PharmacistService;
+import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,17 +27,19 @@ import java.util.Optional;
 public class MedicationReservationServiceImpl implements MedicationReservationService {
     private final MedicationReservationRepository medicationReservationRepository;
     private final PharmacistService pharmacistService;
+    private final PatientService patientService;
     private final PharmacyRepository pharmacyRepository;
     private final EmailService emailService;
 
     @Autowired
     public MedicationReservationServiceImpl(EmailService emailService,PharmacistService pharmacistService,
                                             MedicationReservationRepository medicationReservationRepository,
-                                            PharmacyRepository pharmacyRepository) {
+                                            PharmacyRepository pharmacyRepository, PatientService patientService) {
         this.medicationReservationRepository = medicationReservationRepository;
         this.pharmacistService = pharmacistService;
         this.pharmacyRepository = pharmacyRepository;
         this.emailService = emailService;
+        this.patientService = patientService;
     }
 
     @Override
@@ -112,8 +115,9 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
         Optional<Pharmacy> pharmacy = pharmacyRepository.findById(entity.getPharmacyId());
         if(pharmacy.isEmpty())
             throw new IllegalArgumentException("Pharmacy Id does not exist");
-        MedicationReservation medicationReservation = this.save(entity.getMedicationReservation());
-        pharmacy.get().getMedicationReservation().add(medicationReservation);
+        MedicationReservation medicationReservation = entity.getMedicationReservation();
+        medicationReservation.setPatient(patientService.read(medicationReservation.getPatient().getId()).get());
+        medicationReservation = this.save(medicationReservation);
         updateMedicationQuantity(pharmacy.get().getMedicationQuantity(),
                 medicationReservation.getMedicationQuantity());
         pharmacyRepository.save(pharmacy.get());

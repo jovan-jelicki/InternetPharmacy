@@ -1,50 +1,21 @@
 import React from "react";
 import {Button, Modal} from "react-bootstrap";
+import axios from "axios";
+import moment from "moment";
+
 
 export default class MedicationOffers extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            order : {
-                pharmacyAdmin : {
-                    firstName : 'Mirko',
-                    lastName : 'Mirkovic'
-                },
-                deadLine : '21.3.2021.',
-                medicationQuantity: {
-
-                },
-                status : 'pending',
-            },
+            medicationOrder : props.order,
             medicationOffers : []
         }
     }
 
     componentDidMount() {
-        let medicationOffers = [
-            {
-                supplier : "Bayern",
-                price : 12443,
-                shippingDate : '20.10.2021.',
-                status : 'pending'
-            },
-            {
-                supplier : "Hemofarm",
-                price : 23533,
-                shippingDate : '30.10.2021.',
-                status : 'pending'
-            },
-            {
-                supplier : "ABC",
-                price : 12400,
-                shippingDate : '10.10.2021.',
-                status : 'pending'
-            }
-        ]
-
-        this.setState({
-            medicationOffers : medicationOffers
-        })
+        console.log(this.state.medicationOrder);
+        this.fetchMedicationOffers();
     }
 
     render() {
@@ -62,18 +33,18 @@ export default class MedicationOffers extends React.Component {
 
                                 <div className="card-body">
                                     <p className="card-text">
-                                        Kreirao : {this.state.order.pharmacyAdmin.firstName + " " + this.state.order.pharmacyAdmin.lastName}
+                                        Kreirao : {this.state.medicationOrder.pharmacyAdminFirstName + " " + this.state.medicationOrder.pharmacyAdminLastName}
                                         <br/>
-                                        Status : {this.state.order.status}
+                                        Status : {this.state.medicationOrder.status}
                                         <br/>
-                                        Rok isporuke : {this.state.order.deadLine}
+                                        Rok isporuke : {moment(this.state.medicationOrder.deadLine).format("DD.MM.YYYY")}
                                         <br/>
                                         <br/>
                                         Lekovi
                                         <ul>
-                                            <li>Bromazepan : 4</li>
-                                            <li>Brufen : 1000</li>
-                                            <li>Gaze : 2</li>
+                                            {this.state.medicationOrder.medicationQuantity.map((medicationQuantity,index) =>
+                                                <li key={index}>{medicationQuantity.medication.name + " : " + medicationQuantity.quantity}</li>
+                                            )}
                                         </ul>
                                     </p>
                                 </div>
@@ -98,46 +69,63 @@ export default class MedicationOffers extends React.Component {
                     {this.state.medicationOffers.map((medicationOffer, index) => (
                         <tr>
                             <th scope="row">{index+1}</th>
-                            <td>{medicationOffer.supplier}</td>
-                            <td>{medicationOffer.price}</td>
-                            <td>{medicationOffer.shippingDate}</td>
+                            <td>{medicationOffer.supplierFirstName + " " + medicationOffer.supplierLastName}</td>
+                            <td>{medicationOffer.cost}</td>
+                            <td>{moment(medicationOffer.shippingDate).format("DD.MM.YYYY")}</td>
                             <td>{medicationOffer.status}</td>
                             <td style={medicationOffer.status === 'pending' ? {display : 'inline-block'} : {display : 'none'}}>
-                                <Button variant="outline-success" onClick={this.handleModal}>
+                                <Button variant="outline-success" onClick={() => this.acceptOffer(medicationOffer)}>
                                     Accept
                                 </Button>
                             </td >
-                            <td style={medicationOffer.status === 'pending' ? {display : 'inline-block'} : {display : 'none'}}>
-                                <Button variant="outline-danger" onClick={this.handleModal}>
-                                    Reject
-                                </Button>
-                            </td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
 
-                <Modal show={this.state.showModal} onHide={this.handleModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleModal}>
-                            Close
-                        </Button>
-                        <Button variant="primary" onClick={this.handleModal}>
-                            Save Changes
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                {/*<Modal show={this.state.showModal} onHide={this.handleModal}>*/}
+                {/*    <Modal.Header closeButton>*/}
+                {/*        <Modal.Title>Modal heading</Modal.Title>*/}
+                {/*    </Modal.Header>*/}
+                {/*    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>*/}
+                {/*    <Modal.Footer>*/}
+                {/*        <Button variant="secondary" onClick={this.handleModal}>*/}
+                {/*            Close*/}
+                {/*        </Button>*/}
+                {/*        <Button variant="primary" onClick={this.handleModal}>*/}
+                {/*            Save Changes*/}
+                {/*        </Button>*/}
+                {/*    </Modal.Footer>*/}
+                {/*</Modal>*/}
             </div>
         )
     }
 
-    handleModal = () => {
-        this.setState({
-            showModal : !this.state.showModal
-        });
+    acceptOffer = (medicationOffer) => {
+        axios.put("http://localhost:8080/api/medicationOffer/acceptOffer/1", medicationOffer)
+            .then((res) => {
+                alert("Medication offer accepted successfully!");
+                this.fetchMedicationOffers();
+                //this.handleModal();
+            })
+            .catch(() => {
+                alert("Medication offer was not accepted successfully!");
+            })
     }
+
+    fetchMedicationOffers = () => {
+        const path = "http://localhost:8080/api/medicationOffer/getOffersByOrderId/" + this.state.medicationOrder.id;
+        axios.get(path)
+            .then((res) => {
+                this.setState({
+                    medicationOffers : res.data
+                })
+            })
+    }
+
+    // handleModal = () => {
+    //     this.setState({
+    //         showModal : !this.state.showModal
+    //     });
+    // }
 }

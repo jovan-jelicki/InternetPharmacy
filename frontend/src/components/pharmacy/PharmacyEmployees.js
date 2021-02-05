@@ -538,11 +538,11 @@ export default class PharmacyEmployees extends React.Component{
 
         let filterPharmacists = await this.state.backupPharmacists.filter(pharmacist => {
             if (this.state.searchPharmacist.firstName !== '' && this.state.searchPharmacist.lastName !== '')
-                return pharmacist.firstName.includes(this.state.searchPharmacist.firstName) && pharmacist.lastName.includes(this.state.searchPharmacist.lastName);
+                return pharmacist.firstName.toLowerCase().includes(this.state.searchPharmacist.firstName.toLowerCase()) && pharmacist.lastName.toLowerCase().includes(this.state.searchPharmacist.lastName.toLowerCase());
             else if (this.state.searchPharmacist.firstName !== '')
-                return pharmacist.firstName.includes(this.state.searchPharmacist.firstName);
+                return pharmacist.firstName.toLowerCase().includes(this.state.searchPharmacist.firstName.toLowerCase());
             else if (this.state.searchPharmacist.lastName !== '')
-                return pharmacist.lastName.includes(this.state.searchPharmacist.lastName);
+                return pharmacist.lastName.toLowerCase().includes(this.state.searchPharmacist.lastName.toLowerCase());
             return true;
         });
 
@@ -578,11 +578,11 @@ export default class PharmacyEmployees extends React.Component{
 
         let filterDermatologists = await this.state.backupDermatologists.filter(dermatologist => {
             if (this.state.searchDermatologist.firstName !== '' && this.state.searchDermatologist.lastName !== '')
-                return dermatologist.firstName.includes(this.state.searchDermatologist.firstName) && dermatologist.lastName.includes(this.state.searchDermatologist.lastName);
+                return dermatologist.firstName.toLowerCase().includes(this.state.searchDermatologist.firstName.toLowerCase()) && dermatologist.lastName.toLowerCase().includes(this.state.searchDermatologist.lastName.toLowerCase());
             else if (this.state.searchDermatologist.firstName !== '')
-                return dermatologist.firstName.includes(this.state.searchDermatologist.firstName);
+                return dermatologist.firstName.toLowerCase().includes(this.state.searchDermatologist.firstName.toLowerCase());
             else if (this.state.searchDermatologist.lastName !== '')
-                return dermatologist.lastName.includes(this.state.searchDermatologist.lastName);
+                return dermatologist.lastName.toLowerCase().includes(this.state.searchDermatologist.lastName.toLowerCase());
             return true;
         });
 
