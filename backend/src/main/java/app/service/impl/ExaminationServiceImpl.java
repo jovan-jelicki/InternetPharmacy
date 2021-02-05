@@ -1,9 +1,11 @@
 package app.service.impl;
 
+import app.dto.AppointmentUpdateDTO;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
+import app.model.user.Patient;
 import app.service.AppointmentService;
 import app.service.ExaminationService;
 import app.service.PatientService;
@@ -24,6 +26,18 @@ public class ExaminationServiceImpl implements ExaminationService {
     public ExaminationServiceImpl(PatientService patientService, AppointmentService appointmentService) {
         this.appointmentService = appointmentService;
         this.patientService = patientService;
+    }
+
+    @Override
+    public Boolean dermatologistSchedulingCreatedAppointment(AppointmentUpdateDTO appointmentUpdateDTO){
+        Appointment appointment = appointmentService.read(appointmentUpdateDTO.getAppointmentId()).get();
+        if(appointmentService.getAllNotFinishedByPatientId(appointmentUpdateDTO.getPatientId())
+                .stream().filter(a -> a.isOverlapping(appointment.getPeriod().getPeriodStart())).findFirst().orElse(null) != null)
+            return false;
+        Patient patient = patientService.read(appointmentUpdateDTO.getPatientId()).get();
+        appointment.setPatient(patient);
+        appointmentService.save(appointment);
+        return true;
     }
 
     @Override

@@ -1,17 +1,19 @@
 package app.controller.impl;
 
 import app.controller.DermatologistController;
-import app.dto.DermatologistDTO;
-import app.dto.PharmacyNameIdDTO;
-import app.dto.UserPasswordDTO;
+import app.dto.*;
+import app.model.appointment.Appointment;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
+import app.model.user.EmployeeType;
+import app.service.AppointmentService;
 import app.service.DermatologistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -20,10 +22,12 @@ import java.util.Optional;
 @RequestMapping(value = "api/dermatologists")
 public class DermatologistControllerImpl implements DermatologistController {
     private final DermatologistService dermatologistService;
+    private final AppointmentService appointmentService;
 
     @Autowired
-    public DermatologistControllerImpl(DermatologistService dermatologistService) {
+    public DermatologistControllerImpl(DermatologistService dermatologistService, AppointmentService appointmentService) {
         this.dermatologistService = dermatologistService;
+        this.appointmentService = appointmentService;
     }
 
 
@@ -32,6 +36,14 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistService.save(entity), HttpStatus.CREATED);
     }
 
+    @PostMapping(value = "/getFreeAppointments", consumes =  "application/json" )
+    public ResponseEntity<Collection<AppointmentListingDTO>> getAllFreeAppointmentsOfDermatologist(@RequestBody DermatologistSchedulingDTO dermatologistSchedulingDTO){
+        Collection<Appointment> appointments = appointmentService.GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistSchedulingDTO.getDermatologistId(), EmployeeType.dermatologist, LocalDateTime.now(), dermatologistSchedulingDTO.getPharmacyId());
+        Collection<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
+        for(Appointment a : appointments)
+            appointmentListingDTOS.add(new AppointmentListingDTO(a));
+        return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
+    }
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<Dermatologist> update(@RequestBody DermatologistDTO entity) {

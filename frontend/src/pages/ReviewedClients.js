@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Container, Row, Button, Table, FormControl, FormGroup} from "react-bootstrap";
+import {Col, Container, Row, Button, Table, FormControl, FormGroup, Modal} from "react-bootstrap";
 import axios from "axios";
 
 export default class ReviewedClients extends React.Component {
@@ -9,9 +9,13 @@ export default class ReviewedClients extends React.Component {
             role : props.role,
             Id : props.Id,
             clients : [],
+            client : "",
             searchClients : [],
+            appointments : [],
+            searchApp : [],
             query : "",
-            sortType : "desc"
+            sortType : "desc",
+            showModal : false
         }
     }
 
@@ -39,6 +43,7 @@ export default class ReviewedClients extends React.Component {
                 <td>{client.patientFirstName}</td>
                 <td>{client.patientLastName}</td>
                 <td>{client.dateOfAppointment}</td>
+                <td><Button onClick={() => this.showAppointments(client)}>See previous appointments info</Button></td>
             </tr>
         );
         return (
@@ -64,9 +69,79 @@ export default class ReviewedClients extends React.Component {
                         {Clients}
                     </tbody>
                 </Table>
+                {this.showModal()}
             </Container>
 
+
         );
+    }
+    showAppointments = (client) => {
+        axios
+            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getAllFinishedByPatientAndExaminer', {
+                patientId : client.patientId,
+                type : 1
+            })
+            .then(res => {
+                this.setState({
+                    searchApp: res.data,
+                    appointments : res.data
+                });
+                this.handleModal();
+            })
+            .catch(res => {
+
+            })
+    }
+
+    showModal = () => {
+        const Appointments = this.state.appointments.map((app, key) =>
+            <div>
+                <Row>
+                    <b> Pharmacy : </b> <p> {app.pharmacyName} </p>
+                </Row>
+                <Row>
+                    <b> Date : </b> <p> {app.period.periodStart}</p> <br/>
+                </Row>
+                <Row>
+                    <b> Report : </b> <p> {app.report}</p> <br/>
+                </Row>
+                <Row>
+                    <b> Medication therapy : </b>  {(app.therapy !== null) &&<p> {app.therapy.medication.name} </p>}
+                </Row>
+                <hr className="mt-2 mb-3"/>
+            <br/>
+            </div>
+        );
+        return (
+            <Modal backdrop="static" show={this.state.showModal} onHide={this.handleModal}>
+                <Modal.Header>
+                    <Row>
+                        <Modal.Title style={{marginLeft : 10}}> Finished </Modal.Title>
+                    </Row>
+                    <br/>
+                    <Row>
+                        <FormControl className="mt-2 mb-2" style={{width : 200, marginLeft : 50}} value={this.state.query} placeholder={"Search clients..."} onChange={this.handleInputChange} />
+                    </Row>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                    {Appointments}
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={this.handleModal}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        )
+    }
+
+    handleModal = () => {
+        this.setState({
+                showModal: !this.state.showModal
+            }
+        )
     }
 
     handleInputChange = (event) => {
