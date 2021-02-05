@@ -14,6 +14,7 @@ import app.service.PharmacyService;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -30,6 +31,11 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         this.medicationOrderService = medicationOrderService;
         this.supplierService = supplierService;
         this.pharmacyService = pharmacyService;
+    }
+
+    @PostConstruct
+    public void init() {
+        medicationOrderService.setMedicationOfferService(this);
     }
 
     @Override

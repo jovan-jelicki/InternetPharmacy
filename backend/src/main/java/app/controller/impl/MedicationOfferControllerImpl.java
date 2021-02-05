@@ -32,7 +32,10 @@ public class MedicationOfferControllerImpl {
     public ResponseEntity<Boolean> acceptOffer(@RequestBody MedicationOfferDTO medicationOffer, @PathVariable Long pharmacyAdminId){
         if (medicationOfferService.acceptOffer(medicationOffer, pharmacyAdminId))
             return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);    }
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
+
+
 
     /*
     @GetMapping(value = "/getAllBySupplier")
