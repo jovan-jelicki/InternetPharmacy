@@ -5,9 +5,9 @@ import app.service.MedicationOfferService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @Controller
 @RequestMapping(value = "api/medicationOffer")
@@ -22,6 +22,20 @@ public class MedicationOfferControllerImpl {
     public ResponseEntity<Boolean> createNewMedicationOffer(@RequestBody MedicationOfferDTO medicationOffer){
         return new ResponseEntity<>(medicationOfferService.createNewMedicationOffer(medicationOffer), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/getOffersByOrderId/{orderId}")
+    public ResponseEntity<Collection<MedicationOfferDTO>> createNewMedicationOffer(@PathVariable Long orderId){
+        return new ResponseEntity<>(medicationOfferService.getOffersByOrderId(orderId), HttpStatus.OK);
+    }
+
+    @PutMapping(consumes = "application/json", value = "/acceptOffer/{pharmacyAdminId}")
+    public ResponseEntity<Boolean> acceptOffer(@RequestBody MedicationOfferDTO medicationOffer, @PathVariable Long pharmacyAdminId){
+        if (medicationOfferService.acceptOffer(medicationOffer, pharmacyAdminId))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
+
+
 
     /*
     @GetMapping(value = "/getAllBySupplier")

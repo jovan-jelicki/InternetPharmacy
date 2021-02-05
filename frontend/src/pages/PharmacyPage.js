@@ -82,9 +82,6 @@ export default class PharmacyPage extends React.Component{
                         <a className="nav-link" href="#" name="priceList" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Price list</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="reports" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Reports</a>
-                    </li>
-                    <li className="nav-item">
                         <a className="nav-link" href="#" name="editPharmacyProfile" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Edit pharmacy profile</a>
                     </li>
                     <li className="nav-item">
@@ -122,10 +119,6 @@ export default class PharmacyPage extends React.Component{
         else if (this.state.navbar === 'appointments')
             return (
                 <AppointmentsList pharmacy = {this.state.pharmacy } />
-            )
-        else if (this.state.navbar === 'reports')
-            return (
-                <PharmacyReports pharmacy = {this.state.pharmacy } />
             )
         else if (this.state.navbar === 'priceList')
             return (
