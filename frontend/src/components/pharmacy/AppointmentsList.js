@@ -3,13 +3,15 @@ import {Button, Col, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
+import StarRatings from "react-star-ratings";
+
 
 export default class AppointmentsList extends React.Component{
     constructor() {
         super();
         this.state = {
             userType : 'pharmacyAdmin',
-            appointments : []
+            appointments : [],
         }
     }
 
@@ -41,7 +43,14 @@ export default class AppointmentsList extends React.Component{
                             <td>{appointment.dermatologistFirstName + " " + appointment.dermatologistLastName}</td>
                             <td>{moment(appointment.period.periodStart).format('DD.MM.YYYY hh:mm a') + " - " + moment(appointment.period.periodEnd).format('hh:mm a')}</td>
                             <td>{appointment.cost}</td>
-                            <td>{appointment.dermatologistGrade}</td>
+                            <td>
+                                <StarRatings
+                                    starDimension={'25px'}
+                                    rating={appointment.dermatologistGrade}
+                                    starRatedColor='gold'
+                                    numberOfStars={5}
+                                />
+                            </td>
                             <td><Button variant={'outline-dark'} onClick={() => this.scheduleAppointment(appointment.id)}>Schedule</Button></td>
                         </tr>
                     ))}
@@ -66,6 +75,5 @@ export default class AppointmentsList extends React.Component{
             'appointmentId' : id
         })
         .then(res => alert('success'))
-        
     }
 }

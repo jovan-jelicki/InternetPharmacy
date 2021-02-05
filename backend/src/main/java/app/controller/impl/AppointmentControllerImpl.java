@@ -2,9 +2,10 @@ package app.controller.impl;
 
 import app.dto.*;
 import app.model.appointment.Appointment;
-import app.model.user.EmployeeType;
+import app.model.grade.GradeType;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
+import app.service.GradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,13 @@ import java.util.Optional;
 public class AppointmentControllerImpl {
     private final AppointmentService appointmentService;
     private final DermatologistService dermatologistService;
+    private final GradeService gradeService;
 
     @Autowired
-    public AppointmentControllerImpl(AppointmentService appointmentService, DermatologistService dermatologistService) {
+    public AppointmentControllerImpl(AppointmentService appointmentService, DermatologistService dermatologistService, GradeService gradeService) {
         this.appointmentService = appointmentService;
         this.dermatologistService = dermatologistService;
+        this.gradeService = gradeService;
     }
 
     @PostMapping(consumes = "application/json", value = "/getFinishedByExaminer")
@@ -129,6 +132,7 @@ public class AppointmentControllerImpl {
         for (Appointment appointment : appointmentService.getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(id)) {
             AppointmentListingDTO appointmentListingDTO = new AppointmentListingDTO(appointment);
             appointmentListingDTO.setDermatologistFirstName(dermatologistService.read(appointment.getExaminerId()).get().getFirstName());
+            appointmentListingDTO.setDermatologistGrade(gradeService.findAverageGradeForEntity(appointment.getExaminerId(), GradeType.dermatologist));
             appointmentListingDTO.setDermatologistLastName(dermatologistService.read(appointment.getExaminerId()).get().getLastName());
             appointmentListingDTOS.add(appointmentListingDTO);
         }

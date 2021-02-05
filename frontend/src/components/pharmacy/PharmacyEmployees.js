@@ -11,6 +11,7 @@ import CreatePharmacistModal from "./CreatePharmacistModal";
 import axios from "axios";
 import AddAppointmentModal from "./AddAppointmentModal";
 import Dropdown from "react-dropdown";
+import StarRatings from "react-star-ratings";
 
 
 const options = [
@@ -109,7 +110,14 @@ export default class PharmacyEmployees extends React.Component{
                        <th scope="row">{index+1}</th>
                        <td>{dermatologist.firstName}</td>
                        <td>{dermatologist.lastName}</td>
-                       <td>{dermatologist.grade}</td>
+                       <td>
+                           <StarRatings
+                               starDimension={'25px'}
+                               rating={dermatologist.grade}
+                               starRatedColor='gold'
+                               numberOfStars={5}
+                           />
+                       </td>
                        <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodStart).format('hh:mm a')
                         + "  -  " + moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodEnd).format('hh:mm a')}</td>
 
@@ -170,7 +178,14 @@ export default class PharmacyEmployees extends React.Component{
                            <th scope="row">{index+1}</th>
                            <td>{pharmacist.firstName}</td>
                            <td>{pharmacist.lastName}</td>
-                           <td>{pharmacist.grade}</td>
+                           <td>
+                               <StarRatings
+                                   starDimension={'25px'}
+                                   rating={pharmacist.grade}
+                                   starRatedColor='gold'
+                                   numberOfStars={5}
+                               />
+                           </td>
                            <td>{moment(pharmacist.workingHours.period.periodStart).format('hh:mm a') + "  -  " +
                             moment(pharmacist.workingHours.period.periodEnd).format('hh:mm a')}</td>
                            <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>

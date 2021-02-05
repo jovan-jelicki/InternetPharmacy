@@ -5,6 +5,7 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import DatePicker from "react-datepicker";
 import axios from "axios";
+import StarRatings from "react-star-ratings";
 
 
 const options = [
@@ -90,7 +91,14 @@ export default class PharmacyMedications extends React.Component{
                             <th scope="row">{index+1}</th>
                             <td>{medicationListing.name}</td>
                             <td>{medicationListing.type}</td>
-                            <td>{medicationListing.grade}</td>
+                            <td>
+                                <StarRatings
+                                    starDimension={'25px'}
+                                    rating={medicationListing.grade}
+                                    starRatedColor='gold'
+                                    numberOfStars={5}
+                                />
+                            </td>
                             <td>{medicationListing.quantity}</td>
                             <td>{medicationListing.price}</td>
                             <td>
