@@ -2,15 +2,12 @@ package app.controller.impl;
 
 import app.dto.AppointmentListingDTO;
 import app.dto.AppointmentSearchDTO;
+import app.dto.AppointmentUpdateDTO;
 import app.dto.CounselingSearchDTO;
 import app.model.appointment.Appointment;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
-import app.service.CounselingService;
-import app.service.DermatologistService;
-import app.service.EmailService;
-import app.service.ExaminationService;
-import app.service.PharmacistService;
+import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +47,11 @@ public class SchedulingControllerImpl {
         } else
             // ZA DERMATOLOGE KASNIJE DODATI
             return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/dermatologistSchedulingCreatedAppointment", consumes = "application/json")
+    public ResponseEntity<Boolean> dermatologistSchedulingCreatedAppointment(@RequestBody AppointmentUpdateDTO appointmentUpdateDTO){
+        return new ResponseEntity<>(examinationService.dermatologistSchedulingCreatedAppointment(appointmentUpdateDTO), HttpStatus.OK);
     }
 
     @PostMapping(value = "/pharmacistScheduling", consumes = "application/json")

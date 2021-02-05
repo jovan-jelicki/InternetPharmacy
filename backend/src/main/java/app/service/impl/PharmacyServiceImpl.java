@@ -10,6 +10,7 @@ import app.repository.PharmacyRepository;
 import app.service.MedicationPriceListService;
 import app.service.MedicationService;
 import app.service.PharmacyService;
+import app.service.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +27,17 @@ public class PharmacyServiceImpl implements PharmacyService {
     private MedicationService medicationService;
     private MedicationPriceListService medicationPriceListService;
     private final AppointmentRepository appointmentRepository;
+    private PromotionService promotionService;
 
     @Autowired
     public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository) {
         this.pharmacyRepository = pharmacyRepository;
         this.appointmentRepository = appointmentRepository;
+    }
+
+    @Override
+    public void setPromotionService(PromotionService promotionService) {
+        this.promotionService = promotionService;
     }
 
     @Override
@@ -166,10 +173,6 @@ public class PharmacyServiceImpl implements PharmacyService {
     public Boolean deleteMedicationFromPharmacy(PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
         Pharmacy pharmacy = this.read(pharmacyMedicationListingDTO.getPharmacyId()).get();
 
-        //ovde je greska kada se doda novi lek onda ne moze da se obrise
-//        MedicationQuantity medicationQuantity = pharmacy.getMedicationQuantity().stream().
-//                filter(medicationQuantityPharmacy -> medicationQuantityPharmacy.getId()==pharmacyMedicationListingDTO.getMedicationQuantityId())
-//                .findFirst().get();
         MedicationQuantity medicationQuantity = new MedicationQuantity();
         for (MedicationQuantity medicationQuantityFilter : pharmacy.getMedicationQuantity()) {
             if (medicationQuantityFilter.getId().equals(pharmacyMedicationListingDTO.getMedicationQuantityId())) {
@@ -177,12 +180,18 @@ public class PharmacyServiceImpl implements PharmacyService {
                 break;
             }
         }
+        Medication medication = medicationService.read(pharmacyMedicationListingDTO.getMedicationId()).get();
 
+        //check if medication is for reservation
         for (MedicationReservation medicationReservation : pharmacy.getMedicationReservation())
             if (medicationReservation.getMedicationQuantity().getMedication().getId().equals(pharmacyMedicationListingDTO.getMedicationId())
                 && medicationReservation.getStatus() == MedicationReservationStatus.requested)
                 return false;
 
+        //check if medication is in any current pharmacy promotions
+        if (promotionService.getCurrentPromotionsByPharmacyAndDate(pharmacy.getId(), LocalDateTime.now()).stream().filter(promotion ->
+                promotion.getMedicationsOnPromotion().contains(medication)).count() != 0)
+            return false;
 
         pharmacy.getMedicationQuantity().remove(medicationQuantity);
         return this.save(pharmacy) != null;
@@ -339,8 +348,10 @@ public class PharmacyServiceImpl implements PharmacyService {
             ArrayList<MedicationReservation> medicationReservations = (ArrayList<MedicationReservation>) pharmacy.getMedicationReservation().stream().filter(medicationReservation -> medicationReservation.getPickUpDate().toLocalDate().isEqual(dayStart.toLocalDate()))
                     .collect(Collectors.toList());
             for (MedicationReservation medicationReservation : medicationReservations) {
-                income += medicationReservation.getMedicationQuantity().getQuantity() *
-                        medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId, medicationReservation.getMedicationQuantity().getMedication().getId(), dayEnd);
+                double medicationPrice = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId, medicationReservation.getMedicationQuantity().getMedication().getId(), dayEnd);
+                if (medicationReservation.getDiscounted())
+                    income += medicationReservation.getMedicationQuantity().getQuantity() * medicationPrice / 2;
+                income += medicationReservation.getMedicationQuantity().getQuantity() * medicationPrice;
             }
 
             reportsDTOS.add(new ReportsDTO(dayStart.toLocalDate().format(DateTimeFormatter.ofPattern("dd MMM yyyy")), income));
@@ -351,4 +362,6 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         return reportsDTOS;
     }
+
+
 }

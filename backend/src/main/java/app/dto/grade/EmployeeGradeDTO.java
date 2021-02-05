@@ -1,9 +1,6 @@
 package app.dto.grade;
 
 import app.model.grade.GradeType;
-import app.model.user.EmployeeType;
-import app.model.user.User;
-import app.model.user.UserType;
 
 import java.util.Objects;
 

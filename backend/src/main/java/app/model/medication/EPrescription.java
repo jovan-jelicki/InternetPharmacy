@@ -6,7 +6,6 @@ import app.model.user.Patient;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class EPrescription {
