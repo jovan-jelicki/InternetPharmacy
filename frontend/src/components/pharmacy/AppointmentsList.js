@@ -21,16 +21,16 @@ export default class AppointmentsList extends React.Component{
         return (
             <div style={({ marginLeft: '1rem' })}>
                 <br/><br/>
-                <h1>Pregledi dermatologa</h1>
+                <h1>Available dermatologist appointments</h1>
 
                 <table className="table table-hover">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Dermatolog</th>
-                        <th scope="col">Datum i vreme</th>
-                        <th scope="col">Cena</th>
-                        <th scope="col">Ocena dermatologa</th>
+                        <th scope="col">Dermatologist</th>
+                        <th scope="col">Date and time</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Dermatologist grade</th>
                         <th>{' '}</th>
                     </tr>
                     </thead>

@@ -11,7 +11,6 @@ export default class MedicationOrdersList extends React.Component {
         this.state = {
             userType : 'pharmacyAdmin',
             medicationOrders : [],
-            showModal : false,
             showContent : 'listOrders',
             backupMedicationOrders : [],
         }
@@ -26,7 +25,7 @@ export default class MedicationOrdersList extends React.Component {
         return (
             <div className="container-fluid">
 
-                <h1>Narudzbenice</h1>
+                <h1>Orders</h1>
 
                 <br/>
                 <Button variant="success" onClick={this.createOrder}>Create order</Button>
@@ -49,11 +48,11 @@ export default class MedicationOrdersList extends React.Component {
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Kreirao</th>
-                        <th scope="col">Rok</th>
-                        <th scope="col">Lista lekova</th>
+                        <th scope="col">Created by</th>
+                        <th scope="col">Deadline</th>
+                        <th scope="col">ordered medications</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Ponude</th>
+                        <th scope="col">Offers</th>
 
                     </tr>
                     </thead>
@@ -70,38 +69,23 @@ export default class MedicationOrdersList extends React.Component {
                             <td>{medicationOrder.status}</td>
                             <td>
                                 <Button variant="primary" onClick={() => this.showOffersButtonClick(medicationOrder)}>
-                                    Pregledaj ponude
+                                    View offers
                                 </Button>
                             </td>
                             <td>
                                 <Button variant="info" onClick={() => this.editOrder(medicationOrder)}>
-                                    Izmeni
+                                    Edit
                                 </Button>
                             </td>
                             <td>
                                 <Button variant="danger" onClick={() => this.deleteOrder(medicationOrder)}>
-                                    Obrisi
+                                    Delete
                                 </Button>
                             </td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
-
-                <Modal show={this.state.showModal} onHide={this.handleModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleModal}>
-                            Close
-                        </Button>
-                        <Button variant="primary" onClick={this.handleModal}>
-                            Save Changes
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
             </div>
         );
     }
@@ -129,12 +113,6 @@ export default class MedicationOrdersList extends React.Component {
                     backupMedicationOrders : res.data
                 })
             })
-    }
-
-    handleModal = () => {
-        this.setState({
-            showModal : !this.state.showModal
-        });
     }
 
     showOffersButtonClick = (medicationOrder) => {

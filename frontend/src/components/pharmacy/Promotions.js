@@ -22,7 +22,7 @@ export default class Promotions extends React.Component{
                 <div className="row">
                     <div style={{marginLeft : '1rem'}}>
                         <br/><br/>
-                        <h1>Akcije & Promocije</h1>
+                        <h1>Actions & promotions</h1>
 
                         <br/>
                         <div className="row">
@@ -30,18 +30,16 @@ export default class Promotions extends React.Component{
                             <div className="row">
                                 <div className="col-md-8">
                                     <div className="card">
-                                        {/*<img className="card-img-top" alt="Bootstrap Thumbnail First"*/}
-                                        {/*     src="https://www.layoutit.com/img/people-q-c-600-200-1.jpg"/>*/}
-                                        <div className="card-block">
+                                        <div className="card-block" >
                                             <h5 className="card-title">
                                                 {promotion.content}
                                             </h5>
-                                            <p className="card-text">
-                                                {'Vazi od ' + moment(promotion.period.periodStart).format("DD.MM.YYYY.").toString() + ' do ' + moment(promotion.period.periodEnd).format('DD.MM.YYYY').toString()}
+                                            <p className="card-text" >
+                                                {'Valid from ' + moment(promotion.period.periodStart).format("DD.MM.YYYY.").toString() + ' to ' + moment(promotion.period.periodEnd).format('DD.MM.YYYY').toString()}
                                             </p>
                                             <p>
-                                                <Button variant={"success"} style={{marginLeft : '1rem'}}>Pretplati se</Button>
-                                                <Button variant={"danger"} style={{marginLeft : '1rem'}}>Otkazi</Button>
+                                                <Button variant={"success"} style={{marginLeft : '1rem'}}>Subscribe</Button>
+                                                <Button variant={"danger"} style={{marginLeft : '1rem'}}>Cancel subscription</Button>
                                             </p>
                                         </div>
                                     </div>

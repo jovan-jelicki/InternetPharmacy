@@ -38,7 +38,7 @@ export default class CreateOrder extends React.Component{
                         <br/><br/>
                         Choose deadline for medication offers: <i/><i/><i/>
                         <DatePicker  selected={this.state.medicationOrder.deadline}  minDate={new Date()} onChange={this.changeDatePicker} />
-
+                        <br/><br/>
                         <AddMedicationQuantity addQuantity={this.addQuantity} medications = {this.state.medications} />
 
                         <OrderQuantityListing quantities={this.state.quantities} removeQuantity ={this.removeQuantity}/>

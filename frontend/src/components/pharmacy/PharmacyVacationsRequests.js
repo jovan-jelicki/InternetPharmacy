@@ -26,7 +26,7 @@ export default class PharmacyVacationsRequests extends React.Component{
             <div className="container-fluid">
                 <div>
                     <br/><br/>
-                    <h1>Trazena & odobrena odsustva</h1>
+                    <h1>Requested & accepted pharmacists vacation requests</h1>
 
                     <br/>
 
@@ -34,12 +34,11 @@ export default class PharmacyVacationsRequests extends React.Component{
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Ime</th>
-                            <th scope="col">Prezime</th>
-                            <th scope="col">Tip radnika</th>
-                            <th scope="col">Razlog</th>
-                            <th scope="col">Pocetak odsustva</th>
-                            <th scope="col">Kraj odsustva</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            {/*<th scope="col">Employee type</th>*/}
+                            <th scope="col">Reason</th>
+                            <th scope="col">Absence period</th>
                             <th scope="col">Status</th>
 
                         </tr>
@@ -50,10 +49,10 @@ export default class PharmacyVacationsRequests extends React.Component{
                                 <th scope="row">{index+1}</th>
                                 <td>{vacationRequest.employeeFirstName}</td>
                                 <td>{vacationRequest.employeeLastName}</td>
-                                <td>{vacationRequest.employeeType}</td>
+                                {/*<td>{vacationRequest.employeeType}</td>*/}
                                 <td>{vacationRequest.vacationNote}</td>
-                                <td>{moment(vacationRequest.period.periodStart).format('DD.MM.YYYY') }</td>
-                                <td>{moment(vacationRequest.period.periodEnd).format('DD.MM.YYYY') }</td>
+                                <td>{moment(vacationRequest.period.periodStart).format('DD.MM.YYYY') + " - " +
+                                    moment(vacationRequest.period.periodEnd).format('DD.MM.YYYY')}</td>
                                 <td>{vacationRequest.vacationRequestStatus}</td>
 
                                 <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
@@ -79,7 +78,7 @@ export default class PharmacyVacationsRequests extends React.Component{
 
                     <Modal show={this.state.showModal} onHide={this.handleModal}>
                         <Modal.Header closeButton>
-                            <Modal.Title>Modal heading</Modal.Title>
+                            <Modal.Title>Reject vacation request</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <Form.Group controlId="exampleForm.ControlTextarea1">
