@@ -1,6 +1,7 @@
 import React from "react";
 import Script from "react-load-script";
 import {Button, FormControl} from "react-bootstrap";
+import axios from "axios";
 
 export default class SupplierRegistration extends React.Component {
     constructor(props) {
@@ -21,6 +22,13 @@ export default class SupplierRegistration extends React.Component {
                 telephone: '',
                 rePassword : '',
             },
+            addressPom: {
+                street: "",
+                town: "",
+                country: "",
+                latitude: 51.507351,
+                longitude: -0.127758
+            },
             errors:{
                 supplier: {
                     email: 'Enter email',
@@ -37,6 +45,48 @@ export default class SupplierRegistration extends React.Component {
             submitted: false,
         }
     }
+
+    async sendParams() {
+        axios
+            .post('http://localhost:8080/api/suppliers/save', {
+                'id':'',
+                'firstName' : this.state.supplier.firstName,
+                'lastName' : this.state.supplier.lastName,
+                'userType' : 5,
+                'credentials' : {
+                    'email' : this.state.supplier.email,
+                    'password' : this.state.supplier.password
+                },
+                'contact' : {
+                    'phoneNumber' : this.state.supplier.telephone,
+                    'address' : {
+                        'street' : this.state.supplier.address.street,
+                        'town' : this.state.supplier.address.town,
+                        'country' : this.state.supplier.address.country,
+                        'latitude' : this.state.supplier.address.latitude,
+                        'longitude' : this.state.supplier.address.longitude
+                    }
+                }
+            })
+            .then(res => {
+
+            });
+
+    }
+    submitForm = async (event) => {
+        this.setState({ submitted: true });
+        const supplier = this.state.supplier;
+        event.preventDefault();
+        if (this.validateForm(this.state.errors)) {
+            console.info('Valid Form')
+            console.log(this.state.supplier)
+            this.sendParams();
+        } else {
+            console.log('Invalid Form')
+        }
+    }
+
+
     handleInputChange = (event) => {
         const { name, value } = event.target;
         const supplier = this.state.supplier;
@@ -65,17 +115,17 @@ export default class SupplierRegistration extends React.Component {
                 if (this.setAddressParams(address)) {
                     this.setState(
                         {
-                            supplier: {
-                                address: {
-                                    street: this.state.streetP,
-                                    town: this.state.townP,
-                                    country: this.state.countryP,
-                                    latitude: addressObject.geometry.location.lat(),
-                                    longitude: addressObject.geometry.location.lng()
-                                }
+                            addressPom: {
+                                street: this.state.streetP,
+                                town: this.state.townP,
+                                country: this.state.countryP,
+                                latitude: addressObject.geometry.location.lat(),
+                                longitude: addressObject.geometry.location.lng(),
+
                             },
                         }
                     );
+                    this.state.supplier.address=this.state.addressPom;
                 }
             } else {
                 this.addressErrors(false)
@@ -218,16 +268,7 @@ export default class SupplierRegistration extends React.Component {
         );
     }
 
-    submitForm = async (event) => {
-        this.setState({ submitted: true });
-        const supplier = this.state.supplier;
-        event.preventDefault();
-        if (this.validateForm(this.state.errors)) {
-            console.info('Valid Form')
-        } else {
-            console.log('Invalid Form')
-        }
-    }
+
 
     validationErrorMessage = (event) => {
         const { name, value } = event.target;

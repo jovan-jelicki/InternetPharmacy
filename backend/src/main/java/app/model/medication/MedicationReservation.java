@@ -22,6 +22,10 @@ public class MedicationReservation {
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
    private LocalDateTime pickUpDate;
 
+   //dodaj kolicinu popusta
+   @Column(columnDefinition = "boolean default false")
+   private Boolean isDiscounted;
+
    @JoinColumn
    @ManyToOne(cascade = CascadeType.ALL)
    private Patient patient;
@@ -70,5 +74,13 @@ public class MedicationReservation {
 
    public void setPickUpDate(LocalDateTime pickUpDate) {
       this.pickUpDate = pickUpDate;
+   }
+
+   public Boolean getDiscounted() {
+      return isDiscounted;
+   }
+
+   public void setDiscounted(Boolean discounted) {
+      isDiscounted = discounted;
    }
 }

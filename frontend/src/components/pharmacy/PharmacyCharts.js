@@ -91,7 +91,7 @@ export default class PharmacyCharts extends React.Component{
                 <br/>
 
                 <BarChart
-                    width={500}
+                    width={800}
                     height={300}
                     data={this.state.medicationConsumptionReportData}
                     margin={{
