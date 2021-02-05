@@ -150,9 +150,9 @@ public class Medication {
    }
 
    private boolean searchCondition(String searched, String actual) {
-      if(searched.trim().isEmpty())
-         return true;
-      else
+//      if(searched.trim().isEmpty())
+//         return true;
+//      else
          return actual.toLowerCase().contains(searched.toLowerCase());
    }
 }

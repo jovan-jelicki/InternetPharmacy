@@ -24,8 +24,8 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<Patient> _user = patientRepository.findById(passwordKit.getUserId());
-        if(_user.isEmpty())
-            throw new NullPointerException("User not found");
+//        if(_user.isEmpty())
+//            throw new NullPointerException("User not found");
         Patient user = _user.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());

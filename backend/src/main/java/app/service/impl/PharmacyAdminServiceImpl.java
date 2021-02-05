@@ -51,8 +51,8 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
     @Override
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<PharmacyAdmin> pharmacyAdmin = this.read(passwordKit.getUserId());
-        if(pharmacyAdmin.isEmpty())
-            throw new NullPointerException("User not found");
+//        if(pharmacyAdmin.isEmpty())
+//            throw new NullPointerException("User not found");
         PharmacyAdmin user = pharmacyAdmin.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());
@@ -66,6 +66,7 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         else if(!passwordKit.getNewPassword().equals(passwordKit.getRepeatedPassword()))
             throw new IllegalArgumentException("Entered passwords doesn't match");
     }
+
     public PharmacyAdmin findByEmailAndPassword(String email, String password) { return pharmacyAdminRepository.findByEmailAndPassword(email, password);}
 
     @Override

@@ -35,6 +35,11 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(appointmentService.getFinishedByExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/hello")
+    public ResponseEntity<String> hello() {
+        return new ResponseEntity<>("hiii", HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<Collection<Appointment>> read() {
         return new ResponseEntity<>(appointmentService.read(), HttpStatus.OK);

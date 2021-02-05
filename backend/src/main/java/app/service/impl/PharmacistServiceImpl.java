@@ -34,8 +34,8 @@ public class PharmacistServiceImpl implements PharmacistService {
     @Override
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<Pharmacist> _user = pharmacistRepository.findById(passwordKit.getUserId());
-        if(_user.isEmpty() || !_user.get().getActive())
-            throw new NullPointerException("User not found");
+//        if(_user.isEmpty() || !_user.get().getActive())
+//            throw new NullPointerException("User not found");
         Pharmacist user = _user.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());
