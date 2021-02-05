@@ -14,7 +14,8 @@ class MedicationPharmacy extends React.Component {
             selectedPharmacy : null,
             quantity : 1,
             totalPice : 0,
-            pickUpDate : new Date()
+            pickUpDate : new Date(),
+            isDiscounted : false
         }
     }
 
@@ -26,7 +27,8 @@ class MedicationPharmacy extends React.Component {
                     pharmacy : res.data
                 })
                 //console.log(this.state.pharmacy);
-            })
+            });
+
     }
 
     render() {
@@ -72,7 +74,12 @@ class MedicationPharmacy extends React.Component {
                         <label>Enter medication quantity (you can reserve up to 20)</label>
                         <NumericInput className="form-control" onChange={this.handleInputChange}
                         min={1} max={20} value={this.state.quantity} strict={true}/><br/>
-                        <label><b>Total price: <span style={{'color' : 'red'}}>${this.state.totalPrice}</span></b></label>
+                        {this.state.isDiscounted &&
+                            <label><b>Total price : <span style={{'color' : 'red'}}>${this.state.totalPrice / 2} </span><br/>
+                                <span style={{'color' : 'blue'}}>*half a price because you are subscribed to a promotion</span></b></label>}
+
+                        {!this.state.isDiscounted && <label><b>Total price :
+                            <span style={{'color' : 'red'}}>${this.state.totalPrice}</span></b></label>}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="dark" onClick={this.reserve}>
@@ -112,6 +119,8 @@ class MedicationPharmacy extends React.Component {
         await this.setState({
             totalPrice : this.calculateTotalPrice()
         })
+
+        this.checkIfPatientHasPromotion();
     }
 
     closeModal = () => {
@@ -131,6 +140,7 @@ class MedicationPharmacy extends React.Component {
         .put('http://localhost:8080/api/medicationReservation/reserve', {
             'pharmacyId' : selectedPharmacy.id,
             'medicationReservation' : {
+                'discounted' : this.state.isDiscounted,
                 'medicationQuantity' : {
                     'quantity' : quantity,
                     'medication' : this.props.medication
@@ -156,6 +166,17 @@ class MedicationPharmacy extends React.Component {
 
     extendDate = (component) => {
         return (component < 10) ? '0' + component : component
+    }
+
+    checkIfPatientHasPromotion = () => { //todo change patient id dynamically
+        const path = "http://localhost:8080/api/promotion/checkPatientSubscribedToPromotion/" +
+            this.state.selectedPharmacy.id + "/" + 0 + "/" + this.props.medication.id;
+        axios.get(path)
+            .then((res) => {
+                this.setState({
+                    isDiscounted : res.data
+                });
+            })
     }
 
 }
