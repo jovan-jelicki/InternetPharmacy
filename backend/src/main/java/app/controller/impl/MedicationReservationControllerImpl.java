@@ -88,9 +88,12 @@ public class MedicationReservationControllerImpl implements MedicationReservatio
     }
 
     @PutMapping(value = "/reserve", consumes = "application/json")
-    public ResponseEntity<MedicationReservation> reserve(@RequestBody MakeMedicationReservationDTO entity) {
+    public ResponseEntity<Void> reserve(@RequestBody MakeMedicationReservationDTO entity) {
         try {
-            return new ResponseEntity<>(medicationReservationService.reserve(entity), HttpStatus.CREATED);
+            if(medicationReservationService.reserve(entity) != null)
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            else
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
