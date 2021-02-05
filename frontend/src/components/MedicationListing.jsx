@@ -73,8 +73,8 @@ export default class MedicationListing extends React.Component {
 
         const medications = this.state.medications.map((medication, index) => {
             return (
-                <Col xs={4} key={index}>
-                <Card bg={'dark'} key={index} text={'white'} style={{ width: '30rem', height: '30rem' }}  className="mb-2">
+                <Col xs={6} key={index}>
+                <Card bg={'dark'} key={index} text={'white'} style={{ width: '35rem', height: '30rem' }}  className="mb-2">
                     <Card.Body>
                     <Card.Title>{medication.name}</Card.Title>
                         <Card.Subtitle className="mb-5 mt-2 text-muted">{medication.type}</Card.Subtitle>
