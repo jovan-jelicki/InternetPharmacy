@@ -2,6 +2,7 @@ package app.service.impl;
 
 import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
+import app.dto.MedicationPlainDTO;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.PharmacyAdmin;
@@ -11,10 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.mail.search.SearchTerm;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,6 +70,19 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     @Override
     public Collection<EPrescription> findAllByPatientId(Long patientId) {
         return ePrescriptionRepository.findAllByPatient_Id(patientId);
+    }
+
+    @Override
+    public Collection<MedicationPlainDTO> findAllMedicationsInEPrescriptionByPatientId(Long patientId) {
+        Set<MedicationPlainDTO> medicationSet = new HashSet<>();
+        ePrescriptionRepository
+                .findAllByPatient_Id(patientId)
+                .forEach(p -> {
+                    p.getMedicationQuantity().forEach(m -> {
+                        medicationSet.add(new MedicationPlainDTO(m.getMedication()));
+                    });
+                });
+        return medicationSet;
     }
 
     @Async

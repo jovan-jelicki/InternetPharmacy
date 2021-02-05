@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
+import app.dto.MedicationPlainDTO;
 import app.model.medication.EPrescription;
 import app.service.EPrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,9 @@ public class EPrescriptionControllerImpl {
     }
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<EPrescriptionSimpleInfoDTO> createEPrescription(@RequestBody MakeEPrescriptionDTO makeEPrescriptionDTO){
+    public ResponseEntity<EPrescriptionSimpleInfoDTO> createEPrescription(@RequestBody MakeEPrescriptionDTO makeEPrescriptionDTO) {
         EPrescriptionSimpleInfoDTO ePrescriptionSimpleInfoDTO = ePrescriptionService.reserveEPrescription(makeEPrescriptionDTO);
-        if(ePrescriptionSimpleInfoDTO == null)
+        if (ePrescriptionSimpleInfoDTO == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(ePrescriptionSimpleInfoDTO, HttpStatus.OK);
     }
@@ -32,5 +33,10 @@ public class EPrescriptionControllerImpl {
     @GetMapping(value = "/patient/{id}")
     public ResponseEntity<Collection<EPrescription>> findAllByPatientId(Long id) {
         return new ResponseEntity<>(ePrescriptionService.findAllByPatientId(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/medications/{id}")
+    public ResponseEntity<Collection<MedicationPlainDTO>> findAllMedicationsInEPrescriptionByPatientId(Long id) {
+        return new ResponseEntity<>(ePrescriptionService.findAllMedicationsInEPrescriptionByPatientId(id), HttpStatus.OK);
     }
 }
