@@ -1,9 +1,7 @@
 package app.controller.impl;
 
-import app.dto.MedicationOfferAndOrderDTO;
-import app.dto.MedicationOfferDTO;
-import app.dto.MedicationQuantityDTO;
-import app.dto.PharmacyMedicationListingDTO;
+import app.dto.*;
+import app.model.medication.Medication;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationQuantity;
 import app.model.user.Patient;
@@ -38,6 +36,21 @@ public class SupplierControllerImpl {
     @GetMapping(value = "/getSuppliersMedicationList/{supplierId}")
     public ResponseEntity<Collection<MedicationQuantityDTO>> getSuppliersMedicationList(@PathVariable Long supplierId) {
         return new ResponseEntity<>(supplierService.getSuppliersMedicationList(supplierId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getNonMedicationsBySupplier/{supplierId}")
+    public ResponseEntity<Collection<Medication>> getNonMedicationsBySupplier(@PathVariable Long supplierId) {
+        return new ResponseEntity<>(supplierService.getNonMedicationsBySupplier(supplierId), HttpStatus.OK);
+    }
+
+
+    @PutMapping(value = "/addNewMedication", consumes = "application/json")
+    public ResponseEntity<Boolean> addNewMedication(@RequestBody MedicationSupplierDTO   medicationSupplierDTO) {
+        if(!supplierService.existsById(medicationSupplierDTO.getSupplierId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (supplierService.addNewMedication(medicationSupplierDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 

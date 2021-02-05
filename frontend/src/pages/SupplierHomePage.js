@@ -52,10 +52,10 @@ export default class SupplierHomePage extends React.Component {
                         <a className="nav-link" href="#" name="offer" onClick={this.handleChange}>My medication offers</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="profile" onClick={this.handleChange}>Profile</a>
+                        <a className="nav-link" href="#" name="medications" onClick={this.handleChange}>Medication Listing</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="medications" onClick={this.handleChange}>Medication Listing</a>
+                        <a className="nav-link" href="#" name="profile" onClick={this.handleChange}>Profile</a>
                     </li>
                 </ul>
                 {this.renderNavbar()}

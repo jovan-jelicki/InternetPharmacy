@@ -1,31 +1,35 @@
 package app.service.impl;
 
 import app.dto.MedicationOfferAndOrderDTO;
-import app.dto.MedicationOfferDTO;
 import app.dto.MedicationQuantityDTO;
+import app.dto.MedicationSupplierDTO;
+import app.model.medication.Medication;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOrder;
 import app.model.medication.MedicationQuantity;
 import app.model.user.Supplier;
 import app.repository.SupplierRepository;
-import app.service.MedicationOfferService;
 import app.service.MedicationOrderService;
+import app.service.MedicationQuantityService;
+import app.service.MedicationService;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SupplierServiceImpl implements SupplierService{
     private SupplierRepository supplierRepository;
     private final MedicationOrderService medicationOrderService;
+    private  final MedicationService medicationService;
+    private final MedicationQuantityService medicationQuantityService;
 
-
-    public SupplierServiceImpl(SupplierRepository supplierRepository, MedicationOrderService medicationOrderService) {
+    public SupplierServiceImpl(SupplierRepository supplierRepository, MedicationOrderService medicationOrderService, MedicationService medicationService, MedicationQuantityService medicationQuantityService) {
         this.supplierRepository = supplierRepository;
         this.medicationOrderService = medicationOrderService;
+        this.medicationService = medicationService;
+        this.medicationQuantityService = medicationQuantityService;
     }
 
     @Override
@@ -96,5 +100,33 @@ public class SupplierServiceImpl implements SupplierService{
         return medicationParams;
     }
 
+    @Override
+    public Collection<Medication> getNonMedicationsBySupplier(Long supplierId) {
+        Set<Medication> supplierMedications = new HashSet<>();
+        Set<Medication> allMedications = new HashSet<Medication>(medicationService.read());
+        for (MedicationQuantity medicationQuantity : read(supplierId).get().getMedicationQuantity()){
+            supplierMedications.add(medicationQuantity.getMedication());
+        }
+        allMedications.removeAll(supplierMedications);
+        return allMedications;
+    }
 
+    @Override
+    public Boolean addNewMedication(MedicationSupplierDTO medicationSupplierDTO) {
+        Supplier supplier=this.read(medicationSupplierDTO.getSupplierId()).get();
+        Medication medication = medicationService.read(medicationSupplierDTO.getMedicationId()).get();
+
+        if (supplier.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId().equals(medication.getId()))
+                .collect(Collectors.toList()).size() != 0)
+            return false;
+
+        MedicationQuantity medicationQuantity=new MedicationQuantity(medication,medicationSupplierDTO.getQuantity());
+        medicationQuantityService.save(medicationQuantity);
+        supplier.getMedicationQuantity().add( medicationQuantityService.save(medicationQuantity));
+
+        this.save(supplier);
+
+        return true;
+
+    }
 }

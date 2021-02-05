@@ -117,7 +117,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
         return (
             <div className="container-fluid">
 
-                <h3>Medication orders</h3>
+                <h2 style={({marginTop: '1rem', textAlignVertical: "center", textAlign: "center"})} >Medication orders</h2>
                 <br/>
                 <div style={{marginRight:'5rem', marginLeft:'5rem'}}>
                     <Table striped bordered hover variant="dark">
