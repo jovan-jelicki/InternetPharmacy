@@ -278,14 +278,14 @@ export default class PharmacyEmployees extends React.Component{
                         <Form.Row>
                             <div style={({ marginLeft: '1rem' })}>
                                 <label style={({ marginRight: '1rem' })}>Select start of work time : </label>
-                                <TimePicker  name="periodStart" value={this.state.workingHours.period.periodStart} onChange={this.setPeriodStart}/>
+                                <TimePicker  name="periodStart" format="h:m a" value={this.state.workingHours.period.periodStart} onChange={this.setPeriodStart}/>
                             </div>
                         </Form.Row>
                         <br/>
                         <Form.Row>
                             <div style={({ marginLeft: '1rem' })}>
                                 <label style={({ marginRight: '1rem' })}>Select end of work time : </label>
-                                <TimePicker  name="periodEnd" value={this.state.workingHours.period.periodEnd} onChange={this.setPeriodEnd}/>
+                                <TimePicker  name="periodEnd" format="h:m a" value={this.state.workingHours.period.periodEnd} onChange={this.setPeriodEnd}/>
                             </div>
                         </Form.Row>
 
