@@ -99,4 +99,10 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping(value = "/patient/{id}")
+    public ResponseEntity<Collection<MedicationReservation>> findAllByPatientId(Long id) {
+        return new ResponseEntity<>(medicationReservationService.findAllByPatientId(id), HttpStatus.OK);
+    }
+
 }

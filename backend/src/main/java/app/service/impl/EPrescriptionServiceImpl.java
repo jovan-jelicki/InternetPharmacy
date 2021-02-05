@@ -67,6 +67,11 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         return new EPrescriptionSimpleInfoDTO(makeEPrescriptionDTO.getPrescription());
     }
 
+    @Override
+    public Collection<EPrescription> findAllByPatientId(Long patientId) {
+        return ePrescriptionRepository.findAllByPatient_Id(patientId);
+    }
+
     @Async
     public void notifyPharmacyAdmin(Collection<String> medications, PharmacyAdmin pharmacyAdmin){
         try {

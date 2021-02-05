@@ -88,6 +88,11 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
         }
     }
 
+    @Override
+    public Collection<MedicationReservation> findAllByPatientId(Long patientId) {
+        return medicationReservationRepository.findAllByPatient_Id(patientId);
+    }
+
     private void getMedicationQuantityBack(Pharmacy pharmacy, MedicationQuantity medicationQuantity) {
         pharmacy.getMedicationQuantity().forEach(quantity -> {
             if(medicationQuantity.getMedication().getId() == quantity.getMedication().getId())
