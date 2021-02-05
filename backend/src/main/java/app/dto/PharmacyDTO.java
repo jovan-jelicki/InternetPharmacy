@@ -19,6 +19,7 @@ public class PharmacyDTO {
     private String description;
     private int pharmacistCost;
     private int dermatologistCost;
+    private double grade;
 
     private List<MedicationQuantity> medicationQuantity;
 

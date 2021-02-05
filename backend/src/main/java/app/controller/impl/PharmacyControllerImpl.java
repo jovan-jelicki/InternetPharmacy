@@ -1,7 +1,9 @@
 package app.controller.impl;
 
 import app.dto.*;
+import app.model.grade.GradeType;
 import app.model.pharmacy.Pharmacy;
+import app.service.GradeService;
 import app.service.PharmacyService;
 import app.util.DTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +19,22 @@ import java.util.Collection;
 public class PharmacyControllerImpl {
 
     private final PharmacyService pharmacyService;
+    private final GradeService gradeService;
 
     @Autowired
-    public PharmacyControllerImpl(PharmacyService pharmacyService) {
+    public PharmacyControllerImpl(PharmacyService pharmacyService, GradeService gradeService) {
         this.pharmacyService = pharmacyService;
+        this.gradeService = gradeService;
     }
 
     @GetMapping
     public ResponseEntity<Collection<PharmacyDTO>> read() {
         ArrayList<PharmacyDTO> pharmacyDTOS = new ArrayList<>();
-        for (Pharmacy pharmacy : pharmacyService.read())
-            pharmacyDTOS.add(new PharmacyDTO(pharmacy));
+        for (Pharmacy pharmacy : pharmacyService.read()) {
+            PharmacyDTO pharmacyDTO = new PharmacyDTO(pharmacy);
+            pharmacyDTO.setGrade(gradeService.findAverageGradeForEntity(pharmacy.getId(), GradeType.pharmacy));
+            pharmacyDTOS.add(pharmacyDTO);
+        }
         return new ResponseEntity<>(pharmacyDTOS, HttpStatus.OK);
     }
 

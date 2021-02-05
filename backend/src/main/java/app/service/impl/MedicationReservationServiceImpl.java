@@ -129,6 +129,10 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
         return medicationReservation;
     }
 
+    public void cancel(Long reservationId) {
+        
+    }
+
     private void updateMedicationQuantity(List<MedicationQuantity> quantities, MedicationQuantity medicationQuantity) {
         quantities.forEach(quantity -> {
             if(medicationQuantity.getMedication().getId() == quantity.getMedication().getId())
