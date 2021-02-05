@@ -29,37 +29,6 @@ export default class PharmacyMedicationOrders extends React.Component{
     }
 
     componentDidMount() {
-        let medicationOrders = [
-            {
-                pharmacyAdmin : {
-                    firstName : 'Mirko',
-                    lastName : 'Mirkovic'
-                },
-                deadLine : '21.3.2021.',
-                medicationQuantity: {
-
-                },
-                status : 'pending',
-                medicationOffers : []
-            },
-            {
-                pharmacyAdmin : {
-                    firstName : 'Jelena',
-                    lastName : 'Rozga'
-                },
-                deadLine : '13.5.2021.',
-                medicationQuantity: {
-
-                },
-                status : 'processed',
-                medicationOffers : []
-            }
-        ];
-
-        this.setState({
-            medicationOrders : medicationOrders,
-            showContent : this.props.showContent
-        })
     }
 
     render() {

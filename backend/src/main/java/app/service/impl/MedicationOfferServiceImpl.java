@@ -95,10 +95,21 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     }
     private void updatePharmacyMedicationQuantity(MedicationOffer medicationOffer, MedicationOrder medicationOrder) {
         Pharmacy pharmacy = pharmacyService.read(medicationOrder.getPharmacyAdmin().getPharmacy().getId()).get();
-        for (MedicationQuantity medicationQuantityPharmacy : pharmacy.getMedicationQuantity())
-            for (MedicationQuantity medicationQuantityOrder : medicationOrder.getMedicationQuantity())
-                if (medicationQuantityOrder.getMedication().getId().equals(medicationQuantityPharmacy.getMedication().getId()))
+        ArrayList<MedicationQuantity> medicationsToAdd = new ArrayList<>();
+        for (MedicationQuantity medicationQuantityOrder : medicationOrder.getMedicationQuantity()) {
+            boolean foundMedication = false;
+            for (MedicationQuantity medicationQuantityPharmacy : pharmacy.getMedicationQuantity()) {
+                if (medicationQuantityOrder.getMedication().getId().equals(medicationQuantityPharmacy.getMedication().getId())) {
                     medicationQuantityPharmacy.setQuantity(medicationQuantityPharmacy.getQuantity() + medicationQuantityOrder.getQuantity());
+                    foundMedication = true;
+                }
+            }
+            if (!foundMedication)
+                medicationsToAdd.add(medicationQuantityOrder);
+        }
+
+        for (MedicationQuantity medicationQuantity : medicationsToAdd)
+            pharmacy.getMedicationQuantity().add(new MedicationQuantity(medicationQuantity.getMedication(), medicationQuantity.getQuantity()));
 
         pharmacyService.save(pharmacy);
     }
