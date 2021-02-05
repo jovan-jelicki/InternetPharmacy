@@ -17,7 +17,9 @@ export default class DermatologistHomePage extends React.Component {
             showModal : false,
             oldPw : "",
             newPw : "",
-            repeatPw : ""
+            repeatPw : "",
+            repErr : "",
+            wrongPw : ""
         }
     }
 
@@ -74,8 +76,11 @@ export default class DermatologistHomePage extends React.Component {
                     <p> First password : </p> <input name="oldPw" onChange={this.handleInputChange} value={this.state.oldPw} type={"password"}/>
                     <p> New password : </p> <input name="newPw" onChange={this.handleInputChange} value={this.state.newPw} type={"password"}/>
                     <p> Repeat new password : </p> <input name="repeatPw" onChange={this.handleInputChange} value={this.state.repeatPw} type={"password"}/>
+                    <p style={{"color" : "red"}}>{this.state.repErr} </p>
+
                 </Modal.Body>
                 <Modal.Footer>
+                    <p style={{"color" : "red"}}>{this.state.wrongPw}</p>
                     <Button variant="secondary" onClick={this.sendData}>
                         Send
                     </Button>
@@ -85,6 +90,8 @@ export default class DermatologistHomePage extends React.Component {
     }
 
     sendData = () => {
+        if(this.state.repeatPw !== this.state.newPw)
+            return;
         axios
             .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/pass', {
                 'userId' : 3,
@@ -99,21 +106,30 @@ export default class DermatologistHomePage extends React.Component {
                     })
                 }
             })
-            .catch(res => alert("Greska!"));
+            .catch(res => this.setState({wrongPw : "First password is not correct!"}));
     }
 
-    handleChange = (event) => {
-        const target = event.target;
-        const name = target.name;
-
-        this.setState({
-            navbar : name
-        });
-    }
     handleInputChange = (event) => {
         const target = event.target;
         this.setState({
-            [target.name] : target.value
+            [target.name]: target.value
+        })
+        this.validatePassword(event);
+    }
+
+    validatePassword(event) {
+        let repErr = ''
+        let val = event.target.value;
+        let newPass = this.state.newPw;
+
+        if (event.target.name === 'repeatPw')
+            if(val !== newPass.substr(0, Math.min(val.length, newPass.length)) ||
+                (val.trim() === '' && newPass.trim() !== '')) {
+                repErr = 'This password must match the previous';
+            }
+
+        this.setState({
+            'repErr': repErr
         })
     }
 
