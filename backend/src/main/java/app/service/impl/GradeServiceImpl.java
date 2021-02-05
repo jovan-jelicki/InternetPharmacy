@@ -128,7 +128,12 @@ public class GradeServiceImpl implements GradeService {
                     }
                 });
 
-        //TODO EPrescription check
+        pharmacyRepository
+                .findAll()
+                .forEach(p -> {
+                    if(hasEPrescriptionInPharmacy(p, patientId))
+                        getPharmacyGrade(patientId, pharmacies, p);
+                });
 
         return pharmacies;
     }
@@ -149,6 +154,13 @@ public class GradeServiceImpl implements GradeService {
                 .stream()
                 .anyMatch(r -> r.getPatient().getId() == patientId &&
                         r.getStatus() == MedicationReservationStatus.successful);
+    }
+
+    private boolean hasEPrescriptionInPharmacy(Pharmacy pharmacy, Long patientId) {
+        return pharmacy
+                .getPrescriptions()
+                .stream()
+                .anyMatch(p -> p.getPatient().getId() == patientId);
     }
 
     private void getMedicationGrade(Long patientId, Set<AssetGradeDTO> medications, Medication medication) {
