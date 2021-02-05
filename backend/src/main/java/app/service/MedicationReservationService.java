@@ -12,4 +12,6 @@ public interface MedicationReservationService extends CRUDService<MedicationRese
     MedicationReservation reserve(MakeMedicationReservationDTO entity);
     void sendEmailToPatient(Patient patient);
     Collection<MedicationReservation> findAllByPatientId(Long patientId);
+
+    boolean cancel(Long reservationId);
 }

@@ -111,4 +111,12 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
                 HttpStatus.OK);
     }
 
+    @PutMapping(value = "/cancel/{id}")
+    public ResponseEntity<Void> cancel(@PathVariable Long id) {
+        if(medicationReservationService.cancel(id))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }
