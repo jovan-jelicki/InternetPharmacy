@@ -410,7 +410,7 @@ VALUES (12, 6000, 3);
 
 
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
-VALUES (1, '2021-03-04', 1, 0);
+VALUES (1, '2021-01-01', 1, 0);
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
 VALUES (2, '2021-03-10', 1, 0);
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
@@ -504,7 +504,28 @@ insert into grade(id, grade, grade_type, graded_id, patient_id)
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (15, 3, 3, 4, 6);
 
-
+insert into side_effect(id,name)
+values(0,'allergy');
+insert into side_effect(id,name)
+values(1,'dry mouth');
+insert into side_effect(id,name)
+values(2,'internal bleeding');
+insert into side_effect(id,name)
+values(3,'lost of concentration');
+insert into side_effect(id,name)
+values(4,'aggression');
+insert into side_effect(id,name)
+values(5,'diarrhea');
+insert into side_effect(id,name)
+values(6,'diarrhea');
+insert into side_effect(id,name)
+values(7,'nausea');
+insert into side_effect(id,name)
+values(8,'migraine');
+insert into side_effect(id,name)
+values(9,'dizziness');
+insert into side_effect(id,name)
+values(10,'insomnia');
 
 
 

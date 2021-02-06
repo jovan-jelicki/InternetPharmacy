@@ -11,7 +11,7 @@ import PharmacistProfilePage from "./pages/Pharmacist/PharmacistProfilePage";
 import PharmacistHomePage from "./pages/Pharmacist/PharmacistHomePage";
 import PharmacistWorkingHours from "./pages/Pharmacist/PharmacistWorkingHours";
 import Registration from "./pages/Registration";
-import {ISAdminHomePage} from "./pages/ISAdminHomePage";
+import {SystemAdminHomePage} from "./pages/SystemAdminHomePage";
 import PharmacyAdminProfilePage from "./pages/PharmacyAdminProfilePage";
 import SupplierHomePage from "./pages/SupplierHomePage";
 import CreateNewOffer from "./components/Supplier/CreateNewOffer";
@@ -20,6 +20,7 @@ import RegistrationConfirmation from "./pages/RegistrationConfirmation";
 import PatientScheduledAppointments from "./pages/patient/PatientScheduledAppointments";
 import PatientPreviousAppointments from "./pages/patient/PatientPreviousAppointments";
 import PatientGradingPage from "./pages/patient/PatientGradingPage"
+import CreateCoplaint from "./components/CreateCoplaint";
 
 export default class App extends React.Component {
   constructor () {
@@ -49,13 +50,14 @@ export default class App extends React.Component {
             <Route path="/pharmacistHomePage"  render={(props) => <PharmacistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/patient-counsel-schedule"  render={(props) => <PatientCounselScheduling {...props} role={role} Id={Id}/> } />
             <Route path="/registration"  component={Registration} role={role}/>
-            <Route path="/systemAdmin"  render={(props) => <ISAdminHomePage {...props} role={role} Id={Id}/> }/>
+            <Route path="/systemAdmin"  render={(props) => <SystemAdminHomePage {...props} role={role} Id={Id}/> }/>
             <Route path="/supplierHomePage"  render={(props) => <SupplierHomePage {...props} role={role} Id={Id}/> }/>
             <Route path="/createNew" component={CreateNewOffer} role={role}/>
             <Route path="/confirmRegistration" component={RegistrationConfirmation} role={role}/>
             <Route path="/scheduled-appointments" component={PatientScheduledAppointments} role={role}/>
             <Route path="/scheduled-appointments-history" component={PatientPreviousAppointments} role={role}/>
             <Route path="/grading" component={PatientGradingPage} role={role}/>
+            <Route path="/complaint" component={CreateCoplaint} role={role}/>
 
           </Switch>
         </BrowserRouter>

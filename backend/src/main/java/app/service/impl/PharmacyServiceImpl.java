@@ -6,6 +6,7 @@ import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
+import app.model.user.PharmacyAdmin;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.service.*;
@@ -27,17 +28,34 @@ public class PharmacyServiceImpl implements PharmacyService {
     private final AppointmentRepository appointmentRepository;
     private PromotionService promotionService;
     private final GradeService gradeService;
+    private final PharmacyAdminService pharmacyAdminService;
 
     @Autowired
-    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository, GradeService gradeService) {
+    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository, GradeService gradeService, PharmacyAdminService pharmacyAdminService) {
         this.pharmacyRepository = pharmacyRepository;
         this.appointmentRepository = appointmentRepository;
         this.gradeService = gradeService;
+        this.pharmacyAdminService = pharmacyAdminService;
     }
 
     @Override
     public void setPromotionService(PromotionService promotionService) {
         this.promotionService = promotionService;
+    }
+
+    @Override
+    public Pharmacy savePharmacy(PharmacyAdminPharmacyDTO pharmacyAdminPharmacyDTO) {
+        Pharmacy pharmacy=new Pharmacy();
+        pharmacy.setName(pharmacyAdminPharmacyDTO.getName());
+        pharmacy.setDescription(pharmacyAdminPharmacyDTO.getDescription());
+        pharmacy.setAddress(pharmacyAdminPharmacyDTO.getAddress());
+
+        this.save(pharmacy);
+
+        PharmacyAdmin admin=pharmacyAdminService.read(pharmacyAdminPharmacyDTO.getPharmacyAdminId()).get();
+        admin.setPharmacy(pharmacy);
+        pharmacyAdminService.save(admin);
+        return pharmacy;
     }
 
     @Override
@@ -78,9 +96,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public Collection<Pharmacy> read() {
-        return pharmacyRepository.findAll();
-    }
+    public Collection<Pharmacy> read() { return pharmacyRepository.findAll(); }
 
     @Override
     public Optional<Pharmacy> read(Long id) {

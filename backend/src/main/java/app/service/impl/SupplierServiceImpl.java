@@ -2,28 +2,34 @@ package app.service.impl;
 
 import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationQuantityDTO;
+import app.dto.MedicationSupplierDTO;
+import app.model.medication.Medication;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOrder;
 import app.model.medication.MedicationQuantity;
 import app.model.user.Supplier;
 import app.repository.SupplierRepository;
 import app.service.MedicationOrderService;
+import app.service.MedicationQuantityService;
+import app.service.MedicationService;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SupplierServiceImpl implements SupplierService{
     private SupplierRepository supplierRepository;
     private final MedicationOrderService medicationOrderService;
+    private  final MedicationService medicationService;
+    private final MedicationQuantityService medicationQuantityService;
 
-
-    public SupplierServiceImpl(SupplierRepository supplierRepository, MedicationOrderService medicationOrderService) {
+    public SupplierServiceImpl(SupplierRepository supplierRepository, MedicationOrderService medicationOrderService, MedicationService medicationService, MedicationQuantityService medicationQuantityService) {
         this.supplierRepository = supplierRepository;
         this.medicationOrderService = medicationOrderService;
+        this.medicationService = medicationService;
+        this.medicationQuantityService = medicationQuantityService;
     }
 
     @Override
@@ -65,13 +71,14 @@ public class SupplierServiceImpl implements SupplierService{
                     offerDTO.setCost(m.getCost());
                     offerDTO.setShippingDate(m.getShippingDate());
                     offerDTO.setOfferStatus(m.getStatus());
+                    offerDTO.setOfferId(m.getId());
 
                     MedicationOrder medicationOrder=m.getMedicationOrder();
                     offerDTO.setDeadline(medicationOrder.getDeadline());
                     offerDTO.setMedicationQuantity(medicationOrder.getMedicationQuantity());
                     offerDTO.setOrderStatus(medicationOrder.getStatus());
                     offerDTO.setPharmacyAdminId(medicationOrder.getPharmacyAdmin().getPharmacy().getName());
-
+                    offerDTO.setOrderId(medicationOrder.getId());
                     offersAndOrder.add(offerDTO);
                 }
             }});
@@ -79,18 +86,73 @@ public class SupplierServiceImpl implements SupplierService{
     }
 
     @Override
-    public Collection<MedicationQuantityDTO> getSuppliersMedicationList(Long supplierId) {
-        ArrayList<MedicationQuantityDTO> medicationParams = new ArrayList<>();
+    public Collection<MedicationQuantity> getSuppliersMedicationList(Long supplierId) {
+        ArrayList<MedicationQuantity> medicationParams = new ArrayList<>();
 
         for (MedicationQuantity m : read(supplierId).get().getMedicationQuantity()) {
-            MedicationQuantityDTO medicationQuantityDTO =new MedicationQuantityDTO();
-            medicationQuantityDTO.setMedicationName(m.getMedication().getName());
-            medicationQuantityDTO.setMedicationQuantity(m.getQuantity());
-
-            medicationParams.add(medicationQuantityDTO);
+            medicationParams.add(m);
         }
 
         return medicationParams;
+    }
+
+    @Override
+    public Collection<Medication> getNonMedicationsBySupplier(Long supplierId) {
+        Set<Medication> supplierMedications = new HashSet<>();
+        Set<Medication> allMedications = new HashSet<Medication>(medicationService.read());
+        for (MedicationQuantity medicationQuantity : read(supplierId).get().getMedicationQuantity()){
+            supplierMedications.add(medicationQuantity.getMedication());
+        }
+        allMedications.removeAll(supplierMedications);
+        return allMedications;
+    }
+
+    @Override
+    public Boolean addNewMedication(MedicationSupplierDTO medicationSupplierDTO) {
+        Supplier supplier=this.read(medicationSupplierDTO.getSupplierId()).get();
+        Medication medication = medicationService.read(medicationSupplierDTO.getMedicationId()).get();
+
+        if (supplier.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId().equals(medication.getId()))
+                .collect(Collectors.toList()).size() != 0)
+            return false;
+
+        MedicationQuantity medicationQuantity=new MedicationQuantity(medication,medicationSupplierDTO.getQuantity());
+
+        medicationQuantityService.save(medicationQuantity);
+        supplier.getMedicationQuantity().add(medicationQuantity);
+
+        this.save(supplier);
+
+        return true;
+
+    }
+
+    @Override
+    public Boolean editSuppliersMedicationQuantity(MedicationSupplierDTO medicationSupplierDTO) {
+        MedicationQuantity medicationQuantity=medicationQuantityService.read(medicationSupplierDTO.getMedicationQuantityId()).get();
+        int quantity=medicationSupplierDTO.getQuantity();
+        if(quantity<=0){
+            medicationQuantityService.delete(medicationSupplierDTO.getMedicationQuantityId());
+            return null;
+        }
+        medicationQuantity.setQuantity(quantity);
+        medicationQuantityService.save(medicationQuantity);
+
+
+         return  medicationQuantityService.save(medicationQuantity)!=null;
+    }
+
+    @Override
+    public Boolean deleteMedicationQuantity(MedicationSupplierDTO medicationSupplierDTO) {
+        Supplier supplier=this.read(medicationSupplierDTO.getSupplierId()).get();
+        for(MedicationQuantity medicationQuantity :  supplier.getMedicationQuantity()){
+            if(medicationQuantity.getId().equals(medicationSupplierDTO.getMedicationQuantityId())){
+                supplier.getMedicationQuantity().remove(medicationQuantity);
+                break;
+            }
+        }
+        return this.save(supplier)!=null;
+
     }
 
     @Override

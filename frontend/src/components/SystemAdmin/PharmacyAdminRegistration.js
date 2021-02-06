@@ -1,52 +1,87 @@
 import React from "react";
 import {Button, Container, FormControl} from "react-bootstrap";
+import "../../App.css";
 import Script from "react-load-script";
+import axios from "axios";
 
-export default class DermatologistRegistration extends React.Component {
+export default class PharmacyAdminRegistration extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-                dermatologist: {
-                    email: '',
-                    password: '',
-                    firstName: '',
-                    lastName: '',
-                    address: {
-                        street: "",
-                        town: "",
-                        country: "",
-                        latitude: 51.507351,
-                        longitude: -0.127758
-                    },
-                    telephone: '',
-                    rePassword : '',
-                    workingHours:''
+            user: {
+                email: '',
+                password: '',
+                firstName: '',
+                lastName: '',
+                address: {
+                    street: "",
+                    town: "",
+                    country: "",
+                    latitude: 51.507351,
+                    longitude: -0.127758
                 },
-                errors:{
-                    dermatologist: {
-                        email: 'Enter email',
-                        password: 'Enter password',
-                        firstName: 'Enter First name',
-                        lastName: 'Enter Last name',
-                        address:'Enter address',
-                        telephone: 'Enter Telephone',
-                        rePassword : 'Repeat password'
+                telephone: '',
+                rePassword: ''
+            },
+            errors: {
+                user: {
+                    'email': 'Enter email',
+                    'password': 'Enter password',
+                    'firstName': 'Enter First name',
+                    'lastName': 'Enter Last name',
+                    'address': 'Enter address',
+                    'telephone': 'Enter Telephone',
+                    'rePassword': 'Repeat password'
+                }
+            },
+            validForm: false,
+            submitted: false,
 
+
+        }
+    }
+    async sendParams() {
+        axios
+            .post('http://localhost:8080/api/pharmacyAdmin/save', {
+                'id':'',
+                'firstName' : this.state.user.firstName,
+                'lastName' : this.state.user.lastName,
+                'userType' : 2,
+                'credentials' : {
+                    'email' : this.state.user.email,
+                    'password' : this.state.user.password
+                },
+                'contact' : {
+                    'phoneNumber' : this.state.user.telephone,
+                    'address' : {
+                        'street' : this.state.user.address.street,
+                        'town' : this.state.user.address.town,
+                        'country' : this.state.user.address.country,
+                        'latitude' : this.state.user.address.latitude,
+                        'longitude' : this.state.user.address.longitude
                     }
                 },
-                validForm: false,
-                submitted: false,
-        }
+                'approvedAccount':false
+
+            })
+            .then(res => {
+                alert("Successfully registered!");
+
+            }).catch(() => {
+            alert("Dermatologist was not registered successfully!")
+        })
+
     }
 
     handleInputChange = (event) => {
         const { name, value } = event.target;
-        const dermatologist = this.state.dermatologist;
-        dermatologist[name] = value;
+        const user = this.state.user;
+        user[name] = value;
 
-        this.setState({ dermatologist });
+        this.setState({ user });
         this.validationErrorMessage(event);
     }
+
     handleScriptLoad = () => {
         var input = document.getElementById('street');
         var options = {
@@ -67,17 +102,17 @@ export default class DermatologistRegistration extends React.Component {
                 if (this.setAddressParams(address)) {
                     this.setState(
                         {
-                            dermatologist: {
-                                address: {
-                                    street: this.state.streetP,
-                                    town: this.state.townP,
-                                    country: this.state.countryP,
-                                    latitude: addressObject.geometry.location.lat(),
-                                    longitude: addressObject.geometry.location.lng()
-                                }
+                            addressPom: {
+                                street: this.state.streetP,
+                                town: this.state.townP,
+                                country: this.state.countryP,
+                                latitude: addressObject.geometry.location.lat(),
+                                longitude: addressObject.geometry.location.lng(),
+
                             },
                         }
                     );
+                    this.state.user.address=this.state.addressPom;
                 }
             } else {
                 this.addressErrors(false)
@@ -121,33 +156,31 @@ export default class DermatologistRegistration extends React.Component {
         let errors = this.state.errors;
         if (bool == false) {
             //.log("Nisam dobro prosla")
-            errors.dermatologist.address = 'Please choose valid address';
+            errors.user.address = 'Please choose valid address';
         } else {
             //console.log("DObro sam prosla ");
-            errors.dermatologist.address = "";
+            errors.user.address = "";
         }
         this.setState({errors});
     }
-
-
-
     render() {
         return (
+
             <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
                 <div className="container">
-                    <h3 style={({ textAlignVertical: "center", textAlign: "center"})}>Dermatologist registration</h3>
+                    <h3 style={({ textAlignVertical: "center", textAlign: "center"})}>Pharmacy admin registration</h3>
                 </div>
 
                 <div className="row" style={{marginTop: '3rem', marginLeft:'20rem',display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
                     <label className="col-sm-2 col-form-label">Name</label>
                     <div className="col-sm-3 mb-2">
-                        <input type="text" value={this.state.dermatologist.firstName} name="firstName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="First Name" />
-                        { this.state.submitted && this.state.errors.dermatologist.firstName.length > 0 &&  <span className="text-danger">{this.state.errors.dermatologist.firstName}</span>}
+                        <input type="text" value={this.state.user.firstName} name="firstName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="First Name" />
+                        { this.state.submitted && this.state.errors.user.firstName.length > 0 &&  <span className="text-danger">{this.state.errors.user.firstName}</span>}
 
                     </div>
                     <div className="col-sm-3 mb-2" >
                         <input type="text" value={this.state.lastName} name="lastName" onChange={(e) => { this.handleInputChange(e)} } className="form-control" placeholder="Last Name" />
-                        { this.state.submitted && this.state.errors.dermatologist.lastName.length > 0 &&  <span className="text-danger">{this.state.errors.dermatologist.lastName}</span>}
+                        { this.state.submitted && this.state.errors.user.lastName.length > 0 &&  <span className="text-danger">{this.state.errors.user.lastName}</span>}
 
                     </div>
                     <div className="col-sm-4">
@@ -156,8 +189,8 @@ export default class DermatologistRegistration extends React.Component {
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Email</label>
                     <div className="col-sm-6 mb-2">
-                        <input type="email" value={this.state.dermatologist.email} name="email" onChange={(e) => { this.handleInputChange(e)} }className="form-control" id="email" placeholder="example@gmail.com" />
-                        { this.state.submitted && this.state.errors.dermatologist.email.length > 0 && <span className="text-danger">{this.state.errors.dermatologist.email}</span>}
+                        <input type="email" value={this.state.user.email} name="email" onChange={(e) => { this.handleInputChange(e)} }className="form-control" id="email" placeholder="example@gmail.com" />
+                        { this.state.submitted && this.state.errors.user.email.length > 0 && <span className="text-danger">{this.state.errors.user.email}</span>}
 
                     </div>
                     <div className="col-sm-4">
@@ -166,8 +199,8 @@ export default class DermatologistRegistration extends React.Component {
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Tel</label>
                     <div className="col-sm-6 mb-2">
-                        <input type="text" value={this.state.dermatologist.telephone} name="telephone" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="telephone" placeholder="+3810640333489" />
-                        { this.state.submitted && this.state.errors.dermatologist.telephone.length > 0 && <span className="text-danger">{this.state.errors.dermatologist.telephone}</span>}
+                        <input type="text" value={this.state.user.telephone} name="telephone" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="telephone" placeholder="+3810640333489" />
+                        { this.state.submitted && this.state.errors.user.telephone.length > 0 && <span className="text-danger">{this.state.errors.user.telephone}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
@@ -178,7 +211,7 @@ export default class DermatologistRegistration extends React.Component {
                     <div className="col-sm-6 mb-2">
                         <Script type="text/javascript" url="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrua9P_qHcmF253UAXnw1wHnIC7nD2DY&libraries=places" onLoad={this.handleScriptLoad}/>
                         <input type="text" id="street" placeholder="Enter Address" value={this.query}/>
-                        {this.state.submitted && this.state.errors.dermatologist.address.length > 0 &&  <span className="text-danger">{this.state.errors.dermatologist.address}</span>}
+                        {this.state.submitted && this.state.errors.user.address.length > 0 &&  <span className="text-danger">{this.state.errors.user.address}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
@@ -187,8 +220,8 @@ export default class DermatologistRegistration extends React.Component {
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label className="col-sm-2 col-form-label">Password</label>
                     <div className="col-sm-6 mb-2">
-                        <FormControl name="password" type="password" placeholder="Password"  value={this.state.dermatologist.password} onChange={(e) => { this.handleInputChange(e)} }/>
-                        { this.state.submitted && this.state.errors.dermatologist.password.length > 0 &&  <span className="text-danger">{this.state.errors.dermatologist.password}</span>}
+                        <FormControl name="password" type="password" placeholder="Password"  value={this.state.user.password} onChange={(e) => { this.handleInputChange(e)} }/>
+                        { this.state.submitted && this.state.errors.user.password.length > 0 &&  <span className="text-danger">{this.state.errors.user.password}</span>}
 
                     </div>
                     <div className="col-sm-4">
@@ -198,8 +231,8 @@ export default class DermatologistRegistration extends React.Component {
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label">Repeat password</label>
                     <div className="col-sm-6 mb-2">
-                        <FormControl name="rePassword" type="password" placeholder="Repeat new Password" value={this.state.dermatologist.rePassword} onChange={(e) => { this.handleInputChange(e)} }/>
-                        { this.state.submitted && this.state.errors.dermatologist.rePassword.length > 0 &&  <span className="text-danger">{this.state.errors.dermatologist.rePassword}</span>}
+                        <FormControl name="rePassword" type="password" placeholder="Repeat new Password" value={this.state.user.rePassword} onChange={(e) => { this.handleInputChange(e)} }/>
+                        { this.state.submitted && this.state.errors.user.rePassword.length > 0 &&  <span className="text-danger">{this.state.errors.user.rePassword}</span>}
 
                     </div>
                     <div className="col-sm-4">
@@ -217,13 +250,14 @@ export default class DermatologistRegistration extends React.Component {
             </div>
         );
     }
-
     submitForm = async (event) => {
         this.setState({ submitted: true });
-        const dermatologist = this.state.dermatologist;
+        const user = this.state.user;
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form')
+            console.log(this.state.user)
+             this.sendParams();
         } else {
             console.log('Invalid Form')
         }
@@ -235,22 +269,28 @@ export default class DermatologistRegistration extends React.Component {
 
         switch (name) {
             case 'firstName':
-                errors.dermatologist.firstName = value.length < 1 ? 'Enter First Name' : '';
+                errors.user.firstName = value.length < 1 ? 'Enter First Name' : '';
                 break;
             case 'lastName':
-                errors.dermatologist.lastName = value.length < 1 ? 'Enter Last Name' : '';
+                errors.user.lastName = value.length < 1 ? 'Enter Last Name' : '';
                 break;
             case 'email':
-                errors.dermatologist.email = this.isValidEmail(value) ? '' : 'Email is not valid!';
+                errors.user.email = this.isValidEmail(value) ? '' : 'Email is not valid!';
                 break;
             case 'telephone':
-                errors.dermatologist.telephone = this.isValidTelephone(value) ? 'Enter valid telephone number' : '';
+                errors.user.telephone = this.isValidTelephone(value) ? 'Enter valid telephone number' : '';
+                break;
+            case 'country':
+                errors.user.country = value.length < 1 ?  'Enter Country' : '';
+                break;
+            case 'city':
+                errors.user.city = value.length < 1 ?  'Enter City' : '';
                 break;
             case 'password':
-                errors.dermatologist.password = value.length < 1 ? 'Enter Password' : '';
+                errors.user.password = value.length < 1 ? 'Enter Password' : '';
                 break;
             case 'rePassword':
-                errors.dermatologist.rePassword = this.isValidPassword(value) ? '' : 'This password must match the previous';
+                errors.user.rePassword = this.isValidPassword(value) ? '' : 'This password must match the previous';
                 break;
             default:
                 break;
@@ -261,7 +301,7 @@ export default class DermatologistRegistration extends React.Component {
 
     validateForm = (errors) => {
         let valid = true;
-        Object.entries(errors.dermatologist).forEach(item => {
+        Object.entries(errors.user).forEach(item => {
             console.log(item)
             item && item[1].length > 0 && (valid = false)
         })
@@ -276,7 +316,7 @@ export default class DermatologistRegistration extends React.Component {
     }
 
     isValidPassword = (value) => {
-        if(this.state.dermatologist.password !== this.state.dermatologist.rePassword) {
+        if(this.state.user.password !== this.state.user.rePassword) {
             return false;
         }else{
             return  true

@@ -140,7 +140,7 @@ class Login extends React.Component {
             });
         }else if(type=="ROLE_systemAdmin"){ //ROLE_systemAdmin
             this.props.history.push({
-                pathname: "/systemAdmin",
+                pathname: "/SystemAdmin",
                 state: {
                 email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
                     userId: this.state.user.id
