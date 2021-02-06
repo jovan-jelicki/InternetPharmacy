@@ -23,7 +23,7 @@ export default class SupplierHomePage extends React.Component {
                 firstName:'',
                 lastName:'',
             },
-            navbar : "",
+            navbar : "order",
             showContent:""
         }
     }
@@ -41,9 +41,8 @@ export default class SupplierHomePage extends React.Component {
         return (
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
-                    <h1 className="display-4">{this.state.supplier.firstName +" " +this.state.supplier.lastName }</h1>
+                    <h1 className="display-4">{this.state.supplier.firstName +" " +this.state.supplier.lastName}</h1>
                 </div>
-
                 <ul className="nav justify-content-center">
                     <li className="nav-item">
                         <a className="nav-link active" href='#' onClick={this.handleChange} name="order">Medication orders</a>

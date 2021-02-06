@@ -123,7 +123,7 @@ export default class SupplierMedicationListing extends React.Component{
     render() {
         return (
             <div className="App">
-                <h3 style={{marginTop:'5rem'}}>Medication listing</h3>
+                <h3 style={{marginTop:'1rem'}}>Medication listing</h3>
                 <div style={{marginTop:'2rem',marginRight:'20rem', marginLeft:'20rem'}}>
                 <Table striped bordered hover variant="dark"  >
                     <thead>
