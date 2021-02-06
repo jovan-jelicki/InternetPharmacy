@@ -36,8 +36,8 @@ public class PharmacyControllerImpl {
     }
 
     @PostMapping(consumes = "application/json", value="save")
-    public ResponseEntity<Pharmacy> save(@RequestBody Pharmacy pharmacy) {
-        return new ResponseEntity<>(pharmacyService.save(pharmacy), HttpStatus.OK);
+    public ResponseEntity<Pharmacy> savePharmacy(@RequestBody PharmacyAdminPharmacyDTO pharmacy) {
+        return new ResponseEntity<>(pharmacyService.savePharmacy(pharmacy), HttpStatus.OK);
     }
 
 

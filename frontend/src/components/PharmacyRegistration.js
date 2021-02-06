@@ -1,7 +1,8 @@
 import React from "react";
-import {Button, Container} from "react-bootstrap";
+import {Button, Col, Container, Form} from "react-bootstrap";
 import Script from 'react-load-script';
 import Select from "react-select";
+import axios from "axios";
 
 const options = [
     { value: 'Marko', label: 'Marko Markovic' },
@@ -16,7 +17,6 @@ export default class PharmacyRegistration extends React.Component {
             pharmacy: {
                 name: '',
                 description: '',
-                pharmacyAdmin: [],
                 address: {
                     street: "",
                     town: "",
@@ -24,34 +24,53 @@ export default class PharmacyRegistration extends React.Component {
                     latitude: 51.507351,
                     longitude: -0.127758
                 },
+            },addressPom: {
+                street: "",
+                town: "",
+                country: "",
+                latitude: 51.507351,
+                longitude: -0.127758
             },
             selectedOption: null,
             numberOfRows: 1,
             streetP: "",
             townP: "",
             countryP: "",
+            pharmacyAdmins: [],
+            admin:"",
             errors: {
                 pharmacy: {
                     name: 'Enter name',
                     description: 'Enter description',
                     address: 'Choose address',
-                    pharmacyAdmin: 'Select admin',
+                   // pharmacyAdmin: 'Select admin',
                 },
             }
         }
     }
 
-    handleAdminChange = selectedOption => {
-        const newitems = this.state.pharmacy.pharmacyAdmin
-        newitems.push(selectedOption)
+    async componentDidMount() {
+        await axios.get("http://localhost:8080/api/pharmacyAdmin").then(res => {
+            this.setState({
+                pharmacyAdmins : res.data
+            });
+        })
+        console.log("nema")
+        console.log(this.state.pharmacyAdmins)
+    }
 
+    handleAdminSelected=async(event)=>{
+        const target = event.target;
+        let value = event.target.value;
+        console.log(value)
         this.setState({
-            pharmacyAdmin: newitems
-        });
-        console.log(`Option selected:`, selectedOption);
-        this.selectErrors(selectedOption)
-
-    };
+            admin : value
+        })
+        this.state.admin=value;
+        console.log("ALOO")
+        console.log(this.state.admin)
+        //this.selectErrors()
+    }
 
     handleInputChange = (event) => {
 
@@ -85,17 +104,17 @@ export default class PharmacyRegistration extends React.Component {
                 if (this.setAddressParams(address)) {
                     this.setState(
                         {
-                            pharmacy: {
-                                address: {
-                                    street: this.state.streetP,
-                                    town: this.state.townP,
-                                    country: this.state.countryP,
-                                    latitude: addressObject.geometry.location.lat(),
-                                    longitude: addressObject.geometry.location.lng()
-                                }
+                            addressPom: {
+                                street: this.state.streetP,
+                                town: this.state.townP,
+                                country: this.state.countryP,
+                                latitude: addressObject.geometry.location.lat(),
+                                longitude: addressObject.geometry.location.lng(),
+
                             },
                         }
                     );
+                    this.state.pharmacy.address=this.state.addressPom;
                 }
             } else {
                 this.addressErrors(false)
@@ -177,6 +196,7 @@ export default class PharmacyRegistration extends React.Component {
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form')
             console.log(this.state.pharmacy)
+            this.sendParams()
         } else {
             console.log('Invalid Form')
         }
@@ -188,6 +208,27 @@ export default class PharmacyRegistration extends React.Component {
             item && item[1].length > 0 && (valid = false)
         })
         return valid;
+    }
+
+    async sendParams() {
+        axios
+            .post('http://localhost:8080/api/pharmacy/save', {
+                'id':'',
+                'name': this.state.pharmacy.name,
+                'description' : this.state.pharmacy.description,
+                'address' : {
+                        'street': this.state.pharmacy.address.street,
+                        'town': this.state.pharmacy.address.town,
+                        'country': this.state.pharmacy.address.country,
+                        'latitude': this.state.pharmacy.address.latitude,
+                        'longitude': this.state.pharmacy.address.longitude
+                    },
+                'pharmacyAdminId':this.state.admin
+            })
+            .then(res => {
+                    alert("BRAVO")
+            });
+
     }
 
 
@@ -233,12 +274,15 @@ export default class PharmacyRegistration extends React.Component {
                 <div className="row" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <label className="col-sm-2 col-form-label">Pharmacy admin</label>
                     <div className="col-sm-3 mb-2">
-                        <Select isSearchable placeholder="Choose..." value={selectedOption}
-                                onChange={this.handleAdminChange}
-                                options={options}
-                        />
-                        {this.state.submitted && this.state.errors.pharmacy.pharmacyAdmin.length > 0 &&
+                        <Form.Control placeholder="Medication" as={"select"} value={this.state.pharmacyAdmins.id} onChange={this.handleAdminSelected}>
+                            <option disabled={true} selected="selected">Choose</option>
+                            {this.state.pharmacyAdmins.map(pharmacyAdmin =>
+                                <option key={pharmacyAdmin.id} value={pharmacyAdmin.id}>{pharmacyAdmin.firstName} {pharmacyAdmin.lastName}</option>
+                            )}
+                        </Form.Control>
+                        {/*} {this.state.submitted && this.state.errors.pharmacy.pharmacyAdmin.length > 0 &&
                         <span className="text-danger">{this.state.errors.pharmacy.pharmacyAdmin}</span>}
+                        */}
                     </div>
                 </div>
 
