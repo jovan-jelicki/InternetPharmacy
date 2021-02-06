@@ -1,6 +1,7 @@
 package app.controller.impl;
 
 import app.dto.PharmacyAdminDTO;
+import app.dto.PharmacyAdminRegistrationDTO;
 import app.dto.UserPasswordDTO;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.PharmacyAdmin;
@@ -51,11 +52,10 @@ public class PharmacyAdminControllerImpl {
         return new ResponseEntity<>(new PharmacyAdminDTO(this.pharmacyAdminService.save(pharmacyAdmin)), HttpStatus.CREATED);
     }
 
-    @PostMapping(consumes = "application/json", value="save")
-    public ResponseEntity<PharmacyAdmin> saveAdmin(@RequestBody PharmacyAdmin pharmacyAdmin) {
+    @PostMapping(consumes = "application/json",value="/save")
+    public ResponseEntity<PharmacyAdmin> Admin(@RequestBody PharmacyAdmin pharmacyAdmin) {
         return new ResponseEntity<>(this.pharmacyAdminService.save(pharmacyAdmin), HttpStatus.CREATED);
     }
-
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         Optional<PharmacyAdmin> pharmacyAdmin = this.pharmacyAdminService.read(id);

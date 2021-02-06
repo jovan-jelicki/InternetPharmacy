@@ -202,7 +202,7 @@ export default class AddNewMedication extends React.Component {
 
     }
 
-    onIssueChange=(event) => {
+    handlePharmacySelected=(event) => {
         var option = event.target.id
         this.setState({
             medIssue:option
