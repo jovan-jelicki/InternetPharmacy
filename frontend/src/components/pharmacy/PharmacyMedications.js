@@ -43,6 +43,7 @@ export default class PharmacyMedications extends React.Component{
     }
 
     componentDidMount() {
+        alert(process.env.REACT_APP_BACKEND_ADDRESS);
         this.fetchPharmacyMedicationListingDTOs();
         //this.fetchNotContainedMedicationsInPharmacy();
         this.setState({
@@ -389,7 +390,9 @@ export default class PharmacyMedications extends React.Component{
     }
 
     fetchPharmacyMedicationListingDTOs = () => {
-        axios.get("http://localhost:8080/api/pharmacy/getPharmacyMedicationListing/1").then(res => { //todo change pharmacyid
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy/getPharmacyMedicationListing/1"
+             : 'http://localhost:8080/api/pharmacy/getPharmacyMedicationListing/1';
+        axios.get(path).then(res => { //todo change pharmacyid
             this.setState({
                 pharmacyMedicationListingDTOs : res.data,
                 backupMedications : res.data
