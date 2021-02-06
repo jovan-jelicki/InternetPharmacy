@@ -1,10 +1,9 @@
 package app.controller.impl;
 
-import app.dto.AppointmentListingDTO;
-import app.dto.AppointmentSearchDTO;
-import app.dto.AppointmentUpdateDTO;
-import app.dto.CounselingSearchDTO;
+import app.dto.*;
 import app.model.appointment.Appointment;
+import app.model.grade.Grade;
+import app.model.grade.GradeType;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
 import app.service.*;
@@ -26,14 +25,16 @@ public class SchedulingControllerImpl {
     private final PharmacistService pharmacistService;
     private final DermatologistService dermatologistService;
     private final EmailService emailService;
+    private final GradeService gradeService;
 
     @Autowired
-    public SchedulingControllerImpl(CounselingService counselingService, PharmacistService pharmacistService, ExaminationService examinationService, DermatologistService dermatologistService, EmailService emailService) {
+    public SchedulingControllerImpl(CounselingService counselingService, PharmacistService pharmacistService, ExaminationService examinationService, DermatologistService dermatologistService, EmailService emailService, GradeService gradeService) {
         this.counselingService = counselingService;
         this.pharmacistService = pharmacistService;
         this.examinationService = examinationService;
         this.dermatologistService = dermatologistService;
         this.emailService = emailService;
+        this.gradeService = gradeService;
     }
 
     @PostMapping(value = "/search", consumes = "application/json")
@@ -41,6 +42,11 @@ public class SchedulingControllerImpl {
         if (appointmentSearchKit.getEmployeeType() == EmployeeType.pharmacist) {
             Collection<CounselingSearchDTO> available = new ArrayList<>();
             counselingService.findAvailablePharmacists(appointmentSearchKit).forEach(p -> {
+                CounselingSearchDTO counselingSearchDTO = new CounselingSearchDTO(p);
+                PharmacyPlainDTO pharmacy = counselingSearchDTO.getPharmacyDTO();
+                pharmacy.setGrade(gradeService.findAverageGradeForEntity(pharmacy.getId(), GradeType.pharmacy));
+                PharmacistPlainDTO pharmacist = counselingSearchDTO.getPharmacistPlainDTO();
+                pharmacist.setGrade(gradeService.findAverageGradeForEntity(pharmacist.getId(), GradeType.pharmacist));
                 available.add(new CounselingSearchDTO(p));
             });
             return new ResponseEntity<>(available, HttpStatus.OK);
