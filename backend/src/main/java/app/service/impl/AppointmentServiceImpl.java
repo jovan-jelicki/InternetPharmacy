@@ -7,14 +7,17 @@ import app.model.medication.Medication;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
+import app.model.user.Dermatologist;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
+import app.model.user.Pharmacist;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
 import app.service.PatientService;
+import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -350,6 +353,37 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd, Long pharmacyId, EmployeeType employeeType){
         Collection<Appointment> temp = appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dateStart, dateEnd, pharmacyId, employeeType);
         return temp;
+    }
+
+    @Override
+    public Collection<AppointmentEmployeeDTO> getFinishedForComplaint(Long id, EmployeeType type) {
+        Collection<Appointment>  finishedAppointments=getAllFinishedByPatientAndExaminerType(id,type);
+        ArrayList<Long> dermatologsitIds = new ArrayList<>();
+        ArrayList<Long> pharmacistIds = new ArrayList<>();
+        ArrayList<AppointmentEmployeeDTO> appointmentEmployeeDTOs = new ArrayList<>();
+
+        for(Appointment appointment : finishedAppointments){
+           AppointmentEmployeeDTO appointmentEmployeeDTO= new AppointmentEmployeeDTO();
+            if(type.toString()=="dermatologist" && !dermatologsitIds.contains(appointment.getExaminerId())){
+                    Dermatologist dermatologist=dermatologistService.read(appointment.getExaminerId()).get();
+                    appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
+                    appointmentEmployeeDTO.setEmployeeFirstName(dermatologist.getFirstName());
+                    appointmentEmployeeDTO.setEmployeeLastName(dermatologist.getLastName());
+                    appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
+
+                    dermatologsitIds.add(appointment.getExaminerId());
+            }/*else if(type.toString()=="pharmacist"  && !pharmacistIds.contains(appointment.getExaminerId())){
+                    Pharmacist pharmacist=pharmacistService.read(appointment.getExaminerId()).get();
+                    appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
+                    appointmentEmployeeDTO.setEmployeeFirstName(pharmacist.getFirstName());
+                    appointmentEmployeeDTO.setEmployeeLastName(pharmacist.getLastName());
+                    appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
+
+                    pharmacistIds.add(appointment.getExaminerId());
+
+            }*/
+        }
+            return appointmentEmployeeDTOs;
     }
 
     @Override

@@ -122,15 +122,8 @@ export default class AddNewMedication extends React.Component {
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form')
-            this.sendData();
         } else {
             this.sendParams();
-            console.log(this.state.medication)
-            console.log(this.state.type)
-            console.log(this.state.shape)
-            console.log(this.state.medIngredients)
-            console.log(this.state.medAlternatives)
-            console.log(this.state.medIssue)
             console.log('Invalid Form')
         }
     }

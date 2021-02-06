@@ -35,6 +35,11 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(appointmentService.getFinishedByExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 
+    @PostMapping(consumes = "application/json", value = "/getFinishedForComplaint")
+    public ResponseEntity<Collection<AppointmentEmployeeDTO>> getFinishedForComplaint(@RequestBody ExaminerDTO examinerDTO){
+        return new ResponseEntity<>(appointmentService.getFinishedForComplaint(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<Collection<Appointment>> read() {
         return new ResponseEntity<>(appointmentService.read(), HttpStatus.OK);
