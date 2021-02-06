@@ -180,6 +180,11 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public double findAverageGradeForEntity(Long id, GradeType gradeType) {
-        return gradeRepository.findAverageGradeForEntity(id, gradeType);
+        try {
+            return gradeRepository.findAverageGradeForEntity(id, gradeType);
+        }
+        catch(Exception e) {
+            return 0;
+        }
     }
 }

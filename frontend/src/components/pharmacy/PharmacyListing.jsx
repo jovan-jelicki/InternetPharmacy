@@ -2,6 +2,8 @@ import React from 'react';
 import {Card, Col, Row, Badge} from "react-bootstrap";
 import PharmacySearch from './PharmacySearch';
 import axios from 'axios';
+import StarRatings from 'react-star-ratings'
+
 
 export default class PharmacyListing extends React.Component {
     constructor() {
@@ -54,7 +56,7 @@ export default class PharmacyListing extends React.Component {
             const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country 
             return (
                 <Col xs={4} >
-                <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '20rem' }} className="mb-2">
+                <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '25rem' }} className="mb-2">
                     <Card.Body>
                     <Card.Title>{pharmacy.name}</Card.Title>
                         <Card.Subtitle className="mb-5 mt-2 text-muted">{address}</Card.Subtitle>
@@ -62,6 +64,14 @@ export default class PharmacyListing extends React.Component {
                         {pharmacy.description}
                         </Card.Text>
                     </Card.Body>
+                    <Card.Footer>
+                    <StarRatings
+                            starDimension={'25px'}
+                            rating={pharmacy.grade}
+                            starRatedColor='yellow'
+                            numberOfStars={5}
+                        />
+                    </Card.Footer>
                 </Card>
                 </Col>
             )
