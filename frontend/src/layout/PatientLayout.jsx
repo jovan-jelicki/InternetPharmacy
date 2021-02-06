@@ -27,10 +27,7 @@ class PatientLayout extends React.Component {
                                 <NavDropdown.Item href="javascript:;">Reservations</NavDropdown.Item>
                                 <NavDropdown.Item href="javascript:;">Pick Up</NavDropdown.Item>
                             </NavDropdown>
-                            <NavDropdown title="ePrescription" id="collasible-nav-dropdow">
-                                <NavDropdown.Item href="javascript:;">Prescriptions History</NavDropdown.Item>
-                                <NavDropdown.Item href="javascript:;">Medication History</NavDropdown.Item>
-                            </NavDropdown>    
+                            <Nav.Link as={NavLink} to='/patient-eprescription'>ePrescriptions</Nav.Link>  
                         </Nav>
                         <Nav>
                             <NavDropdown title="Account" id="collasible-nav-dropdow">
