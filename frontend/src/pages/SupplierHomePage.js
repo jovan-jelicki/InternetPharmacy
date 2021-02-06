@@ -13,6 +13,7 @@ import CreateOrder from "../components/pharmacy/CreateOrder";
 import CreateNewOffer from "../components/Supplier/CreateNewOffer";
 import SupplierMedicationOffers from "../components/Supplier/SupplierMedicationOffers";
 import SupplierProfile from "../components/Supplier/SupplierProfile";
+import SupplierMedicationListing from "../components/Supplier/SupplierMedicationListing";
 
 export default class SupplierHomePage extends React.Component {
     constructor(props) {
@@ -40,15 +41,17 @@ export default class SupplierHomePage extends React.Component {
         return (
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
-                    <h1 className="display-4">{this.state.supplier.firstName +" " +this.state.supplier.lastName }</h1>
+                    <h1 className="display-4">{this.state.supplier.firstName +" " +this.state.supplier.lastName}</h1>
                 </div>
-
                 <ul className="nav justify-content-center">
                     <li className="nav-item">
                         <a className="nav-link active" href='#' onClick={this.handleChange} name="order">Medication orders</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="offer" onClick={this.handleChange}>My medication offers</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="medications" onClick={this.handleChange}>Medication Listing</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="profile" onClick={this.handleChange}>Profile</a>
@@ -80,6 +83,10 @@ export default class SupplierHomePage extends React.Component {
         else if (this.state.navbar === "profile")
             return (
                 <SupplierProfile/>
+            );
+        else if (this.state.navbar === "medications")
+            return (
+                <SupplierMedicationListing/>
             );
 
     }

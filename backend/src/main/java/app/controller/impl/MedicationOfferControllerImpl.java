@@ -1,5 +1,6 @@
 package app.controller.impl;
 
+import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationOfferDTO;
 import app.service.MedicationOfferService;
 import org.springframework.http.HttpStatus;
@@ -23,8 +24,13 @@ public class MedicationOfferControllerImpl {
         return new ResponseEntity<>(medicationOfferService.createNewMedicationOffer(medicationOffer), HttpStatus.OK);
     }
 
+    @PostMapping(consumes = "application/json", value = "/edit")
+    public ResponseEntity<Boolean> editMedicationOffer(@RequestBody MedicationOfferAndOrderDTO medicationOffer){
+        return new ResponseEntity<>(medicationOfferService.editMedicationOffer(medicationOffer), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/getOffersByOrderId/{orderId}")
-    public ResponseEntity<Collection<MedicationOfferDTO>> createNewMedicationOffer(@PathVariable Long orderId){
+    public ResponseEntity<Collection<MedicationOfferDTO>> getOffersByOrderId(@PathVariable Long orderId){
         return new ResponseEntity<>(medicationOfferService.getOffersByOrderId(orderId), HttpStatus.OK);
     }
 
@@ -34,9 +40,6 @@ public class MedicationOfferControllerImpl {
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
-
-
-
     /*
     @GetMapping(value = "/getAllBySupplier")
     public ResponseEntity<Collection<MedicationOffer>> getMedicationOfferBySupplier(@RequestBody Long supplierId) {

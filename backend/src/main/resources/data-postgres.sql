@@ -410,7 +410,7 @@ VALUES (12, 6000, 3);
 
 
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
-VALUES (1, '2021-03-04', 1, 0);
+VALUES (1, '2021-01-01', 1, 0);
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
 VALUES (2, '2021-03-10', 1, 0);
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
