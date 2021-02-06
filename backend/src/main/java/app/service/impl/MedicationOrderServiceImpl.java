@@ -1,6 +1,7 @@
 package app.service.impl;
 
 import app.dto.MedicationOrderDTO;
+import app.dto.MedicationOrderSupplierDTO;
 import app.model.medication.Medication;
 import app.model.medication.MedicationOrder;
 import app.model.medication.MedicationQuantity;
@@ -63,6 +64,24 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
     @Override
     public Boolean checkIfOrderIsEditable(Long orderId) {
         return medicationOfferService.getOffersByOrderId(orderId).size() == 0;
+    }
+
+    @Override
+    public Collection<MedicationOrderSupplierDTO> getAllActive() {
+        ArrayList<MedicationOrderSupplierDTO> medicationOrders = new ArrayList<>();
+        for(MedicationOrder medicationOrder : this.read()){
+            if(medicationOrder.getActive()){
+                MedicationOrderSupplierDTO medicationOrderSupplierDTO=new MedicationOrderSupplierDTO();
+                medicationOrderSupplierDTO.setMedicationOrderId(medicationOrder.getId());
+                medicationOrderSupplierDTO.setMedicationQuantity(medicationOrder.getMedicationQuantity());
+                medicationOrderSupplierDTO.setPharmacyName(medicationOrder.getPharmacyAdmin().getPharmacy().getName());
+                medicationOrderSupplierDTO.setDeadline(medicationOrder.getDeadline());
+                medicationOrderSupplierDTO.setStatus(medicationOrder.getStatus());
+
+                medicationOrders.add(medicationOrderSupplierDTO);
+            }
+        }
+        return medicationOrders;
     }
 
 

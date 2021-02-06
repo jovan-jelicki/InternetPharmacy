@@ -66,11 +66,16 @@ export default class SupplierRegistration extends React.Component {
                         'latitude' : this.state.supplier.address.latitude,
                         'longitude' : this.state.supplier.address.longitude
                     }
-                }
+                },
+                'approvedAccount':false
+
             })
             .then(res => {
+                alert("Successfully registered!");
 
-            });
+            }).catch(() => {
+            alert("Supplier was not registered successfully!")
+        })
 
     }
     submitForm = async (event) => {
@@ -253,8 +258,6 @@ export default class SupplierRegistration extends React.Component {
                     <div className="col-sm-4">
                     </div>
                 </div>
-                <h1>MedicationQuantity</h1>
-                <h1>medicationOffer</h1>
 
                 <div className="row"style={{marginTop: '1rem'}}>
                     <div className="col-sm-5 mb-2">

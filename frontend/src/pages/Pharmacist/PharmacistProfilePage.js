@@ -29,25 +29,24 @@ export default class PharmacistProfilePage extends React.Component {
     async componentDidMount() {
 
         await axios
-            .get('http://localhost:8080/api/pharmacist/1')
+            .get('http://localhost:8080/api/pharmacist/'  + 1)
             .then(res => {
-                let patient = res.data;
-                console.log(patient)
+                let pharmacist = res.data;
+                console.log(pharmacist)
                 this.setState({
-                    'id' : patient.id,
-                    'firstName' : patient.firstName,
-                    'lastName' : patient.lastName,
-                    'email' : patient.credentials.email,
-                    'password' : patient.credentials.password,
-                    'userType' : patient.userType,
+                    'id' : pharmacist.id,
+                    'firstName' : pharmacist.firstName,
+                    'lastName' : pharmacist.lastName,
+                    'email' : pharmacist.email,
+                    'userType' : pharmacist.userType,
                     'editMode' : false,
                     'changePasswordMode' : false,
-                    'address' : patient.contact.address.street,
-                    'longitude' : patient.contact.address.longitude,
-                    'latitude' : patient.contact.address.latitude,
-                    'town' : patient.contact.address.town,
-                    'country' : patient.contact.address.country,
-                    'phoneNumber' : patient.contact.phoneNumber
+                    'address' : pharmacist.contact.address.street,
+                    'longitude' : pharmacist.contact.address.longitude,
+                    'latitude' : pharmacist.contact.address.latitude,
+                    'town' : pharmacist.contact.address.town,
+                    'country' : pharmacist.contact.address.country,
+                    'phoneNumber' : pharmacist.contact.phoneNumber
                 })
             });
 
@@ -102,7 +101,7 @@ export default class PharmacistProfilePage extends React.Component {
                     'password' : this.state.newPass
                 })
             })
-            .catch(e => alert('Some password is not correct'));
+            .catch(e => alert('Some password is not correct!'));
     }
 
     handleInputChange = (event) => {
@@ -138,10 +137,8 @@ export default class PharmacistProfilePage extends React.Component {
                 'lastName' : this.state.lastName,
                 'userType' : this.state.userType,
                 'credentials' : {
-                    'email' : this.state.email,
-                    'password' : this.state.password
+                    'email': this.state.email,
                 },
-                'penaltyCount' : this.state.penaltyCount,
                 'contact' : {
                     'phoneNumber' : this.state.phoneNumber,
                     'address' : {

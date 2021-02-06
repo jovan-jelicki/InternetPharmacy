@@ -79,13 +79,15 @@ export default class CreateNewOffer extends React.Component{
 
     async sendParams() {
         let orderId=this.props.order.id;
+        console.log("HEH")
+        console.log(this.props.order)
         axios
             .post('http://localhost:8080/api/medicationOffer/new', {
                 'id':'',
                 'cost' : this.state.medicationOffer.cost,
                 'shippingDate' : this.state.medicationOffer.shippingDate,
                 'status' : 0,
-                'medicationOrderId' : 2,
+                'medicationOrderId' : this.props.order.id,
                 'supplierId': 1
             })
             .then(res => {
@@ -118,14 +120,14 @@ export default class CreateNewOffer extends React.Component{
                                     </h5>
                                     <div className="card-body">
                                         <p className="card-text">
-                                            Kreirao : {this.props.order.pharmacyAdmin.firstName + " " + this.props.order.pharmacyAdmin.lastName}
+                                            Created by : {this.props.order.pharmacyName }
                                             <br/>
                                             Status : {this.props.order.status}
                                             <br/>
-                                            Rok isporuke : {this.props.order.deadline.split("T")[0]}
+                                            DeadLine: {this.props.order.deadline.split("T")[0]}
                                             <br/>
                                             <br/>
-                                            Lekovi
+                                            Medications:
                                             <ul>
                                                 {this.props.order.medicationQuantity.map((e, key) => {
                                                     return <option key={key}

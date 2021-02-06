@@ -1,5 +1,6 @@
 package app.controller.impl;
 
+import app.dto.*;
 import app.dto.PharmacistDTO;
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
@@ -35,10 +36,12 @@ public class PharmacistControllerImpl {
     }
 
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<Pharmacist> update(@RequestBody Pharmacist entity) {
+    public ResponseEntity< PharmacistDermatologistProfileDTO> update(@RequestBody PharmacistDermatologistProfileDTO entity) {
         if(!pharmacistService.existsById(entity.getId()) || !pharmacistService.read(entity.getId()).get().getActive())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(pharmacistService.save(entity), HttpStatus.CREATED);
+        Pharmacist pharmacist = pharmacistService.read(entity.getId()).get();
+        pharmacistService.save(entity.convertDtoToPharmacist(pharmacist));
+        return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/getPharmacy/{id}")
@@ -75,9 +78,9 @@ public class PharmacistControllerImpl {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<PharmacistDTO> read(@PathVariable Long id) {
+    public ResponseEntity<PharmacistDermatologistProfileDTO> read(@PathVariable Long id) {
         if (pharmacistService.read(id).isPresent())
-            return new ResponseEntity<>(new PharmacistDTO(pharmacistService.read(id).get()), HttpStatus.OK);
+            return new ResponseEntity<>(new PharmacistDermatologistProfileDTO(pharmacistService.read(id).get()), HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 

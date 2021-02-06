@@ -1,6 +1,7 @@
 package app.controller.impl;
 
 import app.dto.MedicationOrderDTO;
+import app.dto.MedicationOrderSupplierDTO;
 import app.model.medication.MedicationOrder;
 import app.service.MedicationOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,11 @@ public class MedicationOrderController {
     @GetMapping(value = "/getAll")
     public ResponseEntity<Collection<MedicationOrder>> read() {
         return new ResponseEntity<>(medicationOrderService.read(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAllActive")
+    public ResponseEntity<Collection<MedicationOrderSupplierDTO>> getAllActive() {
+        return new ResponseEntity<>(medicationOrderService.getAllActive(), HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json", value = "/newMedicationOrder")

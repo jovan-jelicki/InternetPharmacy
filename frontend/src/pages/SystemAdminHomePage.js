@@ -1,14 +1,15 @@
 import React from "react";
-import PharmacyRegistration from "../components/PharmacyRegistration";
-import DermatologistRegistration from "../components/DermatologistRegistration";
-import SupplierRegistration from "../components/SupplierRegistration";
-import AddNewMedication from "../components/AddNewMedication";
-import Complaints from "../components/Complaints";
-import LoyaltyProgram from "../components/LoyaltyProgram";
-import PharmacyAdminRegistration from "../components/PharmacyAdminRegistration";
-import SystemAdminVacationRequestListing from "../components/SystemAdminVacationRequestListing";
+import PharmacyRegistration from "../components/SystemAdmin/PharmacyRegistration";
+import DermatologistRegistration from "../components/SystemAdmin/DermatologistRegistration";
+import SupplierRegistration from "../components/SystemAdmin/SupplierRegistration";
+import AddNewMedication from "../components/SystemAdmin/AddNewMedication";
+import Complaints from "../components/SystemAdmin/Complaints";
+import LoyaltyProgram from "../components/SystemAdmin/LoyaltyProgram";
+import PharmacyAdminRegistration from "../components/SystemAdmin/PharmacyAdminRegistration";
+import SystemAdminVacationRequestListing from "../components/SystemAdmin/SystemAdminVacationRequestListing";
+import SystemAdminRegistration from "../components/SystemAdmin/SystemAdminRegistration";
 
-export class ISAdminHomePage extends React.Component {
+export class SystemAdminHomePage extends React.Component {
     constructor(props) {
         super(props);
         this.state= {
@@ -40,14 +41,18 @@ export class ISAdminHomePage extends React.Component {
                         <a className="nav-link active" href='#' onClick={this.handleChange} name="pharmacy">Pharmacy registration</a>
                     </li>
                     <li className="nav-item">
+                        <a className="nav-link" href="#" name="pharmacyAdmin" onClick={this.handleChange}>Pharmacy admin registration</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="medication" onClick={this.handleChange}>Add medication</a>
+                    </li>
+                    <li className="nav-item">
                         <a className="nav-link" href="#" name="dermatologist" onClick={this.handleChange}>Dermatologist registration</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="supplier" onClick={this.handleChange}>Supplier registration</a>
                     </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#" name="medication" onClick={this.handleChange}>Add medication</a>
-                    </li>
+
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="complaint" onClick={this.handleChange}>Complaint</a>
                     </li>
@@ -55,11 +60,12 @@ export class ISAdminHomePage extends React.Component {
                         <a className="nav-link" href="#" name="loyalty" onClick={this.handleChange}>Loyalty program</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="pharmacyAdmin" onClick={this.handleChange}>Add new pharmacy admin</a>
-                    </li>
-                    <li className="nav-item">
                         <a className="nav-link" href="#" name="dermatologistVacationRequests" onClick={this.handleChange}>Dermatologist vacation requests</a>
                     </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="systemAdmin" onClick={this.handleChange}>System admin registration</a>
+                    </li>
+
 
                 </ul>
                 {this.renderNavbar()}
@@ -108,6 +114,10 @@ export class ISAdminHomePage extends React.Component {
         else if (this.state.navbar === "dermatologistVacationRequests")
             return (
                 <SystemAdminVacationRequestListing/>
+            );
+        else if (this.state.navbar === "systemAdmin")
+            return (
+                <SystemAdminRegistration/>
             );
     }
 }

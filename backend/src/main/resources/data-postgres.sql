@@ -134,7 +134,7 @@ insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_st
     (15,3,1, 230, '2018-01-01', '2018-02-20');
 
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
- VALUES (0, '2021-01-31', 3, 1,0);
+ VALUES (0, '2021-03-31', 3, 1,0);
 -- INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 -- VALUES (1, '2021-01-28', 2, 4,0);
 -- INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
@@ -410,7 +410,7 @@ VALUES (12, 6000, 3);
 
 
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
-VALUES (1, '2021-03-04', 1, 0);
+VALUES (1, '2021-01-01', 1, 0);
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
 VALUES (2, '2021-03-10', 1, 0);
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
@@ -506,28 +506,51 @@ insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (3, 5, 1, 1, 0);
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (4, 2, 1, 1, 6);
--- insert into grade(id, grade, grade_type, graded_id, patient_id)
---     values (5, 5, 1, 2, 0);
--- insert into grade(id, grade, grade_type, graded_id, patient_id)
---     values (6, 3, 1, 2, 6);
---dermatologist grade
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+     values (5, 5, 1, 2, 0);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+     values (6, 3, 1, 2, 6);
+-- dermatologist grade
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (7, 5, 2, 3, 0);
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (8, 2, 2, 4, 6);
--- insert into grade(id, grade, grade_type, graded_id, patient_id)
---     values (9, 5, 2, 5, 0);
--- insert into grade(id, grade, grade_type, graded_id, patient_id)
---     values (10, 3, 2, 3, 6);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+     values (9, 5, 2, 5, 0);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+     values (10, 3, 2, 3, 6);
 --medication grade
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (11, 4, 3, 0, 0);
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (12, 3, 3, 1, 6);
--- insert into grade(id, grade, grade_type, graded_id, patient_id)
---     values (13, 2, 3, 2, 0);
--- insert into grade(id, grade, grade_type, graded_id, patient_id)
---     values (14, 1, 3, 3, 6);
--- insert into grade(id, grade, grade_type, graded_id, patient_id)
---     values (15, 3, 3, 4, 6);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (13, 2, 3, 2, 0);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (14, 1, 3, 3, 6);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (15, 3, 3, 4, 6);
+
+insert into side_effect(id,name)
+values(0,'allergy');
+insert into side_effect(id,name)
+values(1,'dry mouth');
+insert into side_effect(id,name)
+values(2,'internal bleeding');
+insert into side_effect(id,name)
+values(3,'lost of concentration');
+insert into side_effect(id,name)
+values(4,'aggression');
+insert into side_effect(id,name)
+values(5,'diarrhea');
+insert into side_effect(id,name)
+values(6,'diarrhea');
+insert into side_effect(id,name)
+values(7,'nausea');
+insert into side_effect(id,name)
+values(8,'migraine');
+insert into side_effect(id,name)
+values(9,'dizziness');
+insert into side_effect(id,name)
+values(10,'insomnia');
 

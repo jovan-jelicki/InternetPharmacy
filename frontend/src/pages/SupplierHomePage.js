@@ -1,11 +1,11 @@
 import React from "react";
-import PharmacyRegistration from "../components/PharmacyRegistration";
-import DermatologistRegistration from "../components/DermatologistRegistration";
-import SupplierRegistration from "../components/SupplierRegistration";
-import AddNewMedication from "../components/AddNewMedication";
-import Complaints from "../components/Complaints";
-import LoyaltyProgram from "../components/LoyaltyProgram";
-import PharmacyAdminRegistration from "../components/PharmacyAdminRegistration";
+import PharmacyRegistration from "../components/SystemAdmin/PharmacyRegistration";
+import DermatologistRegistration from "../components/SystemAdmin/DermatologistRegistration";
+import SupplierRegistration from "../components/SystemAdmin/SupplierRegistration";
+import AddNewMedication from "../components/SystemAdmin/AddNewMedication";
+import Complaints from "../components/SystemAdmin/Complaints";
+import LoyaltyProgram from "../components/SystemAdmin/LoyaltyProgram";
+import PharmacyAdminRegistration from "../components/SystemAdmin/PharmacyAdminRegistration";
 import MedicationOrdersForSupplier from "../components/Supplier/MedicationOrdersForSupplier";
 import MedicationOrdersList from "../components/pharmacy/MedicationOrdersList";
 import MedicationOffers from "../components/pharmacy/MedicationOffers";
@@ -13,6 +13,7 @@ import CreateOrder from "../components/pharmacy/CreateOrder";
 import CreateNewOffer from "../components/Supplier/CreateNewOffer";
 import SupplierMedicationOffers from "../components/Supplier/SupplierMedicationOffers";
 import SupplierProfile from "../components/Supplier/SupplierProfile";
+import SupplierMedicationListing from "../components/Supplier/SupplierMedicationListing";
 
 export default class SupplierHomePage extends React.Component {
     constructor(props) {
@@ -40,15 +41,17 @@ export default class SupplierHomePage extends React.Component {
         return (
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
-                    <h1 className="display-4">{this.state.supplier.firstName +" " +this.state.supplier.lastName }</h1>
+                    <h1 className="display-4">{this.state.supplier.firstName +" " +this.state.supplier.lastName}</h1>
                 </div>
-
                 <ul className="nav justify-content-center">
                     <li className="nav-item">
                         <a className="nav-link active" href='#' onClick={this.handleChange} name="order">Medication orders</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="offer" onClick={this.handleChange}>My medication offers</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="medications" onClick={this.handleChange}>Medication Listing</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="profile" onClick={this.handleChange}>Profile</a>
@@ -80,6 +83,10 @@ export default class SupplierHomePage extends React.Component {
         else if (this.state.navbar === "profile")
             return (
                 <SupplierProfile/>
+            );
+        else if (this.state.navbar === "medications")
+            return (
+                <SupplierMedicationListing/>
             );
 
     }

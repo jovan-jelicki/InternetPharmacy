@@ -15,11 +15,15 @@ public class MedicationOfferAndOrderDTO {
     private LocalDateTime deadline;
     private List<MedicationQuantity> medicationQuantity;
     private MedicationOrderStatus orderStatus;
+    private Long offerId;
+    private Long orderId;
 
     public MedicationOfferAndOrderDTO() {
     }
 
-    public MedicationOfferAndOrderDTO(double cost, LocalDateTime shippingDate, MedicationOfferStatus offerStatus, String pharmacyName, LocalDateTime deadline, List<MedicationQuantity> medicationQuantity, MedicationOrderStatus orderStatus) {
+    public MedicationOfferAndOrderDTO(double cost, LocalDateTime shippingDate, MedicationOfferStatus offerStatus,
+                                      String pharmacyName, LocalDateTime deadline, List<MedicationQuantity> medicationQuantity,
+                                      MedicationOrderStatus orderStatus,Long offerId,Long orderId) {
         this.cost = cost;
         this.shippingDate = shippingDate;
         this.offerStatus = offerStatus;
@@ -27,7 +31,35 @@ public class MedicationOfferAndOrderDTO {
         this.deadline = deadline;
         this.medicationQuantity = medicationQuantity;
         this.orderStatus = orderStatus;
+        this.offerId=offerId;
+        this.orderId=orderId;
     }
+
+    public String getPharmacyName() {
+        return pharmacyName;
+    }
+
+    public void setPharmacyName(String pharmacyName) {
+        this.pharmacyName = pharmacyName;
+    }
+
+    public Long getOfferId() {
+        return offerId;
+    }
+
+    public void setOfferId(Long offerId) {
+        this.offerId = offerId;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+
 
     public double getCost() {
         return cost;

@@ -35,7 +35,7 @@ public class DermatologistControllerImpl implements DermatologistController {
     }
 
 
-    @PostMapping(consumes = "application/json")
+    @PostMapping(consumes = "application/json", value="/save")
     public ResponseEntity<Dermatologist> save(@RequestBody Dermatologist entity) {
         return new ResponseEntity<>(dermatologistService.save(entity), HttpStatus.CREATED);
     }
@@ -50,10 +50,12 @@ public class DermatologistControllerImpl implements DermatologistController {
     }
 
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<Dermatologist> update(@RequestBody DermatologistDTO entity) {
+    public ResponseEntity<PharmacistDermatologistProfileDTO> update(@RequestBody PharmacistDermatologistProfileDTO entity) {
         if(!dermatologistService.existsById(entity.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(dermatologistService.save(convertDTOtoEntity(entity)), HttpStatus.CREATED);
+        Dermatologist dermatologist = dermatologistService.read(entity.getId()).get();
+        dermatologistService.save(entity.convertDtoToDermatologist(dermatologist));
+        return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
     @GetMapping(value = "/isAccountApproved/{id}")
     public ResponseEntity<Boolean> isAccountApproved(@PathVariable Long id){
@@ -74,8 +76,8 @@ public class DermatologistControllerImpl implements DermatologistController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Optional<Dermatologist>> read(@PathVariable Long id) {
-        return new ResponseEntity<>(dermatologistService.read(id), HttpStatus.OK);
+    public ResponseEntity<PharmacistDermatologistProfileDTO> read(@PathVariable Long id) {
+        return new ResponseEntity<>(new PharmacistDermatologistProfileDTO(dermatologistService.read(id).get()), HttpStatus.OK);
     }
 
 
