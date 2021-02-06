@@ -56,7 +56,7 @@ export default class AddNewMedication extends React.Component {
                 sideEffects : res.data
             });
         })
-        console.log("alternativni")
+        console.log("side")
         console.log(this.state.sideEffects);
     }
 
@@ -70,7 +70,7 @@ export default class AddNewMedication extends React.Component {
                 'medicationShape':this.state.shape,
                 'ingredient':this.state.medIngredients,
                 'alternatives':this.state.medAlternatives,
-                'sideEffect':'',
+                'sideEffect':this.state.medSideEffects,
                 'manufacturer':this.state.medication.manufacturer,
                 'medicationIssue':this.state.medIssue,
                 'note':this.state.medication.note,
@@ -247,7 +247,21 @@ export default class AddNewMedication extends React.Component {
         //this.setState({ingredientBackup: ingr})
         console.log(this.state.medAlternatives)
         this.validationErrorMessage(event)
-
+    }
+    onSideEffectsChange=(event) => {
+        var option = event.target.id
+        let sideEffects = this.state.sideEffects
+        let effects=[]
+        sideEffects.forEach(sideEffect => {
+            if (sideEffect.name === option)
+                sideEffect.isChecked =  event.target.checked
+            if(sideEffect.isChecked){
+                effects.push(sideEffect)
+            }
+        })
+        this.state.medSideEffects=effects;
+        //this.setState({ingredientBackup: ingr})
+        console.log(this.state.medSideEffects)
     }
 
 
@@ -394,9 +408,17 @@ export default class AddNewMedication extends React.Component {
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
                     <label  className="col-sm-2 col-form-label" style={{fontWeight: "bolder"}}>Side effects</label>
                     <div className="col-sm-6 mb-2">
-                        { this.state.submitted && this.state.errors.medication.sideEffects.length > 0 &&  <span className="text-danger">{this.state.errors.medication.sideEffects}</span>}
-                    </div>
-                    <div className="col-sm-4">
+                        {this.state.sideEffects.map(sideEffect =>
+                            <fieldset>
+                                <Form>
+                                    <Form.Group as={Row}>
+                                        <Row sm={10} style={{'marginLeft':'1rem', marginTop:'0.6rem'}}>
+                                            <Form.Check style={{'marginLeft':'1rem'}} type="checkbox" label={sideEffect.name}  name="sideEffects" id={sideEffect.name}  onChange={this.onSideEffectsChange} />
+                                        </Row>
+                                    </Form.Group>
+                                </Form>
+                            </fieldset>
+                        )}
                     </div>
                 </div>
 
