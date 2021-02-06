@@ -1,6 +1,7 @@
 import React from 'react';
-import {Card, Col, Row, Badge} from "react-bootstrap";
+import {Card, Col, Row, Alert} from "react-bootstrap";
 import PharmacySearch from './PharmacySearch';
+import PharmacyFilter from './PharmacyFilter';
 import axios from 'axios';
 import StarRatings from 'react-star-ratings'
 
@@ -13,6 +14,7 @@ export default class PharmacyListing extends React.Component {
         }
         this.search = this.search.bind(this)
         this.cancel = this.cancel.bind(this)
+        this.gradeFilter = this.gradeFilter.bind(this)
     }
 
     async componentDidMount() {
@@ -50,6 +52,12 @@ export default class PharmacyListing extends React.Component {
         })
     }
 
+    gradeFilter(grade) {
+
+        this.setState({
+            pharmacies : [...this.pharmaciesBackup.filter(p => p.grade >= grade)]
+        })
+    }
 
     render() {
         const pharmacies = this.state.pharmacies.map((pharmacy, index) => {
@@ -82,9 +90,16 @@ export default class PharmacyListing extends React.Component {
                         <h2 className={'mt-5 ml-3'} id="pharmacies">Pharmacies</h2> 
                 </Row>
                 <PharmacySearch search={this.search} cancel={this.cancel}/>
-                <Row className={'mt-4'}>
-                    {pharmacies}
-                </Row>
+                <PharmacyFilter gradeFilter={this.gradeFilter}/>
+                {this.state.pharmacies.length != 0 ?
+                    <Row className={'mt-4'}>
+                            {pharmacies}
+                    </Row>
+                    :
+                    <Alert variant='dark'  show={true}  style={({textAlignVertical: "center", textAlign: "center", marginLeft:'5rem',marginRight:'5rem', backgroundColor:'darkgray'})}>
+                    No records found. Try again.
+                    </Alert>
+                }
             </div>
             
         )
