@@ -58,34 +58,40 @@ export default class PharmacyPage extends React.Component{
                         <a className="nav-link" href="#" name="description" onClick={this.handleChange}>Description</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link active" href='#' onClick={this.handleChange} name="employees">Dermatolozi & farmaceuti</a>
+                        <a className="nav-link active" href='#' onClick={this.handleChange} name="employees">Dermatologists & pharmacists</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link active" href='#' onClick={this.handleChange} name="appointments">Pregledi dermatologa</a>
+                        <a className="nav-link active" href='#' onClick={this.handleChange} name="appointments">Dermatologist appointments</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="medications" onClick={this.handleChange}>Lekovi</a>
+                        <a className="nav-link" href="#" name="medications" onClick={this.handleChange}>Medications</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="vacationRequests" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Godisnji odmori</a>
+                        <a className="nav-link" href="#" name="vacationRequests" onClick={this.handleChange}
+                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Godisnji odmori</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="promotions" onClick={this.handleChange}>Akcije & promocije</a>
+                        <a className="nav-link" href="#" name="promotions" onClick={this.handleChange}>Actions & Promotions</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="medicationOrders" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Narudzbenice & ponude</a>
+                        <a className="nav-link" href="#" name="medicationOrders" onClick={this.handleChange}
+                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Orders & Offers</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="medicationQueries" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Upiti nad lekovima</a>
+                        <a className="nav-link" href="#" name="medicationQueries" onClick={this.handleChange}
+                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Medication queries</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="priceList" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Price list</a>
+                        <a className="nav-link" href="#" name="priceList" onClick={this.handleChange}
+                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Price list</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="editPharmacyProfile" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Edit pharmacy profile</a>
+                        <a className="nav-link" href="#" name="editPharmacyProfile" onClick={this.handleChange}
+                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Edit pharmacy profile</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="charts" onClick={this.handleChange} style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Charts</a>
+                        <a className="nav-link" href="#" name="charts" onClick={this.handleChange}
+                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Charts</a>
                     </li>
                 </ul>
                 {this.renderNavbar()}

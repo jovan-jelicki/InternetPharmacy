@@ -21,12 +21,12 @@ public class PharmacyMedicationListingDTO {
     private MedicationType type;
     private Set<Ingredient> ingredients;
     private Set<Medication> alternatives;
-    private int grade;
+    private double grade;
 
     public PharmacyMedicationListingDTO() {
     }
 
-    public PharmacyMedicationListingDTO(MedicationQuantity medicationQuantity, double price, int grade, Long pharmacyId) {
+    public PharmacyMedicationListingDTO(MedicationQuantity medicationQuantity, double price, double grade, Long pharmacyId) {
         this.pharmacyId = pharmacyId;
         this.medicationId = medicationQuantity.getMedication().getId();
         this.medicationQuantityId = medicationQuantity.getId();

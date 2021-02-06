@@ -3,6 +3,7 @@ import {Button, Modal, FormControl, Navbar} from "react-bootstrap";
 import MedicationOrdersList from "./MedicationOrdersList";
 import MedicationOffers from "./MedicationOffers";
 import CreateOrder from "./CreateOrder";
+import EditOrder from "./EditOrder";
 
 export default class PharmacyMedicationOrders extends React.Component{
     constructor(props) {
@@ -53,6 +54,10 @@ export default class PharmacyMedicationOrders extends React.Component{
         else if (this.state.showContent === 'showCreateOrder')
             return (
               <CreateOrder showListOrders={this.changeContent} />
+            );
+        else if (this.state.showContent === 'editOrder')
+            return (
+                <EditOrder showListOrders={this.changeContent} order = {this.state.clickedMedicationOrder}/>
             );
     }
 

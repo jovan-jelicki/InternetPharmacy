@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Modal} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
 
@@ -28,19 +28,19 @@ export default class MedicationOffers extends React.Component {
                         <div className="col-md-12">
                             <div className="card">
                                 <h5 className="card-header">
-                                    Narudzbenica
+                                    Medication order
                                 </h5>
 
                                 <div className="card-body">
                                     <p className="card-text">
-                                        Kreirao : {this.state.medicationOrder.pharmacyAdminFirstName + " " + this.state.medicationOrder.pharmacyAdminLastName}
+                                        Created by : {this.state.medicationOrder.pharmacyAdminFirstName + " " + this.state.medicationOrder.pharmacyAdminLastName}
                                         <br/>
                                         Status : {this.state.medicationOrder.status}
                                         <br/>
-                                        Rok isporuke : {moment(this.state.medicationOrder.deadLine).format("DD.MM.YYYY")}
+                                        Shipping deadline : {moment(this.state.medicationOrder.deadLine).format("DD.MM.YYYY")}
                                         <br/>
                                         <br/>
-                                        Lekovi
+                                        Medications
                                         <ul>
                                             {this.state.medicationOrder.medicationQuantity.map((medicationQuantity,index) =>
                                                 <li key={index}>{medicationQuantity.medication.name + " : " + medicationQuantity.quantity}</li>
@@ -54,49 +54,36 @@ export default class MedicationOffers extends React.Component {
                 </div>
 
                 <br/>
-                <h2>Ponude</h2>
-                <table className="table table-hover">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Supplier</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Shipping date</th>
-                        <th scope="col">Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {this.state.medicationOffers.map((medicationOffer, index) => (
+                <div style={{marginLeft : '1rem'}}>
+                    <h2>Offers</h2>
+                    <table className="table table-hover" >
+                        <thead>
                         <tr>
-                            <th scope="row">{index+1}</th>
-                            <td>{medicationOffer.supplierFirstName + " " + medicationOffer.supplierLastName}</td>
-                            <td>{medicationOffer.cost}</td>
-                            <td>{moment(medicationOffer.shippingDate).format("DD.MM.YYYY")}</td>
-                            <td>{medicationOffer.status}</td>
-                            <td style={medicationOffer.status === 'pending' ? {display : 'inline-block'} : {display : 'none'}}>
-                                <Button variant="outline-success" onClick={() => this.acceptOffer(medicationOffer)}>
-                                    Accept
-                                </Button>
-                            </td >
+                            <th scope="col">#</th>
+                            <th scope="col">Supplier</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Shipping date</th>
+                            <th scope="col">Status</th>
                         </tr>
-                    ))}
-                    </tbody>
-                </table>
-
-                {/*<Modal show={this.state.showModal} onHide={this.handleModal}>*/}
-                {/*    <Modal.Header closeButton>*/}
-                {/*        <Modal.Title>Modal heading</Modal.Title>*/}
-                {/*    </Modal.Header>*/}
-                {/*    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>*/}
-                {/*    <Modal.Footer>*/}
-                {/*        <Button variant="secondary" onClick={this.handleModal}>*/}
-                {/*            Close*/}
-                {/*        </Button>*/}
-                {/*        <Button variant="primary" onClick={this.handleModal}>*/}
-                {/*            Save Changes*/}
-                {/*        </Button>*/}
-                {/*    </Modal.Footer>*/}
-                {/*</Modal>*/}
+                        </thead>
+                        <tbody>
+                        {this.state.medicationOffers.map((medicationOffer, index) => (
+                            <tr>
+                                <th scope="row">{index+1}</th>
+                                <td>{medicationOffer.supplierFirstName + " " + medicationOffer.supplierLastName}</td>
+                                <td>{medicationOffer.cost}</td>
+                                <td>{moment(medicationOffer.shippingDate).format("DD.MM.YYYY")}</td>
+                                <td>{medicationOffer.status}</td>
+                                <td style={medicationOffer.status === 'pending' ? {display : 'inline-block'} : {display : 'none'}}>
+                                    <Button variant="outline-success" onClick={() => this.acceptOffer(medicationOffer)}>
+                                        Accept
+                                    </Button>
+                                </td >
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         )
     }
@@ -122,10 +109,4 @@ export default class MedicationOffers extends React.Component {
                 })
             })
     }
-
-    // handleModal = () => {
-    //     this.setState({
-    //         showModal : !this.state.showModal
-    //     });
-    // }
 }

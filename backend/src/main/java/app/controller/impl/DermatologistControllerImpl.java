@@ -3,11 +3,13 @@ package app.controller.impl;
 import app.controller.DermatologistController;
 import app.dto.*;
 import app.model.appointment.Appointment;
+import app.model.grade.GradeType;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
 import app.model.user.EmployeeType;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
+import app.service.GradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +25,13 @@ import java.util.Optional;
 public class DermatologistControllerImpl implements DermatologistController {
     private final DermatologistService dermatologistService;
     private final AppointmentService appointmentService;
+    private final GradeService gradeService;
 
     @Autowired
-    public DermatologistControllerImpl(DermatologistService dermatologistService, AppointmentService appointmentService) {
+    public DermatologistControllerImpl(DermatologistService dermatologistService, AppointmentService appointmentService, GradeService gradeService) {
         this.dermatologistService = dermatologistService;
         this.appointmentService = appointmentService;
+        this.gradeService = gradeService;
     }
 
 
@@ -117,7 +121,8 @@ public class DermatologistControllerImpl implements DermatologistController {
     public ResponseEntity<Collection<DermatologistDTO>> getAllDermatologistWorkingInPharmacy(@PathVariable Long id) {
         ArrayList<DermatologistDTO> dermatologistDTOS = new ArrayList<>();
         for (Dermatologist dermatologist : dermatologistService.getAllDermatologistWorkingInPharmacy(id))
-            dermatologistDTOS.add(new DermatologistDTO(dermatologist));
+            dermatologistDTOS.add(new DermatologistDTO(dermatologist, gradeService.findAverageGradeForEntity(dermatologist.getId(), GradeType.dermatologist)));
+
         return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 

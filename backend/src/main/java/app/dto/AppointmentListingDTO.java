@@ -18,7 +18,7 @@ public class AppointmentListingDTO {
     private double cost;
     private Period period;
     private AppointmentStatus appointmentStatus;
-    private int dermatologistGrade;
+    private double dermatologistGrade;
 
     public AppointmentListingDTO() {
     }

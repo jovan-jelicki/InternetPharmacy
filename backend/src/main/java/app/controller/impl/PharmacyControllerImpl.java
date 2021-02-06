@@ -1,7 +1,9 @@
 package app.controller.impl;
 
 import app.dto.*;
+import app.model.grade.GradeType;
 import app.model.pharmacy.Pharmacy;
+import app.service.GradeService;
 import app.service.PharmacyService;
 import app.util.DTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,12 @@ import java.util.Collection;
 public class PharmacyControllerImpl {
 
     private final PharmacyService pharmacyService;
+    private final GradeService gradeService;
 
     @Autowired
-    public PharmacyControllerImpl(PharmacyService pharmacyService) {
+    public PharmacyControllerImpl(PharmacyService pharmacyService, GradeService gradeService) {
         this.pharmacyService = pharmacyService;
+        this.gradeService = gradeService;
     }
 
     @GetMapping
@@ -34,7 +38,7 @@ public class PharmacyControllerImpl {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacyDTO> read(@PathVariable Long id) {
-        return new ResponseEntity<>(new PharmacyDTO(pharmacyService.read(id).get()), HttpStatus.OK);
+        return new ResponseEntity<>(new PharmacyDTO(pharmacyService.read(id).get(), gradeService.findAverageGradeForEntity(id, GradeType.pharmacy)), HttpStatus.OK);
     }
 
     @PostMapping(value = "/search")

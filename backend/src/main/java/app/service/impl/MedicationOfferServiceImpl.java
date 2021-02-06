@@ -1,10 +1,7 @@
 package app.service.impl;
 
 import app.dto.MedicationOfferDTO;
-import app.model.medication.MedicationOffer;
-import app.model.medication.MedicationOfferStatus;
-import app.model.medication.MedicationOrder;
-import app.model.medication.MedicationQuantity;
+import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.Supplier;
 import app.repository.MedicationOfferRepository;
@@ -93,7 +90,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         }
         return medicationOfferDTOS;
     }
-    private void updatePharmacyMedicationQuantity(MedicationOffer medicationOffer, MedicationOrder medicationOrder) {
+    private void updatePharmacyMedicationQuantity(MedicationOrder medicationOrder) {
         Pharmacy pharmacy = pharmacyService.read(medicationOrder.getPharmacyAdmin().getPharmacy().getId()).get();
         ArrayList<MedicationQuantity> medicationsToAdd = new ArrayList<>();
         for (MedicationQuantity medicationQuantityOrder : medicationOrder.getMedicationQuantity()) {
@@ -131,13 +128,14 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
 
                 //TODO send confirmation email to supplier
 
-                updatePharmacyMedicationQuantity(medicationOffer, medicationOrder);
+                updatePharmacyMedicationQuantity(medicationOrder);
                 continue;
             }
             medicationOffer.setStatus(MedicationOfferStatus.rejected);
             this.save(medicationOffer);
         }
-        return true;
+        medicationOrder.setStatus(MedicationOrderStatus.processed);
+        return medicationOrderService.save(medicationOrder) != null;
     }
 
 

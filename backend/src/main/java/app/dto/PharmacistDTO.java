@@ -31,6 +31,17 @@ public class PharmacistDTO {
         this.workingHours = pharmacist.getWorkingHours();
         workingHours.getPharmacy().setMedicationReservation(null);
         workingHours.getPharmacy().setPrescriptions(null);
+    }
 
+    public PharmacistDTO(Pharmacist pharmacist, double grade) {
+        this.id = pharmacist.getId();
+        this.firstName = pharmacist.getFirstName();
+        this.lastName = pharmacist.getLastName();
+        this.contact = pharmacist.getContact();
+        this.userType = pharmacist.getUserType();
+        this.grade = grade;
+        this.workingHours = pharmacist.getWorkingHours();
+        workingHours.getPharmacy().setMedicationReservation(null);
+        workingHours.getPharmacy().setPrescriptions(null);
     }
 }
