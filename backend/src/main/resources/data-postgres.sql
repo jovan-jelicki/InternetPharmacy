@@ -407,6 +407,8 @@ INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (11, 5123, 3);
 INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (12, 6000, 3);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (13, 2000, 2);
 
 
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
@@ -448,14 +450,15 @@ insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
 VALUES(1,10);
 insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
 VALUES(1,11);
+insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
+VALUES(1,13);
 
 insert into medication_offer(id, cost,shipping_date,status,medication_order_id)
 VALUES(1,111,'2022-02-03',0,1);
 insert into medication_offer(id, cost,shipping_date,status,medication_order_id)
 VALUES(2,96,'2022-02-03',0,2);
 
-insert into supplier_medication_offer(supplier_id, medication_offer_id)
-VALUES(1,1);
+
 insert into supplier_medication_offer(supplier_id, medication_offer_id)
 VALUES(1,2);
 insert into promotion(id, content, period_end, period_start, pharmacy_id)
