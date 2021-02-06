@@ -1,6 +1,7 @@
 import React from 'react';
 import { Map, GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react';
 import {PharmacyPage} from "../../pages/PharmacyPage";
+import StarRatings from "react-star-ratings";
 
 const mapStyles = {
     width: '50%',
@@ -38,9 +39,17 @@ export class PharmacyDescription extends React.Component{
                                 <div className="card-body">
                                     <p className="card-text">
                                         Address : {this.state.pharmacy.address.street} <br/>
-                                        Grade : {this.state.pharmacy.grade} <br/>
+                                        Grade :  <span style={{marginLeft : '1rem'}}> </span>
+                                        <StarRatings
+                                            starDimension={'15px'}
+                                            rating={this.state.pharmacy.grade}
+                                            starRatedColor='gold'
+                                            numberOfStars={5}
+                                        />
+                                        <br/>
                                         Description : {this.state.pharmacy.description} <br/>
                                     </p>
+
                                 </div>
                             </div>
                         </div>

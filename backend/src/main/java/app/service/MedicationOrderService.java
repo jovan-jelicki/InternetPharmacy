@@ -16,4 +16,8 @@ public interface MedicationOrderService extends CRUDService<MedicationOrder> {
     Boolean deleteMedicationOrder(Long orderId);
 
     void setMedicationOfferService(MedicationOfferService medicationOfferService);
+
+    Boolean editMedicationOrder(MedicationOrderDTO medicationOrderDTO);
+
+    Boolean checkIfOrderIsEditable(Long orderId);
 }

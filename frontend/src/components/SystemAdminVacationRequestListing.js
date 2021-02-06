@@ -34,12 +34,11 @@ export default class SystemAdminVacationRequestListing extends React.Component{
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Ime</th>
-                            <th scope="col">Prezime</th>
-                            <th scope="col">Tip radnika</th>
-                            <th scope="col">Razlog</th>
-                            <th scope="col">Pocetak odsustva</th>
-                            <th scope="col">Kraj odsustva</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            {/*<th scope="col">Tip radnika</th>*/}
+                            <th scope="col">Reason</th>
+                            <th scope="col">Absence period</th>
                             <th scope="col">Status</th>
 
                         </tr>
@@ -50,10 +49,10 @@ export default class SystemAdminVacationRequestListing extends React.Component{
                                 <th scope="row">{index+1}</th>
                                 <td>{vacationRequest.employeeFirstName}</td>
                                 <td>{vacationRequest.employeeLastName}</td>
-                                <td>{vacationRequest.employeeType}</td>
+                                {/*<td>{vacationRequest.employeeType}</td>*/}
                                 <td>{vacationRequest.vacationNote}</td>
-                                <td>{moment(vacationRequest.period.periodStart).format('DD.MM.YYYY') }</td>
-                                <td>{moment(vacationRequest.period.periodEnd).format('DD.MM.YYYY') }</td>
+                                <td>{moment(vacationRequest.period.periodStart).format('DD.MM.YYYY') + "  -  " +
+                                    moment(vacationRequest.period.periodEnd).format('DD.MM.YYYY') }</td>
                                 <td>{vacationRequest.vacationRequestStatus}</td>
 
                                 <td style={this.state.userType === 'systemAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>

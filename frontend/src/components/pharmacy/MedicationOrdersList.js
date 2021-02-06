@@ -11,11 +11,8 @@ export default class MedicationOrdersList extends React.Component {
         this.state = {
             userType : 'pharmacyAdmin',
             medicationOrders : [],
-            showModal : false,
             showContent : 'listOrders',
-            radioAll : '1',
-            radioPending : '2',
-            radioProcessed : '3'
+            backupMedicationOrders : [],
         }
     }
 
@@ -28,7 +25,7 @@ export default class MedicationOrdersList extends React.Component {
         return (
             <div className="container-fluid">
 
-                <h1>Narudzbenice</h1>
+                <h1>Orders</h1>
 
                 <br/>
                 <Button variant="success" onClick={this.createOrder}>Create order</Button>
@@ -36,14 +33,14 @@ export default class MedicationOrdersList extends React.Component {
 
                 <b>Filter by :</b>
                 <ButtonGroup>
-                    <Button>All
-                        <Input ref="input1" type="radio" name="radioButtonSet" value='input1' standalone defaultChecked/>
+                    <Button style={{marginRight : '1rem'}}>All
+                        <Input ref="input1" type="radio" name="radioButtonSet" value='filterAll' onChange={this.filterButton} standalone defaultChecked/>
                     </Button>
-                    <Button>Pending
-                        <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
+                    <Button style={{marginRight : '1rem'}}>Pending
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='pending' standalone onChange={this.filterButton} />
                     </Button>
                     <Button>Processed
-                        <Input ref="input2" type="radio" name="radioButtonSet" value='input2' standalone/>
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='processed' standalone onChange={this.filterButton} />
                     </Button>
                 </ButtonGroup>
                 <br/>
@@ -51,11 +48,11 @@ export default class MedicationOrdersList extends React.Component {
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Kreirao</th>
-                        <th scope="col">Rok</th>
-                        <th scope="col">Lista lekova</th>
+                        <th scope="col">Created by</th>
+                        <th scope="col">Deadline</th>
+                        <th scope="col">ordered medications</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Ponude</th>
+                        <th scope="col">Offers</th>
 
                     </tr>
                     </thead>
@@ -72,60 +69,60 @@ export default class MedicationOrdersList extends React.Component {
                             <td>{medicationOrder.status}</td>
                             <td>
                                 <Button variant="primary" onClick={() => this.showOffersButtonClick(medicationOrder)}>
-                                    Pregledaj ponude
+                                    View offers
                                 </Button>
                             </td>
                             <td>
-                                <Button variant="info" >
-                                    Izmeni
+                                <Button variant="info" onClick={() => this.editOrder(medicationOrder)}>
+                                    Edit
                                 </Button>
                             </td>
                             <td>
                                 <Button variant="danger" onClick={() => this.deleteOrder(medicationOrder)}>
-                                    Obrisi
+                                    Delete
                                 </Button>
                             </td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
-
-                <Modal show={this.state.showModal} onHide={this.handleModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleModal}>
-                            Close
-                        </Button>
-                        <Button variant="primary" onClick={this.handleModal}>
-                            Save Changes
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
             </div>
         );
+    }
+
+    filterButton = (event) => {
+        //filtriraj po buttonima
+        console.log(event);
+        if (event === 'filterAll') {
+            this.setState({
+                medicationOrders: this.state.backupMedicationOrders
+            });
+            return;
+        }
+        this.setState({
+            medicationOrders: this.state.backupMedicationOrders.filter(medicationOrder => medicationOrder.status === event)
+        });
+
     }
 
     fetchMedicationOrders = () => {
         axios.get("http://localhost:8080/api/medicationOrder/getAllMedicationOrdersByPharmacy/1")
             .then((res) => {
                 this.setState({
-                    medicationOrders : res.data
+                    medicationOrders : res.data,
+                    backupMedicationOrders : res.data
                 })
             })
-    }
-
-    handleModal = () => {
-        this.setState({
-            showModal : !this.state.showModal
-        });
     }
 
     showOffersButtonClick = (medicationOrder) => {
         this.props.updateClickedMedicationOrder(medicationOrder);
         this.props.showOffers('showOffers');
+    }
+
+    editOrder = (medicationOrder) => {
+        this.props.updateClickedMedicationOrder(medicationOrder);
+        this.props.showOffers('editOrder');
     }
 
     createOrder = () => {

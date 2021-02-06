@@ -11,6 +11,7 @@ import CreatePharmacistModal from "./CreatePharmacistModal";
 import axios from "axios";
 import AddAppointmentModal from "./AddAppointmentModal";
 import Dropdown from "react-dropdown";
+import StarRatings from "react-star-ratings";
 
 
 const options = [
@@ -72,9 +73,9 @@ export default class PharmacyEmployees extends React.Component{
         return (
            <div style={({ marginLeft: '1rem' })}>
                <br/><br/>
-               <h1>Dermatolozi</h1>
+               <h1>Dermatologists</h1>
                
-               <Button variant="success" onClick={this.openModalAddDermatologist}>Dodaj dermatologa</Button>
+               <Button variant="success" onClick={this.openModalAddDermatologist}>Add dermatologist</Button>
                <br/><br/>
 
                <Navbar bg="light" expand="lg">
@@ -97,11 +98,10 @@ export default class PharmacyEmployees extends React.Component{
                    <thead>
                    <tr>
                        <th scope="col">#</th>
-                       <th scope="col">Ime</th>
-                       <th scope="col">Prezime</th>
-                       <th scope="col">Ocena</th>
-                       <th scope="col">Pocetak smene</th>
-                       <th scope="col">Kraj smene</th>
+                       <th scope="col">First name</th>
+                       <th scope="col">Last name</th>
+                       <th scope="col">Grade</th>
+                       <th scope="col">Working hours</th>
                    </tr>
                    </thead>
                    <tbody>
@@ -110,23 +110,30 @@ export default class PharmacyEmployees extends React.Component{
                        <th scope="row">{index+1}</th>
                        <td>{dermatologist.firstName}</td>
                        <td>{dermatologist.lastName}</td>
-                       <td>{dermatologist.grade}</td>
-                       <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodStart).format('hh:mm a')}</td>
-                       <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodEnd).format('hh:mm a')}</td>
+                       <td>
+                           <StarRatings
+                               starDimension={'25px'}
+                               rating={dermatologist.grade}
+                               starRatedColor='gold'
+                               numberOfStars={5}
+                           />
+                       </td>
+                       <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodStart).format('hh:mm a')
+                        + "  -  " + moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodEnd).format('hh:mm a')}</td>
 
                        <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="primary" onClick={this.handleModalAddDermatologist}>
-                                Zakazi pregled
+                                Schedule appointment
                            </Button>
                        </td >
                        <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="warning" onClick={(e) => this.handleModalAddAppointment(dermatologist)}>
-                               Definisi slobodne termine
+                               Define available appointments
                            </Button>
                        </td>
                        <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="danger" onClick={() => this.deleteDermatologist(dermatologist)}>
-                               Izbrisi dermatologa
+                               Delete dermatologist
                            </Button>
                        </td>
                    </tr>
@@ -136,8 +143,8 @@ export default class PharmacyEmployees extends React.Component{
 
 
                <br/><br/>
-               <h1>Farmaceuti</h1>
-               <Button variant="success" onClick={this.handleModalCreatePharmacist}>Kreiraj farmaceuta</Button>
+               <h1>Pharmacists</h1>
+               <Button variant="success" onClick={this.handleModalCreatePharmacist}>Create pharmacist</Button>
                <br/><br/>
                <Navbar bg="light" expand="lg">
                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -159,12 +166,10 @@ export default class PharmacyEmployees extends React.Component{
                    <thead>
                    <tr>
                        <th scope="col">#</th>
-                       <th scope="col">Ime</th>
-                       <th scope="col">Prezime</th>
-                       <th scope="col">Ocena</th>
-                       <th scope="col">Pocetak smene</th>
-                       <th scope="col">Kraj smene</th>
-
+                       <th scope="col">First name</th>
+                       <th scope="col">Last name</th>
+                       <th scope="col">Grade</th>
+                       <th scope="col">Working hours</th>
                    </tr>
                    </thead>
                    <tbody>
@@ -173,17 +178,24 @@ export default class PharmacyEmployees extends React.Component{
                            <th scope="row">{index+1}</th>
                            <td>{pharmacist.firstName}</td>
                            <td>{pharmacist.lastName}</td>
-                           <td>{pharmacist.grade}</td>
-                           <td>{moment(pharmacist.workingHours.period.periodStart).format('hh:mm a')}</td>
-                           <td>{moment(pharmacist.workingHours.period.periodEnd).format('hh:mm a')}</td>
+                           <td>
+                               <StarRatings
+                                   starDimension={'25px'}
+                                   rating={pharmacist.grade}
+                                   starRatedColor='gold'
+                                   numberOfStars={5}
+                               />
+                           </td>
+                           <td>{moment(pharmacist.workingHours.period.periodStart).format('hh:mm a') + "  -  " +
+                            moment(pharmacist.workingHours.period.periodEnd).format('hh:mm a')}</td>
                            <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="primary" onClick={this.handleModalAddDermatologist}>
-                                   Zakazi savetovanje
+                                   Schedule counseling
                                </Button>
                            </td >
                            <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="danger" onClick={() => this.deletePharmacist(pharmacist)}>
-                                   Izbrisi farmaceuta
+                                   Delete pharmacist
                                </Button>
                            </td>
                        </tr>
@@ -266,14 +278,14 @@ export default class PharmacyEmployees extends React.Component{
                         <Form.Row>
                             <div style={({ marginLeft: '1rem' })}>
                                 <label style={({ marginRight: '1rem' })}>Select start of work time : </label>
-                                <TimePicker  name="periodStart" value={this.state.workingHours.period.periodStart} onChange={this.setPeriodStart}/>
+                                <TimePicker  name="periodStart" format="h:m a" value={this.state.workingHours.period.periodStart} onChange={this.setPeriodStart}/>
                             </div>
                         </Form.Row>
                         <br/>
                         <Form.Row>
                             <div style={({ marginLeft: '1rem' })}>
                                 <label style={({ marginRight: '1rem' })}>Select end of work time : </label>
-                                <TimePicker  name="periodEnd" value={this.state.workingHours.period.periodEnd} onChange={this.setPeriodEnd}/>
+                                <TimePicker  name="periodEnd" format="h:m a" value={this.state.workingHours.period.periodEnd} onChange={this.setPeriodEnd}/>
                             </div>
                         </Form.Row>
 
