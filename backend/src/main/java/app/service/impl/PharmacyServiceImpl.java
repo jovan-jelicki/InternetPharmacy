@@ -96,9 +96,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public Collection<Pharmacy> read() {
-        return pharmacyRepository.findAll();
-    }
+    public Collection<Pharmacy> read() { return pharmacyRepository.findAll(); }
 
     @Override
     public Optional<Pharmacy> read(Long id) {

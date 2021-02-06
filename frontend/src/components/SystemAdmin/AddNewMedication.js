@@ -16,7 +16,7 @@ export default class AddNewMedication extends React.Component {
             type:'',
             shape:'',
             medIngredients:[],
-            sideEffects:[],
+            medSideEffects:[],
             medAlternatives:[],
             medIssue:'',
             errors:{
@@ -33,6 +33,7 @@ export default class AddNewMedication extends React.Component {
             },
             ingredients :[],
             alternatives:[],
+            sideEffects:[],
             ingredientBackup:[],
             validForm: false,
             submitted: false,
@@ -50,8 +51,13 @@ export default class AddNewMedication extends React.Component {
                 alternatives : res.data
             });
         })
+        await axios.get("http://localhost:8080/api/sideEffects/getAll").then(res => {
+            this.setState({
+                sideEffects : res.data
+            });
+        })
         console.log("alternativni")
-        console.log(this.state.alternatives);
+        console.log(this.state.sideEffects);
     }
 
     async sendParams() {

@@ -120,14 +120,14 @@ export default class CreateNewOffer extends React.Component{
                                     </h5>
                                     <div className="card-body">
                                         <p className="card-text">
-                                            Kreirao : {this.props.order.pharmacyAdmin.firstName + " " + this.props.order.pharmacyAdmin.lastName}
+                                            Created by : {this.props.order.pharmacyName }
                                             <br/>
                                             Status : {this.props.order.status}
                                             <br/>
-                                            Rok isporuke : {this.props.order.deadline.split("T")[0]}
+                                            DeadLine: {this.props.order.deadline.split("T")[0]}
                                             <br/>
                                             <br/>
-                                            Lekovi
+                                            Medications:
                                             <ul>
                                                 {this.props.order.medicationQuantity.map((e, key) => {
                                                     return <option key={key}

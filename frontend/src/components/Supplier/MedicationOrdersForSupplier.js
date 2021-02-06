@@ -25,7 +25,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
     async componentDidMount() {
         console.log("BLA")
         await axios
-            .get('http://localhost:8080/api/medicationOrder/getAll')
+            .get('http://localhost:8080/api/medicationOrder/getAllActive')
             .then((res) => {
                 this.setState({
                     medicationOrders : res.data
@@ -52,10 +52,6 @@ export default class MedicationOrdersForSupplier extends React.Component {
     checkMedication(){
         let myMedications=this.state.medicationList;
         let orderMedications=this.state.order.medicationQuantity;
-        console.log("UHUH")
-        console.log(myMedications)
-        console.log("UHUH")
-        console.log(orderMedications)
 
             for (var j = 0, l = orderMedications.length; j < l; j++) {
                 let myMedications = this.state.medicationList;
@@ -96,7 +92,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
         const orders= this.state.medicationOrders.map((medicationOrder, index) => (
                 <tr>
                     <th scope="row">{index+1}</th>
-                    <td>{medicationOrder.pharmacyAdmin.pharmacy.name}</td>
+                    <td>{medicationOrder.pharmacyName}</td>
                     <td>{medicationOrder.deadline.split("T")[0]}</td>
                     <td>
                         {medicationOrder.medicationQuantity.map((e, key) => {
