@@ -35,6 +35,11 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(pharmacyDTOS, HttpStatus.OK);
     }
 
+    @PostMapping(consumes = "application/json", value="save")
+    public ResponseEntity<Pharmacy> save(@RequestBody Pharmacy pharmacy) {
+        return new ResponseEntity<>(pharmacyService.save(pharmacy), HttpStatus.OK);
+    }
+
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacyDTO> read(@PathVariable Long id) {

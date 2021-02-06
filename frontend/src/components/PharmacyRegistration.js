@@ -134,11 +134,13 @@ export default class PharmacyRegistration extends React.Component {
         }
         return true;
     }
+
     selectErrors = (value) => {
         let errors = this.state.errors;
         errors.pharmacy.pharmacyAdmin = value.length < 1 ? 'Select pharmacy admin' : '';
         this.setState({errors});
     }
+
     addressErrors = (bool) => {
         let errors = this.state.errors;
         if (bool == false) {
@@ -174,6 +176,7 @@ export default class PharmacyRegistration extends React.Component {
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form')
+            console.log(this.state.pharmacy)
         } else {
             console.log('Invalid Form')
         }
