@@ -20,6 +20,7 @@ import RegistrationConfirmation from "./pages/RegistrationConfirmation";
 import PatientScheduledAppointments from "./pages/patient/PatientScheduledAppointments";
 import PatientPreviousAppointments from "./pages/patient/PatientPreviousAppointments";
 import PatientGradingPage from "./pages/patient/PatientGradingPage"
+import CreateCoplaint from "./components/CreateCoplaint";
 
 export default class App extends React.Component {
   constructor () {
@@ -56,6 +57,7 @@ export default class App extends React.Component {
             <Route path="/scheduled-appointments" component={PatientScheduledAppointments} role={role}/>
             <Route path="/scheduled-appointments-history" component={PatientPreviousAppointments} role={role}/>
             <Route path="/grading" component={PatientGradingPage} role={role}/>
+            <Route path="/complaint" component={CreateCoplaint} role={role}/>
 
           </Switch>
         </BrowserRouter>

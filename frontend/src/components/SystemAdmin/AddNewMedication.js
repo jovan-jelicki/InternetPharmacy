@@ -27,8 +27,8 @@ export default class AddNewMedication extends React.Component {
                     shape: 'Select shape',
                     ingredient: 'Select ingredients',
                     sideEffects: 'Select side effects',
-                    alternatives:'Select alternatives',
-                    medIssue:'Select medication issue'
+                    medIssue:'Select medication issue',
+                    manufacturer:'Enter manufacturers credentials'
                 }
             },
             ingredients :[],
@@ -152,8 +152,8 @@ export default class AddNewMedication extends React.Component {
             case 'sideEffects':
                 errors.medication.sideEffects = value.length < 1 ? 'Select sideEffects' : '';
                 break;
-            case 'alternatives':
-                errors.medication.alternatives = value.length < 1 ? 'Select alternatives' : '';
+            case 'manufacturer':
+                errors.medication.manufacturer = value.length < 1 ? 'Enter manufacturers credentials' : '';
                 break;
             case 'medIssue':
                 errors.medication.medIssue = value.length < 1 ? 'Select medication issue' : '';
@@ -265,6 +265,8 @@ export default class AddNewMedication extends React.Component {
                     <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Manufacturer</label>
                     <div className="col-sm-6 mb-2">
                         <input type="text" value={this.state.medication.manufacturer} name="manufacturer" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="manufacturer" placeholder="Enter manufacturers credentials" />
+                        { this.state.submitted && this.state.errors.medication.manufacturer.length > 0 && <span className="text-danger">{this.state.errors.medication.manufacturer}</span>}
+
                     </div>
                     <div className="col-sm-4">
                     </div>
@@ -378,7 +380,6 @@ export default class AddNewMedication extends React.Component {
                                 </Form>
                             </fieldset>
                         )}
-                        { this.state.submitted && this.state.errors.medication.alternatives.length > 0 &&  <span className="text-danger">{this.state.errors.medication.alternatives}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
