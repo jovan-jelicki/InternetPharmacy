@@ -1,17 +1,21 @@
 package app.controller.impl;
 
 import app.controller.DermatologistController;
-import app.dto.DermatologistDTO;
-import app.dto.PharmacyNameIdDTO;
-import app.dto.UserPasswordDTO;
+import app.dto.*;
+import app.model.appointment.Appointment;
+import app.model.grade.GradeType;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
+import app.model.user.EmployeeType;
+import app.service.AppointmentService;
 import app.service.DermatologistService;
+import app.service.GradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -20,10 +24,14 @@ import java.util.Optional;
 @RequestMapping(value = "api/dermatologists")
 public class DermatologistControllerImpl implements DermatologistController {
     private final DermatologistService dermatologistService;
+    private final AppointmentService appointmentService;
+    private final GradeService gradeService;
 
     @Autowired
-    public DermatologistControllerImpl(DermatologistService dermatologistService) {
+    public DermatologistControllerImpl(DermatologistService dermatologistService, AppointmentService appointmentService, GradeService gradeService) {
         this.dermatologistService = dermatologistService;
+        this.appointmentService = appointmentService;
+        this.gradeService = gradeService;
     }
 
 
@@ -32,6 +40,14 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistService.save(entity), HttpStatus.CREATED);
     }
 
+    @PostMapping(value = "/getFreeAppointments", consumes =  "application/json" )
+    public ResponseEntity<Collection<AppointmentListingDTO>> getAllFreeAppointmentsOfDermatologist(@RequestBody DermatologistSchedulingDTO dermatologistSchedulingDTO){
+        Collection<Appointment> appointments = appointmentService.GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistSchedulingDTO.getDermatologistId(), EmployeeType.dermatologist, LocalDateTime.now(), dermatologistSchedulingDTO.getPharmacyId());
+        Collection<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
+        for(Appointment a : appointments)
+            appointmentListingDTOS.add(new AppointmentListingDTO(a));
+        return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
+    }
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<Dermatologist> update(@RequestBody DermatologistDTO entity) {
@@ -39,7 +55,10 @@ public class DermatologistControllerImpl implements DermatologistController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(dermatologistService.save(convertDTOtoEntity(entity)), HttpStatus.CREATED);
     }
-
+    @GetMapping(value = "/isAccountApproved/{id}")
+    public ResponseEntity<Boolean> isAccountApproved(@PathVariable Long id){
+        return new ResponseEntity<>(dermatologistService.read(id).get().getApprovedAccount(), HttpStatus.OK);
+    }
 
     @GetMapping
     public ResponseEntity<ArrayList<DermatologistDTO>> read() {
@@ -100,7 +119,8 @@ public class DermatologistControllerImpl implements DermatologistController {
     public ResponseEntity<Collection<DermatologistDTO>> getAllDermatologistWorkingInPharmacy(@PathVariable Long id) {
         ArrayList<DermatologistDTO> dermatologistDTOS = new ArrayList<>();
         for (Dermatologist dermatologist : dermatologistService.getAllDermatologistWorkingInPharmacy(id))
-            dermatologistDTOS.add(new DermatologistDTO(dermatologist));
+            dermatologistDTOS.add(new DermatologistDTO(dermatologist, gradeService.findAverageGradeForEntity(dermatologist.getId(), GradeType.dermatologist)));
+
         return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 

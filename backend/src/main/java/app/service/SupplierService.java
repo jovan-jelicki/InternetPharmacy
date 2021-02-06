@@ -1,7 +1,6 @@
 package app.service;
 
 import app.dto.MedicationOfferAndOrderDTO;
-import app.dto.MedicationOfferDTO;
 import app.dto.MedicationQuantityDTO;
 import app.dto.MedicationSupplierDTO;
 import app.model.medication.Medication;
@@ -24,5 +23,5 @@ public interface SupplierService extends CRUDService<Supplier> {
     Boolean addNewMedication( MedicationSupplierDTO medicationSupplierDTO);
     Boolean editSuppliersMedicationQuantity(MedicationSupplierDTO medicationSupplierDTO);
     Boolean deleteMedicationQuantity( MedicationSupplierDTO   medicationSupplierDTO);
-
-    }
+    Supplier getSupplierByMedicationOffer(MedicationOffer medicationOffer);
+}

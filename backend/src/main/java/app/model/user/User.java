@@ -27,6 +27,9 @@ public abstract class User implements UserDetails {
     @Enumerated(EnumType.ORDINAL)
     private UserType userType;
 
+    @Column
+    private Boolean approvedAccount;
+
     public User() {}
 
     @Override
@@ -37,6 +40,15 @@ public abstract class User implements UserDetails {
         authorities.add(authority);
         return authorities;
     }
+
+    public Boolean getApprovedAccount() {
+        return approvedAccount;
+    }
+
+    public void setApprovedAccount(Boolean approvedAccount) {
+        this.approvedAccount = approvedAccount;
+    }
+
     @Override
     public String getPassword() {
         return this.getCredentials().getPassword();
@@ -64,7 +76,7 @@ public abstract class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return approvedAccount;
     }
 
 

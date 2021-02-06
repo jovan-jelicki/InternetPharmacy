@@ -122,6 +122,10 @@ export default class PriceHistory extends React.Component{
                                     <DatePicker selected={this.state.addPriceList.period.periodEnd} dateFormat="dd MMMM yyyy"  name="priceDateEnd" minDate={new Date()} onChange={this.setPriceDateEnd} />
                                 </Col>
                             </Form.Row>
+                            <br/>
+                            <Form.Row>
+                                <label style={{marginLeft : '1rem', marginRight : '1rem'}}><span style={{color : 'palevioletred'}}>* if there is a gap in price periods the default price of medication will be 400</span></label>
+                            </Form.Row>
                         </Form>
 
                     </Modal.Body>

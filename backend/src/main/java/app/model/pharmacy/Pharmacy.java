@@ -2,6 +2,7 @@ package app.model.pharmacy;
 
 
 import app.dto.PharmacySearchDTO;
+import app.model.medication.EPrescription;
 import app.model.medication.MedicationQuantity;
 import app.model.medication.MedicationReservation;
 import app.model.user.Address;
@@ -25,17 +26,15 @@ public class Pharmacy {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private List<Dermatologist> dermatologist;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private List<Pharmacist> pharmacist;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MedicationQuantity> medicationQuantity;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MedicationReservation> medicationReservation;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<EPrescription> prescriptions;
 
     @Column
     private int pharmacistCost;
@@ -44,6 +43,18 @@ public class Pharmacy {
     private int dermatologistCost;
 
     public Pharmacy() {
+    }
+
+    public List<EPrescription> getPrescriptions() {
+        return prescriptions;
+    }
+
+    public void setPrescriptions(List<EPrescription> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
+
+    public void setDermatologistCost(int dermatologistCost) {
+        this.dermatologistCost = dermatologistCost;
     }
 
     public Long getId() {
@@ -77,22 +88,6 @@ public class Pharmacy {
     public void setDescription(String description) {
         this.description = description;
     }
-
-//    public List<Dermatologist> getDermatologist() {
-//        return dermatologist;
-//    }
-//
-//    public void setDermatologist(List<Dermatologist> dermatologist) {
-//        this.dermatologist = dermatologist;
-//    }
-//
-//    public List<Pharmacist> getPharmacist() {
-//        return pharmacist;
-//    }
-//
-//    public void setPharmacist(List<Pharmacist> pharmacist) {
-//        this.pharmacist = pharmacist;
-//    }
 
     public List<MedicationQuantity> getMedicationQuantity() {
         return medicationQuantity;

@@ -9,8 +9,10 @@ public class AppointmentFinishedDTO {
     private String patientFirstName;
     private String patientLastName;
     private LocalDateTime dateOfAppointment;
+    private Long patientId;
 
     public AppointmentFinishedDTO(Appointment appointment) {
+        this.patientId = appointment.getPatient().getId();
         this.pharmacyName = appointment.getPharmacy().getName();
         this.patientFirstName = appointment.getPatient().getFirstName();
         this.patientLastName = appointment.getPatient().getLastName();
@@ -18,6 +20,14 @@ public class AppointmentFinishedDTO {
     }
 
     public AppointmentFinishedDTO() {
+    }
+
+    public Long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
     }
 
     public String getPharmacyName() {

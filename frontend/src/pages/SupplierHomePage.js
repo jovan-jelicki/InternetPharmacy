@@ -23,7 +23,7 @@ export default class SupplierHomePage extends React.Component {
                 firstName:'',
                 lastName:'',
             },
-            navbar : "order",
+            navbar : "",
             showContent:""
         }
     }

@@ -12,6 +12,7 @@ class PatientScheduledAppointments extends React.Component {
             examinations : []
         }
         this.cancel = this.cancel.bind(this)
+        this.cancelExamination = this.cancelExamination.bind(this)
     }
 
     componentDidMount() {
@@ -19,7 +20,16 @@ class PatientScheduledAppointments extends React.Component {
         .get('http://localhost:8080/api/scheduling/counseling-upcoming/0')
         .then(res => {
             this.setState({
-                counselings : [...res.data.filter(c => c.appointmentStatus === 'available')]
+                counselings : res.data
+            })
+        })
+
+        axios
+        .get('http://localhost:8080/api/scheduling/examination-upcoming/0')
+        .then(res => {
+            alert('ok')
+            this.setState({
+                examinations : res.data
             })
         })
     }
@@ -31,6 +41,19 @@ class PatientScheduledAppointments extends React.Component {
             this.setState({
                 counselings : [...this.state.counselings.filter(c => c.id != id)]
             })
+            
+        })
+        .catch(e => alert('It is not allowed to cancel 24h prior to the appointment'))
+    }
+
+    cancelExamination(id) {
+        axios
+        .put('http://localhost:8080/api/appointment/cancel-examination/' + id)
+        .then(res => {
+            this.setState({
+                examinations : [...this.state.examinations.filter(c => c.id != id)]
+            })
+            
         })
         .catch(e => alert('It is not allowed to cancel 24h prior to the appointment'))
     }
@@ -43,6 +66,12 @@ class PatientScheduledAppointments extends React.Component {
                 </Row>
                 <Row className={'m-2'}>
                     <AppointmentListing appointments={this.state.counselings} cancel={this.cancel} view={false}/>
+                </Row>
+                <Row className={'ml-2 mt-5 mb-4'}>
+                    <h2>Dermatologist Examinations</h2>
+                </Row>
+                <Row className={'m-2'}>
+                    <AppointmentListing appointments={this.state.examinations} cancel={this.cancelExamination} view={false}/>
                 </Row>
             </PatientLayout>
         )

@@ -75,6 +75,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Collection<Appointment> getAllFinishedByPatientAndExaminerType(Long patientId, EmployeeType type) {
+        return appointmentRepository.getAllFinishedByPatientAndExaminerType(patientId, type);
+    }
+
+    @Override
     public Appointment cancelCounseling(Long appointmentId) {
         Appointment entity = appointmentRepository.findById(appointmentId).get();
         if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
@@ -83,6 +88,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         entity.setActive(false);
         entity.setPatient(patientService.read(entity.getPatient().getId()).get());
         return save(entity);
+    }
+
+    @Override
+    public Appointment cancelExamination(Long appointmentId) {
+        Appointment entity = appointmentRepository.findById(appointmentId).get();
+        Appointment newEntity = new Appointment(entity);
+        if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
+            return null;
+        entity.setAppointmentStatus(AppointmentStatus.cancelled);
+        entity.setActive(false);
+        entity.setPatient(patientService.read(entity.getPatient().getId()).get());
+        save(entity);
+        return save(newEntity);
     }
 
     @Override
@@ -326,6 +344,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
     }
+
 
     @Override
     public Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd, Long pharmacyId, EmployeeType employeeType){

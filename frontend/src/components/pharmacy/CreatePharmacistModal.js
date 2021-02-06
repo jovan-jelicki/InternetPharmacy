@@ -151,14 +151,14 @@ export default class CreatePharmacistModal extends React.Component {
                 <div className="row">
                     <div style={({ marginLeft: '1rem' })}>
                         <label style={({ marginRight: '1rem' })}>Select start of work time : </label>
-                        <TimePicker  name="startShift" value={this.state.user.startShift} onChange={this.setStartShift}/>
+                        <TimePicker  name="startShift" format="h:m a" value={this.state.user.startShift} onChange={this.setStartShift}/>
 
                     </div>
                 </div>
                 <div className="row">
                     <div style={({ marginLeft: '1rem' })}>
                         <label style={({ marginRight: '1rem' })}>Select end of work time : </label>
-                        <TimePicker  name="endShift" value={this.state.user.endShift} onChange={this.setEndShift}/>
+                        <TimePicker  name="endShift" format="h:m a" value={this.state.user.endShift} onChange={this.setEndShift}/>
 
                     </div>
                 </div>

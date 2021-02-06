@@ -44,6 +44,7 @@ class DateTime extends React.Component {
                         onChange={(value, e) => this.handleInputChange(value, e)}
                         value={this.state.date}
                         format={'dd.MM.y H:mm'}
+                        minDate={new Date()}
                     />
                 </Col>
                 <Col xs={'1'}>

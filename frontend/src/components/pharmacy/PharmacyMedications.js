@@ -5,6 +5,7 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import DatePicker from "react-datepicker";
 import axios from "axios";
+import StarRatings from "react-star-ratings";
 
 
 const options = [
@@ -34,8 +35,10 @@ export default class PharmacyMedications extends React.Component{
                 name : "",
                 quantity : ""
             },
+            searchMedicationName : "",
             notContainedMedications: [],
-            pharmacyMedicationListingDTOs: []
+            pharmacyMedicationListingDTOs: [],
+            backupMedications : []
         }
     }
 
@@ -53,16 +56,17 @@ export default class PharmacyMedications extends React.Component{
                 <br/><br/>
                 <h1>Lekovi</h1>
 
-                <Button variant="success" onClick={this.openAddMedicationModal} >Dodaj lek</Button>
-                <Button variant="primary" style={({ marginLeft: '1rem' })}>Proveri dostupnost preko eRecepta</Button>
+                <Button variant="success" onClick={this.openAddMedicationModal} >Add medication</Button>
+                <Button variant="primary" style={({ marginLeft: '1rem' })}>Check availability via ePrescription</Button>
                 <br/><br/>
 
                 <Navbar bg="light" expand="lg">
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Form inline>
-                            <FormControl type="text" placeholder="Search by name" className="mr-sm-2" />
-                            <Button variant="outline-success">Search</Button>
+                            <FormControl type="text" placeholder="Search by name" className="mr-sm-2" value={this.state.searchMedicationName} onChange={this.changeSearchMedicationName}/>
+                            <Button variant="outline-success" onClick={this.SearchMedication} style={{marginLeft : '1rem'}}>Search</Button>
+                            <Button variant="outline-info" onClick={this.resetSearchMedication} style={{marginLeft : '1rem'}}>Reset</Button>
                         </Form>
                     </Navbar.Collapse>
                 </Navbar>
@@ -71,13 +75,13 @@ export default class PharmacyMedications extends React.Component{
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Naziv</th>
-                        <th scope="col">Tip</th>
-                        <th scope="col">Ocena</th>
-                        <th scope="col">Kolicina</th>
-                        <th scope="col">Cena</th>
-                        <th scope="col">Sastojci</th>
-                        <th scope="col">Alternative</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Grade</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Ingredients</th>
+                        <th scope="col">Alternatives</th>
 
                     </tr>
                     </thead>
@@ -87,7 +91,14 @@ export default class PharmacyMedications extends React.Component{
                             <th scope="row">{index+1}</th>
                             <td>{medicationListing.name}</td>
                             <td>{medicationListing.type}</td>
-                            <td>{medicationListing.grade}</td>
+                            <td>
+                                <StarRatings
+                                    starDimension={'25px'}
+                                    rating={medicationListing.grade}
+                                    starRatedColor='gold'
+                                    numberOfStars={5}
+                                />
+                            </td>
                             <td>{medicationListing.quantity}</td>
                             <td>{medicationListing.price}</td>
                             <td>
@@ -98,13 +109,13 @@ export default class PharmacyMedications extends React.Component{
                             </td>
                             <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                 <Button variant="primary" onClick={this.handleModal}>
-                                    Rezervisi
+                                    Reserve
                                 </Button>
                             </td >
 
                             <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                 <Button variant="info" onClick={() => this.editMedication(medicationListing)}>
-                                    Izmeni
+                                    Edit
                                 </Button>
                             </td>
 
@@ -156,7 +167,7 @@ export default class PharmacyMedications extends React.Component{
 
                 <Modal show={this.state.showModal} onHide={this.handleModal}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Dodavanje leka</Modal.Title>
+                        <Modal.Title>Adding medication</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form style={{marginLeft : 2}}>
@@ -176,7 +187,7 @@ export default class PharmacyMedications extends React.Component{
                             <br/>
                             <Form.Row>
                                 <Col>
-                                    <label>Cena</label>
+                                    <label>Price</label>
                                 </Col>
                                 <Col>
                                     <FormControl type="text" value={this.state.addMedication.cost} onChange={this.changeCost}/>
@@ -185,7 +196,7 @@ export default class PharmacyMedications extends React.Component{
                             <br/>
                             <Form.Row>
                                 <Col>
-                                    <label>Pocetak vazenja cene je danasnji dan</label>
+                                    <label>Price period beginning is today.</label>
                                 </Col>
                                 {/*<Col>*/}
                                 {/*    <DatePicker selected={this.state.addMedication.priceDateStart} dateFormat="dd MMMM yyyy"  name="priceDateStart" minDate={new Date()} onChange={this.setPriceDateStart} />*/}
@@ -194,7 +205,7 @@ export default class PharmacyMedications extends React.Component{
                             <br/>
                             <Form.Row>
                                 <Col>
-                                    <label>Kraj vazenja cene</label>
+                                    <label>Price period end</label>
                                 </Col>
                                 <Col>
                                     <DatePicker selected={this.state.addMedication.priceDateEnd} dateFormat="dd MMMM yyyy"  name="priceDateEnd" minDate={new Date()} onChange={this.setPriceDateEnd} />
@@ -294,7 +305,7 @@ export default class PharmacyMedications extends React.Component{
                     this.fetchPharmacyMedicationListingDTOs();
                 })
                 .catch(() => {
-                    alert("Medication was not deleted due to requested medication reservations.");
+                    alert("Medication was not deleted due to requested medication reservations or it is a part of current promotions.");
                 })
         }
     }
@@ -380,8 +391,28 @@ export default class PharmacyMedications extends React.Component{
     fetchPharmacyMedicationListingDTOs = () => {
         axios.get("http://localhost:8080/api/pharmacy/getPharmacyMedicationListing/1").then(res => { //todo change pharmacyid
             this.setState({
-                pharmacyMedicationListingDTOs : res.data
+                pharmacyMedicationListingDTOs : res.data,
+                backupMedications : res.data
             })
         });
+    }
+    changeSearchMedicationName = (event) => {
+        this.setState({
+            searchMedicationName : event.target.value
+        })
+    }
+
+    SearchMedication = () => {
+        let filtered = this.state.pharmacyMedicationListingDTOs.filter((medication) => medication.name.toLowerCase().includes(this.state.searchMedicationName.toLowerCase()));
+        this.setState({
+            pharmacyMedicationListingDTOs : filtered
+        })
+    }
+
+    resetSearchMedication = () => {
+        this.setState({
+            searchMedicationName : "",
+            pharmacyMedicationListingDTOs : this.state.backupMedications
+        })
     }
 }

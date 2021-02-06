@@ -4,7 +4,8 @@ import app.dto.*;
 import app.model.medication.Medication;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationQuantity;
-import app.model.user.Patient;
+
+import app.dto.MedicationOfferAndOrderDTO;
 import app.model.user.Supplier;
 import app.service.SupplierService;
 import org.springframework.http.HttpStatus;

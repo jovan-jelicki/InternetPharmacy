@@ -1,21 +1,22 @@
 package app.model.grade;
 
-import app.model.user.Dermatologist;
 import app.model.user.Patient;
 
 import javax.persistence.*;
 
 @Entity
-public class DermatologistGrade {
+public class Grade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dermatologist_grade_generator")
     @SequenceGenerator(name="dermatologist_grade_generator", sequenceName = "dermatologist_grade_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn
-    private Dermatologist dermatologist;
+    @Column
+    private Long gradedId;
+
+    @Enumerated(EnumType.ORDINAL)
+    private GradeType gradeType;
 
     @ManyToOne
     @JoinColumn
@@ -24,7 +25,7 @@ public class DermatologistGrade {
     @Column
     private int grade;
 
-    public DermatologistGrade() {
+    public Grade() {
     }
 
     public Long getId() {
@@ -35,12 +36,20 @@ public class DermatologistGrade {
         this.id = id;
     }
 
-    public Dermatologist getDermatologist() {
-        return dermatologist;
+    public Long getGradedId() {
+        return gradedId;
     }
 
-    public void setDermatologist(Dermatologist dermatologistId) {
-        this.dermatologist = dermatologistId;
+    public void setGradedId(Long gradedId) {
+        this.gradedId = gradedId;
+    }
+
+    public GradeType getGradeType() {
+        return gradeType;
+    }
+
+    public void setGradeType(GradeType gradeType) {
+        this.gradeType = gradeType;
     }
 
     public Patient getPatient() {

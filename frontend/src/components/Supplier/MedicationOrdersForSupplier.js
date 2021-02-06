@@ -23,6 +23,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
         }
     }
     async componentDidMount() {
+        console.log("BLA")
         await axios
             .get('http://localhost:8080/api/medicationOrder/getAll')
             .then((res) => {
@@ -31,7 +32,9 @@ export default class MedicationOrdersForSupplier extends React.Component {
                 })
                 console.log("pokupi")
                 console.log(this.state.medicationOrders);
-            })
+            }).catch(
+                console.log("greska")
+            )
 
         await axios
             .get('http://localhost:8080/api/suppliers/getSuppliersMedicationList/'+1)
@@ -89,6 +92,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
 
 
     render() {
+        console.log(this.state.medicationOrders)
         const orders= this.state.medicationOrders.map((medicationOrder, index) => (
                 <tr>
                     <th scope="row">{index+1}</th>

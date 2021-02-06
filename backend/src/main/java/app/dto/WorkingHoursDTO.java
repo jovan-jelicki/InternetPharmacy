@@ -24,5 +24,7 @@ public class WorkingHoursDTO {
 
         this.pharmacy.setMedicationReservation(null);
         this.pharmacy.setMedicationQuantity(null);
+        this.pharmacy.setPrescriptions(null);
+
     }
 }

@@ -1,7 +1,8 @@
 package app.dto;
 
+import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOfferStatus;
-import app.model.medication.MedicationOrder;
+import app.model.user.Supplier;
 
 import java.time.LocalDateTime;
 
@@ -12,15 +13,30 @@ public class MedicationOfferDTO {
     private MedicationOfferStatus status;
     private Long medicationOrderId;
     private Long supplierId;
+    private String supplierFirstName;
+    private String supplierLastName;
 
     public MedicationOfferDTO(){}
-    public MedicationOfferDTO(Long id, double cost, LocalDateTime shippingDate, MedicationOfferStatus status,Long medicationOrderId,Long supplierId) {
+
+    public MedicationOfferDTO(Long id, double cost, LocalDateTime shippingDate, MedicationOfferStatus status, Long medicationOrderId, Long supplierId, String supplierFirstName, String supplierLastName) {
         this.id = id;
         this.cost = cost;
         this.shippingDate = shippingDate;
         this.status = status;
-        this.medicationOrderId =medicationOrderId;
-        this.supplierId=supplierId;
+        this.medicationOrderId = medicationOrderId;
+        this.supplierId = supplierId;
+        this.supplierFirstName = supplierFirstName;
+        this.supplierLastName = supplierLastName;
+    }
+
+    public MedicationOfferDTO(Supplier supplier, MedicationOffer medicationOffer) {
+        this.id = medicationOffer.getId();
+        this.cost = medicationOffer.getCost();
+        this.shippingDate = medicationOffer.getShippingDate();
+        this.status = medicationOffer.getStatus();
+        this.supplierId = supplier.getId();
+        this.supplierFirstName = supplier.getFirstName();
+        this.supplierLastName = supplier.getLastName();
     }
 
     public Long getSupplierId() {
@@ -70,5 +86,21 @@ public class MedicationOfferDTO {
 
     public void setStatus(MedicationOfferStatus status) {
         this.status = status;
+    }
+
+    public String getSupplierFirstName() {
+        return supplierFirstName;
+    }
+
+    public void setSupplierFirstName(String supplierFirstName) {
+        this.supplierFirstName = supplierFirstName;
+    }
+
+    public String getSupplierLastName() {
+        return supplierLastName;
+    }
+
+    public void setSupplierLastName(String supplierLastName) {
+        this.supplierLastName = supplierLastName;
     }
 }

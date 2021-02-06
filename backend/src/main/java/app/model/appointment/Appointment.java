@@ -47,6 +47,15 @@ public class Appointment {
    public Appointment() {
    }
 
+   public Appointment(Appointment appointment) {
+      this.examinerId = appointment.examinerId;
+      this.pharmacy = appointment.pharmacy;
+      this.appointmentStatus = appointment.appointmentStatus;
+      this.type = appointment.type;
+      this.period = appointment.period;
+      this.isActive = appointment.isActive;
+   }
+
    public Long getId() {
       return id;
    }

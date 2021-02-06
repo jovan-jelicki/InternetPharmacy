@@ -3,13 +3,15 @@ import {Button, Col, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
+import StarRatings from "react-star-ratings";
+
 
 export default class AppointmentsList extends React.Component{
     constructor() {
         super();
         this.state = {
             userType : 'pharmacyAdmin',
-            appointments : []
+            appointments : [],
         }
     }
 
@@ -21,16 +23,17 @@ export default class AppointmentsList extends React.Component{
         return (
             <div style={({ marginLeft: '1rem' })}>
                 <br/><br/>
-                <h1>Pregledi dermatologa</h1>
+                <h1>Available dermatologist appointments</h1>
 
                 <table className="table table-hover">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Dermatolog</th>
-                        <th scope="col">Datum i vreme</th>
-                        <th scope="col">Cena</th>
-                        <th scope="col">Ocena dermatologa</th>
+                        <th scope="col">Dermatologist</th>
+                        <th scope="col">Date and time</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Dermatologist grade</th>
+                        <th>{' '}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -40,8 +43,15 @@ export default class AppointmentsList extends React.Component{
                             <td>{appointment.dermatologistFirstName + " " + appointment.dermatologistLastName}</td>
                             <td>{moment(appointment.period.periodStart).format('DD.MM.YYYY hh:mm a') + " - " + moment(appointment.period.periodEnd).format('hh:mm a')}</td>
                             <td>{appointment.cost}</td>
-                            <td>{appointment.dermatologistGrade}</td>
-
+                            <td>
+                                <StarRatings
+                                    starDimension={'25px'}
+                                    rating={appointment.dermatologistGrade}
+                                    starRatedColor='gold'
+                                    numberOfStars={5}
+                                />
+                            </td>
+                            <td><Button variant={'outline-dark'} onClick={() => this.scheduleAppointment(appointment.id)}>Schedule</Button></td>
                         </tr>
                     ))}
                     </tbody>
@@ -56,5 +66,14 @@ export default class AppointmentsList extends React.Component{
                 appointments : res.data
             });
         })
+    }
+
+    scheduleAppointment = (id) => {
+        axios
+        .put('http://localhost:8080/api/appointment/update', {
+            'patientId' : 0,
+            'appointmentId' : id
+        })
+        .then(res => alert('success'))
     }
 }

@@ -2,8 +2,10 @@ package app.controller.impl;
 
 import app.dto.*;
 import app.model.appointment.Appointment;
+import app.model.grade.GradeType;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
+import app.service.GradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +21,13 @@ import java.util.Optional;
 public class AppointmentControllerImpl {
     private final AppointmentService appointmentService;
     private final DermatologistService dermatologistService;
+    private final GradeService gradeService;
 
     @Autowired
-    public AppointmentControllerImpl(AppointmentService appointmentService, DermatologistService dermatologistService) {
+    public AppointmentControllerImpl(AppointmentService appointmentService, DermatologistService dermatologistService, GradeService gradeService) {
         this.appointmentService = appointmentService;
         this.dermatologistService = dermatologistService;
+        this.gradeService = gradeService;
     }
 
     @PostMapping(consumes = "application/json", value = "/getFinishedByExaminer")
@@ -60,6 +64,14 @@ public class AppointmentControllerImpl {
         }
     }
 
+    @PostMapping(value = "/getAllFinishedByPatientAndExaminer", consumes = "application/json")
+    public ResponseEntity<Collection<AppointmentScheduledDTO>> getAllFinishedByPatientAndExaminerType(@RequestBody PatientAppointmentsSearch patientAppointmentsSearch){
+        Collection<AppointmentScheduledDTO> appointmentScheduledDTOS = new ArrayList<>();
+        for(Appointment a : appointmentService.getAllFinishedByPatientAndExaminerType(patientAppointmentsSearch.getPatientId(), patientAppointmentsSearch.getType()))
+            appointmentScheduledDTOS.add(new AppointmentScheduledDTO(a));
+        return new ResponseEntity<>(appointmentScheduledDTOS, HttpStatus.OK);
+    }
+
     @PutMapping(consumes = "application/json", value = "/finishAppointment")
     public ResponseEntity<Boolean> finishAppointment(@RequestBody AppointmentScheduledDTO appointmentScheduledDTO) {
         return new ResponseEntity<>(appointmentService.finishAppointment(appointmentScheduledDTO), HttpStatus.OK);
@@ -76,6 +88,13 @@ public class AppointmentControllerImpl {
     @PutMapping(value = "/cancel-counseling/{id}")
     public ResponseEntity<Void> cancelCounseling(@PathVariable Long id) {
         if(appointmentService.cancelCounseling(id) == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/cancel-examination/{id}")
+    public ResponseEntity<Void> cancelExamination(@PathVariable Long id) {
+        if(appointmentService.cancelExamination(id) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -113,6 +132,7 @@ public class AppointmentControllerImpl {
         for (Appointment appointment : appointmentService.getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(id)) {
             AppointmentListingDTO appointmentListingDTO = new AppointmentListingDTO(appointment);
             appointmentListingDTO.setDermatologistFirstName(dermatologistService.read(appointment.getExaminerId()).get().getFirstName());
+            appointmentListingDTO.setDermatologistGrade(gradeService.findAverageGradeForEntity(appointment.getExaminerId(), GradeType.dermatologist));
             appointmentListingDTO.setDermatologistLastName(dermatologistService.read(appointment.getExaminerId()).get().getLastName());
             appointmentListingDTOS.add(appointmentListingDTO);
         }

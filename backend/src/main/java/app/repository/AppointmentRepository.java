@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
+
+
     @Query("select a from Appointment a where a.patient is not null and a.appointmentStatus = 0 and a.isActive = true and a.type = ?1")
     Collection<Appointment> getAllAvailableByType(EmployeeType type);
 
@@ -48,6 +50,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("select a from Appointment a where a.patient is null and a.period.periodStart >= ?1 and a.pharmacy.id=?2 and a.type=0 and a.isActive=true")
     Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(LocalDateTime date,Long pharmacyId);
 
+    int countAllByPharmacy_IdAndPatient_IdAndAppointmentStatus(Long pharmacyId, Long patientId, AppointmentStatus status);
+    Collection<Appointment> getAllByPatient_IdAndAppointmentStatusAndType(Long patientId, AppointmentStatus status, EmployeeType type);
+    Collection<Appointment> getAllByPatient_IdAndAppointmentStatus(Long patientId, AppointmentStatus status);
     @Query("select a from Appointment a where a.patient is not null and a.period.periodStart >= ?1 and a.period.periodEnd <= ?2 and a.pharmacy.id = ?3 and a.type=?4 and a.appointmentStatus=1 and a.isActive=true")
     Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd, Long pharmacyId, EmployeeType employeeType);
+
+    @Query("select a from Appointment  a where a.patient.id = ?1 and a.appointmentStatus = 1 and a.type = ?2")
+    Collection<Appointment> getAllFinishedByPatientAndExaminerType(Long patientId, EmployeeType type);
 }
