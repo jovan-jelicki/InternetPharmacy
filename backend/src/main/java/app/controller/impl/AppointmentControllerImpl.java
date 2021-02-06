@@ -40,6 +40,11 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>("hiii", HttpStatus.OK);
     }
 
+    @GetMapping(value = "/kavali")
+    public ResponseEntity<String> kavali() {
+        return new ResponseEntity<>("kavali", HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<Collection<Appointment>> read() {
         return new ResponseEntity<>(appointmentService.read(), HttpStatus.OK);

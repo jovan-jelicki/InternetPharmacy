@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableAsync
 @EnableScheduling
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-public class InternetPharmacyApplication {
+public class InternetPharmacyApplication extends ServletInitializer {
 	public static void main(String[] args) {
 		SpringApplication.run(InternetPharmacyApplication.class, args);
 	}
