@@ -48,10 +48,10 @@ export default class Appointment extends React.Component {
               </Row>
 
               <br/>
-              <label  style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}}> Report </label>
-              <textarea className="form-control"  rows="5" cols="10" placeholder={"Type report..."} name="report" onChange={this.handleInputChange} value={this.state.report} />
+              <label  style={{fontSize : 20, textDecoration : "underline"}}> Report </label>
+              <textarea className="form-control"  rows="5" cols="5" placeholder={"Type report..."} name="report" onChange={this.handleInputChange} value={this.state.report} />
               <br/>
-              <label style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}}> Choose therapy </label>
+              <label style={{fontSize : 20, textDecoration : "underline"}}> Choose therapy </label>
 
               {<ChooseTherapy createEPrescription={this.createEPrescription} dateEndTherapy={this.state.dateEndTherapy} dateStartTherapy={this.state.dateStartTherapy}  setStartDate={this.setStartDate} setEndDate={this.setEndDate} medications={this.state.medications} medication={this.state.medication} chooseMedication={this.chooseMedication} removeMedication={this.removeMedication}/>}
 
@@ -62,14 +62,14 @@ export default class Appointment extends React.Component {
 
     getPatientsInfo = () => {
         return (
-            <div>
-                <label style={{fontSize : 20, marginLeft : 55, textDecoration : "underline"}} > Information about patient :  </label>
-                <Row>
-                    <label style={{fontSize : 20}} >  <b> First name: </b></label>
+            <div style={{'width' : '70%'}}>
+                <label style={{fontSize : 20, textDecoration : "underline"}} > Information about patient :  </label>
+                <Row style={{'background':'lightGray','borderRadius' : 10}}>
+                    <label style={{fontSize : 20, marginLeft : 40}} >  <b> First name: </b></label>
                     <label style={{fontSize : 20 , marginLeft: 40}} > {this.props.appointment.firstName} </label>
                 </Row>
-                <Row>
-                    <label style={{fontSize : 20}} >  <b> Last name: </b></label>
+                <Row  style={{'background':'lightGray', 'borderRadius' : 10}}>
+                    <label style={{fontSize : 20, marginLeft : 40}} >  <b> Last name: </b></label>
                     <label style={{fontSize : 20, marginLeft: 40}} > {this.props.appointment.lastName} </label>
                 </Row>
             </div>
