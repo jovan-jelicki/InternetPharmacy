@@ -34,7 +34,7 @@ export default class PharmacyMedicationQueries extends React.Component{
                     </thead>
                     <tbody>
                     {this.state.medicationLackingEvents.map((medicationLackingEvent, index) => (
-                        <tr>
+                        <tr key={index}>
                             <th scope="row">{index+1}</th>
                             <td>{medicationLackingEvent.employeeFirstName + " " + medicationLackingEvent.employeeLastName}</td>
                             <td>{medicationLackingEvent.medication.name}</td>

@@ -137,6 +137,7 @@ export default class PharmacyCharts extends React.Component{
                     <Tooltip />
                     <Legend />
                     <Line type="monotone" dataKey="income" stroke="#8884d8" activeDot={{ r: 8 }} />
+                    <Line type="monotone" dataKey="expense" stroke="#82ca9d" />
                 </LineChart>
             </div>
         );
@@ -298,7 +299,7 @@ export default class PharmacyCharts extends React.Component{
                 let temp = [];
                 res.data.map(reportDTO => {
                     let item = {
-                        name: reportDTO.chartName,  income:reportDTO.data
+                        name: reportDTO.chartName,  income:reportDTO.income, expense : reportDTO.expense
                     };
                     temp.push(item);
                 });
