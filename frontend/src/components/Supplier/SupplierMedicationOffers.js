@@ -160,14 +160,14 @@ export default class SupplierMedicationOffers extends React.Component{
 
                 <Modal show={this.state.showModal} onHide={this.closeModal}>
                     <Modal.Header closeButton style={{'background':'gray'}} >
-                        <Modal.Title>Modal heading</Modal.Title>
+                        <Modal.Title>Edit offer</Modal.Title>
                     </Modal.Header>
                     <Modal.Body style={{'background':'gray'}} >
                         {
                             this.state.timeBool ?
                             <EditOffer modalOffer={this.state.modalOffer}/>
                             :
-                                <div> You dont have enought medications.</div>
+                                <div> Time for medication offer is up</div>
                         }
                     </Modal.Body>
                     <Modal.Footer style={{'background':'gray'}}>

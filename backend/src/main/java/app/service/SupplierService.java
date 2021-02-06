@@ -19,8 +19,10 @@ public interface SupplierService extends CRUDService<Supplier> {
     Supplier findByEmailAndPassword(String email, String password);
     Supplier findByEmail(String email);
     Collection<MedicationOfferAndOrderDTO> getMedicationOffersBySupplier(Long supplierId);
-    Collection<MedicationQuantityDTO> getSuppliersMedicationList(Long supplierId);
+    Collection<MedicationQuantity> getSuppliersMedicationList(Long supplierId);
     Collection<Medication> getNonMedicationsBySupplier( Long supplierId);
     Boolean addNewMedication( MedicationSupplierDTO medicationSupplierDTO);
+    Boolean editSuppliersMedicationQuantity(MedicationSupplierDTO medicationSupplierDTO);
+    Boolean deleteMedicationQuantity( MedicationSupplierDTO   medicationSupplierDTO);
 
     }

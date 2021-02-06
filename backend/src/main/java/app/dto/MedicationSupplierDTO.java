@@ -4,13 +4,23 @@ public class MedicationSupplierDTO {
     private Long medicationId;
     private int quantity;
     private Long supplierId;
+    private Long medicationQuantityId;
 
     public MedicationSupplierDTO(){}
 
-    public MedicationSupplierDTO(Long medicationId, int quantity, Long supplierId) {
+    public MedicationSupplierDTO(Long medicationId, int quantity, Long supplierId, Long medicationQuantityId) {
         this.medicationId = medicationId;
         this.quantity = quantity;
         this.supplierId = supplierId;
+        this.medicationQuantityId = medicationQuantityId;
+    }
+
+    public Long getMedicationQuantityId() {
+        return medicationQuantityId;
+    }
+
+    public void setMedicationQuantityId(Long medicationQuantityId) {
+        this.medicationQuantityId = medicationQuantityId;
     }
 
     public Long getMedicationId() {

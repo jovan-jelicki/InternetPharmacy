@@ -86,15 +86,11 @@ public class SupplierServiceImpl implements SupplierService{
     }
 
     @Override
-    public Collection<MedicationQuantityDTO> getSuppliersMedicationList(Long supplierId) {
-        ArrayList<MedicationQuantityDTO> medicationParams = new ArrayList<>();
+    public Collection<MedicationQuantity> getSuppliersMedicationList(Long supplierId) {
+        ArrayList<MedicationQuantity> medicationParams = new ArrayList<>();
 
         for (MedicationQuantity m : read(supplierId).get().getMedicationQuantity()) {
-            MedicationQuantityDTO medicationQuantityDTO =new MedicationQuantityDTO();
-            medicationQuantityDTO.setMedicationName(m.getMedication().getName());
-            medicationQuantityDTO.setMedicationQuantity(m.getQuantity());
-
-            medicationParams.add(medicationQuantityDTO);
+            medicationParams.add(m);
         }
 
         return medicationParams;
@@ -121,12 +117,42 @@ public class SupplierServiceImpl implements SupplierService{
             return false;
 
         MedicationQuantity medicationQuantity=new MedicationQuantity(medication,medicationSupplierDTO.getQuantity());
+
         medicationQuantityService.save(medicationQuantity);
-        supplier.getMedicationQuantity().add( medicationQuantityService.save(medicationQuantity));
+        supplier.getMedicationQuantity().add(medicationQuantity);
 
         this.save(supplier);
 
         return true;
 
     }
+
+    @Override
+    public Boolean editSuppliersMedicationQuantity(MedicationSupplierDTO medicationSupplierDTO) {
+        MedicationQuantity medicationQuantity=medicationQuantityService.read(medicationSupplierDTO.getMedicationQuantityId()).get();
+        int quantity=medicationSupplierDTO.getQuantity();
+        if(quantity<=0){
+            medicationQuantityService.delete(medicationSupplierDTO.getMedicationQuantityId());
+            return null;
+        }
+        medicationQuantity.setQuantity(quantity);
+        medicationQuantityService.save(medicationQuantity);
+
+
+         return  medicationQuantityService.save(medicationQuantity)!=null;
+    }
+
+    @Override
+    public Boolean deleteMedicationQuantity(MedicationSupplierDTO medicationSupplierDTO) {
+        Supplier supplier=this.read(medicationSupplierDTO.getSupplierId()).get();
+        for(MedicationQuantity medicationQuantity :  supplier.getMedicationQuantity()){
+            if(medicationQuantity.getId().equals(medicationSupplierDTO.getMedicationQuantityId())){
+                supplier.getMedicationQuantity().remove(medicationQuantity);
+                break;
+            }
+        }
+        return this.save(supplier)!=null;
+
+    }
+
 }

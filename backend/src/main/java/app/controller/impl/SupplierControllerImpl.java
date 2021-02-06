@@ -34,7 +34,7 @@ public class SupplierControllerImpl {
     }
 
     @GetMapping(value = "/getSuppliersMedicationList/{supplierId}")
-    public ResponseEntity<Collection<MedicationQuantityDTO>> getSuppliersMedicationList(@PathVariable Long supplierId) {
+    public ResponseEntity<Collection<MedicationQuantity>> getSuppliersMedicationList(@PathVariable Long supplierId) {
         return new ResponseEntity<>(supplierService.getSuppliersMedicationList(supplierId), HttpStatus.OK);
     }
 
@@ -54,4 +54,13 @@ public class SupplierControllerImpl {
     }
 
 
+    @PostMapping(consumes = "application/json", value = "/edit")
+    public ResponseEntity<Boolean> editSuppliersMedicationQuantity(@RequestBody MedicationSupplierDTO medicationSupplierDTO){
+        return new ResponseEntity<>(supplierService.editSuppliersMedicationQuantity(medicationSupplierDTO), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/deleteMedicationQuantity", consumes = "application/json")
+    public ResponseEntity<Boolean> deleteMedicationQuantity(@RequestBody MedicationSupplierDTO   medicationSupplierDTO) {
+        return new ResponseEntity<>(supplierService.deleteMedicationQuantity(medicationSupplierDTO), HttpStatus.OK);
+    }
 }
