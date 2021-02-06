@@ -44,14 +44,15 @@ export class SystemAdminHomePage extends React.Component {
                         <a className="nav-link" href="#" name="pharmacyAdmin" onClick={this.handleChange}>Pharmacy admin registration</a>
                     </li>
                     <li className="nav-item">
+                        <a className="nav-link" href="#" name="medication" onClick={this.handleChange}>Add medication</a>
+                    </li>
+                    <li className="nav-item">
                         <a className="nav-link" href="#" name="dermatologist" onClick={this.handleChange}>Dermatologist registration</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="supplier" onClick={this.handleChange}>Supplier registration</a>
                     </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#" name="medication" onClick={this.handleChange}>Add medication</a>
-                    </li>
+
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="complaint" onClick={this.handleChange}>Complaint</a>
                     </li>

@@ -1,6 +1,7 @@
 import React from "react";
 import Script from "react-load-script";
-import {Button, FormControl} from "react-bootstrap";
+import {Button, Form, FormControl, Row} from "react-bootstrap";
+import axios from "axios";
 
 export default class AddNewMedication extends React.Component {
     constructor(props) {
@@ -8,26 +9,16 @@ export default class AddNewMedication extends React.Component {
         this.state = {
             medication:{
                 name:'',
-                type:'',
                 dose:'',
-                shape:'',
-                ingredient:[
-                    {
-                        name:''
-                    }
-                ],
-                sideEffects:[
-                    {
-                        name:''
-                    }
-                ],
-                alternatives:[
-                    {
-                        name:''
-                    }
-                ]
-
+                note:'',
+                manufacturer:''
             },
+            type:'',
+            shape:'',
+            medIngredients:[],
+            sideEffects:[],
+            medAlternatives:[],
+            medIssue:'',
             errors:{
                 medication: {
                     name: 'Enter name',
@@ -36,12 +27,55 @@ export default class AddNewMedication extends React.Component {
                     shape: 'Select shape',
                     ingredient: 'Select ingredients',
                     sideEffects: 'Select side effects',
-                    alternatives:'Select alternatives'
+                    alternatives:'Select alternatives',
+                    medIssue:'Select medication issue'
                 }
             },
+            ingredients :[],
+            alternatives:[],
+            ingredientBackup:[],
             validForm: false,
             submitted: false,
         }
+    }
+
+    async componentDidMount() {
+        await axios.get("http://localhost:8080/api/ingredients/").then(res => {
+            this.setState({
+                ingredients : res.data
+            });
+        })
+        await axios.get("http://localhost:8080/api/medications/").then(res => {
+            this.setState({
+                alternatives : res.data
+            });
+        })
+        console.log("alternativni")
+        console.log(this.state.alternatives);
+    }
+
+    async sendParams() {
+        axios
+            .post('http://localhost:8080/api/medications', {
+                'id':'',
+                'name': this.state.medication.name,
+                'dose' :this.state.medication.dose,
+                'type' : this.state.type,
+                'medicationShape':this.state.shape,
+                'ingredient':this.state.medIngredients,
+                'alternatives':this.state.medAlternatives,
+                'sideEffect':'',
+                'manufacturer':this.state.medication.manufacturer,
+                'medicationIssue':this.state.medIssue,
+                'note':this.state.medication.note,
+            })
+            .then(res => {
+                alert("Successfully registered!");
+
+            }).catch(() => {
+            alert("Pharmacy was not registered successfully!")
+        })
+
     }
 
 
@@ -66,25 +100,6 @@ export default class AddNewMedication extends React.Component {
         console.log(this.state.medication)
 
     }
-
-    handleSelectChange=(event)=>{
-        const target = event.target;
-        console.log(event.target.name)
-        const medication = this.state.medication;
-
-        if(event.target.name=="type") {
-            medication['type'] = event.target.value
-        }else  if(event.target.name=="shape") {
-            medication['shape'] = event.target.value
-
-        }
-        this.setState({ medication });
-        this.validationErrorMessage(event)
-
-        console.log(this.state.medication)
-
-    }
-
     handleInputChange = (event) => {
         const { name, value } = event.target;
         const medication = this.state.medication;
@@ -101,7 +116,15 @@ export default class AddNewMedication extends React.Component {
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form')
+            this.sendData();
         } else {
+            this.sendParams();
+            console.log(this.state.medication)
+            console.log(this.state.type)
+            console.log(this.state.shape)
+            console.log(this.state.medIngredients)
+            console.log(this.state.medAlternatives)
+            console.log(this.state.medIssue)
             console.log('Invalid Form')
         }
     }
@@ -109,7 +132,6 @@ export default class AddNewMedication extends React.Component {
     validationErrorMessage = (event) => {
         const {name, value} = event.target;
         let errors = this.state.errors;
-        console.log("Dosao")
         console.log(name)
         switch (name) {
             case 'name':
@@ -133,6 +155,9 @@ export default class AddNewMedication extends React.Component {
             case 'alternatives':
                 errors.medication.alternatives = value.length < 1 ? 'Select alternatives' : '';
                 break;
+            case 'medIssue':
+                errors.medication.medIssue = value.length < 1 ? 'Select medication issue' : '';
+                break;
             default:
                 break;
         }
@@ -148,33 +173,79 @@ export default class AddNewMedication extends React.Component {
         })
         return valid;
     }
+    onTypeChange=(event) => {
+        var option = event.target.id
+        this.setState({
+            type:option
+        })
+        this.state.type=option;
+        console.log(this.state.type)
+        console.log(event)
+
+        this.validationErrorMessage(event)
+    }
+
+    onShapeChange=(event) => {
+        var option = event.target.id
+        this.setState({
+            shape:option
+        })
+        this.state.shape=option;
+        console.log(this.state.shape)
+        this.validationErrorMessage(event)
+
+    }
+
+    onIssueChange=(event) => {
+        var option = event.target.id
+        this.setState({
+            medIssue:option
+        })
+        this.state.medIssue=option;
+        console.log(this.state.medIssue)
+        this.validationErrorMessage(event)
+
+    }
+
+    onIngredientChange=(event) => {
+        var option = event.target.id
+        console.log(option)
+        let ingredients = this.state.ingredients
+        let ingr=[]
+        ingredients.forEach(ingredient => {
+            if (ingredient.name === option)
+                ingredient.isChecked =  event.target.checked
+            if(ingredient.isChecked){
+                ingr.push(ingredient)
+            }
+        })
+        this.state.medIngredients=ingr;
+        //this.setState({ingredientBackup: ingr})
+        console.log(this.state.medIngredients)
+        this.validationErrorMessage(event)
+
+    }
+
+    onAlternativeChange=(event) => {
+        var option = event.target.id
+        let alternatives = this.state.alternatives
+        let alters=[]
+        alternatives.forEach(alternative => {
+            if (alternative.name === option)
+                alternative.isChecked =  event.target.checked
+            if(alternative.isChecked){
+                alters.push(alternative)
+            }
+        })
+        this.state.medAlternatives=alters;
+        //this.setState({ingredientBackup: ingr})
+        console.log(this.state.medAlternatives)
+        this.validationErrorMessage(event)
+
+    }
 
 
-    render() {
-        let ingredients = ["saharoza", "dekstroza","aspirin"];
-        const  ingredientsTag = ingredients.map((ingredient, key) =>
-            <option value={ingredient}> {ingredient} </option>
-        );
-
-        let shape = ["powder","capsule","pill","ointment","gel","solution","syrup"];
-        const  shapeTag = shape.map((shape, key) =>
-            <option value={shape}> {shape} </option>
-        );
-
-        let sideEffects = ["povracanje","znojenje","alergija"];
-        const  sideEffectsTag = sideEffects.map((sideEffects, key) =>
-            <option value={sideEffects}> {sideEffects} </option>
-        );
-
-        let alternatives = ["aspirin","brufen","nimulid"];
-        const  alternativesTag = alternatives.map((alternatives, key) =>
-            <option value={alternatives}> {alternatives} </option>
-        );
-
-        let type = ["antibiotic","anesthetic","antihistamine"];
-        const  typeTag = type.map((type, key) =>
-            <option value={type}> {type} </option>
-        );
+        render() {
         return (
             <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
                 <div className="container">
@@ -182,7 +253,7 @@ export default class AddNewMedication extends React.Component {
                 </div>
 
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
-                    <label  className="col-sm-2 col-form-label">Name</label>
+                    <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Name</label>
                     <div className="col-sm-6 mb-2">
                         <input type="text" value={this.state.medication.name} name="name" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="name" placeholder="Enter name" />
                         { this.state.submitted && this.state.errors.medication.name.length > 0 && <span className="text-danger">{this.state.errors.medication.name}</span>}
@@ -191,18 +262,35 @@ export default class AddNewMedication extends React.Component {
                     </div>
                 </div>
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
-                    <label  className="col-sm-2 col-form-label">Type</label>
+                    <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Manufacturer</label>
                     <div className="col-sm-6 mb-2">
-                        <select   name="type" multiple={false}  value={this.state.medication.type} onChange={(e) => { this.handleSelectChange(e)} }  >
-                            {typeTag}
-                        </select>
-                        { this.state.submitted && this.state.errors.medication.type.length > 0 && <span className="text-danger">{this.state.errors.medication.type}</span>}
+                        <input type="text" value={this.state.medication.manufacturer} name="manufacturer" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="manufacturer" placeholder="Enter manufacturers credentials" />
                     </div>
                     <div className="col-sm-4">
                     </div>
                 </div>
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
-                    <label  className="col-sm-2 col-form-label">Dose</label>
+                    <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Type</label>
+                    <div className="col-sm-6 mb-2">
+                        <fieldset>
+                            <Form >
+                                <Form.Group as={Row} >
+                                    <Row sm={10} style={{'marginLeft':'1rem'}} >
+                                        <Form.Check multiple style={{'marginLeft':'1rem'}} type="radio" label="antibiotic" name="type"id="antibiotic" onChange={this.onTypeChange} />
+                                        <Form.Check multiple style={{'marginLeft':'1rem'}} type="radio" label="anesthetic" name="type"id="anesthetic" onChange={this.onTypeChange} />
+                                        <Form.Check multiple  style={{'marginLeft':'1rem'}} type="radio" label="antihistamine" name="type" id="antihistamine" onChange={this.onTypeChange} />
+                                    </Row>
+                                </Form.Group>
+                            </Form>
+                        </fieldset>
+                        {this.state.submitted && this.state.errors.medication.type.length > 0 &&  <span className="text-danger">{this.state.errors.medication.type}</span>}
+
+                    </div>
+                    <div className="col-sm-4">
+                    </div>
+                </div>
+                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Dose</label>
                     <div className="col-sm-6 mb-2">
                         <input type="number" value={this.state.medication.dose} name="dose" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="dose" placeholder="Enter dose" />
                         { this.state.submitted && this.state.errors.medication.dose.length > 0 && <span className="text-danger">{this.state.errors.medication.dose}</span>}
@@ -212,11 +300,23 @@ export default class AddNewMedication extends React.Component {
                 </div>
 
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
-                    <label  className="col-sm-2 col-form-label">Medication shape</label>
+                    <label  className="col-sm-2 col-form-label" style={{fontWeight: "bolder"}}>Medication shape</label>
                     <div className="col-sm-6 mb-2">
-                        <select name="shape" multiple={false} value={this.state.medication.shape} onChange={(e) => { this.handleSelectChange(e)} }  >
-                            {shapeTag}
-                        </select>
+                        <fieldset>
+                            <Form>
+                                <Form.Group as={Row}>
+                                    <Row sm={10} style={{marginLeft:'1rem', marginTop:'0.6rem'}}>
+                                        <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="powder" name="shape"id="powder" onChange={this.onShapeChange} />
+                                        <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="capsule" name="shape"id="capsule" onChange={this.onShapeChange} />
+                                        <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="pill" name="shape" id="pill" onChange={this.onShapeChange} />
+                                        <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="ointment" name="shape" id="ointment" onChange={this.onShapeChange} />
+                                        <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="gel" name="shape" id="gel" onChange={this.onShapeChange} />
+                                        <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="solution" name="shape" id="solution" onChange={this.onShapeChange} />
+                                        <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="syrup" name="shape" id="syrup" onChange={this.onShapeChange} />
+                                    </Row>
+                                </Form.Group>
+                            </Form>
+                        </fieldset>
                         {this.state.submitted && this.state.errors.medication.shape.length > 0 &&  <span className="text-danger">{this.state.errors.medication.shape}</span>}
                     </div>
                     <div className="col-sm-4">
@@ -224,11 +324,39 @@ export default class AddNewMedication extends React.Component {
                 </div>
 
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
-                    <label className="col-sm-2 col-form-label">Ingredients</label>
+                    <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Medication issue</label>
                     <div className="col-sm-6 mb-2">
-                        <select multiple={true} name="ingredients" value={this.state.medication.ingredient} onChange={(e) => { this.handleMultiChange(e)} }  >
-                            {ingredientsTag}
-                        </select>
+                        <fieldset>
+                            <Form >
+                                <Form.Group as={Row} >
+                                    <Row sm={10} style={{'marginLeft':'1rem'}} >
+                                        <Form.Check multiple style={{'marginLeft':'1rem'}} type="radio" label="withPrescription" name="medIssue" id="withPrescription" onChange={this.onIssueChange} />
+                                        <Form.Check multiple style={{'marginLeft':'1rem'}} type="radio" label="withoutPrescription" name="medIssue" id="withoutPrescription" onChange={this.onIssueChange} />
+                                    </Row>
+                                </Form.Group>
+                            </Form>
+                        </fieldset>
+                        {this.state.submitted && this.state.errors.medication.medIssue.length > 0 &&  <span className="text-danger">{this.state.errors.medication.medIssue}</span>}
+
+                    </div>
+                    <div className="col-sm-4">
+                    </div>
+                </div>
+
+                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <label className="col-sm-2 col-form-label" style={{fontWeight: "bolder"}}>Ingredients</label>
+                    <div className="col-sm-6 mb-2">
+                        {this.state.ingredients.map(ingredient =>
+                                <fieldset>
+                                    <Form>
+                                        <Form.Group as={Row}>
+                                            <Row sm={10} style={{'marginLeft':'1rem', marginTop:'0.6rem'}}>
+                                                <Form.Check style={{'marginLeft':'1rem'}} type="checkbox" label={ingredient.name}  name="ingredients" id={ingredient.name}  onChange={this.onIngredientChange} />
+                                            </Row>
+                                        </Form.Group>
+                                    </Form>
+                                </fieldset>
+                            )}
                         { this.state.submitted && this.state.errors.medication.ingredient.length > 0 &&  <span className="text-danger">{this.state.errors.medication.ingredient}</span>}
 
                     </div>
@@ -237,11 +365,28 @@ export default class AddNewMedication extends React.Component {
                 </div>
 
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
-                    <label  className="col-sm-2 col-form-label">Side effects</label>
+                    <label  className="col-sm-2 col-form-label" style={{fontWeight: "bolder"}}>Alternatives</label>
                     <div className="col-sm-6 mb-2">
-                        <select multiple={true}  name="sideEffects" value={this.state.medication.sideEffects} onChange={(e) => { this.handleMultiChange(e)} }  >
-                            {sideEffectsTag}
-                        </select>
+                        {this.state.alternatives.map(alternative =>
+                            <fieldset>
+                                <Form>
+                                    <Form.Group as={Row}>
+                                        <Row sm={10} style={{'marginLeft':'1rem', marginTop:'0.6rem'}}>
+                                            <Form.Check style={{'marginLeft':'1rem'}} type="checkbox" label={alternative.name}  name="alternatives" id={alternative.name}  onChange={this.onAlternativeChange} />
+                                        </Row>
+                                    </Form.Group>
+                                </Form>
+                            </fieldset>
+                        )}
+                        { this.state.submitted && this.state.errors.medication.alternatives.length > 0 &&  <span className="text-danger">{this.state.errors.medication.alternatives}</span>}
+                    </div>
+                    <div className="col-sm-4">
+                    </div>
+                </div>
+
+                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <label  className="col-sm-2 col-form-label" style={{fontWeight: "bolder"}}>Side effects</label>
+                    <div className="col-sm-6 mb-2">
                         { this.state.submitted && this.state.errors.medication.sideEffects.length > 0 &&  <span className="text-danger">{this.state.errors.medication.sideEffects}</span>}
                     </div>
                     <div className="col-sm-4">
@@ -249,12 +394,9 @@ export default class AddNewMedication extends React.Component {
                 </div>
 
                 <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
-                    <label  className="col-sm-2 col-form-label">Alternatives</label>
+                    <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Note</label>
                     <div className="col-sm-6 mb-2">
-                        <select name="alternatives" multiple={true}  value={this.state.medication.alternatives} onChange={(e) => { this.handleMultiChange(e)} }  >
-                            {alternativesTag}
-                        </select>
-                        { this.state.submitted && this.state.errors.medication.alternatives.length > 0 &&  <span className="text-danger">{this.state.errors.medication.alternatives}</span>}
+                        <input type="text" value={this.state.medication.note} name="note" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="note" placeholder="Enter note" />
                     </div>
                     <div className="col-sm-4">
                     </div>
