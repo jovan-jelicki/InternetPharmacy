@@ -13,6 +13,7 @@ import app.service.SupplierService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -34,6 +35,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     @PostConstruct
     public void init() {
         medicationOrderService.setMedicationOfferService(this);
+        pharmacyService.setMedicationOffer(this);
     }
 
     @Override
@@ -149,6 +151,10 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         return medicationOrderService.save(medicationOrder) != null;
     }
 
+    @Override
+    public Collection<MedicationOffer> getApprovedMedicationOffersByPharmacyAndPeriod(Long pharmacyId, LocalDateTime periodStart, LocalDateTime periodEnd) {
+        return medicationOfferRepository.getApprovedMedicationOffersByPharmacyAndPeriod(pharmacyId, periodStart, periodEnd);
+    }
 
 
     //@Override

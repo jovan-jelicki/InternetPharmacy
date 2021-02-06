@@ -3,6 +3,7 @@ package app.service;
 import app.dto.*;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
+import app.service.impl.MedicationOfferServiceImpl;
 import app.service.impl.MedicationPriceListServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,4 +40,5 @@ public interface PharmacyService extends CRUDService<Pharmacy> {
     void setPromotionService(PromotionService promotionService);
     Pharmacy savePharmacy( PharmacyAdminPharmacyDTO pharmacy);
 
+    void setMedicationOffer(MedicationOfferService medicationOfferService);
 }

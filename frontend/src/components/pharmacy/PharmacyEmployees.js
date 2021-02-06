@@ -579,7 +579,7 @@ export default class PharmacyEmployees extends React.Component{
         let filterPharmacistsGrades = filterPharmacists.filter(pharmacist => {
             if (minRequiredGrade === 0 && maxRequiredGrade === 0)
                 return pharmacist;
-            return pharmacist.grade > minRequiredGrade && pharmacist.grade < maxRequiredGrade;
+            return pharmacist.grade >= minRequiredGrade && pharmacist.grade <= maxRequiredGrade;
         })
         this.setState({
             pharmacists : filterPharmacistsGrades
@@ -619,7 +619,7 @@ export default class PharmacyEmployees extends React.Component{
         let filterDermatologistsGrades = filterDermatologists.filter(dermatologist => {
             if (minRequiredGrade === 0 && maxRequiredGrade === 0)
                 return dermatologist;
-            return dermatologist.grade > minRequiredGrade && dermatologist.grade < maxRequiredGrade;
+            return dermatologist.grade >= minRequiredGrade && dermatologist.grade <= maxRequiredGrade;
         })
         this.setState({
             dermatologists : filterDermatologistsGrades
