@@ -58,7 +58,6 @@ export default class App extends React.Component {
             <Route path="/scheduled-appointments-history" component={PatientPreviousAppointments} role={role}/>
             <Route path="/grading" component={PatientGradingPage} role={role}/>
             <Route path="/complaint" component={CreateCoplaint} role={role}/>
-
           </Switch>
         </BrowserRouter>
     );

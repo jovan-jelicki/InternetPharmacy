@@ -1,5 +1,6 @@
 import React from 'react'
 import PatientLayout from '../../layout/PatientLayout'
+import PharmacyListing from '../../components/pharmacy/PharmacyListing'
 
 class PatientHomePage extends React.Component {
     constructor(props) {
@@ -9,7 +10,7 @@ class PatientHomePage extends React.Component {
     render() {
         return (
             <PatientLayout>
-                Lepo
+                <PharmacyListing/>
             </PatientLayout>
         )
     }
