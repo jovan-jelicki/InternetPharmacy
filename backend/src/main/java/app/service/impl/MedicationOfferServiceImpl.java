@@ -122,6 +122,16 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         pharmacyService.save(pharmacy);
     }
 
+    private void updateSupplierMedicationQuantity(MedicationOrder medicationOrder, MedicationOffer medicationOffer) {
+        Supplier supplier = supplierService.getSupplierByMedicationOffer(medicationOffer);
+        for (MedicationQuantity medicationQuantitySupplier : supplier.getMedicationQuantity())
+            for (MedicationQuantity medicationQuantityOrder : medicationOrder.getMedicationQuantity())
+                if (medicationQuantityOrder.getMedication().getId().equals(medicationQuantitySupplier.getMedication().getId()))
+                    medicationQuantitySupplier.setQuantity(medicationQuantitySupplier.getQuantity() - medicationQuantityOrder.getQuantity());
+
+        supplierService.save(supplier);
+    }
+
     @Override
     public Boolean acceptOffer(MedicationOfferDTO medicationOfferDTO, Long pharmacyAdminId) {
         MedicationOrder medicationOrder = medicationOrderService.read(medicationOfferDTO.getMedicationOrderId()).get();
@@ -140,6 +150,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
                 //TODO send confirmation email to supplier
 
                 updatePharmacyMedicationQuantity(medicationOrder);
+                updateSupplierMedicationQuantity(medicationOrder, medicationOffer);
                 continue;
             }
             medicationOffer.setStatus(MedicationOfferStatus.rejected);
@@ -148,6 +159,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         medicationOrder.setStatus(MedicationOrderStatus.processed);
         return medicationOrderService.save(medicationOrder) != null;
     }
+
 
 
 
