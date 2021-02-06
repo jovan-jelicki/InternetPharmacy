@@ -68,7 +68,7 @@ export default class MedicationOffers extends React.Component {
                         </thead>
                         <tbody>
                         {this.state.medicationOffers.map((medicationOffer, index) => (
-                            <tr>
+                            <tr key={index}>
                                 <th scope="row">{index+1}</th>
                                 <td>{medicationOffer.supplierFirstName + " " + medicationOffer.supplierLastName}</td>
                                 <td>{medicationOffer.cost}</td>

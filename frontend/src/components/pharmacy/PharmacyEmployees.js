@@ -106,7 +106,7 @@ export default class PharmacyEmployees extends React.Component{
                    </thead>
                    <tbody>
                {this.state.dermatologists.map((dermatologist, index) => (
-                   <tr>
+                   <tr key={index}>
                        <th scope="row">{index+1}</th>
                        <td>{dermatologist.firstName}</td>
                        <td>{dermatologist.lastName}</td>
@@ -174,7 +174,7 @@ export default class PharmacyEmployees extends React.Component{
                    </thead>
                    <tbody>
                    {this.state.pharmacists.map((pharmacist, index) => (
-                       <tr>
+                       <tr key={index}>
                            <th scope="row">{index+1}</th>
                            <td>{pharmacist.firstName}</td>
                            <td>{pharmacist.lastName}</td>
@@ -331,9 +331,21 @@ export default class PharmacyEmployees extends React.Component{
             alert("All available dermatologists are already working in this pharmacy!");
     }
 
+    validateWorkingHoursDifference = (startTime, endTime) => {
+        startTime = moment(startTime + ":00", "HH:mm:ss a");
+        endTime = moment(endTime + ":00", "HH:mm:ss a");
+        let duration = moment.duration(endTime.diff(startTime));
+
+        return Math.abs(parseInt(duration.asMinutes())) < 120;
+    }
+
     addDermatologist = async () => {
         let finalDermatologist = this.state.dermatologistForAdding;
         let workingHours = this.state.workingHours;
+        if (this.validateWorkingHoursDifference(workingHours.period.periodStart, workingHours.period.periodEnd)) {
+            alert("Dermatologist should work at least 2 hours.");
+            return;
+        }
         workingHours.period.periodStart = '2017-01-13 ' + workingHours.period.periodStart + ":00";
         workingHours.period.periodEnd = '2017-01-13 ' + workingHours.period.periodEnd + ":00";
         finalDermatologist.workingHours.push(workingHours);

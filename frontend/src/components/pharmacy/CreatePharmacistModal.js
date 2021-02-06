@@ -3,6 +3,7 @@ import {Button, Col, Form, Modal, Table, Grid, FormControl, Row} from "react-boo
 import "../../App.css";
 import TimePicker from "react-time-picker";
 import axios from "axios";
+import moment from "moment";
 
 
 
@@ -180,15 +181,28 @@ export default class CreatePharmacistModal extends React.Component {
             </div>
         );
     }
+
+    validateWorkingHoursDifference = (startTime, endTime) => {
+        let start = moment(startTime + ":00", "HH:mm:ss a");
+        let end = moment(endTime + ":00", "HH:mm:ss a");
+        let duration = moment.duration(end.diff(start));
+
+        return Math.abs(parseInt(duration.asMinutes())) < 120;
+    }
+
     submitForm = async (event) => {
         this.setState({ submitted: true });
         const user = this.state.user;
         event.preventDefault();
+        if (this.validateWorkingHoursDifference(this.state.user.startShift, this.state.user.endShift)) {
+            alert("Pharmacist should work at least 2 hours.");
+            return;
+        }
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form');
             console.log(this.state.user);
 
-            await axios.post('http://localhost:8080/api/pharmacist', {
+            await axios.post('http://localhost:8080/api/pharmacist/createNewPharmacist', {
                 firstName: this.state.user.firstName,
                 lastName: this.state.user.lastName,
                 userType : 1,
