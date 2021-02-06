@@ -66,11 +66,16 @@ export default class SupplierRegistration extends React.Component {
                         'latitude' : this.state.supplier.address.latitude,
                         'longitude' : this.state.supplier.address.longitude
                     }
-                }
+                },
+                'approvedAccount':false
+
             })
             .then(res => {
+                alert("Successfully registered!");
 
-            });
+            }).catch(() => {
+            alert("Supplier was not registered successfully!")
+        })
 
     }
     submitForm = async (event) => {

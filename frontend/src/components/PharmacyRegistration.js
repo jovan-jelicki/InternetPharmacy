@@ -4,11 +4,6 @@ import Script from 'react-load-script';
 import Select from "react-select";
 import axios from "axios";
 
-const options = [
-    { value: 'Marko', label: 'Marko Markovic' },
-    { value: 'Zoran', label: 'Zoran Petrovic' },
-    { value: 'Ana', label: 'Ana Matic' },
-];
 
 export default class PharmacyRegistration extends React.Component {
     constructor() {
@@ -226,8 +221,11 @@ export default class PharmacyRegistration extends React.Component {
                 'pharmacyAdminId':this.state.admin
             })
             .then(res => {
-                    alert("BRAVO")
-            });
+                alert("Successfully registered!");
+
+            }).catch(() => {
+            alert("Pharmacy was not registered successfully!")
+        })
 
     }
 
@@ -245,11 +243,12 @@ export default class PharmacyRegistration extends React.Component {
                      style={{marginTop: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <label className="col-sm-2 col-form-label">Name</label>
                     <div className="col-sm-3 mb-2">
-                        <input type="text" value={this.state.pharmacy.name} name="name" onChange={(e) => { this.handleInputChange(e)}} className="form-control" placeholder="Pharmacy name"/>
+                        <input type="text" value={this.state.pharmacy.name} id="name" name="name" onChange={(e) => { this.handleInputChange(e)}} className="form-control" placeholder="Pharmacy name"/>
                         {this.state.submitted && this.state.errors.pharmacy.name.length > 0 && <span className="text-danger">{this.state.errors.pharmacy.name}</span>}
                     </div>
 
                 </div>
+
                 <div className="row" style={{margin: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <label className="col-sm-2 col-form-label">Address</label>
                     <div className="col-sm-3 mb-2">

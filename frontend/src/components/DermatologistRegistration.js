@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, Container, FormControl} from "react-bootstrap";
 import Script from "react-load-script";
+import axios from "axios";
 
 export default class DermatologistRegistration extends React.Component {
     constructor(props) {
@@ -20,7 +21,6 @@ export default class DermatologistRegistration extends React.Component {
                     },
                     telephone: '',
                     rePassword : '',
-                    workingHours:''
                 },
                 errors:{
                     dermatologist: {
@@ -37,6 +37,39 @@ export default class DermatologistRegistration extends React.Component {
                 validForm: false,
                 submitted: false,
         }
+    }
+
+    async sendParams() {
+        axios
+            .post('http://localhost:8080/api/dermatologists/save', {
+                'id':'',
+                'firstName' : this.state.dermatologist.firstName,
+                'lastName' : this.state.dermatologist.lastName,
+                'userType' : 0,
+                'credentials' : {
+                    'email' : this.state.dermatologist.email,
+                    'password' : this.state.dermatologist.password
+                },
+                'contact' : {
+                    'phoneNumber' : this.state.dermatologist.telephone,
+                    'address' : {
+                        'street' : this.state.dermatologist.address.street,
+                        'town' : this.state.dermatologist.address.town,
+                        'country' : this.state.dermatologist.address.country,
+                        'latitude' : this.state.dermatologist.address.latitude,
+                        'longitude' : this.state.dermatologist.address.longitude
+                    }
+                },
+                'approvedAccount':false
+
+            })
+            .then(res => {
+                alert("Successfully registered!");
+
+            }).catch(() => {
+            alert("Dermatologist was not registered successfully!")
+        })
+
     }
 
     handleInputChange = (event) => {
@@ -67,17 +100,17 @@ export default class DermatologistRegistration extends React.Component {
                 if (this.setAddressParams(address)) {
                     this.setState(
                         {
-                            dermatologist: {
-                                address: {
-                                    street: this.state.streetP,
-                                    town: this.state.townP,
-                                    country: this.state.countryP,
-                                    latitude: addressObject.geometry.location.lat(),
-                                    longitude: addressObject.geometry.location.lng()
-                                }
+                            addressPom: {
+                                street: this.state.streetP,
+                                town: this.state.townP,
+                                country: this.state.countryP,
+                                latitude: addressObject.geometry.location.lat(),
+                                longitude: addressObject.geometry.location.lng(),
+
                             },
                         }
                     );
+                    this.state.dermatologist.address=this.state.addressPom;
                 }
             } else {
                 this.addressErrors(false)
@@ -127,6 +160,74 @@ export default class DermatologistRegistration extends React.Component {
             errors.dermatologist.address = "";
         }
         this.setState({errors});
+    }
+
+    submitForm = async (event) => {
+        this.setState({ submitted: true });
+        const dermatologist = this.state.dermatologist;
+        event.preventDefault();
+        if (this.validateForm(this.state.errors)) {
+            console.info('Valid Form')
+            console.log(this.state.dermatologist)
+            this.sendParams()
+
+        } else {
+            console.log('Invalid Form')
+        }
+    }
+
+    validationErrorMessage = (event) => {
+        const { name, value } = event.target;
+        let errors = this.state.errors;
+
+        switch (name) {
+            case 'firstName':
+                errors.dermatologist.firstName = value.length < 1 ? 'Enter First Name' : '';
+                break;
+            case 'lastName':
+                errors.dermatologist.lastName = value.length < 1 ? 'Enter Last Name' : '';
+                break;
+            case 'email':
+                errors.dermatologist.email = this.isValidEmail(value) ? '' : 'Email is not valid!';
+                break;
+            case 'telephone':
+                errors.dermatologist.telephone = this.isValidTelephone(value) ? 'Enter valid telephone number' : '';
+                break;
+            case 'password':
+                errors.dermatologist.password = value.length < 1 ? 'Enter Password' : '';
+                break;
+            case 'rePassword':
+                errors.dermatologist.rePassword = this.isValidPassword(value) ? '' : 'This password must match the previous';
+                break;
+            default:
+                break;
+        }
+
+        this.setState({ errors });
+    }
+
+    validateForm = (errors) => {
+        let valid = true;
+        Object.entries(errors.dermatologist).forEach(item => {
+            console.log(item)
+            item && item[1].length > 0 && (valid = false)
+        })
+        return valid;
+    }
+    isValidEmail = (value) => {
+        return !(value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,64}$/i.test(value))
+    }
+
+    isValidTelephone = (value) => {
+        return !(value && /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[0-9]{2,3}[-\s\./0-9]*$/i.test(value))
+    }
+
+    isValidPassword = (value) => {
+        if(this.state.dermatologist.password !== this.state.dermatologist.rePassword) {
+            return false;
+        }else{
+            return  true
+        }
     }
 
 
@@ -218,68 +319,5 @@ export default class DermatologistRegistration extends React.Component {
         );
     }
 
-    submitForm = async (event) => {
-        this.setState({ submitted: true });
-        const dermatologist = this.state.dermatologist;
-        event.preventDefault();
-        if (this.validateForm(this.state.errors)) {
-            console.info('Valid Form')
-        } else {
-            console.log('Invalid Form')
-        }
-    }
 
-    validationErrorMessage = (event) => {
-        const { name, value } = event.target;
-        let errors = this.state.errors;
-
-        switch (name) {
-            case 'firstName':
-                errors.dermatologist.firstName = value.length < 1 ? 'Enter First Name' : '';
-                break;
-            case 'lastName':
-                errors.dermatologist.lastName = value.length < 1 ? 'Enter Last Name' : '';
-                break;
-            case 'email':
-                errors.dermatologist.email = this.isValidEmail(value) ? '' : 'Email is not valid!';
-                break;
-            case 'telephone':
-                errors.dermatologist.telephone = this.isValidTelephone(value) ? 'Enter valid telephone number' : '';
-                break;
-            case 'password':
-                errors.dermatologist.password = value.length < 1 ? 'Enter Password' : '';
-                break;
-            case 'rePassword':
-                errors.dermatologist.rePassword = this.isValidPassword(value) ? '' : 'This password must match the previous';
-                break;
-            default:
-                break;
-        }
-
-        this.setState({ errors });
-    }
-
-    validateForm = (errors) => {
-        let valid = true;
-        Object.entries(errors.dermatologist).forEach(item => {
-            console.log(item)
-            item && item[1].length > 0 && (valid = false)
-        })
-        return valid;
-    }
-    isValidEmail = (value) => {
-        return !(value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,64}$/i.test(value))
-    }
-
-    isValidTelephone = (value) => {
-        return !(value && /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[0-9]{2,3}[-\s\./0-9]*$/i.test(value))
-    }
-
-    isValidPassword = (value) => {
-        if(this.state.dermatologist.password !== this.state.dermatologist.rePassword) {
-            return false;
-        }else{
-            return  true
-        }
-    }
 }

@@ -40,6 +40,9 @@ export class ISAdminHomePage extends React.Component {
                         <a className="nav-link active" href='#' onClick={this.handleChange} name="pharmacy">Pharmacy registration</a>
                     </li>
                     <li className="nav-item">
+                        <a className="nav-link" href="#" name="pharmacyAdmin" onClick={this.handleChange}>Pharmacy admin registration</a>
+                    </li>
+                    <li className="nav-item">
                         <a className="nav-link" href="#" name="dermatologist" onClick={this.handleChange}>Dermatologist registration</a>
                     </li>
                     <li className="nav-item">
@@ -55,11 +58,12 @@ export class ISAdminHomePage extends React.Component {
                         <a className="nav-link" href="#" name="loyalty" onClick={this.handleChange}>Loyalty program</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" name="pharmacyAdmin" onClick={this.handleChange}>Add new pharmacy admin</a>
-                    </li>
-                    <li className="nav-item">
                         <a className="nav-link" href="#" name="dermatologistVacationRequests" onClick={this.handleChange}>Dermatologist vacation requests</a>
                     </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" name="systemAdmin" onClick={this.handleChange}>System admin registration</a>
+                    </li>
+
 
                 </ul>
                 {this.renderNavbar()}
@@ -106,6 +110,10 @@ export class ISAdminHomePage extends React.Component {
                 <PharmacyAdminRegistration/>
             );
         else if (this.state.navbar === "dermatologistVacationRequests")
+            return (
+                <SystemAdminVacationRequestListing/>
+            );
+        else if (this.state.navbar === "systemAdmin")
             return (
                 <SystemAdminVacationRequestListing/>
             );
