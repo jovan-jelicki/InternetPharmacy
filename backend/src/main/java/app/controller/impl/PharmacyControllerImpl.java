@@ -30,9 +30,17 @@ public class PharmacyControllerImpl {
     @GetMapping
     public ResponseEntity<Collection<PharmacyDTO>> read() {
         ArrayList<PharmacyDTO> pharmacyDTOS = new ArrayList<>();
-        for (Pharmacy pharmacy : pharmacyService.read())
-            pharmacyDTOS.add(new PharmacyDTO(pharmacy));
+        for (Pharmacy pharmacy : pharmacyService.read()) {
+            PharmacyDTO pharmacyDTO = new PharmacyDTO(pharmacy);
+            pharmacyDTO.setGrade(gradeService.findAverageGradeForEntity(pharmacy.getId(), GradeType.pharmacy));
+            pharmacyDTOS.add(pharmacyDTO);
+        }
         return new ResponseEntity<>(pharmacyDTOS, HttpStatus.OK);
+    }
+
+    @PostMapping(consumes = "application/json", value="save")
+    public ResponseEntity<Pharmacy> savePharmacy(@RequestBody PharmacyAdminPharmacyDTO pharmacy) {
+        return new ResponseEntity<>(pharmacyService.savePharmacy(pharmacy), HttpStatus.OK);
     }
 
 

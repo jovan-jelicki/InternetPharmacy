@@ -1,7 +1,9 @@
 package app.controller.impl;
 
+import app.dto.PharmacyPlainDTO;
 import app.dto.UserPasswordDTO;
 import app.model.medication.Ingredient;
+import app.model.pharmacy.Pharmacy;
 import app.model.user.Patient;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,5 +77,10 @@ public class PatientControllerImpl {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/promotion-pharmacies/{id}")
+    public ResponseEntity<Collection<PharmacyPlainDTO>> getPromotionPharmacies(@PathVariable Long id) {
+        return new ResponseEntity<>(patientService.getPromotionPharmacies(id), HttpStatus.OK);
     }
 }

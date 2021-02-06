@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationOfferDTO;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
@@ -77,6 +78,16 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         supplierService.save(supplier);
 
         return medicationOffer !=null;
+    }
+
+    @Override
+    public Boolean editMedicationOffer(MedicationOfferAndOrderDTO medicationOffer) {
+        MedicationOffer medOffer=read(medicationOffer.getOfferId()).get();
+        medOffer.setCost(medicationOffer.getCost());
+        medOffer.setShippingDate(medicationOffer.getShippingDate());
+        this.save(medOffer);
+
+        return medOffer!=null;
     }
 
     @Override

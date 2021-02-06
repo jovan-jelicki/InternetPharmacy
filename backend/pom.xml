@@ -130,7 +130,15 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>2.4.1</version>
 			</plugin>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+			</plugin>
 		</plugins>
 	</build>
+
+
 
 </project>

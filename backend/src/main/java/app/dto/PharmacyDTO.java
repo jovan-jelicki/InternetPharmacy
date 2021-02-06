@@ -20,6 +20,7 @@ public class PharmacyDTO {
     private int pharmacistCost;
     private int dermatologistCost;
     private double grade;
+
     private List<MedicationQuantity> medicationQuantity;
 
     public PharmacyDTO() {}

@@ -35,7 +35,7 @@ public class DermatologistControllerImpl implements DermatologistController {
     }
 
 
-    @PostMapping(consumes = "application/json")
+    @PostMapping(consumes = "application/json", value="/save")
     public ResponseEntity<Dermatologist> save(@RequestBody Dermatologist entity) {
         return new ResponseEntity<>(dermatologistService.save(entity), HttpStatus.CREATED);
     }

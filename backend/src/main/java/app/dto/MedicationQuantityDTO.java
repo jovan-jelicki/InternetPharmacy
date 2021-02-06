@@ -1,14 +1,24 @@
 package app.dto;
 
 public class MedicationQuantityDTO {
+    private Long medicationId;
     private String medicationName;
-    private int medicationQuantity;
+    private Long medicationQuantity;
 
     public MedicationQuantityDTO( ) {}
 
-    public MedicationQuantityDTO(String medicationName, int medicationQuantity) {
+    public MedicationQuantityDTO(String medicationName, Long medicationQuantity, Long medicationId) {
         this.medicationName = medicationName;
         this.medicationQuantity = medicationQuantity;
+        this.medicationId=medicationId;
+    }
+
+    public Long getMedicationId() {
+        return medicationId;
+    }
+
+    public void setMedicationId(Long medicationId) {
+        this.medicationId = medicationId;
     }
 
     public String getMedicationName() {
@@ -19,11 +29,11 @@ public class MedicationQuantityDTO {
         this.medicationName = medicationName;
     }
 
-    public int getMedicationQuantity() {
+    public Long getMedicationQuantity() {
         return medicationQuantity;
     }
 
-    public void setMedicationQuantity(int medicationQuantity) {
+    public void setMedicationQuantity(Long medicationQuantity) {
         this.medicationQuantity = medicationQuantity;
     }
 }
