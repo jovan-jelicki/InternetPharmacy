@@ -1,14 +1,15 @@
 import React from "react";
-import PharmacyRegistration from "../components/PharmacyRegistration";
-import DermatologistRegistration from "../components/DermatologistRegistration";
-import SupplierRegistration from "../components/SupplierRegistration";
-import AddNewMedication from "../components/AddNewMedication";
-import Complaints from "../components/Complaints";
-import LoyaltyProgram from "../components/LoyaltyProgram";
-import PharmacyAdminRegistration from "../components/PharmacyAdminRegistration";
-import SystemAdminVacationRequestListing from "../components/SystemAdminVacationRequestListing";
+import PharmacyRegistration from "../components/SystemAdmin/PharmacyRegistration";
+import DermatologistRegistration from "../components/SystemAdmin/DermatologistRegistration";
+import SupplierRegistration from "../components/SystemAdmin/SupplierRegistration";
+import AddNewMedication from "../components/SystemAdmin/AddNewMedication";
+import Complaints from "../components/SystemAdmin/Complaints";
+import LoyaltyProgram from "../components/SystemAdmin/LoyaltyProgram";
+import PharmacyAdminRegistration from "../components/SystemAdmin/PharmacyAdminRegistration";
+import SystemAdminVacationRequestListing from "../components/SystemAdmin/SystemAdminVacationRequestListing";
+import SystemAdminRegistration from "../components/SystemAdmin/SystemAdminRegistration";
 
-export class ISAdminHomePage extends React.Component {
+export class SystemAdminHomePage extends React.Component {
     constructor(props) {
         super(props);
         this.state= {
@@ -115,7 +116,7 @@ export class ISAdminHomePage extends React.Component {
             );
         else if (this.state.navbar === "systemAdmin")
             return (
-                <SystemAdminVacationRequestListing/>
+                <SystemAdminRegistration/>
             );
     }
 }
