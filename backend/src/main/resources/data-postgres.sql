@@ -495,3 +495,39 @@ INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quant
 INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (3, 33);
 INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (4, 34);
 INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (5, 35);
+
+-- pharmacy grade
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (1, 3, 0, 1, 0);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (2, 4, 0, 1, 6);
+-- pharmacist grame
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (3, 5, 1, 1, 0);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (4, 2, 1, 1, 6);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (5, 5, 1, 2, 0);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (6, 3, 1, 2, 6);
+--dermatologist grade
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (7, 5, 2, 3, 0);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (8, 2, 2, 4, 6);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (9, 5, 2, 5, 0);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (10, 3, 2, 3, 6);
+--medication grade
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (11, 4, 3, 0, 0);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (12, 3, 3, 1, 6);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (13, 2, 3, 2, 0);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (14, 1, 3, 3, 6);
+insert into grade(id, grade, grade_type, graded_id, patient_id)
+    values (15, 3, 3, 4, 6);
+

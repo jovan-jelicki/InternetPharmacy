@@ -4,7 +4,9 @@ import app.dto.PharmacistDTO;
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
 import app.dto.WorkingHoursDTO;
+import app.model.grade.GradeType;
 import app.model.user.Pharmacist;
+import app.service.GradeService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +21,12 @@ import java.util.Collection;
 @RequestMapping(value = "api/pharmacist")
 public class PharmacistControllerImpl {
     private final PharmacistService pharmacistService;
+    private final GradeService gradeService;
 
     @Autowired
-    public PharmacistControllerImpl(PharmacistService pharmacistService) {
+    public PharmacistControllerImpl(PharmacistService pharmacistService, GradeService gradeService) {
         this.pharmacistService = pharmacistService;
+        this.gradeService = gradeService;
     }
 
     @PostMapping(consumes = "application/json")
@@ -99,7 +103,7 @@ public class PharmacistControllerImpl {
     public ResponseEntity<Collection<PharmacistDTO>> getPharmacistsByPharmacyId(@PathVariable Long id) {
         ArrayList<PharmacistDTO> pharmacistDTOS = new ArrayList<>();
         for (Pharmacist pharmacist : pharmacistService.getPharmacistsByPharmacyId(id))
-            pharmacistDTOS.add(new PharmacistDTO(pharmacist));
+            pharmacistDTOS.add(new PharmacistDTO(pharmacist, gradeService.findAverageGradeForEntity(pharmacist.getId(), GradeType.pharmacist)));
         return new ResponseEntity<>(pharmacistDTOS, HttpStatus.OK);
     }
 }

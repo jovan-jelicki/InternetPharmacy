@@ -41,7 +41,7 @@ public class PharmacyControllerImpl {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacyDTO> read(@PathVariable Long id) {
-        return new ResponseEntity<>(new PharmacyDTO(pharmacyService.read(id).get()), HttpStatus.OK);
+        return new ResponseEntity<>(new PharmacyDTO(pharmacyService.read(id).get(), gradeService.findAverageGradeForEntity(id, GradeType.pharmacy)), HttpStatus.OK);
     }
 
     @PostMapping(value = "/search")

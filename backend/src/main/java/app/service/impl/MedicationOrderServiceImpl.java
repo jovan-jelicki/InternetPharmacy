@@ -22,6 +22,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
     private final PharmacyAdminService pharmacyAdminService;
     private final MedicationService medicationService;
     private final MedicationQuantityService medicationQuantityService;
+    private MedicationOfferService medicationOfferService;
 
 
     @Autowired
@@ -33,6 +34,37 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
         this.medicationQuantityService = medicationQuantityService;
     }
 
+    @Override
+    public void setMedicationOfferService(MedicationOfferService medicationOfferService) {
+        this.medicationOfferService = medicationOfferService;
+    }
+
+    @Override
+    public Boolean editMedicationOrder(MedicationOrderDTO medicationOrderDTO) {
+        MedicationOrder medicationOrder = this.read(medicationOrderDTO.getId()).get();
+
+        if (medicationOfferService.getOffersByOrderId(medicationOrder.getId()).size() != 0)
+            return false;
+
+        medicationOrder.setDeadline(medicationOrderDTO.getDeadline());
+
+
+        ArrayList<MedicationQuantity> medicationQuantities = new ArrayList<>();
+        for (MedicationQuantity medicationQuantity : medicationOrderDTO.getMedicationQuantity()) {
+            Medication medication = medicationService.getMedicationByName(medicationQuantity.getMedication().getName());
+            medicationQuantities.add(medicationQuantityService.save(new MedicationQuantity(medication, medicationQuantity.getQuantity())));
+        }
+
+        medicationOrder.setMedicationQuantity(medicationQuantities);
+
+        return this.save(medicationOrder) != null;
+    }
+
+    @Override
+    public Boolean checkIfOrderIsEditable(Long orderId) {
+        return medicationOfferService.getOffersByOrderId(orderId).size() == 0;
+    }
+
 
     @Override
     public MedicationOrder save(MedicationOrder entity) {
@@ -41,22 +73,31 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
 
     @Override
     public Collection<MedicationOrder> read() {
-        return medicationOrderRepository.findAll();
+        return medicationOrderRepository.findAll().stream().filter(medicationOrder -> medicationOrder.getActive()).collect(Collectors.toList());
     }
 
     @Override
     public Optional<MedicationOrder> read(Long id) {
-        return medicationOrderRepository.findById(id);
+        MedicationOrder medicationOrder = medicationOrderRepository.findById(id).get();
+        if (medicationOrder.getActive())
+            return medicationOrderRepository.findById(id);
+        return Optional.empty();
     }
 
     @Override
     public void delete(Long id) {
-        medicationOrderRepository.deleteById(id);
+        Optional<MedicationOrder> medicationOrderOptional = this.read(id);
+        if (!medicationOrderOptional.isPresent())
+            return;
+        MedicationOrder medicationOrder = medicationOrderOptional.get();
+        medicationOrder.setActive(false);
+        this.save(medicationOrder);
+
     }
 
     @Override
     public boolean existsById(Long id) {
-        return medicationOrderRepository.existsById(id);
+        return this.read(id).isPresent();
     }
 
     @Override
@@ -75,7 +116,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
         }
 
         medicationOrder.setMedicationQuantity(medicationQuantities);
-
+        medicationOrder.setActive(true);
         return this.save(medicationOrder) != null;
     }
 
@@ -87,4 +128,20 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
 
     @Override
     public Collection<MedicationOrderDTO> getMedicationOrderByPharmacyAdmin(Long pharmacyAdminId) { return medicationOrderRepository.getMedicationOrderByPharmacyAdmin(pharmacyAdminId);}
+
+    @Override
+    public Boolean deleteMedicationOrder(Long orderId) {
+        if (medicationOfferService.getOffersByOrderId(orderId).size() != 0)
+            return false;
+
+        if (!medicationOrderRepository.existsById(orderId))
+            return false;
+
+        MedicationOrder medicationOrder = this.read(orderId).get();
+        medicationOrder.setActive(false);
+        return this.save(medicationOrder) != null;
+
+    }
+
+
 }

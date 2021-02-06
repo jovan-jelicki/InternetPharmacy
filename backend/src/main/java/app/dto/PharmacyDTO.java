@@ -34,4 +34,15 @@ public class PharmacyDTO {
         this.pharmacistCost = pharmacy.getPharmacistCost();
         this.dermatologistCost = pharmacy.getDermatologistCost();
     }
+
+    public PharmacyDTO(Pharmacy pharmacy, double grade) {
+        this.id = pharmacy.getId();
+        this.name = pharmacy.getName();
+        this.address = pharmacy.getAddress();
+        this.description = pharmacy.getDescription();
+        this.medicationQuantity = pharmacy.getMedicationQuantity();
+        this.pharmacistCost = pharmacy.getPharmacistCost();
+        this.dermatologistCost = pharmacy.getDermatologistCost();
+        this.grade = grade;
+    }
 }

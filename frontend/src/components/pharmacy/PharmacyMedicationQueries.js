@@ -22,7 +22,7 @@ export default class PharmacyMedicationQueries extends React.Component{
             <div style={({ marginLeft: '1rem' })}>
                 <br/><br/>
                 <h1>Lacking medication queries</h1>
-
+                <br/>
                 <table className="table table-hover">
                     <thead>
                     <tr>

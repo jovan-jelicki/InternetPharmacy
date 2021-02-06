@@ -1,16 +1,14 @@
 package app.service.impl;
 
 import app.dto.*;
+import app.model.grade.GradeType;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
-import app.service.MedicationPriceListService;
-import app.service.MedicationService;
-import app.service.PharmacyService;
-import app.service.PromotionService;
+import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +26,13 @@ public class PharmacyServiceImpl implements PharmacyService {
     private MedicationPriceListService medicationPriceListService;
     private final AppointmentRepository appointmentRepository;
     private PromotionService promotionService;
+    private final GradeService gradeService;
 
     @Autowired
-    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository) {
+    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository, GradeService gradeService) {
         this.pharmacyRepository = pharmacyRepository;
         this.appointmentRepository = appointmentRepository;
+        this.gradeService = gradeService;
     }
 
     @Override
@@ -147,7 +147,9 @@ public class PharmacyServiceImpl implements PharmacyService {
         ArrayList<PharmacyMedicationListingDTO> pharmacyMedicationListingDTOS = new ArrayList<PharmacyMedicationListingDTO>();
         for(MedicationQuantity medicationQuantity : pharmacy.getMedicationQuantity()) {
             double cost = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationQuantity.getMedication().getId(), LocalDateTime.now());
-            PharmacyMedicationListingDTO pharmacyMedicationListingDTO = new PharmacyMedicationListingDTO(medicationQuantity, cost, 0, pharmacyId);
+            PharmacyMedicationListingDTO pharmacyMedicationListingDTO =
+                    new PharmacyMedicationListingDTO(medicationQuantity, cost, gradeService.
+                            findAverageGradeForEntity(medicationQuantity.getMedication().getId(), GradeType.medication), pharmacyId);
             pharmacyMedicationListingDTOS.add(pharmacyMedicationListingDTO); //todo grade
         }
 //        pharmacy.getMedicationQuantity().forEach(medicationQuantity -> pharmacyMedicationListingDTOS.add(new PharmacyMedicationListingDTO(medicationQuantity,
