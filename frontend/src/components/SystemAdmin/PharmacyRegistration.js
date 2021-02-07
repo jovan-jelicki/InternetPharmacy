@@ -54,18 +54,7 @@ export default class PharmacyRegistration extends React.Component {
         console.log(this.state.pharmacyAdmins)
     }
 
-    handleAdminSelected=async(event)=>{
-        const target = event.target;
-        let value = event.target.value;
-        console.log(value)
-        this.setState({
-            admin : value
-        })
-        this.state.admin=value;
-        console.log("ALOO")
-        console.log(this.state.admin)
-        //this.selectErrors()
-    }
+
 
     handleInputChange = (event) => {
 
@@ -218,7 +207,6 @@ export default class PharmacyRegistration extends React.Component {
                         'latitude': this.state.pharmacy.address.latitude,
                         'longitude': this.state.pharmacy.address.longitude
                     },
-                'pharmacyAdminId':this.state.admin
             })
             .then(res => {
                 alert("Successfully registered!");
@@ -266,22 +254,6 @@ export default class PharmacyRegistration extends React.Component {
                         }} className="form-control" placeholder="Description"/>
                         {this.state.submitted && this.state.errors.pharmacy.description.length > 0 &&
                         <span className="text-danger">{this.state.errors.pharmacy.description}</span>}
-                    </div>
-                </div>
-
-
-                <div className="row" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <label className="col-sm-2 col-form-label">Pharmacy admin</label>
-                    <div className="col-sm-3 mb-2">
-                        <Form.Control placeholder="Medication" as={"select"} value={this.state.pharmacyAdmins.id} onChange={this.handleAdminSelected}>
-                            <option disabled={true} selected="selected">Choose</option>
-                            {this.state.pharmacyAdmins.map(pharmacyAdmin =>
-                                <option key={pharmacyAdmin.id} value={pharmacyAdmin.id}>{pharmacyAdmin.firstName} {pharmacyAdmin.lastName}</option>
-                            )}
-                        </Form.Control>
-                        {/*} {this.state.submitted && this.state.errors.pharmacy.pharmacyAdmin.length > 0 &&
-                        <span className="text-danger">{this.state.errors.pharmacy.pharmacyAdmin}</span>}
-                        */}
                     </div>
                 </div>
 
