@@ -2,7 +2,6 @@ package app.controller.impl;
 
 import app.dto.*;
 import app.model.appointment.Appointment;
-import app.model.grade.Grade;
 import app.model.grade.GradeType;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
@@ -40,7 +39,7 @@ public class SchedulingControllerImpl {
 
     @PostMapping(value = "/search", consumes = "application/json")
     public ResponseEntity<Collection<CounselingSearchDTO>> getAvailable(@RequestBody AppointmentSearchDTO appointmentSearchKit) {
-        if (appointmentSearchKit.getEmployeeType() == EmployeeType.pharmacist) {
+        if (appointmentSearchKit.getEmployeeType() == EmployeeType.ROLE_pharmacist) {
             Collection<CounselingSearchDTO> available = new ArrayList<>();
             counselingService.findAvailablePharmacists(appointmentSearchKit).forEach(p -> {
                 CounselingSearchDTO counselingSearchDTO = new CounselingSearchDTO(p);

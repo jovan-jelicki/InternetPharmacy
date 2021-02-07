@@ -62,7 +62,7 @@ public class MedicationLackingEventServiceImpl implements MedicationLackingEvent
     public Collection<MedicationLackingEventDTO> getMedicationLackingEventListing(Long pharmacyId) {
         ArrayList<MedicationLackingEventDTO> medicationLackingEventDTOS = new ArrayList<>();
         for (MedicationLackingEvent medicationLackingEvent : this.getMedicationLackingEventByPharmacyId(pharmacyId)) {
-            User user = medicationLackingEvent.getEmployeeType() == EmployeeType.dermatologist ?
+            User user = medicationLackingEvent.getEmployeeType() == EmployeeType.ROLE_dermatologist ?
                     dermatologistService.read(medicationLackingEvent.getEmployeeId()).get() : pharmacistService.read(medicationLackingEvent.getEmployeeId()).get();
             MedicationLackingEventDTO medicationLackingEventDTO = new MedicationLackingEventDTO(medicationLackingEvent);
             medicationLackingEventDTO.setEmployeeFirstName(user.getFirstName());

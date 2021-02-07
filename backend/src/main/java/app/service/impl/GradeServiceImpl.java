@@ -54,7 +54,7 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public Collection<EmployeeGradeDTO> findDermatologistsPatientCanGrade(Long patientId) {
         return appointmentRepository
-                .getAllByPatient_IdAndAppointmentStatusAndType(patientId, AppointmentStatus.patientPresent, EmployeeType.dermatologist)
+                .getAllByPatient_IdAndAppointmentStatusAndType(patientId, AppointmentStatus.patientPresent, EmployeeType.ROLE_dermatologist)
                 .stream()
                 .map(a -> {
                     Dermatologist dermatologist = dermatologistRepository.findById(a.getExaminerId()).get();
@@ -73,7 +73,7 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public Collection<EmployeeGradeDTO> findPharmacistPatientCanGrade(Long patientId) {
         return appointmentRepository
-                .getAllByPatient_IdAndAppointmentStatusAndType(patientId, AppointmentStatus.patientPresent, EmployeeType.pharmacist)
+                .getAllByPatient_IdAndAppointmentStatusAndType(patientId, AppointmentStatus.patientPresent, EmployeeType.ROLE_pharmacist)
                 .stream()
                 .map(a -> {
                     Pharmacist pharmacist = pharmacistRepository.findById(a.getExaminerId()).get();
