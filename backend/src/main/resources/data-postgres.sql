@@ -530,5 +530,8 @@ values(9,'dizziness');
 insert into side_effect(id,name)
 values(10,'insomnia');
 
-
+insert into complaint(id,complainee_id,content,type,patient_id)
+values(0,1,'Bezobrazan, nadmen.',0,0);
+insert into complaint(id,complainee_id,content,type,patient_id)
+values(1,3,'Nece da da recept!',1,0);
 
