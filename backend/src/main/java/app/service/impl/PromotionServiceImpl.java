@@ -140,8 +140,6 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public Boolean unsubscribe(Long pharmacyId, Long patientId) {
-        //dobavi sve promocije na osnovu ida apoteke
-        //otidji kod pacijenta i obrisi mu promocije
         Patient patient = patientService.read(patientId).get();
         ArrayList<Promotion> promotions = (ArrayList<Promotion>) promotionRepository.getPromotionByPharmacy(pharmacyId);
 

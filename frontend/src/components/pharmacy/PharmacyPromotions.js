@@ -59,11 +59,11 @@ export default class PharmacyPromotions extends React.Component {
         })
     }
 
-    unsubscribe(){
+    unsubscribe(pharmacy){
         axios
-            .post('http://localhost:8080/api/pharmacy/search', {
-            })
+            .put('http://localhost:8080/api/promotion/unsubscribe/'+pharmacy.id+"/"+0) //todo patient id
             .then((res) => {
+                alert("successfully unsubscribed")
             })
     }
 
@@ -76,7 +76,7 @@ export default class PharmacyPromotions extends React.Component {
                     <Card.Body>
                     <Card.Title>
                         {pharmacy.name}
-                    <Button style={{marginLeft:150}} variant="outline-light" onClick={()=>{this.unsubscribe()}}>Unsubscribe</Button>{' '}
+                    <Button style={{marginLeft:150}} variant="outline-light" onClick={()=>{this.unsubscribe(pharmacy)}}>Unsubscribe</Button>{' '}
                     </Card.Title>
                         <Card.Subtitle className="mb-5 mt-2 text-muted">{address}</Card.Subtitle>
                         <Card.Text>
