@@ -16,11 +16,7 @@ export default class Complaints extends React.Component {
 
     async componentDidMount() {
         console.log("BLA")
-        this.fetchComplaints();
-
-    }
-    fetchComplaints = () => {
-        axios
+        await axios
             .get('http://localhost:8080/api/complaints')
             .then((res) => {
                 this.setState({
@@ -29,11 +25,13 @@ export default class Complaints extends React.Component {
                 console.log("pokupi")
                 console.log(this.state.complaints);
             }).catch(
-                console.log("greska")
-            )
+            console.log("greska")
+        )
         this.complaintsBackup = [...this.state.complaints]
 
     }
+
+    fetch
 
     handleModal = (complaint) => {
         this.setState({
@@ -53,11 +51,11 @@ export default class Complaints extends React.Component {
         this.setState({
             complaints : this.complaintsBackup
         })
-        this.fetchComplaints()
 
     }
 
     onTypeChange=(event) => {
+        console.log(this.complaintsBackup)
         var option = event.target.id
 
         this.state.selectedOption=option;
