@@ -32,6 +32,7 @@ public class EPrescriptionControllerImpl {
     }
 
     @GetMapping(value = "/patient/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<EPrescriptionSimpleInfoDTO>> findAllByPatientId(@PathVariable Long id) {
         Collection<EPrescriptionSimpleInfoDTO> prescriptions = ePrescriptionService.findAllByPatientId(id)
                 .stream()
