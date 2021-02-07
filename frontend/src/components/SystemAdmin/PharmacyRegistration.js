@@ -222,10 +222,7 @@ export default class PharmacyRegistration extends React.Component {
         const {selectedOption} = this.state;
 
         return (
-            <Container style={{
-                background: 'rgb(232, 244, 248 )',
-                color: 'rgb(0, 92, 230)',
-            }}>
+            <Container style={{ background: 'rgb(232, 244, 248 )',color: 'rgb(0, 92, 230)', }}>
                 <h3 style={({marginTop: '5rem', textAlignVertical: "center", textAlign: "center"})}>Pharmacy registration</h3>
                 <div className="row"
                      style={{marginTop: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

@@ -2,6 +2,7 @@
 package app.model.user;
 
 import app.model.medication.Ingredient;
+import app.model.pharmacy.LoyaltyCategory;
 import app.model.pharmacy.Promotion;
 
 import javax.persistence.*;
@@ -17,6 +18,12 @@ public class Patient extends User {
 
     @Column
     private int penaltyCount;
+
+    @Column
+    private int loyaltyCount;
+
+    @Enumerated(EnumType.ORDINAL)
+    LoyaltyCategory loyaltyCategory;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Ingredient> allergies;
@@ -58,4 +65,12 @@ public class Patient extends User {
     public void setPromotions(List<Promotion> promotions) {
         this.promotions = promotions;
     }
+
+    public int getLoyaltyCount() {return loyaltyCount;}
+
+    public void setLoyaltyCount(int loyaltyCount) {this.loyaltyCount = loyaltyCount;}
+
+    public LoyaltyCategory getLoyaltyCategory() {return loyaltyCategory;}
+
+    public void setLoyaltyCategory(LoyaltyCategory loyaltyCategory) {this.loyaltyCategory = loyaltyCategory;}
 }

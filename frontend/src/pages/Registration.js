@@ -328,11 +328,8 @@ export default class Registration extends React.Component {
 
                         </div>
                         <div className="col-sm-3 mb-2">
-                            <input type="text" value={this.state.lastName} name="lastName" onChange={(e) => {
-                                this.handleInputChange(e)
-                            }} className="form-control" placeholder="Last Name"/>
-                            {this.state.submitted && this.state.errors.user.lastName.length > 0 &&
-                            <span className="text-danger">{this.state.errors.user.lastName}</span>}
+                            <input type="text" value={this.state.lastName} name="lastName" onChange={(e) => {this.handleInputChange(e) }} className="form-control" placeholder="Last Name"/>
+                            {this.state.submitted && this.state.errors.user.lastName.length > 0 && <span className="text-danger">{this.state.errors.user.lastName}</span>}
 
                         </div>
                         <div className="col-sm-4">

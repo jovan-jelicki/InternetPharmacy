@@ -106,7 +106,7 @@ class Login extends React.Component {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id,
                     jwtToken: this.state.user.jwtToken,
-                    type: this.state.user.type
+                    role: this.state.user.type
                 }
             });
 
@@ -117,7 +117,7 @@ class Login extends React.Component {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id,
                     jwtToken: this.state.user.jwtToken,
-                    type: this.state.user.type
+                    role: this.state.user.type
                 }
             });
         }else if(type=="ROLE_pharmacist"){ //ROLE_pharmacist
@@ -127,7 +127,7 @@ class Login extends React.Component {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id,
                     jwtToken: this.state.user.jwtToken,
-                    type: this.state.user.type
+                    role: this.state.user.type
                 }
             });
         }else if(type=="ROLE_pharmacyAdmin"){ //ROLE_pharmacyAdmin
@@ -137,7 +137,7 @@ class Login extends React.Component {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id,
                     jwtToken: this.state.user.jwtToken,
-                    type: this.state.user.type
+                    role: this.state.user.type
                 }
             });
         }else if(type=="ROLE_supplier"){ //ROLE_supplier
@@ -147,7 +147,7 @@ class Login extends React.Component {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id,
                     jwtToken: this.state.user.jwtToken,
-                    type: this.state.user.type
+                    role: this.state.user.type
                 }
             });
         }else if(type=="ROLE_systemAdmin"){ //ROLE_systemAdmin
@@ -157,7 +157,7 @@ class Login extends React.Component {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id,
                     jwtToken: this.state.user.jwtToken,
-                    type: this.state.user.type
+                    role: this.state.user.type
                 }
             });
         }
