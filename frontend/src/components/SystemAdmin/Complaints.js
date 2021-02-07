@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import {Button, Form, Modal, Table} from "react-bootstrap";
+import {Button, Form, Modal, Row, Table} from "react-bootstrap";
 import CreateNewOffer from "../Supplier/CreateNewOffer";
 import ComplainAnswer from "./ComplainAnswer";
 
@@ -16,7 +16,11 @@ export default class Complaints extends React.Component {
 
     async componentDidMount() {
         console.log("BLA")
-        await axios
+        this.fetchComplaints();
+
+    }
+    fetchComplaints = () => {
+        axios
             .get('http://localhost:8080/api/complaints')
             .then((res) => {
                 this.setState({
@@ -27,6 +31,8 @@ export default class Complaints extends React.Component {
             }).catch(
                 console.log("greska")
             )
+        this.complaintsBackup = [...this.state.complaints]
+
     }
 
     handleModal = (complaint) => {
@@ -43,7 +49,42 @@ export default class Complaints extends React.Component {
         });
     }
 
+    cancel() {
+        this.setState({
+            complaints : this.complaintsBackup
+        })
+        this.fetchComplaints()
 
+    }
+
+    onTypeChange=(event) => {
+        var option = event.target.id
+
+        this.state.selectedOption=option;
+
+        if(this.state.selectedOption=="all"){
+            this.cancel()
+        }else if(this.state.selectedOption=="nonActive"){
+            console.log(this.complaintsBackup)
+            this.state.complaints=this.complaintsBackup;
+            console.log(this.state.complaints)
+            let filteredData = this.state.complaints.filter(column => {
+                return column.active ===false ;
+            });
+            this.setState({
+                complaints: filteredData
+            });
+        }else {
+            this.state.complaints=this.complaintsBackup;
+            console.log(this.complaintsBackup)
+            let filteredData = this.state.complaints.filter(column => {
+                return column.active ===true ;
+            });
+            this.setState({
+                complaints: filteredData
+            });
+        }
+    }
 
 
 
@@ -53,6 +94,18 @@ export default class Complaints extends React.Component {
                 <div className="container">
                     <h3 style={({ textAlignVertical: "center", textAlign: "center", marginTop:20})}>Complaints </h3>
                 </div>
+                <fieldset>
+                    <Form>
+                        <Form.Group as={Row}>
+                            <label style={{'marginLeft':'2rem'}}> Complaint status:</label>
+                            <Row sm={10} style={{'marginLeft':'1rem'}}>
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="all" name="formHorizontalRadios"id="all" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="active" name="formHorizontalRadios"id="active" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="nonActive" name="formHorizontalRadios"id="nonActive" onChange={this.onTypeChange} />
+                            </Row>
+                        </Form.Group>
+                    </Form>
+                </fieldset>
                 <div style={({ marginLeft:90, marginRight:90, marginTop:20})}>
                 <Table striped bordered hover variant="dark"  style={{marginTop:60}}>
                     <thead>

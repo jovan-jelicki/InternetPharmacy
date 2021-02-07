@@ -81,4 +81,12 @@ public class ComplaintServiceImpl implements ComplaintService {
 
         return complaintDTOS;
     }
+
+    @Override
+    public Boolean editComplaint(Long complaintId) {
+         Complaint complaint= this.read(complaintId).get();
+         complaint.setActive(false);
+         this.save(complaint);
+         return true;
+    }
 }

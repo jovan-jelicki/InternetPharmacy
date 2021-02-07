@@ -442,7 +442,7 @@ insert into medication_lacking_event(id, employee_id, employee_type, event_date,
 values (3, 1,1, '2021-02-03', 4,1);
 
 insert into supplier (id,country , latitude, longitude,street, town,phone_number,email,password,  first_name, last_name, user_type)
-VALUES (1,'SRB', 41, 87, 'Avenue 3rd', 'Belgrade',  '0605435487','jovancica@gmail.com','jole123','Jovana', 'Markovic',1);
+VALUES (1,'SRB', 41, 87, 'Avenue 3rd', 'Belgrade',  '0605435487','jovancica@gmail.com','jole123','Jovana', 'Markovic',5);
 
 insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
 VALUES(1,1);

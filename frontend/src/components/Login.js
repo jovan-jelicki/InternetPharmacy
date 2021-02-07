@@ -70,7 +70,7 @@ class Login extends React.Component {
         return !(value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,64}$/i.test(value))
     }
 
-    async sendData() {
+    sendData() {
         //console.log(this.state.email)
         //console.log(this.state.password)
         axios
@@ -79,14 +79,18 @@ class Login extends React.Component {
                 'password':this.state.password
             })
             .then(res => {
+                this.state.error = false
+
                 this.setState({
                     user:res.data
                 })
+                this.state.error = false
+
                 this.redirect()
-                console.log(this.state.user)
+
             })
-            .catch(
-                this.state.error = true
+            .catch( res =>
+                this.setState({ error:true })
             );
 
     }
@@ -95,13 +99,11 @@ class Login extends React.Component {
         let type=this.state.user.type
         console.log(type)
         const history = createHashHistory()
-
-
         if(type=="ROLE_patient"){ //ROLE_patient
             this.props.history.push({
-                pathname: "/patient-profile",
+                pathname: "/patient-home",
                 state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id
                 }
             });
@@ -110,15 +112,15 @@ class Login extends React.Component {
             this.props.history.push({
                 pathname: "/dermatologistHomePage",
                 state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id
                 }
             });
         }else if(type=="ROLE_pharmacist"){ //ROLE_pharmacist
             this.props.history.push({
-                pathname: "//pharmacistHomePage",
+                pathname: "/pharmacistHomePage",
                 state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id
                 }
             });
@@ -126,7 +128,7 @@ class Login extends React.Component {
             this.props.history.push({
                 pathname: "/pharmacy-admin-profile",
                 state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id
                 }
             });
@@ -134,7 +136,7 @@ class Login extends React.Component {
             this.props.history.push({
                 pathname: "/supplierHomePage",
                 state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id
                 }
             });
@@ -142,7 +144,7 @@ class Login extends React.Component {
             this.props.history.push({
                 pathname: "/SystemAdmin",
                 state: {
-                email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
+                email: this.state.user.email,  //pristupas sa  this.props.location.state.email
                     userId: this.state.user.id
                 }
             });

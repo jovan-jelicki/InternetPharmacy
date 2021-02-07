@@ -31,7 +31,6 @@ export default class ComplainAnswer extends React.Component{
     }
 
     async sendMail() {
-        console.log(this.props.complaint.patientEmail)
         axios
             .put('http://localhost:8080/api/email/send', {
                 'to': 't.kovacevic98@gmail.com',    //this.props.complaint.patientEmail
@@ -41,6 +40,13 @@ export default class ComplainAnswer extends React.Component{
             .then(res => {
                 this.setState({boolEnde:true});
             });
+
+        axios
+            .put('http://localhost:8080/api/complaints/edit/'+this.props.complaint.complaintId)
+            .then(res => {
+                this.setState({boolEnde:true});
+            });
+
     }
 
     render() {

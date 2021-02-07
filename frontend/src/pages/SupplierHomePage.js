@@ -28,6 +28,8 @@ export default class SupplierHomePage extends React.Component {
         }
     }
     componentDidMount() {
+        console.log("LOKACIJA")
+        console.log(this.props.location)
         let  supplier= {
             firstName: 'Manja',
             lastName: 'Babic',
