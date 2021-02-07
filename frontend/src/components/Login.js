@@ -70,7 +70,7 @@ class Login extends React.Component {
         return !(value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,64}$/i.test(value))
     }
 
-    async sendData() {
+    sendData() {
         //console.log(this.state.email)
         //console.log(this.state.password)
         axios
@@ -83,10 +83,9 @@ class Login extends React.Component {
                     user:res.data
                 })
                 this.redirect()
-                console.log(this.state.user)
             })
-            .catch(
-                this.state.error = true
+            .catch( res =>
+                this.setState({ error:true })
             );
 
     }
@@ -98,53 +97,34 @@ class Login extends React.Component {
 
 
         if(type=="ROLE_patient"){ //ROLE_patient
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
-                pathname: "/patient-profile",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
-                    userId: this.state.user.id
-                }
+                pathname: "/patient-home"
             });
-
         }else if(type=="ROLE_dermatologist"){ //ROLE_dermatologist
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
                 pathname: "/dermatologistHomePage",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
-                    userId: this.state.user.id
-                }
             });
         }else if(type=="ROLE_pharmacist"){ //ROLE_pharmacist
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
                 pathname: "//pharmacistHomePage",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
-                    userId: this.state.user.id
-                }
             });
         }else if(type=="ROLE_pharmacyAdmin"){ //ROLE_pharmacyAdmin
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
                 pathname: "/pharmacy-admin-profile",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
-                    userId: this.state.user.id
-                }
             });
         }else if(type=="ROLE_supplier"){ //ROLE_supplier
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
                 pathname: "/supplierHomePage",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
-                    userId: this.state.user.id
-                }
             });
         }else if(type=="ROLE_systemAdmin"){ //ROLE_systemAdmin
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
                 pathname: "/SystemAdmin",
-                state: {
-                email: this.state.user.email,  //pristupas sa  this.props.location.state.user.email
-                    userId: this.state.user.id
-                }
             });
         }
     }

@@ -7,6 +7,7 @@ export default class DermatologistAppointmentStart extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
             startedAppointment : !!localStorage.getItem("startedAppointment") ? JSON.parse(localStorage.getItem("startedAppointment")) : false,
             appointment : !!localStorage.getItem("appointment") ? JSON.parse(localStorage.getItem("appointment")) : {},
             dermatologistEvents : [],

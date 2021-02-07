@@ -80,11 +80,11 @@ public class PharmacistServiceImpl implements PharmacistService {
 
     @Override
     public void delete(Long id) {
-        Collection<Appointment> ret = appointmentService.GetAllScheduledAppointmentsByExaminerIdAfterDate(id, EmployeeType.pharmacist, LocalDateTime.now());
+        Collection<Appointment> ret = appointmentService.GetAllScheduledAppointmentsByExaminerIdAfterDate(id, EmployeeType.ROLE_pharmacist, LocalDateTime.now());
         if (ret.size() != 0)
             return;
 
-        for (Appointment appointment : appointmentService.GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(id, EmployeeType.pharmacist, LocalDateTime.now()))
+        for (Appointment appointment : appointmentService.GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(id, EmployeeType.ROLE_pharmacist, LocalDateTime.now()))
             appointmentService.delete(appointment.getId());
 
         Pharmacist pharmacist = this.read(id).get();
