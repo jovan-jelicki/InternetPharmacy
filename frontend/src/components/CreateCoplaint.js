@@ -39,6 +39,8 @@ export default class CreateCoplaint extends React.Component{
             console.log("Probaj")
             console.log(this.state.dermatologists)
         })
+
+
     }
 
     onTypeChange=(event) => {
@@ -61,6 +63,7 @@ export default class CreateCoplaint extends React.Component{
             this.setState({boolPharmacy:true})
         }
     }
+
     handleInputChange = (event) => {
         console.log(event.target.value)
         const { name, value } = event.target;
@@ -153,6 +156,9 @@ export default class CreateCoplaint extends React.Component{
     }
 
     render() {
+        const dermatologist={
+
+        }
         return (
             <PatientLayout>
                 <Container fluid>
@@ -189,6 +195,7 @@ export default class CreateCoplaint extends React.Component{
                                 <option key={dermatologist.id}
                                         value={dermatologist.id}>{dermatologist.firstName} {dermatologist.lastName}</option>
                             )}
+
                         </Form.Control>
                     }
 
@@ -204,7 +211,6 @@ export default class CreateCoplaint extends React.Component{
                         </Form.Control>
                     }
                         {this.state.submitted && this.state.errors.users.length > 0 &&  <span className="text-danger">{this.state.errors.users}</span>}
-
                     </Form>
                     <label style={{'marginLeft': '1rem', marginTop: '0.5rem'}}> Pease write your complaint:</label>
                         <div className="row" style={{marginTop: '1rem', marginLeft: '2rem'}}>
@@ -223,6 +229,7 @@ export default class CreateCoplaint extends React.Component{
                             <Button variant="primary" onClick={this.submitForm} >Submit</Button>
                         </div>
                     </div>
+
                 </Container>
             </PatientLayout>
         );

@@ -50,6 +50,10 @@ export default class Complaints extends React.Component {
     render() {
         return (
             <div className="container-fluid" >
+                <div className="container">
+                    <h3 style={({ textAlignVertical: "center", textAlign: "center", marginTop:20})}>Complaints </h3>
+                </div>
+                <div style={({ marginLeft:90, marginRight:90, marginTop:20})}>
                 <Table striped bordered hover variant="dark"  style={{marginTop:60}}>
                     <thead>
                     <tr>
@@ -77,7 +81,7 @@ export default class Complaints extends React.Component {
 
                     </tbody>
                 </Table>
-
+                </div>
 
 
                 <Modal show={this.state.showModal} onHide={this.closeModal}  style={{'height':850}} >
