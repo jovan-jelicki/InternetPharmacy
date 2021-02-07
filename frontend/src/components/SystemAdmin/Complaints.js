@@ -14,8 +14,13 @@ export default class Complaints extends React.Component {
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         console.log("BLA")
+        this.fetchComplaints()
+
+    }
+
+    async fetchComplaints(){
         await axios
             .get('http://localhost:8080/api/complaints')
             .then((res) => {
@@ -25,13 +30,10 @@ export default class Complaints extends React.Component {
                 console.log("pokupi")
                 console.log(this.state.complaints);
             }).catch(
-            console.log("greska")
-        )
+                console.log("greska")
+            )
         this.complaintsBackup = [...this.state.complaints]
-
     }
-
-    fetch
 
     handleModal = (complaint) => {
         this.setState({
@@ -45,6 +47,8 @@ export default class Complaints extends React.Component {
         this.setState({
             showModal : !this.state.showModal
         });
+        this.fetchComplaints()
+
     }
 
     cancel() {
@@ -55,7 +59,7 @@ export default class Complaints extends React.Component {
     }
 
     onTypeChange=(event) => {
-        console.log(this.complaintsBackup)
+        console.log(event)
         var option = event.target.id
 
         this.state.selectedOption=option;
@@ -97,9 +101,9 @@ export default class Complaints extends React.Component {
                         <Form.Group as={Row}>
                             <label style={{'marginLeft':'2rem'}}> Complaint status:</label>
                             <Row sm={10} style={{'marginLeft':'1rem'}}>
-                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="all" name="formHorizontalRadios"id="all" onChange={this.onTypeChange} />
-                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="active" name="formHorizontalRadios"id="active" onChange={this.onTypeChange} />
-                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="nonActive" name="formHorizontalRadios"id="nonActive" onChange={this.onTypeChange} />
+                                <Form.Check defaultChecked={true} style={{'marginLeft':'1rem'}} type="radio" label="all" name="formHorizontalRadios"id="all" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="active" name="formHorizontalRadios" id="active" onChange={this.onTypeChange} />
+                                <Form.Check style={{'marginLeft':'1rem'}} type="radio" label="nonActive" name="formHorizontalRadios" id="nonActive" onChange={this.onTypeChange} />
                             </Row>
                         </Form.Group>
                     </Form>

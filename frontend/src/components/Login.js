@@ -104,7 +104,9 @@ class Login extends React.Component {
                 pathname: "/patient-home",
                 state: {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id
+                    userId: this.state.user.id,
+                    jwtToken: this.state.user.jwtToken,
+                    type: this.state.user.type
                 }
             });
 
@@ -113,7 +115,9 @@ class Login extends React.Component {
                 pathname: "/dermatologistHomePage",
                 state: {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id
+                    userId: this.state.user.id,
+                    jwtToken: this.state.user.jwtToken,
+                    type: this.state.user.type
                 }
             });
         }else if(type=="ROLE_pharmacist"){ //ROLE_pharmacist
@@ -121,7 +125,9 @@ class Login extends React.Component {
                 pathname: "/pharmacistHomePage",
                 state: {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id
+                    userId: this.state.user.id,
+                    jwtToken: this.state.user.jwtToken,
+                    type: this.state.user.type
                 }
             });
         }else if(type=="ROLE_pharmacyAdmin"){ //ROLE_pharmacyAdmin
@@ -129,7 +135,9 @@ class Login extends React.Component {
                 pathname: "/pharmacy-admin-profile",
                 state: {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id
+                    userId: this.state.user.id,
+                    jwtToken: this.state.user.jwtToken,
+                    type: this.state.user.type
                 }
             });
         }else if(type=="ROLE_supplier"){ //ROLE_supplier
@@ -137,15 +145,19 @@ class Login extends React.Component {
                 pathname: "/supplierHomePage",
                 state: {
                     email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id
+                    userId: this.state.user.id,
+                    jwtToken: this.state.user.jwtToken,
+                    type: this.state.user.type
                 }
             });
         }else if(type=="ROLE_systemAdmin"){ //ROLE_systemAdmin
             this.props.history.push({
                 pathname: "/SystemAdmin",
                 state: {
-                email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id
+                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
+                    userId: this.state.user.id,
+                    jwtToken: this.state.user.jwtToken,
+                    type: this.state.user.type
                 }
             });
         }

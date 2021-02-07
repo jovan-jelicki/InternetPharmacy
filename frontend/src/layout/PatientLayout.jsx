@@ -32,7 +32,7 @@ class PatientLayout extends React.Component {
                                 <NavDropdown.Item href="javascript:;">Penalties</NavDropdown.Item>
                             </NavDropdown>
                             <Nav.Link as={NavLink} to='/grading'>Grade</Nav.Link>
-                            <Nav.Link as={NavLink} to='javascript:;'>File a Complaint</Nav.Link>
+                            <Nav.Link as={NavLink} to='/complaint'>File a Complaint</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>

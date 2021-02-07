@@ -24,8 +24,11 @@ public class ComplaintControllerImpl {
     }
 
     @PostMapping(value="/save", consumes = "application/json")
-    public ResponseEntity<Complaint> save(@RequestBody Complaint complaint) {
-        return new ResponseEntity<>(complaintService.save(complaint), HttpStatus.CREATED);
+    public ResponseEntity<Void> save(@RequestBody Complaint complaint) {
+        complaintService.save(complaint);
+       // return new ResponseEntity<>(complaintService.save(complaint), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @GetMapping

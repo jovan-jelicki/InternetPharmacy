@@ -148,6 +148,7 @@ export default class CreateCoplaint extends React.Component{
                 'content' : this.state.content,
                 'type' : 0,
                 'complaineeId' : this.state.employeeId,
+                'active':true
             })
             .then(res => {
 

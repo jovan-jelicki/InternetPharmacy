@@ -25,7 +25,7 @@ public class Complaint {
    @Column
    private Long complaineeId;
 
-   @Column(nullable = false, columnDefinition = "boolean default true")
+   @Column(columnDefinition = "boolean default true")
    private Boolean isActive;
 
    public Complaint() {
