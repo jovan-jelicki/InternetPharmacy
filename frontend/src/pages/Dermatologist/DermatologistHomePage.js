@@ -25,7 +25,12 @@ export default class DermatologistHomePage extends React.Component {
 
     componentDidMount() {
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/isAccountApproved/' + 3)
+            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/isAccountApproved/' + 3,
+                {  headers: {
+                         'Content-Type': 'multipart/form-data',
+                          Authorization : 'Bearer ' + this.props.location.state.jwtToken
+                }
+            })
             .then(res => {
                 if(!res.data){
                     this.setState({
@@ -98,6 +103,10 @@ export default class DermatologistHomePage extends React.Component {
                 'oldPassword' : this.state.oldPw,
                 'newPassword' : this.state.newPw,
                 'repeatedPassword' : this.state.repeatPw
+            }, {  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization : 'Bearer ' + this.props.location.state.jwtToken
+                }
             })
             .then(res => {
                 if(!res.data){

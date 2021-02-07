@@ -10,14 +10,12 @@ import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
-import app.model.user.Pharmacist;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
 import app.service.PatientService;
-import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -190,7 +188,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public boolean validateAppointmentTimeRegardingVacationRequests(Appointment entity) {
         boolean ret = true;
-        for(VacationRequest vacationRequest : vacationRequestRepository.findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(entity.getExaminerId() ,EmployeeType.dermatologist, VacationRequestStatus.approved))
+        for(VacationRequest vacationRequest : vacationRequestRepository.findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(entity.getExaminerId() ,EmployeeType.ROLE_dermatologist, VacationRequestStatus.approved))
             if (vacationRequest.getPeriod().getPeriodStart().toLocalDate().isBefore(entity.getPeriod().getPeriodStart().toLocalDate()) &&
                 vacationRequest.getPeriod().getPeriodEnd().toLocalDate().isAfter(entity.getPeriod().getPeriodEnd().toLocalDate()))
                 return false;
@@ -411,7 +409,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByMonth = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.ROLE_dermatologist).size();
             String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
             appointmentCountByMonth.add(new ReportsDTO(monthName,temp));
         }
@@ -444,7 +442,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByQuarter = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.ROLE_dermatologist).size();
             String monthNameStart = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
             String monthNameEnd = allDates.get(i+1).format(DateTimeFormatter.ofPattern("MMM"));
             appointmentCountByQuarter.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd,temp));
@@ -478,7 +476,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByYear = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.ROLE_dermatologist).size();
             String year = allDates.get(i).format(DateTimeFormatter.ofPattern("yyyy"));
             appointmentCountByYear.add(new ReportsDTO(year,temp));
         }

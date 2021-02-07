@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "api/dermatologists")
@@ -44,7 +43,7 @@ public class DermatologistControllerImpl implements DermatologistController {
     @PreAuthorize("hasRole('dermatologist')")
     @PostMapping(value = "/getFreeAppointments", consumes =  "application/json" )
     public ResponseEntity<Collection<AppointmentListingDTO>> getAllFreeAppointmentsOfDermatologist(@RequestBody DermatologistSchedulingDTO dermatologistSchedulingDTO){
-        Collection<Appointment> appointments = appointmentService.GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistSchedulingDTO.getDermatologistId(), EmployeeType.dermatologist, LocalDateTime.now(), dermatologistSchedulingDTO.getPharmacyId());
+        Collection<Appointment> appointments = appointmentService.GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistSchedulingDTO.getDermatologistId(), EmployeeType.ROLE_dermatologist, LocalDateTime.now(), dermatologistSchedulingDTO.getPharmacyId());
         Collection<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
         for(Appointment a : appointments)
             appointmentListingDTOS.add(new AppointmentListingDTO(a));

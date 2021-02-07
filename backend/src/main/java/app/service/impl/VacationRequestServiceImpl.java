@@ -69,7 +69,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     public Collection<VacationRequestDTO> findByPharmacyIdAndEmployeeType(Long pharmacyId, EmployeeType employeeType) {
         ArrayList<VacationRequestDTO> vacationRequestDTOS = new ArrayList<>();
         for (VacationRequest vacationRequest : vacationRequestRepository.findByPharmacyIdAndEmployeeType(pharmacyId, employeeType)) {
-            User user = employeeType == EmployeeType.pharmacist ? pharmacistService.read(vacationRequest.getEmployeeId()).get() : dermatologistService.read(vacationRequest.getEmployeeId()).get();
+            User user = employeeType == EmployeeType.ROLE_pharmacist ? pharmacistService.read(vacationRequest.getEmployeeId()).get() : dermatologistService.read(vacationRequest.getEmployeeId()).get();
             VacationRequestDTO vacationRequestDTO = new VacationRequestDTO(user, vacationRequest);
             vacationRequestDTOS.add(vacationRequestDTO);
         }
@@ -124,7 +124,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     public Collection<VacationRequestDTO> findByEmployeeType(EmployeeType employeeType) {
         ArrayList<VacationRequestDTO> vacationRequestDTOS = new ArrayList<>();
         for (VacationRequest vacationRequest : vacationRequestRepository.findByEmployeeType(employeeType)) {
-            User user = employeeType==EmployeeType.dermatologist ? dermatologistService.read(vacationRequest.getEmployeeId()).get() : pharmacistService.read(vacationRequest.getEmployeeId()).get();
+            User user = employeeType==EmployeeType.ROLE_dermatologist ? dermatologistService.read(vacationRequest.getEmployeeId()).get() : pharmacistService.read(vacationRequest.getEmployeeId()).get();
             vacationRequestDTOS.add(new VacationRequestDTO(user, vacationRequest));
         }
         return vacationRequestDTOS;

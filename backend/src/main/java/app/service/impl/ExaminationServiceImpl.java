@@ -74,9 +74,9 @@ public class ExaminationServiceImpl implements ExaminationService {
         @Override
     public Collection<Appointment> findPreviousByPatientId(Long patientId) {
         Collection<Appointment> appointments = appointmentService
-                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.dermatologist);
+                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.ROLE_dermatologist);
         Collection<Appointment> cancelled = appointmentService
-                .findCancelledByPatientIdAndType(patientId, EmployeeType.dermatologist);
+                .findCancelledByPatientIdAndType(patientId, EmployeeType.ROLE_dermatologist);
         Collection<Appointment> all = appointments
                 .stream()
                 .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()))
@@ -88,7 +88,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Override
     public Collection<Appointment> findUpcomingByPatientId(Long patientId) {
         Collection<Appointment> appointments = appointmentService
-                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.dermatologist);
+                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.ROLE_dermatologist);
         return appointments
                 .stream()
                 .filter(a -> a.getPeriod().getPeriodStart().isAfter(LocalDateTime.now()))
