@@ -109,7 +109,7 @@ class Login extends React.Component {
         }else if(type=="ROLE_pharmacist"){ //ROLE_pharmacist
             localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
-                pathname: "//pharmacistHomePage",
+                pathname: "/pharmacistHomePage",
             });
         }else if(type=="ROLE_pharmacyAdmin"){ //ROLE_pharmacyAdmin
             localStorage.setItem("user", JSON.stringify(this.state.user));

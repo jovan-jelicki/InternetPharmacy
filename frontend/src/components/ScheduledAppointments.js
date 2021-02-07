@@ -8,7 +8,8 @@ export default class ScheduledAppointments extends React.Component {
         super(props);
         this.state = {
             modal : false,
-            appointmentForDelete : {}
+            appointmentForDelete : {},
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
@@ -75,7 +76,12 @@ export default class ScheduledAppointments extends React.Component {
 
     cancelAppointment = () => {
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/patientDidNotShowUp/' + this.state.appointmentForDelete.id)
+            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/patientDidNotShowUp/' + this.state.appointmentForDelete.id,
+                {  headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
             .then(res => {
                 this.props.renderParent(false);
                 this.state.modal = false;

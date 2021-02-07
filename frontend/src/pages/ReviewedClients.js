@@ -15,15 +15,20 @@ export default class ReviewedClients extends React.Component {
             searchApp : [],
             query : "",
             sortType : "desc",
-            showModal : false
+            showModal : false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
     componentDidMount() {
         axios
             .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getFinishedByExaminer', {
-                id : 2,
-                type : 1
+                id : this.state.user.id,
+                type : this.state.user.type
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 this.setState({
@@ -79,7 +84,11 @@ export default class ReviewedClients extends React.Component {
         axios
             .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getAllFinishedByPatientAndExaminer', {
                 patientId : client.patientId,
-                type : 1
+                type : this.state.user.type
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 this.setState({
