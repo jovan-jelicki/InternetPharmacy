@@ -46,7 +46,7 @@ public class TokenUtils {
     }
 
     public String getToken(HttpServletRequest request) {
-        String authHeader = getAuthHeaderFromHeader(request);
+         String authHeader = getAuthHeaderFromHeader(request);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }

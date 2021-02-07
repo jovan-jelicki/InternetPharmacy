@@ -6,6 +6,7 @@ import app.service.MedicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -56,6 +57,7 @@ public class MedicationControllerImpl {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @GetMapping(value = "/getMedicationsForPatient/{id}")
     public ResponseEntity<Collection<Medication>> getAllMedicationsPatientIsNotAllergicTo(@PathVariable Long id){
         return new ResponseEntity<>(medicationService.getAllMedicationsPatientIsNotAllergicTo(id), HttpStatus.OK);
