@@ -70,6 +70,14 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/getOneWithWorkingHours/{id}")
+    public ResponseEntity<DermatologistDTO> getOneWithWorkingHours(@PathVariable Long id) {
+        if (dermatologistService.existsById(id))
+            return new ResponseEntity<>(new DermatologistDTO(dermatologistService.read(id).get()), HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+
     @GetMapping(value = "/getPharmacy/{id}")
     public ResponseEntity<Collection<PharmacyNameIdDTO>> getPharmacyOfPharmacist(@PathVariable Long id){
         return new ResponseEntity<>(dermatologistService.getPharmacyOfPharmacist(id), HttpStatus.OK);
@@ -79,6 +87,7 @@ public class DermatologistControllerImpl implements DermatologistController {
     public ResponseEntity<PharmacistDermatologistProfileDTO> read(@PathVariable Long id) {
         return new ResponseEntity<>(new PharmacistDermatologistProfileDTO(dermatologistService.read(id).get()), HttpStatus.OK);
     }
+
 
 
     @DeleteMapping(value = "/{id}")

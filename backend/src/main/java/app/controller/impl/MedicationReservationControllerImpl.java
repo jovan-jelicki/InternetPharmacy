@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "api/medicationReservation")
@@ -99,4 +100,23 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping(value = "/patient/{id}")
+    public ResponseEntity<Collection<MedicationReservationSimpleInfoDTO>> findAllByPatientId(@PathVariable Long id) {
+        return new ResponseEntity<>(
+                medicationReservationService.findAllByPatientId(id)
+                .stream()
+                .map(MedicationReservationSimpleInfoDTO::new)
+                .collect(Collectors.toList()),
+                HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/cancel/{id}")
+    public ResponseEntity<Void> cancel(@PathVariable Long id) {
+        if(medicationReservationService.cancel(id))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }

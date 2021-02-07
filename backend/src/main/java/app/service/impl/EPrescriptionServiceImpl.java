@@ -2,10 +2,7 @@ package app.service.impl;
 
 import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
-import app.model.medication.EPrescription;
-import app.model.medication.Medication;
-import app.model.medication.MedicationLackingEvent;
-import app.model.medication.MedicationQuantity;
+import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.PharmacyAdmin;
 import app.repository.EPrescriptionRepository;
@@ -15,9 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,11 +57,17 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
             return null;
         }
         makeEPrescriptionDTO.getPrescription().setDateIssued(LocalDateTime.now());
+        makeEPrescriptionDTO.getPrescription().setStatus(EPrescriptionStatus.pending);
         EPrescription ePrescription =  this.save(makeEPrescriptionDTO.getPrescription());
         updateMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy.getMedicationQuantity());
         pharmacy.getPrescriptions().add(ePrescription);
         pharmacyService.save(pharmacy);
         return new EPrescriptionSimpleInfoDTO(makeEPrescriptionDTO.getPrescription());
+    }
+
+    @Override
+    public Collection<EPrescription> findAllByPatientId(Long patientId) {
+        return ePrescriptionRepository.findAllByPatient_Id(patientId);
     }
 
     @Async

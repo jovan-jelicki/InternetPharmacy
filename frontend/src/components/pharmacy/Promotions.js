@@ -27,10 +27,10 @@ export default class Promotions extends React.Component{
                         <br/>
                         <div className="row">
                         {this.state.promotions.map((promotion, index) => (
-                            <div className="row">
+                            <div className="row" key={index}>
                                 <div className="col-md-8">
                                     <div className="card">
-                                        <div className="card-block" >
+                                        <div className="card-block" style={{padding : '1rem'}}>
                                             <h5 className="card-title">
                                                 {promotion.content}
                                             </h5>
@@ -38,7 +38,7 @@ export default class Promotions extends React.Component{
                                                 {'Valid from ' + moment(promotion.period.periodStart).format("DD.MM.YYYY.").toString() + ' to ' + moment(promotion.period.periodEnd).format('DD.MM.YYYY').toString()}
                                             </p>
                                             <p>
-                                                <Button variant={"success"} style={{marginLeft : '1rem'}}>Subscribe</Button>
+                                                <Button variant={"success"} >Subscribe</Button>
                                                 <Button variant={"danger"} style={{marginLeft : '1rem'}}>Cancel subscription</Button>
                                             </p>
                                         </div>

@@ -87,7 +87,7 @@ export default class PharmacyMedications extends React.Component{
                     </thead>
                     <tbody>
                     {this.state.pharmacyMedicationListingDTOs.map((medicationListing, index) => (
-                        <tr>
+                        <tr key={index}>
                             <th scope="row">{index+1}</th>
                             <td>{medicationListing.name}</td>
                             <td>{medicationListing.type}</td>

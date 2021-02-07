@@ -20,7 +20,7 @@ public class DermatologistDTO {
     private String lastName;
     private Contact contact;
     private UserType userType;
-    private double grade = 4.3; //TODO fetch grade
+    private double grade = 0;
 
     public DermatologistDTO(Dermatologist dermatologist) {
         this.id = dermatologist.getId();
@@ -29,7 +29,7 @@ public class DermatologistDTO {
         this.contact = dermatologist.getContact();
         this.userType = dermatologist.getUserType();
         this.workingHours = dermatologist.getWorkingHours();
-        this.grade = 4.3;
+        this.grade = 0;
 
         for (WorkingHours workingHours : this.workingHours) {
             workingHours.getPharmacy().setMedicationReservation(null);

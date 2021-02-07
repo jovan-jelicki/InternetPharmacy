@@ -9,4 +9,6 @@ import java.util.Collection;
 public interface MedicationReservationRepository extends JpaRepository<MedicationReservation, Long> {
 
     Collection<MedicationReservation> findAllByPatient_IdAndStatus(Long patientId, MedicationReservationStatus status);
+
+    Collection<MedicationReservation> findAllByPatient_Id(Long patientId);
 }

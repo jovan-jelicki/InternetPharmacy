@@ -38,7 +38,7 @@ export default class AppointmentsList extends React.Component{
                     </thead>
                     <tbody>
                     {this.state.appointments.map((appointment, index) => (
-                        <tr>
+                        <tr key={index}>
                             <th scope="row">{index+1}</th>
                             <td>{appointment.dermatologistFirstName + " " + appointment.dermatologistLastName}</td>
                             <td>{moment(appointment.period.periodStart).format('DD.MM.YYYY hh:mm a') + " - " + moment(appointment.period.periodEnd).format('hh:mm a')}</td>

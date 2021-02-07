@@ -68,7 +68,7 @@ export default class PharmacyPage extends React.Component{
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="vacationRequests" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Godisnji odmori</a>
+                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Vacation requests</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="promotions" onClick={this.handleChange}>Actions & Promotions</a>

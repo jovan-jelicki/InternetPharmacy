@@ -6,12 +6,10 @@ import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
-import app.model.user.PharmacyAdmin;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -29,17 +27,25 @@ public class PharmacyServiceImpl implements PharmacyService {
     private final AppointmentRepository appointmentRepository;
     private PromotionService promotionService;
     private final GradeService gradeService;
+    private final PharmacyAdminService pharmacyAdminService;
+    private MedicationOfferService medicationOfferService;
 
     @Autowired
-    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository, GradeService gradeService) {
+    public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository, GradeService gradeService, PharmacyAdminService pharmacyAdminService) {
         this.pharmacyRepository = pharmacyRepository;
         this.appointmentRepository = appointmentRepository;
         this.gradeService = gradeService;
+        this.pharmacyAdminService = pharmacyAdminService;
     }
 
     @Override
     public void setPromotionService(PromotionService promotionService) {
         this.promotionService = promotionService;
+    }
+
+    @Override
+    public void setMedicationOffer(MedicationOfferService medicationOfferService) {
+        this.medicationOfferService = medicationOfferService;
     }
 
     @Override
@@ -53,6 +59,8 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         return pharmacy;
     }
+
+
 
     @Override
     public void setMedicationService(MedicationService medicationService) {
@@ -328,10 +336,12 @@ public class PharmacyServiceImpl implements PharmacyService {
 
 
     @Override
-    public Collection<ReportsDTO> getPharmacyIncomeReportByPeriod(LocalDateTime periodStart, LocalDateTime periodEnd, Long pharmacyId) {
+    public Collection<ReportIncomeDTO> getPharmacyIncomeReportByPeriod(LocalDateTime periodStart, LocalDateTime periodEnd, Long pharmacyId) {
 
         //uspesne rezervacije lekova - obratiti paznju na pricelist u tom periodu
         //uspesni appointmenti dermatologa i farmaceuta
+        //eprescription
+        //medication orders
 
         Pharmacy pharmacy = this.read(pharmacyId).get();
 
@@ -345,7 +355,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         System.out.println(totalDates);
 
-        ArrayList<ReportsDTO> reportsDTOS = new ArrayList<>();
+        ArrayList<ReportIncomeDTO> reportsDTOS = new ArrayList<>();
 
         for (int i = 0; i < totalDates.size() - 1; i++) {
             LocalDateTime dayStart = totalDates.get(i);
@@ -353,6 +363,7 @@ public class PharmacyServiceImpl implements PharmacyService {
             dayStart.with(LocalTime.of(0, 0));
             dayStart.with(LocalTime.of(0, 0));
             double income = 0;
+            double expense = 0;
             income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.dermatologist)
                     .size() * pharmacy.getDermatologistCost();
             income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.pharmacist)
@@ -367,7 +378,10 @@ public class PharmacyServiceImpl implements PharmacyService {
                 income += medicationReservation.getMedicationQuantity().getQuantity() * medicationPrice;
             }
 
-            reportsDTOS.add(new ReportsDTO(dayStart.toLocalDate().format(DateTimeFormatter.ofPattern("dd MMM yyyy")), income));
+            for (MedicationOffer medicationOffer : medicationOfferService.getApprovedMedicationOffersByPharmacyAndPeriod(pharmacyId, dayStart, dayEnd))
+                expense += medicationOffer.getCost();
+
+            reportsDTOS.add(new ReportIncomeDTO(dayStart.toLocalDate().format(DateTimeFormatter.ofPattern("dd MMM yyyy")), income, expense));
         }
 
 
