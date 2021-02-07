@@ -21,6 +21,8 @@ public class PatientDTO {
     private List<Ingredient> allergies;
     private int penaltyCount;
 
+    public PatientDTO() {}
+
     public PatientDTO (Patient patient) {
         this.id = patient.getId();
         this.firstName = patient.getFirstName();
