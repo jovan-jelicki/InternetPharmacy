@@ -58,8 +58,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void update(AppointmentUpdateDTO appointmentDTO) {
         Optional<Appointment> appointment = appointmentRepository.findById(appointmentDTO.getAppointmentId());
-        if(appointment.isEmpty())
-            throw new IllegalArgumentException("Appointment does not exist");
+//        if(appointment.isEmpty())
+//            throw new IllegalArgumentException("Appointment does not exist");
         Optional<Patient> patient = patientService.read(appointmentDTO.getPatientId());
         if(patient.isEmpty())
             throw new IllegalArgumentException("Patient does not exits");
