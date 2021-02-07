@@ -13,6 +13,7 @@ import app.service.GradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistService.save(entity), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('dermatologist')")
     @PostMapping(value = "/getFreeAppointments", consumes =  "application/json" )
     public ResponseEntity<Collection<AppointmentListingDTO>> getAllFreeAppointmentsOfDermatologist(@RequestBody DermatologistSchedulingDTO dermatologistSchedulingDTO){
         Collection<Appointment> appointments = appointmentService.GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistSchedulingDTO.getDermatologistId(), EmployeeType.dermatologist, LocalDateTime.now(), dermatologistSchedulingDTO.getPharmacyId());
@@ -49,6 +51,7 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('dermatologist')")
     @PutMapping(consumes = "application/json")
     public ResponseEntity<PharmacistDermatologistProfileDTO> update(@RequestBody PharmacistDermatologistProfileDTO entity) {
         if(!dermatologistService.existsById(entity.getId()))
@@ -57,6 +60,8 @@ public class DermatologistControllerImpl implements DermatologistController {
         dermatologistService.save(entity.convertDtoToDermatologist(dermatologist));
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
+
+    @PreAuthorize("hasRole('dermatologist')")
     @GetMapping(value = "/isAccountApproved/{id}")
     public ResponseEntity<Boolean> isAccountApproved(@PathVariable Long id){
         return new ResponseEntity<>(dermatologistService.read(id).get().getApprovedAccount(), HttpStatus.OK);
@@ -77,18 +82,17 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
-
+    @PreAuthorize("hasRole('dermatologist')")
     @GetMapping(value = "/getPharmacy/{id}")
     public ResponseEntity<Collection<PharmacyNameIdDTO>> getPharmacyOfPharmacist(@PathVariable Long id){
         return new ResponseEntity<>(dermatologistService.getPharmacyOfPharmacist(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('dermatologist')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacistDermatologistProfileDTO> read(@PathVariable Long id) {
         return new ResponseEntity<>(new PharmacistDermatologistProfileDTO(dermatologistService.read(id).get()), HttpStatus.OK);
     }
-
-
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
@@ -99,6 +103,7 @@ public class DermatologistControllerImpl implements DermatologistController {
     }
 
     @Override
+    @PreAuthorize("hasRole('dermatologist')")
     @PutMapping(value = "/pass")
     public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
         try {

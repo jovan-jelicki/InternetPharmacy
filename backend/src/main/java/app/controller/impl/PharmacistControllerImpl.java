@@ -12,6 +12,7 @@ import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(pharmacistService.createNewPharmacist(entity), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('pharmacist')")
     @PutMapping(consumes = "application/json")
     public ResponseEntity< PharmacistDermatologistProfileDTO> update(@RequestBody PharmacistDermatologistProfileDTO entity) {
         if(!pharmacistService.existsById(entity.getId()) || !pharmacistService.read(entity.getId()).get().getActive())
@@ -49,16 +51,19 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('pharmacist')")
     @GetMapping(value = "/getPharmacy/{id}")
     public ResponseEntity<PharmacyNameIdDTO> getPharmacyOfPharmacist(@PathVariable Long id){
         return new ResponseEntity<>(pharmacistService.getPharmacyOfPharmacist(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('pharmacist')")
     @GetMapping(value = "/isAccountApproved/{id}")
     public ResponseEntity<Boolean> isAccountApproved(@PathVariable Long id){
         return new ResponseEntity<>(pharmacistService.read(id).get().getApprovedAccount(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('pharmacist')")
     @PutMapping(value = "/pass")
     public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
         try {
@@ -82,6 +87,7 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(pharmacists, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('pharmacist')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacistDermatologistProfileDTO> read(@PathVariable Long id) {
         if (pharmacistService.read(id).isPresent())

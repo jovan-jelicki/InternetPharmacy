@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Col, Row, Alert} from "react-bootstrap";
+import {Card, Col, Row, Alert, Button} from "react-bootstrap";
 import PharmacySearch from './PharmacySearch';
 import PharmacyFilter from './PharmacyFilter';
 import axios from 'axios';
@@ -59,6 +59,14 @@ export default class PharmacyPromotions extends React.Component {
         })
     }
 
+    unsubscribe(pharmacy){
+        axios
+            .put('http://localhost:8080/api/promotion/unsubscribe/'+pharmacy.id+"/"+0) //todo patient id
+            .then((res) => {
+                alert("successfully unsubscribed")
+            })
+    }
+
     render() {
         const pharmacies = this.state.pharmacies.map((pharmacy, index) => {
             const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country 
@@ -66,7 +74,10 @@ export default class PharmacyPromotions extends React.Component {
                 <Col xs={4} >
                 <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '25rem' }} className="mb-2">
                     <Card.Body>
-                    <Card.Title>{pharmacy.name}</Card.Title>
+                    <Card.Title>
+                        {pharmacy.name}
+                    <Button style={{marginLeft:150}} variant="outline-light" onClick={()=>{this.unsubscribe(pharmacy)}}>Unsubscribe</Button>{' '}
+                    </Card.Title>
                         <Card.Subtitle className="mb-5 mt-2 text-muted">{address}</Card.Subtitle>
                         <Card.Text>
                         {pharmacy.description}

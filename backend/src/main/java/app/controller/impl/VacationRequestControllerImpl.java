@@ -10,6 +10,7 @@ import app.service.VacationRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -31,6 +32,7 @@ public class VacationRequestControllerImpl implements VacationRequestController 
         return new ResponseEntity<>(vacationRequestService.save(entity), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @PostMapping(consumes = "application/json", value = "/saveDto")
     public ResponseEntity<VacationRequestSendDTO> saveVacationRequest(@RequestBody VacationRequestSendDTO entity) {
         return new ResponseEntity<>(vacationRequestService.saveVacationRequest(entity), HttpStatus.CREATED);

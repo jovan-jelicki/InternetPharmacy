@@ -1,8 +1,9 @@
 import React from "react";
-import {Button, Container, FormControl} from "react-bootstrap";
+import {Button, Col, Container, Form, FormControl} from "react-bootstrap";
 import "../../App.css";
 import Script from "react-load-script";
 import axios from "axios";
+import Dropdown from "react-dropdown";
 
 export default class PharmacyAdminRegistration extends React.Component {
     constructor(props) {
@@ -36,11 +37,26 @@ export default class PharmacyAdminRegistration extends React.Component {
             },
             validForm: false,
             submitted: false,
-
+            pharmacys:[],
+            selectedPharmacy:{
+                id:''
+            }
 
         }
     }
+    async componentDidMount() {
+        await axios.get("http://localhost:8080/api/pharmacy").then(res => {
+            this.setState({
+                pharmacys : res.data
+            });
+        })
+        console.log("nema")
+        console.log(this.state.pharmacys)
+    }
+
     async sendParams() {
+        console.log(this.state.user)
+        console.log(this.state.selectedPharmacy)
         axios
             .post('http://localhost:8080/api/pharmacyAdmin/save', {
                 'id':'',
@@ -61,7 +77,8 @@ export default class PharmacyAdminRegistration extends React.Component {
                         'longitude' : this.state.user.address.longitude
                     }
                 },
-                'approvedAccount':false
+                'approvedAccount':false,
+                //'pharmacy':this.state.selectedPharmacy
 
             })
             .then(res => {
@@ -70,6 +87,31 @@ export default class PharmacyAdminRegistration extends React.Component {
             }).catch(() => {
             alert("Dermatologist was not registered successfully!")
         })
+
+    }
+
+    handlePharmacySelected=(event) => {
+      /*  const target = event.target;
+        let value = event.target.value;
+        let selectedPharmacy=this.state.selectedPharmacy;
+        selectedPharmacy=value;
+
+        this.setState({selectedPharmacy})
+
+        console.log(this.state.selectedPharmacy)
+        */
+        const target = event.target;
+
+        let value = event.target.value;
+        console.log(value)
+        this.setState({
+            selectedPharmacy :{
+                id:value
+        }
+        })
+       // this.state.selectedPharmacy=value;
+        console.log(this.state.selectedPharmacy)
+        this.validationErrorMessage(event)
 
     }
 
@@ -236,6 +278,20 @@ export default class PharmacyAdminRegistration extends React.Component {
 
                     </div>
                     <div className="col-sm-4">
+                    </div>
+                </div>
+                <div className="row" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <label className="col-sm-2 col-form-label">Pharmacy</label>
+                    <div className="col-sm-3 mb-2">
+                        <Col>
+                            <Form.Control placeholder="Medication" as={"select"} value={this.state.pharmacys.id} onChange={(e)=>{this.handlePharmacySelected(e)}}>
+                            <option disabled={true} selected="selected">Choose</option>
+                            {this.state.pharmacys.map(pharmacy =>
+                                <option key={pharmacy.id} value={pharmacy.id}>{pharmacy.name}</option>
+                            )}
+                        </Form.Control>
+
+                        </Col>
                     </div>
                 </div>
 

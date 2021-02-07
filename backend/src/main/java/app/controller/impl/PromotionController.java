@@ -44,9 +44,16 @@ public class PromotionController {
     }
 
     @PutMapping(value = "/subscribeToPromotion/{pharmacyId}/{patientId}/{promotionId}")
-    public ResponseEntity<Boolean> checkPatientSubscribedToPromotion(@PathVariable Long patientId,@PathVariable Long promotionId) {
+    public ResponseEntity<Boolean> subscribeToPromotion(@PathVariable Long patientId,@PathVariable Long promotionId) {
         if (promotionService.subscribeToPromotion(patientId, promotionId))
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
+    @PutMapping(value = "/unsubscribe/{pharmacyId}/{patientId}")
+    public ResponseEntity<Boolean> unsubscribe(@PathVariable Long pharmacyId,@PathVariable Long patientId) {
+        if (promotionService.unsubscribe(pharmacyId, patientId))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
+
 }

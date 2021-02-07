@@ -137,4 +137,15 @@ public class PromotionServiceImpl implements PromotionService {
 
         return patientService.save(patient) != null;
     }
+
+    @Override
+    public Boolean unsubscribe(Long pharmacyId, Long patientId) {
+        Patient patient = patientService.read(patientId).get();
+        ArrayList<Promotion> promotions = (ArrayList<Promotion>) promotionRepository.getPromotionByPharmacy(pharmacyId);
+
+        for(Promotion promotion : promotions) {
+            patient.getPromotions().remove(promotion);
+        }
+        return patientService.save(patient) != null;
+    }
 }

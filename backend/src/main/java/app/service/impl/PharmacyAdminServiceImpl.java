@@ -1,9 +1,12 @@
 package app.service.impl;
 
+import app.dto.PharmacyAdminRegistrationDTO;
 import app.dto.UserPasswordDTO;
+import app.model.pharmacy.Pharmacy;
 import app.model.user.PharmacyAdmin;
 import app.repository.PharmacyAdminRepository;
 import app.service.PharmacyAdminService;
+import app.service.PharmacyService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -13,9 +16,11 @@ import java.util.Optional;
 public class PharmacyAdminServiceImpl implements PharmacyAdminService {
 
     private final PharmacyAdminRepository pharmacyAdminRepository;
+    private final PharmacyService pharmacyService;
 
-    public PharmacyAdminServiceImpl(PharmacyAdminRepository pharmacyAdminRepository) {
+    public PharmacyAdminServiceImpl(PharmacyAdminRepository pharmacyAdminRepository, PharmacyService pharmacyService) {
         this.pharmacyAdminRepository = pharmacyAdminRepository;
+        this.pharmacyService = pharmacyService;
     }
 
     @Override
