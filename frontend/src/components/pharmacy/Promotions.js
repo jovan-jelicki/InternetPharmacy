@@ -22,8 +22,8 @@ export default class Promotions extends React.Component{
         }
     }
 
-    componentDidMount() {
-        this.fetchPromotions();
+    async componentDidMount() {
+        await this.fetchPromotions();
     }
 
     handlePromotion=(promotion)=>{
@@ -33,20 +33,7 @@ export default class Promotions extends React.Component{
         if(this.state.isSubscribed){
             this.handleModalAlert()
         }else {
-
             this.subscribeToPromotion(promotion)
-            this.setState({
-                subPromotion: {
-                    id: promotion.id,
-                    pharmacyId: promotion.pharmacyId,
-                    content: promotion.content,
-                    periodStart: promotion.periodStart,
-                    periodEnd: promotion.periodEnd
-                }
-            });
-            //console.log(this.state.subPromotion)
-            // let check=this.checkIfSubscribed()
-            this.handleModal();
         }
     }
 
@@ -77,7 +64,7 @@ export default class Promotions extends React.Component{
                                     <div className="card">
                                         <div className="card-block" style={{padding : '1rem'}}>
                                             <h5 className="card-title">
-                                                {promotion.content}
+                                                {promotion.content} {promotion.id}
                                             </h5>
                                             <p className="card-text" >
                                                 {'Valid from ' + moment(promotion.period.periodStart).format("DD.MM.YYYY.").toString() + ' to ' + moment(promotion.period.periodEnd).format('DD.MM.YYYY').toString()}
@@ -153,13 +140,15 @@ export default class Promotions extends React.Component{
             })
     }
 
-    checkIfSubscribed =  (promotion)=>{
+    async checkIfSubscribed (promotion){
         console.log(promotion.id)
-        axios
+        await axios
             .get('http://localhost:8080/api/promotion/checkPatientSubscribedToPromotion/'+promotion.pharmacyId+"/"+0+"/"+promotion.id)
             .then(res => {
+                console.log(this.state.isSubscribed)
+
                 console.log(res.data)
-                this.setState({isSubscribed:res.data})
+                this.setState({isSubscribed : res.data})
                 console.log(this.state.isSubscribed)
                 //alert("Successfully registered!"+this.state.isSubscribed);
 
@@ -172,10 +161,17 @@ export default class Promotions extends React.Component{
         axios
             .put('http://localhost:8080/api/promotion/subscribeToPromotion/'+promotion.pharmacyId+"/"+0+"/"+promotion.id)
             .then(res => {
-                console.log(res.data)
-                this.setState({isSubscribed:res.data})
-                console.log(this.state.isSubscribed)
-                //alert("Successfully registered!"+this.state.isSubscribed);
+
+                this.setState({
+                    subPromotion: {
+                        id: promotion.id,
+                        pharmacyId: promotion.pharmacyId,
+                        content: promotion.content,
+                        periodStart: promotion.periodStart,
+                        periodEnd: promotion.periodEnd
+                    }
+                });
+                this.handleModal();
 
             }).catch(() => {
             // alert("Pharmacy was not registered successfully!")
