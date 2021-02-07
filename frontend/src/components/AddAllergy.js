@@ -15,8 +15,15 @@ class AddAllergy extends React.Component {
     }
 
     async componentDidMount() {
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         await axios
-            .get('http://localhost:8080/api/ingredients')
+            .get('http://localhost:8080/api/ingredients', {
+                headers : {
+                    'Content-Type' : 'application/json',
+                    Authorization : 'Bearer ' + this.aut.jwtToken 
+                }
+            })
             .then(res => {
                 this.setState({
                     'allergies' : res.data

@@ -23,6 +23,7 @@ public class GradeController {
     }
 
     @PostMapping(consumes = "application/json")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> save(@RequestBody Grade grade) {
         if (gradeService.save(grade) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -31,21 +32,25 @@ public class GradeController {
     }
 
     @GetMapping(value = "/dermatologists/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<EmployeeGradeDTO>> findDermatologistsPatientCanGrade(@PathVariable Long id) {
         return new ResponseEntity<>(gradeService.findDermatologistsPatientCanGrade(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/pharmacist/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<EmployeeGradeDTO>> findPharmacistsPatientCanGrade(@PathVariable Long id) {
         return new ResponseEntity<>(gradeService.findPharmacistPatientCanGrade(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/medication/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<AssetGradeDTO>> findMedicationsPatientCanGrade(@PathVariable Long id) {
         return new ResponseEntity<>(gradeService.findMedicationsPatientCanGrade(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/pharmacy/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<AssetGradeDTO>> findPharmacyPatientCanGrade(@PathVariable Long id) {
         return new ResponseEntity<>(gradeService.findPharmacyPatientCanGrade(id), HttpStatus.OK);
     }

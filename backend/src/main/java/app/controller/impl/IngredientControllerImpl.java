@@ -36,6 +36,7 @@ public class IngredientControllerImpl implements IngredientController {
     }
 
     @Override
+    @PreAuthorize("hasRole('patient')")
     @GetMapping
     public ResponseEntity<Collection<Ingredient>> read() {
         return new ResponseEntity<>(ingredientService.read(), HttpStatus.OK);
