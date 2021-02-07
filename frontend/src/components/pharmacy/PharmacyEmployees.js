@@ -378,11 +378,8 @@ export default class PharmacyEmployees extends React.Component{
             }
         ).catch(() => {
             alert("Dermatologist was not added!");
+            this.handleModalAddDermatologist();
             this.setState({
-                dermatologistForAdding : {
-                    id : 0,
-                    workingHours : []
-                },
                 workingHours : {
                     period : {
                         periodStart : "",
@@ -396,16 +393,15 @@ export default class PharmacyEmployees extends React.Component{
         })
         await this.setState({
             dermatologistForAdding : {
-                id : 0,
-                workingHours : {
-                    period : {
-                        periodStart : "",
-                        periodEnd : ""
-                    },
-                    pharmacy : {
-                        id : 2 //todo change pharmacy ID
+                workingHours : [
+                    {
+                        id : -1,
+                        period : {
+                            periodStart : "",
+                            periodEnd : ""
+                        }
                     }
-                }
+                ]
             }
         });
     }
