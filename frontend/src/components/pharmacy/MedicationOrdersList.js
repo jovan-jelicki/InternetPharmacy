@@ -34,13 +34,13 @@ export default class MedicationOrdersList extends React.Component {
                 <b>Filter by :</b>
                 <ButtonGroup>
                     <Button style={{marginRight : '1rem'}}>All
-                        <Input ref="input1" type="radio" name="radioButtonSet" value='filterAll' onChange={this.filterButton} standalone defaultChecked/>
+                        <Input ref="input1" type="radio" name="radioButtonSet" value='filterAll' onChange={this.filterButton} defaultChecked/>
                     </Button>
                     <Button style={{marginRight : '1rem'}}>Pending
-                        <Input ref="input2" type="radio" name="radioButtonSet" value='pending' standalone onChange={this.filterButton} />
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='pending' onChange={this.filterButton} />
                     </Button>
                     <Button>Processed
-                        <Input ref="input2" type="radio" name="radioButtonSet" value='processed' standalone onChange={this.filterButton} />
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='processed' onChange={this.filterButton} />
                     </Button>
                 </ButtonGroup>
                 <br/>
@@ -58,7 +58,7 @@ export default class MedicationOrdersList extends React.Component {
                     </thead>
                     <tbody>
                     {this.state.medicationOrders.map((medicationOrder, index) => (
-                        <tr>
+                        <tr key={index}>
                             <th scope="row">{index+1}</th>
                             <td>{medicationOrder.pharmacyAdminFirstName + ' ' + medicationOrder.pharmacyAdminLastName}</td>
                             <td>{moment(medicationOrder.deadline).format('DD.MM.YYYY')}</td>

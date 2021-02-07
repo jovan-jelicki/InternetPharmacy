@@ -71,7 +71,7 @@ export default class PriceHistory extends React.Component{
                     </thead>
                     <tbody>
                     {this.state.priceLists.map((priceList, index) => (
-                        <tr>
+                        <tr key={index}>
                             <th scope="row">{index+1}</th>
                             <td>{priceList.medicationName}</td>
                             <td>{priceList.cost}</td>

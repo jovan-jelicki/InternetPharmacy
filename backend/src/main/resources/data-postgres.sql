@@ -280,10 +280,12 @@ INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (1,
 INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (2, '2020-01-01 10:00:00', '2021-12-31 16:00:00', 0);
 INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (3, '2020-01-01 07:00:00', '2021-12-31 12:00:00', 0);
 INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (4, '2020-01-01 13:00:00', '2021-12-31 15:00:00', 1);
+INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (5, '2020-01-01 17:00:00', '2021-12-31 20:00:00', 0);
 
 
 INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (3,3);
 INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (3,4);
+INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (5,5);
 
 INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id, is_active)
     VALUES (1, 'Jovan', 'Jovic', 1, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',1, true);
@@ -450,7 +452,7 @@ insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
 VALUES(1,11);
 
 insert into medication_offer(id, cost,shipping_date,status,medication_order_id)
-VALUES(1,111,'2022-02-03',0,1);
+VALUES(1,111000,'2020-12-31',1,1);
 insert into medication_offer(id, cost,shipping_date,status,medication_order_id)
 VALUES(2,96,'2022-02-03',0,2);
 

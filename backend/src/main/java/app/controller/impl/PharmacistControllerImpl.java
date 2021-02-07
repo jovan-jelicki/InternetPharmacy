@@ -35,6 +35,11 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(pharmacistService.save(entity), HttpStatus.CREATED);
     }
 
+    @PostMapping(consumes = "application/json", value = "/createNewPharmacist")
+    public ResponseEntity<Boolean> createNewPharmacist(@RequestBody Pharmacist entity) {
+        return new ResponseEntity<>(pharmacistService.createNewPharmacist(entity), HttpStatus.CREATED);
+    }
+
     @PutMapping(consumes = "application/json")
     public ResponseEntity< PharmacistDermatologistProfileDTO> update(@RequestBody PharmacistDermatologistProfileDTO entity) {
         if(!pharmacistService.existsById(entity.getId()) || !pharmacistService.read(entity.getId()).get().getActive())

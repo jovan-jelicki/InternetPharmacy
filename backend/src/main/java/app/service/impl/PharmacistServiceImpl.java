@@ -115,4 +115,9 @@ public class PharmacistServiceImpl implements PharmacistService {
         return pharmacistRepository.findByEmail(email);
     }
 
+    @Override
+    public Boolean createNewPharmacist(Pharmacist entity) {
+        return this.save(entity) != null;
+    }
+
 }

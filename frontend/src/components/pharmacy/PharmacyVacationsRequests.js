@@ -45,7 +45,7 @@ export default class PharmacyVacationsRequests extends React.Component{
                         </thead>
                         <tbody>
                         {this.state.vacationRequests.map((vacationRequest, index) => (
-                            <tr>
+                            <tr key={index}>
                                 <th scope="row">{index+1}</th>
                                 <td>{vacationRequest.employeeFirstName}</td>
                                 <td>{vacationRequest.employeeLastName}</td>
