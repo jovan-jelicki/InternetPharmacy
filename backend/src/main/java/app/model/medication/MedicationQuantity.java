@@ -54,6 +54,8 @@ public class MedicationQuantity {
     }
 
     public void subtractQuantity(int quantity) {
+        if(this.quantity < quantity)
+            throw new IllegalArgumentException("Not enough medicine");
         this.quantity = this.quantity - quantity;
     }
 }

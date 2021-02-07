@@ -6,7 +6,7 @@ import axios from 'axios';
 import StarRatings from 'react-star-ratings'
 
 
-export default class PharmacyListing extends React.Component {
+export default class PharmacyPromotions extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -18,22 +18,13 @@ export default class PharmacyListing extends React.Component {
     }
 
     async componentDidMount() {
-        if(!this.props.promo)
-            await axios
-            .get('http://localhost:8080/api/pharmacy')
-            .then((res) => {
-                this.setState({
-                    pharmacies : res.data
-                })
+        await axios
+        .get('http://localhost:8080/api/patients/promotion-pharmacies/0')
+        .then((res) => {
+            this.setState({
+                pharmacies : res.data
             })
-        else
-            await axios
-            .get('http://localhost:8080/api/patients/promotion-pharmacies/0')
-            .then((res) => {
-                this.setState({
-                    pharmacies : res.data
-                })
-            })
+        })
 
         this.pharmaciesBackup = [...this.state.pharmacies]
     }
@@ -96,7 +87,7 @@ export default class PharmacyListing extends React.Component {
         return (
             <div>
                 <Row >    
-                        <h2 className={'mt-5 ml-3'} id="pharmacies">Pharmacies</h2> 
+                        <h2 className={'mt-5 ml-3'} id="pharmacies">Pharmacies whose promotions you are subsribed to</h2> 
                 </Row>
                 <PharmacySearch search={this.search} cancel={this.cancel}/>
                 <PharmacyFilter gradeFilter={this.gradeFilter}/>

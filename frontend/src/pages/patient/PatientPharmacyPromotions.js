@@ -1,8 +1,8 @@
 import React from 'react'
 import PatientLayout from '../../layout/PatientLayout'
-import PharmacyListing from '../../components/pharmacy/PharmacyListing'
+import PharmacyPromotions from '../../components/pharmacy/PharmacyPromotions'
 
-class PatientHomePage extends React.Component {
+class PatientPharmacyPromotions extends React.Component {
     constructor(props) {
         super(props)
     }
@@ -10,10 +10,10 @@ class PatientHomePage extends React.Component {
     render() {
         return (
             <PatientLayout>
-                <PharmacyListing/>
+                <PharmacyPromotions/>
             </PatientLayout>
         )
     }
 }
 
-export default PatientHomePage
+export default PatientPharmacyPromotions

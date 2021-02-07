@@ -1,5 +1,6 @@
 package app.controller.impl;
 
+import app.dto.PatientDTO;
 import app.dto.PharmacyPlainDTO;
 import app.dto.UserPasswordDTO;
 import app.model.medication.Ingredient;
@@ -32,10 +33,13 @@ public class PatientControllerImpl {
     }
 
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<Patient> update(@RequestBody Patient entity) {
-        if(!patientService.existsById(entity.getId()))
+    public ResponseEntity<PatientDTO> update(@RequestBody PatientDTO entity) {
+        Optional<Patient> p = patientService.read(entity.getId());
+        if(p.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(patientService.save(entity), HttpStatus.CREATED);
+        Patient patient = p.get();
+        entity.merge(patient);
+        return new ResponseEntity<>(new PatientDTO(patientService.save(patient)), HttpStatus.CREATED);
     }
 
    // @PreAuthorize("hasRole('pharmacist')")
@@ -45,8 +49,8 @@ public class PatientControllerImpl {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Optional<Patient>> read(@PathVariable Long id) {
-        return new ResponseEntity<>(patientService.read(id), HttpStatus.OK);
+    public ResponseEntity<PatientDTO> read(@PathVariable Long id) {
+        return new ResponseEntity<>(new PatientDTO(patientService.read(id).get()), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
