@@ -44,7 +44,7 @@ public class PromotionController {
     }
 
     @PutMapping(value = "/subscribeToPromotion/{pharmacyId}/{patientId}/{promotionId}")
-    public ResponseEntity<Boolean> checkPatientSubscribedToPromotion(@PathVariable Long patientId,@PathVariable Long promotionId) {
+    public ResponseEntity<Boolean> subscribeToPromotion(@PathVariable Long patientId,@PathVariable Long promotionId) {
         if (promotionService.subscribeToPromotion(patientId, promotionId))
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
