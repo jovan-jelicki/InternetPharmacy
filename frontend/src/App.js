@@ -20,7 +20,10 @@ import RegistrationConfirmation from "./pages/RegistrationConfirmation";
 import PatientScheduledAppointments from "./pages/patient/PatientScheduledAppointments";
 import PatientPreviousAppointments from "./pages/patient/PatientPreviousAppointments";
 import PatientGradingPage from "./pages/patient/PatientGradingPage"
-import CreateCoplaint from "./components/CreateCoplaint";
+import PatientPharmacyPromotions from "./pages/patient/PatientPharmacyPromotions"
+import CreateCoplaint from "./components/CreateCoplaint"
+import PatientEPrescriptionPage from './pages/patient/PatientEPrescriptionPage'
+import PatientReservationsPage from './pages/patient/PatientReservationsPage'
 
 export default class App extends React.Component {
   constructor () {
@@ -46,6 +49,7 @@ export default class App extends React.Component {
             <Route path="/reviewClients"  render={(props) => <ReviewedClients {...props} role={role} Id={Id}/> } />
             <Route path="/vacationRequest" render={(props) => <VacationRequest {...props} role={role} Id={Id}/> } />
             <Route path='/patient-home' render={(props) => <PatientHomePage {...props} role={role} Id={Id}/> }/>
+            <Route path='/patient-home-promo' render={(props) => <PatientPharmacyPromotions {...props} role={role} Id={Id}/> }/>
             <Route path="/dermatologistHomePage"  render={(props) => <DermatologistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/pharmacistHomePage"  render={(props) => <PharmacistHomePage {...props} role={role} Id={Id}/> } />
             <Route path="/patient-counsel-schedule"  render={(props) => <PatientCounselScheduling {...props} role={role} Id={Id}/> } />
@@ -58,7 +62,8 @@ export default class App extends React.Component {
             <Route path="/scheduled-appointments-history" component={PatientPreviousAppointments} role={role}/>
             <Route path="/grading" component={PatientGradingPage} role={role}/>
             <Route path="/complaint" component={CreateCoplaint} role={role}/>
-
+            <Route path="/patient-eprescription" component={PatientEPrescriptionPage} role={role}/>
+            <Route path="/patient-reservations" component={PatientReservationsPage} role={role}/>
           </Switch>
         </BrowserRouter>
     );
