@@ -18,8 +18,15 @@ export default class PharmacyPromotions extends React.Component {
     }
 
     async componentDidMount() {
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         await axios
-        .get('http://localhost:8080/api/patients/promotion-pharmacies/0')
+        .get('http://localhost:8080/api/patients/promotion-pharmacies/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then((res) => {
             this.setState({
                 pharmacies : res.data
@@ -37,13 +44,17 @@ export default class PharmacyPromotions extends React.Component {
     }
 
     search({name, location}) {
-        console.log(name, location)
         axios
         .post('http://localhost:8080/api/pharmacy/search', {
             'name' : name,
             'street' : location.street,
             'town' : location.town,
             'country': location.country
+        }, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
         })
         .then((res) => {
             this.setState({
@@ -61,7 +72,12 @@ export default class PharmacyPromotions extends React.Component {
 
     unsubscribe(pharmacy){
         axios
-            .put('http://localhost:8080/api/promotion/unsubscribe/'+pharmacy.id+"/"+0) //todo patient id
+            .put('http://localhost:8080/api/promotion/unsubscribe/'+pharmacy.id+"/" + this.aut.id, {}, {
+                headers : {
+                    'Content-Type' : 'application/json',
+                    Authorization : 'Bearer ' + this.aut.jwtToken 
+                }
+            })
             .then((res) => {
                 alert("successfully unsubscribed")
             })

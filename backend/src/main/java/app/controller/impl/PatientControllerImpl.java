@@ -87,6 +87,7 @@ public class PatientControllerImpl {
     }
 
     @GetMapping(value = "/promotion-pharmacies/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<PharmacyPlainDTO>> getPromotionPharmacies(@PathVariable Long id) {
         return new ResponseEntity<>(patientService.getPromotionPharmacies(id), HttpStatus.OK);
     }
