@@ -42,8 +42,8 @@ public class DermatologistServiceImpl implements DermatologistService {
     @Override
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<Dermatologist> _user = dermatologistRepository.findById(passwordKit.getUserId());
-        if(_user.isEmpty())
-            throw new NullPointerException("User not found");
+//        if(_user.isEmpty())
+//            throw new NullPointerException("User not found");
         Dermatologist user = _user.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());
