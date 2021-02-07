@@ -1,5 +1,5 @@
 import React from "react";
-import {Container, Row, Col, Nav, Button} from "react-bootstrap";
+import {Row, Col, Nav, Button} from "react-bootstrap";
 import UserInfo from "../../components/UserInfo";
 import ChangePassword from "../../components/ChangePassword";
 import axios from "axios";

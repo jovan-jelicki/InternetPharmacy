@@ -9,6 +9,7 @@ import app.service.GradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,7 @@ public class AppointmentControllerImpl {
         this.gradeService = gradeService;
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @PostMapping(consumes = "application/json", value = "/getFinishedByExaminer")
     public ResponseEntity<Collection<AppointmentFinishedDTO>> getFinishedByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getFinishedByExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
@@ -69,6 +71,7 @@ public class AppointmentControllerImpl {
         }
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @PostMapping(value = "/getAllFinishedByPatientAndExaminer", consumes = "application/json")
     public ResponseEntity<Collection<AppointmentScheduledDTO>> getAllFinishedByPatientAndExaminerType(@RequestBody PatientAppointmentsSearch patientAppointmentsSearch){
         Collection<AppointmentScheduledDTO> appointmentScheduledDTOS = new ArrayList<>();
@@ -77,6 +80,7 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(appointmentScheduledDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('dermatologist, pharmacist')")
     @PutMapping(consumes = "application/json", value = "/finishAppointment")
     public ResponseEntity<Boolean> finishAppointment(@RequestBody AppointmentScheduledDTO appointmentScheduledDTO) {
         return new ResponseEntity<>(appointmentService.finishAppointment(appointmentScheduledDTO), HttpStatus.OK);
@@ -104,11 +108,13 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @PostMapping(value = "/getEvents")
     public ResponseEntity<Collection<EventDTO>> getEventsByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getAllEventsOfExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @PostMapping(value = "/getAllScheduledByExaminer")
     public ResponseEntity<Collection<AppointmentScheduledDTO>> getScheduledAppointmentsByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getAllAppointmentsByExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
