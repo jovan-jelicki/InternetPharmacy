@@ -92,6 +92,7 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
     }
 
     @PutMapping(value = "/reserve", consumes = "application/json")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> reserve(@RequestBody MakeMedicationReservationDTO entity) {
         try {
             if(medicationReservationService.reserve(entity) != null)

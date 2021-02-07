@@ -28,6 +28,7 @@ public class PharmacyControllerImpl {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<PharmacyDTO>> read() {
         ArrayList<PharmacyDTO> pharmacyDTOS = new ArrayList<>();
         for (Pharmacy pharmacy : pharmacyService.read()) {
@@ -50,6 +51,7 @@ public class PharmacyControllerImpl {
     }
 
     @PostMapping(value = "/search")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<Pharmacy>> search(@RequestBody PharmacySearchDTO pharmacySearchDTO) {
         return new ResponseEntity<>(pharmacyService.searchByNameAndAddress(pharmacySearchDTO), HttpStatus.OK);
     }
@@ -108,6 +110,7 @@ public class PharmacyControllerImpl {
     }
 
     @GetMapping(value = "/getPharmacyByMedication/{medicationId}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<PharmacyMedicationDTO>> getPharmacyByMedication(@PathVariable Long medicationId) {
         return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
     }
