@@ -10,6 +10,7 @@ import app.service.MedicationReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -41,6 +42,7 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
     }
 
     @Override
+    @PreAuthorize("hasRole('pharmacist')")
     @PostMapping(value = "/getMedicationReservation")
     public ResponseEntity<MedicationReservationSimpleInfoDTO> getMedicationReservationFromPharmacy(@RequestBody GetMedicationReservationDTO getMedicationReservationDTO){
         MedicationReservation medicationReservation = medicationReservationService.getMedicationReservationFromPharmacy(getMedicationReservationDTO);
@@ -51,6 +53,7 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
     }
 
     @Override
+    @PreAuthorize("hasRole('pharmacist')")
     @PutMapping(value = "/giveMedicine/{id}")
     public ResponseEntity<Void> giveMedicine(@PathVariable Long id){
         MedicationReservation medicationReservation = medicationReservationService.read(id).get();

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -55,11 +56,13 @@ public class SchedulingControllerImpl {
             return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('dermatologist')")
     @PostMapping(value = "/dermatologistSchedulingCreatedAppointment", consumes = "application/json")
     public ResponseEntity<Boolean> dermatologistSchedulingCreatedAppointment(@RequestBody AppointmentUpdateDTO appointmentUpdateDTO){
         return new ResponseEntity<>(examinationService.dermatologistSchedulingCreatedAppointment(appointmentUpdateDTO), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('pharmacist')")
     @PostMapping(value = "/pharmacistScheduling", consumes = "application/json")
     public ResponseEntity<Boolean> pharmacistScheduling(@RequestBody Appointment appointment){
         if(counselingService.pharmacistScheduling(appointment)) {
