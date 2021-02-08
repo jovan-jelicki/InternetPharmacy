@@ -19,6 +19,9 @@ public class LoyaltyScale {
    @Column
    private double discount;
 
+   @Version
+   private Long version;
+
    public LoyaltyScale() {
    }
 
@@ -52,5 +55,13 @@ public class LoyaltyScale {
 
    public void setDiscount(double discount) {
       this.discount = discount;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
    }
 }
