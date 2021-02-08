@@ -36,8 +36,8 @@ public class PatientControllerImpl {
     @PutMapping(consumes = "application/json")
     public ResponseEntity<PatientDTO> update(@RequestBody PatientDTO entity) {
         Optional<Patient> p = patientService.read(entity.getId());
-        if(p.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        if(p.isEmpty())
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Patient patient = p.get();
         entity.merge(patient);
         return new ResponseEntity<>(new PatientDTO(patientService.save(patient)), HttpStatus.CREATED);
