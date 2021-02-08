@@ -9,8 +9,10 @@ import app.service.GradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,10 +32,12 @@ public class AppointmentControllerImpl {
         this.gradeService = gradeService;
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @PostMapping(consumes = "application/json", value = "/getFinishedByExaminer")
     public ResponseEntity<Collection<AppointmentFinishedDTO>> getFinishedByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getFinishedByExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
+
 
     @GetMapping(value = "/hello")
     public ResponseEntity<String> hello() {
@@ -43,6 +47,11 @@ public class AppointmentControllerImpl {
     @GetMapping(value = "/kavali")
     public ResponseEntity<String> kavali() {
         return new ResponseEntity<>("kavali", HttpStatus.OK);
+    }
+
+    @PostMapping(consumes = "application/json", value = "/getFinishedForComplaint")
+    public ResponseEntity<Collection<AppointmentEmployeeDTO>> getFinishedForComplaint(@RequestBody ExaminerDTO examinerDTO) {
+        return new ResponseEntity<>(appointmentService.getFinishedForComplaint(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 
     @GetMapping
@@ -55,6 +64,7 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(appointmentService.read(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Object> save(@RequestBody Appointment entity) {
         boolean ret = appointmentService.createAvailableAppointment(entity);
@@ -64,6 +74,7 @@ public class AppointmentControllerImpl {
     }
 
     @PutMapping(value = "/update")
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     public ResponseEntity<Void> update(@RequestBody AppointmentUpdateDTO appointmentDTO) {
         try {
             appointmentService.update(appointmentDTO);
@@ -74,6 +85,7 @@ public class AppointmentControllerImpl {
         }
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @PostMapping(value = "/getAllFinishedByPatientAndExaminer", consumes = "application/json")
     public ResponseEntity<Collection<AppointmentScheduledDTO>> getAllFinishedByPatientAndExaminerType(@RequestBody PatientAppointmentsSearch patientAppointmentsSearch){
         Collection<AppointmentScheduledDTO> appointmentScheduledDTOS = new ArrayList<>();
@@ -82,12 +94,14 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(appointmentScheduledDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('dermatologist, pharmacist')")
     @PutMapping(consumes = "application/json", value = "/finishAppointment")
     public ResponseEntity<Boolean> finishAppointment(@RequestBody AppointmentScheduledDTO appointmentScheduledDTO) {
         return new ResponseEntity<>(appointmentService.finishAppointment(appointmentScheduledDTO), HttpStatus.OK);
     }
 
     @PostMapping(value = "/counseling")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> scheduleCounseling(@RequestBody Appointment entity) {
         if(appointmentService.scheduleCounseling(entity) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -96,6 +110,7 @@ public class AppointmentControllerImpl {
     }
 
     @PutMapping(value = "/cancel-counseling/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> cancelCounseling(@PathVariable Long id) {
         if(appointmentService.cancelCounseling(id) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -103,17 +118,20 @@ public class AppointmentControllerImpl {
     }
 
     @PutMapping(value = "/cancel-examination/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> cancelExamination(@PathVariable Long id) {
         if(appointmentService.cancelExamination(id) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @PostMapping(value = "/getEvents")
     public ResponseEntity<Collection<EventDTO>> getEventsByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getAllEventsOfExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @PostMapping(value = "/getAllScheduledByExaminer")
     public ResponseEntity<Collection<AppointmentScheduledDTO>> getScheduledAppointmentsByExaminer(@RequestBody ExaminerDTO examinerDTO){
         return new ResponseEntity<>(appointmentService.getAllAppointmentsByExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
@@ -136,6 +154,7 @@ public class AppointmentControllerImpl {
         return new ResponseEntity(appointmentService.patientDidNotShowUp(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(@PathVariable Long id){
         ArrayList<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
@@ -163,4 +182,5 @@ public class AppointmentControllerImpl {
     public ResponseEntity<Collection<ReportsDTO>> getAppointmentsYearlyReport(@PathVariable Long pharmacyId) {
         return new ResponseEntity(appointmentService.getAppointmentsYearlyReport(pharmacyId), HttpStatus.OK);
     }
+
 }

@@ -54,7 +54,7 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public Collection<EmployeeGradeDTO> findDermatologistsPatientCanGrade(Long patientId) {
         return appointmentRepository
-                .getAllByPatient_IdAndAppointmentStatusAndType(patientId, AppointmentStatus.patientPresent, EmployeeType.dermatologist)
+                .getAllByPatient_IdAndAppointmentStatusAndType(patientId, AppointmentStatus.patientPresent, EmployeeType.ROLE_dermatologist)
                 .stream()
                 .map(a -> {
                     Dermatologist dermatologist = dermatologistRepository.findById(a.getExaminerId()).get();
@@ -73,7 +73,7 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public Collection<EmployeeGradeDTO> findPharmacistPatientCanGrade(Long patientId) {
         return appointmentRepository
-                .getAllByPatient_IdAndAppointmentStatusAndType(patientId, AppointmentStatus.patientPresent, EmployeeType.pharmacist)
+                .getAllByPatient_IdAndAppointmentStatusAndType(patientId, AppointmentStatus.patientPresent, EmployeeType.ROLE_pharmacist)
                 .stream()
                 .map(a -> {
                     Pharmacist pharmacist = pharmacistRepository.findById(a.getExaminerId()).get();
@@ -128,7 +128,12 @@ public class GradeServiceImpl implements GradeService {
                     }
                 });
 
-        //TODO EPrescription check
+        pharmacyRepository
+                .findAll()
+                .forEach(p -> {
+                    if(hasEPrescriptionInPharmacy(p, patientId))
+                        getPharmacyGrade(patientId, pharmacies, p);
+                });
 
         return pharmacies;
     }
@@ -151,6 +156,13 @@ public class GradeServiceImpl implements GradeService {
                         r.getStatus() == MedicationReservationStatus.successful);
     }
 
+    private boolean hasEPrescriptionInPharmacy(Pharmacy pharmacy, Long patientId) {
+        return pharmacy
+                .getPrescriptions()
+                .stream()
+                .anyMatch(p -> p.getPatient().getId() == patientId);
+    }
+
     private void getMedicationGrade(Long patientId, Set<AssetGradeDTO> medications, Medication medication) {
         AssetGradeDTO asset = new AssetGradeDTO(medication.getId(), medication.getName(), GradeType.medication);
         Grade grade = gradeRepository.findAllByPatient_IdAndGradedIdAndGradeType(patientId, medication.getId(), GradeType.medication);
@@ -168,6 +180,11 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public double findAverageGradeForEntity(Long id, GradeType gradeType) {
-        return gradeRepository.findAverageGradeForEntity(id, gradeType);
+        try {
+            return gradeRepository.findAverageGradeForEntity(id, gradeType);
+        }
+        catch(Exception e) {
+            return 0;
+        }
     }
 }

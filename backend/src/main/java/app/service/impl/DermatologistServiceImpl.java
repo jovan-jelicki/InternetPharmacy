@@ -222,13 +222,13 @@ public class DermatologistServiceImpl implements DermatologistService {
     public Boolean deleteDermatologistFromPharmacy(Long pharmacyId, DermatologistDTO dermatologistDTO) {
         //check if there are any scheduled appointments for dermatologist in that pharmacy
         Collection<Appointment> scheduledAppointments = appointmentService.
-                GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistDTO.getId(), EmployeeType.dermatologist, LocalDateTime.now(), pharmacyId);
+                GetAllScheduledAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistDTO.getId(), EmployeeType.ROLE_dermatologist, LocalDateTime.now(), pharmacyId);
 
         if (scheduledAppointments.size()!=0)
             return false;
 
         Collection<Appointment> availableAppointments = appointmentService.
-                GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistDTO.getId(), EmployeeType.dermatologist, LocalDateTime.now(), pharmacyId);
+                GetAllAvailableAppointmentsByExaminerIdAndPharmacyAfterDate(dermatologistDTO.getId(), EmployeeType.ROLE_dermatologist, LocalDateTime.now(), pharmacyId);
 
         //delete available appointment in pharmacy
         for (Appointment appointment : availableAppointments) {

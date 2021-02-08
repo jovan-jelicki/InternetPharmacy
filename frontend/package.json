@@ -21,6 +21,7 @@
     "bootstrap-react-numeric-up-down": "^1.0.5",
     "google-maps-react": "^2.0.6",
     "history": "^5.0.0",
+    "install": "^0.13.0",
     "moment": "^2.29.1",
     "react": "^17.0.1",
     "react-big-calendar": "^0.30.0",

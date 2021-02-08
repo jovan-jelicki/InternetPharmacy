@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
+import PharmacyAdminService from "../../PharmacyAdminService";
 
 
 export default class CurrentPriceLists extends React.Component{
@@ -10,11 +11,17 @@ export default class CurrentPriceLists extends React.Component{
         this.state = {
             userType : 'pharmacyAdmin',
             priceLists : [],
-            mode : "showCurrentPriceLists"
+            mode : "showCurrentPriceLists",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyId : temp
+        })
         this.fetchPriceLists();
     }
 
@@ -41,7 +48,7 @@ export default class CurrentPriceLists extends React.Component{
                         </thead>
                         <tbody>
                         {this.state.priceLists.map((priceList, index) => (
-                            <tr>
+                            <tr key={index}>
                                 <th scope="row">{index+1}</th>
                                 <td>{priceList.medicationName}</td>
                                 <td>{priceList.cost}</td>
@@ -65,7 +72,12 @@ export default class CurrentPriceLists extends React.Component{
 
     fetchPriceLists = () => {
         axios
-            .get('http://localhost:8080/api/pricelist/getCurrentMedicationPriceListByPharmacy/1') //todo change pharmacyId
+            .get('http://localhost:8080/api/pricelist/getCurrentMedicationPriceListByPharmacy/' + this.state.pharmacyId, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 this.setState({
                     priceLists : res.data

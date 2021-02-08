@@ -88,6 +88,11 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
         }
     }
 
+    @Override
+    public Collection<MedicationReservation> findAllByPatientId(Long patientId) {
+        return medicationReservationRepository.findAllByPatient_Id(patientId);
+    }
+
     private void getMedicationQuantityBack(Pharmacy pharmacy, MedicationQuantity medicationQuantity) {
         pharmacy.getMedicationQuantity().forEach(quantity -> {
             if(medicationQuantity.getMedication().getId() == quantity.getMedication().getId())
@@ -117,11 +122,29 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
 //            throw new IllegalArgumentException("Pharmacy Id does not exist");
         MedicationReservation medicationReservation = entity.getMedicationReservation();
         medicationReservation.setPatient(patientService.read(medicationReservation.getPatient().getId()).get());
-        medicationReservation = this.save(medicationReservation);
         updateMedicationQuantity(pharmacy.get().getMedicationQuantity(),
                 medicationReservation.getMedicationQuantity());
+        medicationReservation = this.save(medicationReservation);
+        pharmacy.get().getMedicationReservation().add(medicationReservation);
         pharmacyRepository.save(pharmacy.get());
         return medicationReservation;
+    }
+
+    @Override
+    public boolean cancel(Long reservationId) {
+        MedicationReservation medicationReservation = medicationReservationRepository.findById(reservationId).get();
+        if(medicationReservation.getPickUpDate().minusHours(24).isBefore(LocalDateTime.now()))
+            return false;
+        medicationReservation.setStatus(MedicationReservationStatus.canceled);
+        save(medicationReservation);
+        Pharmacy pharmacy = pharmacyRepository.findAll()
+                .stream()
+                .filter(p -> p.getMedicationReservation().stream().anyMatch(r -> r.getId() == reservationId))
+                .findFirst().orElse(null);
+        if(pharmacy == null)
+            return false;
+        getMedicationQuantityBack(pharmacy, medicationReservation.getMedicationQuantity());
+        return true;
     }
 
     private void updateMedicationQuantity(List<MedicationQuantity> quantities, MedicationQuantity medicationQuantity) {

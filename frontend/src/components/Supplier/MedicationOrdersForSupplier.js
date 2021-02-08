@@ -23,16 +23,18 @@ export default class MedicationOrdersForSupplier extends React.Component {
         }
     }
     async componentDidMount() {
+        console.log("BLA")
         await axios
-            .get('http://localhost:8080/api/medicationOrder/getAll')
+            .get('http://localhost:8080/api/medicationOrder/getAllActive')
             .then((res) => {
                 this.setState({
                     medicationOrders : res.data
                 })
                 console.log("pokupi")
                 console.log(this.state.medicationOrders);
-            })
-        this.state.boolMedications=true;
+            }).catch(
+                console.log("greska")
+            )
 
         await axios
             .get('http://localhost:8080/api/suppliers/getSuppliersMedicationList/'+1)
@@ -42,7 +44,6 @@ export default class MedicationOrdersForSupplier extends React.Component {
                 })
                 console.log("LEkovi koje imam")
                 console.log(this.state.medicationList);
-               // this.state.boolMedications=true;
 
             })
 
@@ -51,31 +52,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
     checkMedication(){
         let myMedications=this.state.medicationList;
         let orderMedications=this.state.order.medicationQuantity;
-        console.log("UHUH")
-        console.log(myMedications)
-        console.log("UHUH")
-        console.log(orderMedications)
-/*
-        if(orderMedications.length==1){
-            if(!myMedications.some(item => item.medicationName === orderMedications[0].medication.name)){
-                this.state.boolMedications = false;
-            }else{
-                this.state.boolMedications = true;
-                for (var i = 0, l = this.state.medicationList.length; i < l; i++) {
-                    if((myMedications[i].medicationName)===(orderMedications[0].medication.name)){
-                        if(myMedications[i].medicationQuantity<orderMedications[0].quantity){
-                            this.state.boolMedications = false;
-                            break;
-                        }else{
-                            this.state.boolMedications = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }else {
 
- */
             for (var j = 0, l = orderMedications.length; j < l; j++) {
                 let myMedications = this.state.medicationList;
                 let orderMedications = this.state.order.medicationQuantity;
@@ -84,14 +61,14 @@ export default class MedicationOrdersForSupplier extends React.Component {
                 console.log(j)
                 console.log(orderMedications[j])
                 if(j<orderMedications.length) {
-                    if (!myMedications.some(item => item.medicationName === orderMedications[j].medication.name)) {
+                    if (!myMedications.some(item => item.medication.name === orderMedications[j].medication.name)) {
                         this.state.boolMedications = false;
                         break;
                     } else {
                         this.state.boolMedications = true;
                         for (var i = 0, l = this.state.medicationList.length; i < l; i++) {
-                            if ((myMedications[i].medicationName) === (orderMedications[j].medication.name)) {
-                                if (myMedications[i].medicationQuantity < orderMedications[j].quantity) {
+                            if ((myMedications[i].medication.name) === (orderMedications[j].medication.name)) {
+                                if (myMedications[i].quantity < orderMedications[j].quantity) {
                                     this.state.boolMedications = false;
                                     break;
                                 } else {
@@ -111,10 +88,11 @@ export default class MedicationOrdersForSupplier extends React.Component {
 
 
     render() {
+        console.log(this.state.medicationOrders)
         const orders= this.state.medicationOrders.map((medicationOrder, index) => (
                 <tr>
                     <th scope="row">{index+1}</th>
-                    <td>{medicationOrder.pharmacyAdmin.pharmacy.name}</td>
+                    <td>{medicationOrder.pharmacyName}</td>
                     <td>{medicationOrder.deadline.split("T")[0]}</td>
                     <td>
                         {medicationOrder.medicationQuantity.map((e, key) => {
@@ -139,7 +117,7 @@ export default class MedicationOrdersForSupplier extends React.Component {
         return (
             <div className="container-fluid">
 
-                <h3>Medication orders</h3>
+                <h2 style={({marginTop: '1rem', textAlignVertical: "center", textAlign: "center"})} >Medication orders</h2>
                 <br/>
                 <div style={{marginRight:'5rem', marginLeft:'5rem'}}>
                     <Table striped bordered hover variant="dark">

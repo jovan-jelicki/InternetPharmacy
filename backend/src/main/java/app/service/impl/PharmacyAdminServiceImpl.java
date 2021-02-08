@@ -1,9 +1,15 @@
 package app.service.impl;
 
+import app.dto.PharmacyDTO;
 import app.dto.UserPasswordDTO;
+import app.model.grade.GradeType;
+import app.model.pharmacy.Pharmacy;
 import app.model.user.PharmacyAdmin;
 import app.repository.PharmacyAdminRepository;
+import app.service.GradeService;
 import app.service.PharmacyAdminService;
+import app.service.PharmacyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -13,14 +19,26 @@ import java.util.Optional;
 public class PharmacyAdminServiceImpl implements PharmacyAdminService {
 
     private final PharmacyAdminRepository pharmacyAdminRepository;
+    private final PharmacyService pharmacyService;
+    private final GradeService gradeService;
 
-    public PharmacyAdminServiceImpl(PharmacyAdminRepository pharmacyAdminRepository) {
+    @Autowired
+    public PharmacyAdminServiceImpl(PharmacyAdminRepository pharmacyAdminRepository, PharmacyService pharmacyService, GradeService gradeService) {
         this.pharmacyAdminRepository = pharmacyAdminRepository;
+        this.pharmacyService = pharmacyService;
+        this.gradeService = gradeService;
     }
 
     @Override
     public PharmacyAdmin getPharmacyAdminByPharmacy(Long pharmacyId) {
         return pharmacyAdminRepository.getPharmacyAdminByPharmacy(pharmacyId);
+    }
+
+    @Override
+    public PharmacyDTO getPharmacyByPharmacyAdmin(Long pharmacyAdminId) {
+        PharmacyAdmin pharmacyAdmin = this.read(pharmacyAdminId).get();
+        Pharmacy pharmacy = pharmacyService.read(pharmacyAdmin.getPharmacy().getId()).get();
+        return new PharmacyDTO(pharmacy,gradeService.findAverageGradeForEntity(pharmacy.getId(), GradeType.pharmacy));
     }
 
     @Override

@@ -1,11 +1,13 @@
 package app.controller.impl;
 
 import app.dto.MedicationOrderDTO;
+import app.dto.MedicationOrderSupplierDTO;
 import app.model.medication.MedicationOrder;
 import app.service.MedicationOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +28,19 @@ public class MedicationOrderController {
         return new ResponseEntity<>(medicationOrderService.read(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/getAllActive")
+    public ResponseEntity<Collection<MedicationOrderSupplierDTO>> getAllActive() {
+        return new ResponseEntity<>(medicationOrderService.getAllActive(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PostMapping(consumes = "application/json", value = "/newMedicationOrder")
     public ResponseEntity<Boolean> newMedicationOrder(@RequestBody MedicationOrderDTO medicationOrderDTO){
         if (medicationOrderService.createNewMedicationOrder(medicationOrderDTO))
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);    }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PostMapping(consumes = "application/json", value = "/editMedicationOrder")
     public ResponseEntity<Boolean> editMedicationOrder(@RequestBody MedicationOrderDTO medicationOrderDTO){
         if (medicationOrderService.editMedicationOrder(medicationOrderDTO))
@@ -39,8 +48,9 @@ public class MedicationOrderController {
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getAllMedicationOrdersByPharmacy/{pharmacyId}")
-    public ResponseEntity<Collection<MedicationOrderDTO>> newMedicationOrder(@PathVariable Long pharmacyId){
+    public ResponseEntity<Collection<MedicationOrderDTO>> getAllMedicationOrdersByPharmacy(@PathVariable Long pharmacyId){
         return new ResponseEntity<>(medicationOrderService.getAllMedicationOrdersByPharmacy(pharmacyId), HttpStatus.OK);
     }
 
@@ -49,11 +59,13 @@ public class MedicationOrderController {
         return new ResponseEntity<>(medicationOrderService.getMedicationOrderByPharmacyAdmin(pharmacyAdminId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/checkIfOrderIsEditable/{orderId}")
     public ResponseEntity<Boolean> checkIfOrderIsEditable(@PathVariable Long orderId){
         return new ResponseEntity<>(medicationOrderService.checkIfOrderIsEditable(orderId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @DeleteMapping(value = "/deleteMedicationOrder/{orderId}")
     public ResponseEntity<Boolean> deleteMedicationOrder(@PathVariable Long orderId){
         if (medicationOrderService.deleteMedicationOrder(orderId))

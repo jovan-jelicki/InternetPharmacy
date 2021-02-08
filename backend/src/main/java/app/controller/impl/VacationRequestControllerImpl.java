@@ -10,6 +10,7 @@ import app.service.VacationRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -31,6 +32,7 @@ public class VacationRequestControllerImpl implements VacationRequestController 
         return new ResponseEntity<>(vacationRequestService.save(entity), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @PostMapping(consumes = "application/json", value = "/saveDto")
     public ResponseEntity<VacationRequestSendDTO> saveVacationRequest(@RequestBody VacationRequestSendDTO entity) {
         return new ResponseEntity<>(vacationRequestService.saveVacationRequest(entity), HttpStatus.CREATED);
@@ -71,16 +73,19 @@ public class VacationRequestControllerImpl implements VacationRequestController 
         return new ResponseEntity<>(vacationRequestService.findByPharmacy(pharmacyId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping (value = "/findByPharmacyAndEmployeeType/{pharmacyId}/{employeeType}")
     public ResponseEntity<Collection<VacationRequestDTO>> findByPharmacyAndEmployeeType(@PathVariable Long pharmacyId, @PathVariable EmployeeType employeeType) {
         return new ResponseEntity<>(vacationRequestService.findByPharmacyIdAndEmployeeType(pharmacyId, employeeType), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('systemAdmin')")
     @GetMapping (value = "/findByEmployeeType/{employeeType}")
     public ResponseEntity<Collection<VacationRequestDTO>> findByEmployeeType(@PathVariable EmployeeType employeeType) {
         return new ResponseEntity<>(vacationRequestService.findByEmployeeType(employeeType), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin, systemAdmin')")
     @PutMapping(value = "/confirmVacationRequest",  consumes = "application/json")
     public ResponseEntity<Object> confirmVacationRequest(@RequestBody VacationRequestDTO vacationRequestDTO) {
         if(!vacationRequestService.existsById(vacationRequestDTO.getId()))
@@ -91,7 +96,7 @@ public class VacationRequestControllerImpl implements VacationRequestController 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAnyRole('pharmacyAdmin, systemAdmin')")
     @PutMapping(value = "/rejectVacationRequest", consumes = "application/json")
     public ResponseEntity<Object> update(@RequestBody VacationRequestDTO vacationRequestDTO) {
         if(!vacationRequestService.existsById(vacationRequestDTO.getId()))

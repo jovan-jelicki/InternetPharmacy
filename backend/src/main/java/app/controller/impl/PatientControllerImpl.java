@@ -1,7 +1,10 @@
 package app.controller.impl;
 
+import app.dto.PatientDTO;
+import app.dto.PharmacyPlainDTO;
 import app.dto.UserPasswordDTO;
 import app.model.medication.Ingredient;
+import app.model.pharmacy.Pharmacy;
 import app.model.user.Patient;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,22 +32,27 @@ public class PatientControllerImpl {
         return new ResponseEntity<>(patientService.save(entity), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('patient')")
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<Patient> update(@RequestBody Patient entity) {
-        if(!patientService.existsById(entity.getId()))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(patientService.save(entity), HttpStatus.CREATED);
+    public ResponseEntity<PatientDTO> update(@RequestBody PatientDTO entity) {
+        Optional<Patient> p = patientService.read(entity.getId());
+//        if(p.isEmpty())
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Patient patient = p.get();
+        entity.merge(patient);
+        return new ResponseEntity<>(new PatientDTO(patientService.save(patient)), HttpStatus.CREATED);
     }
 
-   // @PreAuthorize("hasRole('pharmacist')")
+    //@PreAuthorize("hasRole('patient')")
     @GetMapping
     public ResponseEntity<Collection<Patient>> read() {
         return new ResponseEntity<>(patientService.read(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('patient')")
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Optional<Patient>> read(@PathVariable Long id) {
-        return new ResponseEntity<>(patientService.read(id), HttpStatus.OK);
+    public ResponseEntity<PatientDTO> read(@PathVariable Long id) {
+        return new ResponseEntity<>(new PatientDTO(patientService.read(id).get()), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -63,6 +71,7 @@ public class PatientControllerImpl {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @PreAuthorize("hasRole('patient')")
     @PutMapping(value = "/pass")
     public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
         try {
@@ -75,5 +84,11 @@ public class PatientControllerImpl {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/promotion-pharmacies/{id}")
+    @PreAuthorize("hasRole('patient')")
+    public ResponseEntity<Collection<PharmacyPlainDTO>> getPromotionPharmacies(@PathVariable Long id) {
+        return new ResponseEntity<>(patientService.getPromotionPharmacies(id), HttpStatus.OK);
     }
 }

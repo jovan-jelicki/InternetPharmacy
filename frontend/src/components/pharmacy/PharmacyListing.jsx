@@ -1,7 +1,10 @@
 import React from 'react';
-import {Card, Col, Row, Badge} from "react-bootstrap";
+import {Card, Col, Row, Alert} from "react-bootstrap";
 import PharmacySearch from './PharmacySearch';
+import PharmacyFilter from './PharmacyFilter';
 import axios from 'axios';
+import StarRatings from 'react-star-ratings'
+
 
 export default class PharmacyListing extends React.Component {
     constructor() {
@@ -11,11 +14,19 @@ export default class PharmacyListing extends React.Component {
         }
         this.search = this.search.bind(this)
         this.cancel = this.cancel.bind(this)
+        this.gradeFilter = this.gradeFilter.bind(this)
     }
 
     async componentDidMount() {
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         await axios
-        .get('http://localhost:8080/api/pharmacy')
+        .get('http://localhost:8080/api/pharmacy', {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then((res) => {
             this.setState({
                 pharmacies : res.data
@@ -33,13 +44,19 @@ export default class PharmacyListing extends React.Component {
     }
 
     search({name, location}) {
-        console.log(name, location)
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         axios
         .post('http://localhost:8080/api/pharmacy/search', {
             'name' : name,
             'street' : location.street,
             'town' : location.town,
             'country': location.country
+        }, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
         })
         .then((res) => {
             this.setState({
@@ -48,13 +65,18 @@ export default class PharmacyListing extends React.Component {
         })
     }
 
+    gradeFilter(grade) {
+        this.setState({
+            pharmacies : [...this.pharmaciesBackup.filter(p => p.grade >= grade)]
+        })
+    }
 
     render() {
         const pharmacies = this.state.pharmacies.map((pharmacy, index) => {
             const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country 
             return (
                 <Col xs={4} >
-                <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '20rem' }} className="mb-2">
+                <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '25rem' }} className="mb-2">
                     <Card.Body>
                     <Card.Title>{pharmacy.name}</Card.Title>
                         <Card.Subtitle className="mb-5 mt-2 text-muted">{address}</Card.Subtitle>
@@ -62,6 +84,14 @@ export default class PharmacyListing extends React.Component {
                         {pharmacy.description}
                         </Card.Text>
                     </Card.Body>
+                    <Card.Footer>
+                    <StarRatings
+                            starDimension={'25px'}
+                            rating={pharmacy.grade}
+                            starRatedColor='yellow'
+                            numberOfStars={5}
+                        />
+                    </Card.Footer>
                 </Card>
                 </Col>
             )
@@ -72,9 +102,16 @@ export default class PharmacyListing extends React.Component {
                         <h2 className={'mt-5 ml-3'} id="pharmacies">Pharmacies</h2> 
                 </Row>
                 <PharmacySearch search={this.search} cancel={this.cancel}/>
-                <Row className={'mt-4'}>
-                    {pharmacies}
-                </Row>
+                <PharmacyFilter gradeFilter={this.gradeFilter}/>
+                {this.state.pharmacies.length != 0 ?
+                    <Row className={'mt-4'}>
+                            {pharmacies}
+                    </Row>
+                    :
+                    <Alert variant='dark'  show={true}  style={({textAlignVertical: "center", textAlign: "center", marginLeft:'5rem',marginRight:'5rem', backgroundColor:'darkgray'})}>
+                    No records found. Try again.
+                    </Alert>
+                }
             </div>
             
         )

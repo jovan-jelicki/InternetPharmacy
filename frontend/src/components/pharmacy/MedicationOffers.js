@@ -2,6 +2,7 @@ import React from "react";
 import {Button} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
+import PharmacyAdminService from "../../PharmacyAdminService";
 
 
 export default class MedicationOffers extends React.Component {
@@ -9,12 +10,18 @@ export default class MedicationOffers extends React.Component {
         super(props);
         this.state = {
             medicationOrder : props.order,
-            medicationOffers : []
+            medicationOffers : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
-    componentDidMount() {
-        console.log(this.state.medicationOrder);
+    async componentDidMount() {
+        console.log(this.state.medicationOrder)
+        let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyId : temp
+        })
         this.fetchMedicationOffers();
     }
 
@@ -68,7 +75,7 @@ export default class MedicationOffers extends React.Component {
                         </thead>
                         <tbody>
                         {this.state.medicationOffers.map((medicationOffer, index) => (
-                            <tr>
+                            <tr key={index}>
                                 <th scope="row">{index+1}</th>
                                 <td>{medicationOffer.supplierFirstName + " " + medicationOffer.supplierLastName}</td>
                                 <td>{medicationOffer.cost}</td>
@@ -89,7 +96,13 @@ export default class MedicationOffers extends React.Component {
     }
 
     acceptOffer = (medicationOffer) => {
-        axios.put("http://localhost:8080/api/medicationOffer/acceptOffer/1", medicationOffer)
+        axios.put("http://localhost:8080/api/medicationOffer/acceptOffer/" + this.state.user.id, medicationOffer,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then((res) => {
                 alert("Medication offer accepted successfully!");
                 this.fetchMedicationOffers();
@@ -102,7 +115,12 @@ export default class MedicationOffers extends React.Component {
 
     fetchMedicationOffers = () => {
         const path = "http://localhost:8080/api/medicationOffer/getOffersByOrderId/" + this.state.medicationOrder.id;
-        axios.get(path)
+        axios.get(path, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.setState({
                     medicationOffers : res.data

@@ -27,6 +27,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     private final AppointmentRepository appointmentRepository;
     private PromotionService promotionService;
     private final GradeService gradeService;
+    private MedicationOfferService medicationOfferService;
 
     @Autowired
     public PharmacyServiceImpl(PharmacyRepository pharmacyRepository, AppointmentRepository appointmentRepository, GradeService gradeService) {
@@ -39,6 +40,25 @@ public class PharmacyServiceImpl implements PharmacyService {
     public void setPromotionService(PromotionService promotionService) {
         this.promotionService = promotionService;
     }
+
+    @Override
+    public void setMedicationOffer(MedicationOfferService medicationOfferService) {
+        this.medicationOfferService = medicationOfferService;
+    }
+
+    @Override
+    public Pharmacy savePharmacy(PharmacyAdminPharmacyDTO pharmacyAdminPharmacyDTO) {
+        Pharmacy pharmacy = new Pharmacy();
+        pharmacy.setName(pharmacyAdminPharmacyDTO.getName());
+        pharmacy.setDescription(pharmacyAdminPharmacyDTO.getDescription());
+        pharmacy.setAddress(pharmacyAdminPharmacyDTO.getAddress());
+
+        this.save(pharmacy);
+
+        return pharmacy;
+    }
+
+
 
     @Override
     public void setMedicationService(MedicationService medicationService) {
@@ -55,20 +75,21 @@ public class PharmacyServiceImpl implements PharmacyService {
     public Collection<PharmacyMedicationDTO> getPharmacyByMedication(Long medicationId) {
         ArrayList<PharmacyMedicationDTO> pharmacies = new ArrayList<>();
         read().forEach(p -> {
-            for(MedicationQuantity q : p.getMedicationQuantity()) {
-                    if(q.getMedication().getId()==medicationId){
-                        PharmacyMedicationDTO pmDTO=new PharmacyMedicationDTO();
-                        pmDTO.setId(p.getId());
-                        pmDTO.setName(p.getName());
-                        pmDTO.setAddress(p.getAddress());
-                        pmDTO.setMedicationId(medicationId);
+            for (MedicationQuantity q : p.getMedicationQuantity()) {
+                if (q.getMedication().getId() == medicationId) {
+                    PharmacyMedicationDTO pmDTO = new PharmacyMedicationDTO();
+                    pmDTO.setId(p.getId());
+                    pmDTO.setName(p.getName());
+                    pmDTO.setAddress(p.getAddress());
+                    pmDTO.setMedicationId(medicationId);
 
-                        double cena=medicationPriceListService.getMedicationPrice(p.getId(),medicationId);
-                        pmDTO.setMedicationPrice(cena);
-                        pharmacies.add(pmDTO);
-                    }
-        }});
-        return  pharmacies;
+                    double cena = medicationPriceListService.getMedicationPrice(p.getId(), medicationId);
+                    pmDTO.setMedicationPrice(cena);
+                    pharmacies.add(pmDTO);
+                }
+            }
+        });
+        return pharmacies;
     }
 
 
@@ -101,7 +122,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     public Collection<Pharmacy> searchByNameAndAddress(PharmacySearchDTO pharmacySearchDTO) {
         ArrayList<Pharmacy> pharmacies = new ArrayList<>();
         read().forEach(p -> {
-            if(p.isEqual(pharmacySearchDTO))
+            if (p.isEqual(pharmacySearchDTO))
                 pharmacies.add(p);
         });
         return pharmacies;
@@ -110,11 +131,11 @@ public class PharmacyServiceImpl implements PharmacyService {
     @Override
     public Boolean checkMedicationQuantity(Collection<MedicationQuantity> medicationQuantities, Pharmacy pharmacy) {
         MedicationQuantity medicationQuantity = new MedicationQuantity();
-        for(MedicationQuantity m : pharmacy.getMedicationQuantity()) {
-            medicationQuantity =  medicationQuantities.stream().filter(med -> med.getMedication().getId() == m.getMedication().getId()).findFirst().orElse(null);
-            if(medicationQuantity != null)
+        for (MedicationQuantity m : pharmacy.getMedicationQuantity()) {
+            medicationQuantity = medicationQuantities.stream().filter(med -> med.getMedication().getId() == m.getMedication().getId()).findFirst().orElse(null);
+            if (medicationQuantity != null)
                 if (m.getQuantity() - medicationQuantity.getQuantity() < 0)
-                     return false;
+                    return false;
         }
         return true;
     }
@@ -133,10 +154,9 @@ public class PharmacyServiceImpl implements PharmacyService {
         pharmacy.getMedicationQuantity().add(new MedicationQuantity(medication, addMedicationToPharmacyDTO.getQuantity()));
 
 
-
         this.save(pharmacy);
 
-        return medicationPriceListService.save(new MedicationPriceList(medication, addMedicationToPharmacyDTO.getCost(),new Period
+        return medicationPriceListService.save(new MedicationPriceList(medication, addMedicationToPharmacyDTO.getCost(), new Period
                 (addMedicationToPharmacyDTO.getPriceDateStart(), addMedicationToPharmacyDTO.getPriceDateEnd()), pharmacy)) != null;
 
     }
@@ -145,8 +165,8 @@ public class PharmacyServiceImpl implements PharmacyService {
     public Collection<PharmacyMedicationListingDTO> getPharmacyMedicationListingDTOs(Long pharmacyId) {
         Pharmacy pharmacy = this.read(pharmacyId).get();
         ArrayList<PharmacyMedicationListingDTO> pharmacyMedicationListingDTOS = new ArrayList<PharmacyMedicationListingDTO>();
-        for(MedicationQuantity medicationQuantity : pharmacy.getMedicationQuantity()) {
-            double cost = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId,medicationQuantity.getMedication().getId(), LocalDateTime.now());
+        for (MedicationQuantity medicationQuantity : pharmacy.getMedicationQuantity()) {
+            double cost = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId, medicationQuantity.getMedication().getId(), LocalDateTime.now());
             PharmacyMedicationListingDTO pharmacyMedicationListingDTO =
                     new PharmacyMedicationListingDTO(medicationQuantity, cost, gradeService.
                             findAverageGradeForEntity(medicationQuantity.getMedication().getId(), GradeType.medication), pharmacyId);
@@ -167,7 +187,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         medicationQuantity.setQuantity(pharmacyMedicationListingDTO.getQuantity());
 
-        return this.save(pharmacy)!= null;
+        return this.save(pharmacy) != null;
     }
 
     // izbrisem aspirin, dodam aspirin pa pokusam opet da izbrisem
@@ -187,7 +207,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         //check if medication is for reservation
         for (MedicationReservation medicationReservation : pharmacy.getMedicationReservation())
             if (medicationReservation.getMedicationQuantity().getMedication().getId().equals(pharmacyMedicationListingDTO.getMedicationId())
-                && medicationReservation.getStatus() == MedicationReservationStatus.requested)
+                    && medicationReservation.getStatus() == MedicationReservationStatus.requested)
                 return false;
 
         //check if medication is in any current pharmacy promotions
@@ -209,7 +229,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         int temp = 0;
         for (MedicationReservation medicationReservation : pharmacy.getMedicationReservation())
             if (medicationReservation.getPickUpDate().isAfter(periodStart) && medicationReservation.getPickUpDate().isBefore(periodEnd))
-                temp+= medicationReservation.getMedicationQuantity().getQuantity();
+                temp += medicationReservation.getMedicationQuantity().getQuantity();
 
         return temp;
     }
@@ -221,15 +241,14 @@ public class PharmacyServiceImpl implements PharmacyService {
         SimpleDateFormat monthDate = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
         try {
-        cal.setTime(monthDate.parse(maxDate));
-        }
-        catch (Exception e) {
-        return null;
+            cal.setTime(monthDate.parse(maxDate));
+        } catch (Exception e) {
+            return null;
         }
 
         for (int i = 1; i <= 13; i++) {
-        allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
-        cal.add(Calendar.MONTH, -1);
+            allDates.add(convertToLocalDateViaMilisecond(cal.getTime()));
+            cal.add(Calendar.MONTH, -1);
         }
 
         Collections.reverse(allDates);
@@ -240,10 +259,10 @@ public class PharmacyServiceImpl implements PharmacyService {
         ArrayList<ReportsDTO> medicationConsumptionByMonth = new ArrayList<>();
 
 
-        for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.filterMedicationReservationsByPeriod(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacy);
+        for (int i = 0; i < allDates.size() - 1; i++) {
+            int temp = this.filterMedicationReservationsByPeriod(allDates.get(i).atStartOfDay(), allDates.get(i + 1).atStartOfDay(), pharmacy);
             String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
-            medicationConsumptionByMonth.add(new ReportsDTO(monthName,temp));
+            medicationConsumptionByMonth.add(new ReportsDTO(monthName, temp));
         }
         return medicationConsumptionByMonth;
     }
@@ -256,8 +275,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         Calendar cal = Calendar.getInstance();
         try {
             cal.setTime(monthDate.parse(maxDate));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
 
@@ -273,11 +291,11 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         ArrayList<ReportsDTO> medicationConsumptionByMQuarter = new ArrayList<>();
 
-        for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.filterMedicationReservationsByPeriod(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacy);
+        for (int i = 0; i < allDates.size() - 1; i++) {
+            int temp = this.filterMedicationReservationsByPeriod(allDates.get(i).atStartOfDay(), allDates.get(i + 1).atStartOfDay(), pharmacy);
             String monthNameStart = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
-            String monthNameEnd = allDates.get(i+1).format(DateTimeFormatter.ofPattern("MMM"));
-            medicationConsumptionByMQuarter.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd,temp));
+            String monthNameEnd = allDates.get(i + 1).format(DateTimeFormatter.ofPattern("MMM"));
+            medicationConsumptionByMQuarter.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd, temp));
         }
         return medicationConsumptionByMQuarter;
     }
@@ -290,8 +308,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         Calendar cal = Calendar.getInstance();
         try {
             cal.setTime(monthDate.parse(maxDate));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
 
@@ -307,20 +324,22 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         ArrayList<ReportsDTO> medicationConsumptionByMQuarter = new ArrayList<>();
 
-        for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.filterMedicationReservationsByPeriod(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacy);
+        for (int i = 0; i < allDates.size() - 1; i++) {
+            int temp = this.filterMedicationReservationsByPeriod(allDates.get(i).atStartOfDay(), allDates.get(i + 1).atStartOfDay(), pharmacy);
             String year = allDates.get(i).format(DateTimeFormatter.ofPattern("yyyy"));
-            medicationConsumptionByMQuarter.add(new ReportsDTO(year,temp));
+            medicationConsumptionByMQuarter.add(new ReportsDTO(year, temp));
         }
         return medicationConsumptionByMQuarter;
     }
 
 
     @Override
-    public Collection<ReportsDTO> getPharmacyIncomeReportByPeriod(LocalDateTime periodStart, LocalDateTime periodEnd, Long pharmacyId) {
+    public Collection<ReportIncomeDTO> getPharmacyIncomeReportByPeriod(LocalDateTime periodStart, LocalDateTime periodEnd, Long pharmacyId) {
 
         //uspesne rezervacije lekova - obratiti paznju na pricelist u tom periodu
         //uspesni appointmenti dermatologa i farmaceuta
+        //eprescription
+        //medication orders
 
         Pharmacy pharmacy = this.read(pharmacyId).get();
 
@@ -334,17 +353,18 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         System.out.println(totalDates);
 
-        ArrayList<ReportsDTO> reportsDTOS = new ArrayList<>();
+        ArrayList<ReportIncomeDTO> reportsDTOS = new ArrayList<>();
 
         for (int i = 0; i < totalDates.size() - 1; i++) {
             LocalDateTime dayStart = totalDates.get(i);
-            LocalDateTime dayEnd = totalDates.get(i+1);
+            LocalDateTime dayEnd = totalDates.get(i + 1);
             dayStart.with(LocalTime.of(0, 0));
             dayStart.with(LocalTime.of(0, 0));
             double income = 0;
-            income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.dermatologist)
+            double expense = 0;
+            income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.ROLE_dermatologist)
                     .size() * pharmacy.getDermatologistCost();
-            income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.pharmacist)
+            income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.ROLE_pharmacist)
                     .size() * pharmacy.getPharmacistCost();
 
             ArrayList<MedicationReservation> medicationReservations = (ArrayList<MedicationReservation>) pharmacy.getMedicationReservation().stream().filter(medicationReservation -> medicationReservation.getPickUpDate().toLocalDate().isEqual(dayStart.toLocalDate()))
@@ -356,14 +376,14 @@ public class PharmacyServiceImpl implements PharmacyService {
                 income += medicationReservation.getMedicationQuantity().getQuantity() * medicationPrice;
             }
 
-            reportsDTOS.add(new ReportsDTO(dayStart.toLocalDate().format(DateTimeFormatter.ofPattern("dd MMM yyyy")), income));
+            for (MedicationOffer medicationOffer : medicationOfferService.getApprovedMedicationOffersByPharmacyAndPeriod(pharmacyId, dayStart, dayEnd))
+                expense += medicationOffer.getCost();
+
+            reportsDTOS.add(new ReportIncomeDTO(dayStart.toLocalDate().format(DateTimeFormatter.ofPattern("dd MMM yyyy")), income, expense));
         }
-
-
 
 
         return reportsDTOS;
     }
-
 
 }

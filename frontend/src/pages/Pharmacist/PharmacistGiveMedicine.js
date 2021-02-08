@@ -8,7 +8,8 @@ export default class PharmacistGiveMedicine extends React.Component {
         this.state = {
             medicineCode : "",
             reservation : "samo cisto da probam",
-            reservationFound : false
+            reservationFound : false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
@@ -51,7 +52,12 @@ export default class PharmacistGiveMedicine extends React.Component {
 
     giveMedicine = () => {
         axios
-            .put( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medicationReservation/giveMedicine/' + this.state.reservation.id)
+            .put( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medicationReservation/giveMedicine/' + this.state.reservation.id , {},
+                {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
             .then(res => {
                     this.setState({
                         reservationFound : false,
@@ -76,8 +82,12 @@ export default class PharmacistGiveMedicine extends React.Component {
     getReservation = () => {
         axios
             .post( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medicationReservation/getMedicationReservation', {
-                pharmacistId : "2",
+                pharmacistId : this.state.user.id,
                 medicationId : this.state.medicineCode
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                let reservation = res.data;

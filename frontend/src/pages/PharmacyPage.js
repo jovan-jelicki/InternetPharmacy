@@ -7,7 +7,6 @@ import PharmacyMedicationOrders from "../components/pharmacy/PharmacyMedicationO
 import PharmacyMedicationQueries from "../components/pharmacy/PharmacyMedicationQueries";
 import PharmacyDescription from "../components/pharmacy/PharmacyDescription";
 import PriceList from "../components/pharmacy/PriceList";
-import PharmacyReports from "../components/pharmacy/PharmacyReports";
 import AppointmentsList from "../components/pharmacy/AppointmentsList";
 import PharmacyProfile from "../components/pharmacy/PharmacyProfile";
 import axios from "axios";
@@ -33,13 +32,16 @@ export default class PharmacyPage extends React.Component{
                 grade : 0
             },
             navbar : "description",
-            userType : "pharmacyAdmin"
+            userType : "pharmacyAdmin",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
 
         }
     }
 
-    componentDidMount() {
-       this.fetchPharmacy();
+    async componentDidMount() {
+        await this.fetchPharmacyId();
+        await this.fetchPharmacy();
     }
 
 
@@ -68,7 +70,7 @@ export default class PharmacyPage extends React.Component{
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="vacationRequests" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Godisnji odmori</a>
+                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Vacation requests</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="promotions" onClick={this.handleChange}>Actions & Promotions</a>
@@ -156,12 +158,33 @@ export default class PharmacyPage extends React.Component{
             );
     }
 
-    fetchPharmacy = () => {
-        axios.get("http://localhost:8080/api/pharmacy/1")
+    fetchPharmacy = async () => {
+        await axios.get("http://localhost:8080/api/pharmacy/" + this.state.pharmacyId,
+        {
+                headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.setState({
                     pharmacy : res.data
                 })
             })
+    }
+
+    fetchPharmacyId = async () => {
+        await axios.get("http://localhost:8080/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacyId : res.data
+                })
+            });
     }
 }

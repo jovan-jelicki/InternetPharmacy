@@ -11,19 +11,25 @@ export default class DermatologistHomePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            role: this.props.role,
-            Id: this.props.Id,
             navbar : "reviewedClients",
             showModal : false,
             oldPw : "",
             newPw : "",
-            repeatPw : ""
+            repeatPw : "",
+            repErr : "",
+            wrongPw : "",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
     componentDidMount() {
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/isAccountApproved/' + 3)
+            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/isAccountApproved/' + this.state.user.id,
+                {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
             .then(res => {
                 if(!res.data){
                     this.setState({
@@ -40,7 +46,7 @@ export default class DermatologistHomePage extends React.Component {
                 <Container fluid style={{'background-color' : '#AEB6BF'}}>
                     <br/>
                 <ul className="nav justify-content-center">
-                    <h3> Welcome {this.props.role}! </h3>
+                    <h3> Welcome dermatologist! </h3>
                     <li className="nav-item">
                         <a className="nav-link active" style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' onClick={this.handleChange} name="reviewedClients">Reviewed clients</a>
                     </li>
@@ -74,8 +80,11 @@ export default class DermatologistHomePage extends React.Component {
                     <p> First password : </p> <input name="oldPw" onChange={this.handleInputChange} value={this.state.oldPw} type={"password"}/>
                     <p> New password : </p> <input name="newPw" onChange={this.handleInputChange} value={this.state.newPw} type={"password"}/>
                     <p> Repeat new password : </p> <input name="repeatPw" onChange={this.handleInputChange} value={this.state.repeatPw} type={"password"}/>
+                    <p style={{"color" : "red"}}>{this.state.repErr} </p>
+
                 </Modal.Body>
                 <Modal.Footer>
+                    <p style={{"color" : "red"}}>{this.state.wrongPw}</p>
                     <Button variant="secondary" onClick={this.sendData}>
                         Send
                     </Button>
@@ -85,12 +94,18 @@ export default class DermatologistHomePage extends React.Component {
     }
 
     sendData = () => {
+        if(this.state.repeatPw !== this.state.newPw)
+            return;
         axios
             .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/pass', {
-                'userId' : 3,
+                'userId' : this.state.user.id,
                 'oldPassword' : this.state.oldPw,
                 'newPassword' : this.state.newPw,
                 'repeatedPassword' : this.state.repeatPw
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 if(!res.data){
@@ -99,9 +114,32 @@ export default class DermatologistHomePage extends React.Component {
                     })
                 }
             })
-            .catch(res => alert("Greska!"));
+            .catch(res => this.setState({wrongPw : "First password is not correct!"}));
     }
 
+    handleInputChange = (event) => {
+        const target = event.target;
+        this.setState({
+            [target.name]: target.value
+        })
+        this.validatePassword(event);
+    }
+
+    validatePassword(event) {
+        let repErr = ''
+        let val = event.target.value;
+        let newPass = this.state.newPw;
+
+        if (event.target.name === 'repeatPw')
+            if(val !== newPass.substr(0, Math.min(val.length, newPass.length)) ||
+                (val.trim() === '' && newPass.trim() !== '')) {
+                repErr = 'This password must match the previous';
+            }
+
+        this.setState({
+            'repErr': repErr
+        })
+    }
     handleChange = (event) => {
         const target = event.target;
         const name = target.name;
@@ -110,33 +148,27 @@ export default class DermatologistHomePage extends React.Component {
             navbar : name
         });
     }
-    handleInputChange = (event) => {
-        const target = event.target;
-        this.setState({
-            [target.name] : target.value
-        })
-    }
 
     renderNavbar = () => {
         if (this.state.navbar === "reviewedClients")
             return (
-                <ReviewedClients Id = {this.state.id} role = {this.state.role}/>
+                <ReviewedClients />
             );
         else if (this.state.navbar === "vacationRequest")
             return (
-                <VacationRequest Id = {this.state.id} role = {this.state.role} />
+                <VacationRequest  />
             );
         else if (this.state.navbar === "profile")
             return (
-                <DermatologistsProfilePage Id = {this.state.id} role = {this.state.role} />
+                <DermatologistsProfilePage  />
             );
         else if (this.state.navbar === "workHours")
             return (
-                <DermatologistWorkingHours Id = {this.state.id} role = {this.state.role} />
+                <DermatologistWorkingHours />
             );
         else if (this.state.navbar === "startAppointment")
             return (
-                <DermatologistAppointmentStart Id = {this.state.id} role = {this.state.role} />
+                <DermatologistAppointmentStart />
             );
         else
             return (

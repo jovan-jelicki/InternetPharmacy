@@ -134,7 +134,7 @@ insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_st
     (15,3,1, 230, '2018-01-01', '2018-02-20');
 
 INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
- VALUES (0, '2021-01-31', 3, 1,0);
+ VALUES (0, '2021-03-31', 3, 1,0);
 -- INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
 -- VALUES (1, '2021-01-28', 2, 4,0);
 -- INSERT INTO medication_reservation(id, pick_up_date, status, medication_quantity_id, patient_id)
@@ -204,7 +204,7 @@ VALUES (29, '2016-02-25', 2, 5,0);
 -- kraj
 
 INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
-VALUES (0,0);
+VALUES (1,0);
 INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
 VALUES (0,1);
 INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
@@ -280,10 +280,12 @@ INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (1,
 INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (2, '2020-01-01 10:00:00', '2021-12-31 16:00:00', 0);
 INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (3, '2020-01-01 07:00:00', '2021-12-31 12:00:00', 0);
 INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (4, '2020-01-01 13:00:00', '2021-12-31 15:00:00', 1);
+INSERT INTO working_hours (id, period_start, period_end, pharmacy_id) VALUES (5, '2020-01-01 17:00:00', '2021-12-31 20:00:00', 0);
 
 
 INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (3,3);
 INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (3,4);
+INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (5,5);
 
 INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id, is_active)
     VALUES (1, 'Jovan', 'Jovic', 1, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',1, true);
@@ -407,10 +409,12 @@ INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (11, 5123, 3);
 INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (12, 6000, 3);
+INSERT INTO medication_quantity (id, quantity, medication_id)
+VALUES (13, 2000, 2);
 
 
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
-VALUES (1, '2021-03-04', 1, 0);
+VALUES (1, '2021-01-01', 1, 0);
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
 VALUES (2, '2021-03-10', 1, 0);
 INSERT INTO medication_order(id, deadline, pharmacy_admin_id, status)
@@ -448,14 +452,15 @@ insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
 VALUES(1,10);
 insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
 VALUES(1,11);
+insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
+VALUES(1,13);
 
 insert into medication_offer(id, cost,shipping_date,status,medication_order_id)
-VALUES(1,111,'2022-02-03',0,1);
+VALUES(1,111000,'2020-12-31',1,1);
 insert into medication_offer(id, cost,shipping_date,status,medication_order_id)
 VALUES(2,96,'2022-02-03',0,2);
 
-insert into supplier_medication_offer(supplier_id, medication_offer_id)
-VALUES(1,1);
+
 insert into supplier_medication_offer(supplier_id, medication_offer_id)
 VALUES(1,2);
 insert into promotion(id, content, period_end, period_start, pharmacy_id)
@@ -469,6 +474,33 @@ values (1, 4);
 
 insert into patient_promotions(patient_id, promotions_id) values (0,1);
 
+-- SELECT MAX(id) FROM appointment;
+--
+-- SELECT nextval('bookmarks_id_seq');
+
+
+-- AKO NEKO PROMENI PICKU CU MU POLOMITI!!!!!!
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (0, '2021-03-01', 0, 0);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (1, '2021-03-02', 0, 1);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (2, '2021-03-03', 0, 2);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (3, '2021-03-04', 0, 0);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (4, '2021-03-05', 0, 1);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (5, '2021-03-06', 0, 2);
+
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (30, 5, 0);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (31, 1, 1);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (32, 2, 2);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (33, 3, 3);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (34, 1, 4);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (35, 4, 3);
+
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (0, 30);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (1, 31);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (2, 32);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (3, 33);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (4, 34);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (5, 35);
+
 -- pharmacy grade
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (1, 3, 0, 1, 0);
@@ -480,18 +512,18 @@ insert into grade(id, grade, grade_type, graded_id, patient_id)
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (4, 2, 1, 1, 6);
 insert into grade(id, grade, grade_type, graded_id, patient_id)
-    values (5, 5, 1, 2, 0);
+     values (5, 5, 1, 2, 0);
 insert into grade(id, grade, grade_type, graded_id, patient_id)
-    values (6, 3, 1, 2, 6);
---dermatologist grade
+     values (6, 3, 1, 2, 6);
+-- dermatologist grade
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (7, 5, 2, 3, 0);
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (8, 2, 2, 4, 6);
 insert into grade(id, grade, grade_type, graded_id, patient_id)
-    values (9, 5, 2, 5, 0);
+     values (9, 5, 2, 5, 0);
 insert into grade(id, grade, grade_type, graded_id, patient_id)
-    values (10, 3, 2, 3, 6);
+     values (10, 3, 2, 3, 6);
 --medication grade
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (11, 4, 3, 0, 0);
@@ -504,7 +536,31 @@ insert into grade(id, grade, grade_type, graded_id, patient_id)
 insert into grade(id, grade, grade_type, graded_id, patient_id)
     values (15, 3, 3, 4, 6);
 
+insert into side_effect(id,name)
+values(0,'allergy');
+insert into side_effect(id,name)
+values(1,'dry mouth');
+insert into side_effect(id,name)
+values(2,'internal bleeding');
+insert into side_effect(id,name)
+values(3,'lost of concentration');
+insert into side_effect(id,name)
+values(4,'aggression');
+insert into side_effect(id,name)
+values(5,'diarrhea');
+insert into side_effect(id,name)
+values(6,'diarrhea');
+insert into side_effect(id,name)
+values(7,'nausea');
+insert into side_effect(id,name)
+values(8,'migraine');
+insert into side_effect(id,name)
+values(9,'dizziness');
+insert into side_effect(id,name)
+values(10,'insomnia');
 
-
-
+insert into complaint(id,complainee_id,content,type,patient_id)
+values(0,1,'Bezobrazan, nadmen.',0,0);
+insert into complaint(id,complainee_id,content,type,patient_id)
+values(1,3,'Nece da da recept!',1,0);
 

@@ -7,6 +7,7 @@ import app.model.medication.Medication;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
+import app.model.user.Dermatologist;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
 import app.repository.AppointmentRepository;
@@ -57,7 +58,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void update(AppointmentUpdateDTO appointmentDTO) {
         Optional<Appointment> appointment = appointmentRepository.findById(appointmentDTO.getAppointmentId());
-//        if(appointment.is)
+//        if(appointment.isEmpty())
 //            throw new IllegalArgumentException("Appointment does not exist");
         Optional<Patient> patient = patientService.read(appointmentDTO.getPatientId());
 //        if(patient.isEmpty())
@@ -166,7 +167,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public boolean validateAppointmentTimeRegardingWorkingHours(Appointment entity) {
         WorkingHours workingHoursInPharmacy = dermatologistService.workingHoursInSpecificPharmacy(entity.getExaminerId(), entity.getPharmacy());
         if (workingHoursInPharmacy.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-            workingHoursInPharmacy.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime()))
+                workingHoursInPharmacy.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime()))
             return true;
         return false;
     }
@@ -187,9 +188,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public boolean validateAppointmentTimeRegardingVacationRequests(Appointment entity) {
         boolean ret = true;
-        for(VacationRequest vacationRequest : vacationRequestRepository.findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(entity.getExaminerId() ,EmployeeType.dermatologist, VacationRequestStatus.approved))
+        for(VacationRequest vacationRequest : vacationRequestRepository.findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(entity.getExaminerId() ,EmployeeType.ROLE_dermatologist, VacationRequestStatus.approved))
             if (vacationRequest.getPeriod().getPeriodStart().toLocalDate().isBefore(entity.getPeriod().getPeriodStart().toLocalDate()) &&
-                vacationRequest.getPeriod().getPeriodEnd().toLocalDate().isAfter(entity.getPeriod().getPeriodEnd().toLocalDate()))
+                    vacationRequest.getPeriod().getPeriodEnd().toLocalDate().isAfter(entity.getPeriod().getPeriodEnd().toLocalDate()))
                 return false;
         return ret;
     }
@@ -199,7 +200,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         for(Appointment appointment : this.getAllAppointmentsByExaminerIdAndType(entity.getExaminerId(), entity.getType())) {
             if (appointment.getPeriod().getPeriodStart().toLocalDate().equals(entity.getPeriod().getPeriodStart().toLocalDate())) {
                 if (appointment.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-                    appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
+                        appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
                     ret = false;
                 else if (entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
                         entity.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(appointment.getPeriod().getPeriodEnd().toLocalTime())) //E A A E
@@ -353,6 +354,35 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Collection<AppointmentEmployeeDTO> getFinishedForComplaint(Long id, EmployeeType type) {
+        Collection<Appointment>  finishedAppointments=getAllFinishedByPatientAndExaminerType(id,type);
+        ArrayList<Long> dermatologsitIds = new ArrayList<>();
+        ArrayList<Long> pharmacistIds = new ArrayList<>();
+        ArrayList<AppointmentEmployeeDTO> appointmentEmployeeDTOs = new ArrayList<>();
+
+        for(Appointment appointment : finishedAppointments){
+            AppointmentEmployeeDTO appointmentEmployeeDTO= new AppointmentEmployeeDTO();
+            if(type.toString()=="dermatologist" && !dermatologsitIds.contains(appointment.getExaminerId())){
+                Dermatologist dermatologist=dermatologistService.read(appointment.getExaminerId()).get();
+                appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
+                appointmentEmployeeDTO.setEmployeeFirstName(dermatologist.getFirstName());
+                appointmentEmployeeDTO.setEmployeeLastName(dermatologist.getLastName());
+                appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
+
+                dermatologsitIds.add(appointment.getExaminerId());
+            }/*else if(type.toString()=="pharmacist"  && !pharmacistIds.contains(appointment.getExaminerId())){
+                    Pharmacist pharmacist=pharmacistService.read(appointment.getExaminerId()).get();
+                    appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
+                    appointmentEmployeeDTO.setEmployeeFirstName(pharmacist.getFirstName());
+                    appointmentEmployeeDTO.setEmployeeLastName(pharmacist.getLastName());
+                    appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
+                    pharmacistIds.add(appointment.getExaminerId());
+            }*/
+        }
+        return appointmentEmployeeDTOs;
+    }
+
+    @Override
     public Collection<ReportsDTO> getAppointmentsMonthlyReport(Long pharmacyId) {
         List<LocalDate> allDates = new ArrayList<>();
         String maxDate = LocalDateTime.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -377,7 +407,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByMonth = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.ROLE_dermatologist).size();
             String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
             appointmentCountByMonth.add(new ReportsDTO(monthName,temp));
         }
@@ -410,7 +440,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByQuarter = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.ROLE_dermatologist).size();
             String monthNameStart = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
             String monthNameEnd = allDates.get(i+1).format(DateTimeFormatter.ofPattern("MMM"));
             appointmentCountByQuarter.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd,temp));
@@ -444,7 +474,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByYear = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.ROLE_dermatologist).size();
             String year = allDates.get(i).format(DateTimeFormatter.ofPattern("yyyy"));
             appointmentCountByYear.add(new ReportsDTO(year,temp));
         }

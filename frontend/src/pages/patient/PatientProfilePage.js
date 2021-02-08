@@ -28,9 +28,15 @@ export default class PatientProfilePage extends React.Component {
     }
 
     async componentDidMount() {
-
+        this.aut = JSON.parse(localStorage.getItem('user'))
+        console.log(this.user)
         await axios
-            .get('http://localhost:8080/api/patients/0')
+            .get('http://localhost:8080/api/patients/' + this.aut.id, {
+                headers : {
+                    'Content-Type' : 'application/json',
+                    Authorization : 'Bearer ' + this.aut.jwtToken 
+                }
+            })
             .then(res => {
                 let patient = res.data;
                 console.log(patient)
@@ -38,24 +44,15 @@ export default class PatientProfilePage extends React.Component {
                     'id' : patient.id,
                     'firstName' : patient.firstName,
                     'lastName' : patient.lastName,
-                    'email' : patient.credentials.email,
-                    'password' : patient.credentials.password,
+                    'email' : patient.email,
                     'penaltyCount' : patient.penaltyCount,
-                    'userType' : patient.userType,
                     'editMode' : false,
                     'changePasswordMode' : false,
                     'address' : patient.contact.address.street,
                     'town' : patient.contact.address.town,
                     'country' : patient.contact.address.country,
-                    'phoneNumber' : patient.contact.phoneNumber
-                })
-            });
-
-        await axios
-            .get('http://localhost:8080/api/patients/allergies/0')
-            .then(res => {
-                this.setState({
-                    'allergies' : res.data
+                    'phoneNumber' : patient.contact.phoneNumber,
+                    'allergies' : patient.allergies
                 })
             });
 
@@ -105,6 +102,11 @@ export default class PatientProfilePage extends React.Component {
             'oldPassword' : this.state.oldPass,
             'newPassword' : this.state.newPass,
             'repeatedPassword' : this.state.repPass
+        }, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
         })
         .then(res => {
             this.setState({
@@ -116,6 +118,9 @@ export default class PatientProfilePage extends React.Component {
 
     handleInputChange = (event) => {
         const target = event.target;
+        const reg = new RegExp('^[0-9]+$')
+        if(target.name === 'phoneNumber' && !reg.test(target.value)) 
+            return;
         this.setState({
             [target.name] : target.value,
         })
@@ -158,12 +163,8 @@ export default class PatientProfilePage extends React.Component {
             'id' : this.state.id,
             'firstName' : this.state.firstName,
             'lastName' : this.state.lastName,
-            'userType' : this.state.userType,
             'allergies' : this.state.allergies,
-            'credentials' : {
-                'email' : this.state.email,
-                'password' : this.state.password
-            },
+            'email' : this.state.email,
             'penaltyCount' : this.state.penaltyCount,
             'contact' : {
                 'phoneNumber' : this.state.phoneNumber,
@@ -172,6 +173,11 @@ export default class PatientProfilePage extends React.Component {
                     'town' : this.state.town,
                     'country' : this.state.country
                 }
+            }
+        }, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
             }
         })
         .then(res => {
@@ -201,6 +207,8 @@ export default class PatientProfilePage extends React.Component {
                                 Change Password</Button>}
                             {this.state.editMode && <Button variant="success mt-2" 
                             disabled={this.state.saveDisabled} onClick={this.save}>Save</Button>}
+                            <h1 className={'mt-5'} style={{'text-align' : 'center', 'font-size' : '70px'}}>{this.state.penaltyCount}</h1>
+                            <label style={{'text-align' : 'center'}}>Penalties</label>
                         </Nav>
                     </Col>
                     <Col>

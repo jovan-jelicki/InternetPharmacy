@@ -1,9 +1,6 @@
 package app.controller.impl;
 
-import app.dto.PharmacistDTO;
-import app.dto.PharmacyNameIdDTO;
-import app.dto.UserPasswordDTO;
-import app.dto.WorkingHoursDTO;
+import app.dto.*;
 import app.model.grade.GradeType;
 import app.model.user.Pharmacist;
 import app.service.GradeService;
@@ -11,7 +8,9 @@ import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,23 +33,34 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(pharmacistService.save(entity), HttpStatus.CREATED);
     }
 
-    @PutMapping(consumes = "application/json")
-    public ResponseEntity<Pharmacist> update(@RequestBody Pharmacist entity) {
-        if(!pharmacistService.existsById(entity.getId()) || !pharmacistService.read(entity.getId()).get().getActive())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(pharmacistService.save(entity), HttpStatus.CREATED);
+    @PostMapping(consumes = "application/json", value = "/createNewPharmacist")
+    public ResponseEntity<Boolean> createNewPharmacist(@RequestBody Pharmacist entity) {
+        return new ResponseEntity<>(pharmacistService.createNewPharmacist(entity), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('pharmacist')")
+    @PutMapping(consumes = "application/json")
+    public ResponseEntity< PharmacistDermatologistProfileDTO> update(@RequestBody PharmacistDermatologistProfileDTO entity) {
+        if(!pharmacistService.existsById(entity.getId()) || !pharmacistService.read(entity.getId()).get().getActive())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Pharmacist pharmacist = pharmacistService.read(entity.getId()).get();
+        pharmacistService.save(entity.convertDtoToPharmacist(pharmacist));
+        return new ResponseEntity<>(entity, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasRole('pharmacist')")
     @GetMapping(value = "/getPharmacy/{id}")
     public ResponseEntity<PharmacyNameIdDTO> getPharmacyOfPharmacist(@PathVariable Long id){
         return new ResponseEntity<>(pharmacistService.getPharmacyOfPharmacist(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('pharmacist')")
     @GetMapping(value = "/isAccountApproved/{id}")
     public ResponseEntity<Boolean> isAccountApproved(@PathVariable Long id){
         return new ResponseEntity<>(pharmacistService.read(id).get().getApprovedAccount(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('pharmacist')")
     @PutMapping(value = "/pass")
     public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
         try {
@@ -74,10 +84,11 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(pharmacists, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, pharmacyAdmin')")
     @GetMapping(value = "/{id}")
-    public ResponseEntity<PharmacistDTO> read(@PathVariable Long id) {
+    public ResponseEntity<PharmacistDermatologistProfileDTO> read(@PathVariable Long id) {
         if (pharmacistService.read(id).isPresent())
-            return new ResponseEntity<>(new PharmacistDTO(pharmacistService.read(id).get()), HttpStatus.OK);
+            return new ResponseEntity<>(new PharmacistDermatologistProfileDTO(pharmacistService.read(id).get()), HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
@@ -99,6 +110,7 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(new WorkingHoursDTO(pharmacist.getWorkingHours()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "getByPharmacy/{id}")
     public ResponseEntity<Collection<PharmacistDTO>> getPharmacistsByPharmacyId(@PathVariable Long id) {
         ArrayList<PharmacistDTO> pharmacistDTOS = new ArrayList<>();

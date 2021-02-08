@@ -1,9 +1,10 @@
 import React from "react";
 import {Button, Container, FormControl} from "react-bootstrap";
-import "../App.css";
+import "../../App.css";
 import Script from "react-load-script";
+import axios from "axios";
 
-export default class PharmacyAdminRegistration extends React.Component {
+export default class SystemAdminRegistration extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -39,6 +40,39 @@ export default class PharmacyAdminRegistration extends React.Component {
 
         }
     }
+    async sendParams() {
+        axios
+            .post('http://localhost:8080/api/systemAdmin/save', {
+                'id':'',
+                'firstName' : this.state.user.firstName,
+                'lastName' : this.state.user.lastName,
+                'userType' : 3,
+                'credentials' : {
+                    'email' : this.state.user.email,
+                    'password' : this.state.user.password
+                },
+                'contact' : {
+                    'phoneNumber' : this.state.user.telephone,
+                    'address' : {
+                        'street' : this.state.user.address.street,
+                        'town' : this.state.user.address.town,
+                        'country' : this.state.user.address.country,
+                        'latitude' : this.state.user.address.latitude,
+                        'longitude' : this.state.user.address.longitude
+                    }
+                },
+                'approvedAccount':false
+
+            })
+            .then(res => {
+                alert("Successfully registered!");
+
+            }).catch(() => {
+            alert("Dermatologist was not registered successfully!")
+        })
+
+    }
+
     handleInputChange = (event) => {
         const { name, value } = event.target;
         const user = this.state.user;
@@ -68,17 +102,17 @@ export default class PharmacyAdminRegistration extends React.Component {
                 if (this.setAddressParams(address)) {
                     this.setState(
                         {
-                            user: {
-                                address: {
-                                    street: this.state.streetP,
-                                    town: this.state.townP,
-                                    country: this.state.countryP,
-                                    latitude: addressObject.geometry.location.lat(),
-                                    longitude: addressObject.geometry.location.lng()
-                                }
+                            addressPom: {
+                                street: this.state.streetP,
+                                town: this.state.townP,
+                                country: this.state.countryP,
+                                latitude: addressObject.geometry.location.lat(),
+                                longitude: addressObject.geometry.location.lng(),
+
                             },
                         }
                     );
+                    this.state.user.address=this.state.addressPom;
                 }
             } else {
                 this.addressErrors(false)
@@ -121,10 +155,8 @@ export default class PharmacyAdminRegistration extends React.Component {
     addressErrors = (bool) => {
         let errors = this.state.errors;
         if (bool == false) {
-            //.log("Nisam dobro prosla")
             errors.user.address = 'Please choose valid address';
         } else {
-            //console.log("DObro sam prosla ");
             errors.user.address = "";
         }
         this.setState({errors});
@@ -134,7 +166,7 @@ export default class PharmacyAdminRegistration extends React.Component {
 
             <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
                 <div className="container">
-                    <h3 style={({ textAlignVertical: "center", textAlign: "center"})}>Pharmacy admin registration</h3>
+                    <h3 style={({ textAlignVertical: "center", textAlign: "center"})}>System admin registration</h3>
                 </div>
 
                 <div className="row" style={{marginTop: '3rem', marginLeft:'20rem',display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
@@ -222,6 +254,8 @@ export default class PharmacyAdminRegistration extends React.Component {
         event.preventDefault();
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form')
+            console.log(this.state.user)
+            this.sendParams();
         } else {
             console.log('Invalid Form')
         }

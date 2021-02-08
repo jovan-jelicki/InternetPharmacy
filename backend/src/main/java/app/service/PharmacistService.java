@@ -17,4 +17,5 @@ public interface PharmacistService extends CRUDService<Pharmacist> {
     Pharmacist findByEmailAndPassword(String email, String password);
     Pharmacist findByEmail(String email);
 
+    Boolean createNewPharmacist(Pharmacist entity);
 }

@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationOfferDTO;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
@@ -12,6 +13,7 @@ import app.service.SupplierService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -33,6 +35,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     @PostConstruct
     public void init() {
         medicationOrderService.setMedicationOfferService(this);
+        pharmacyService.setMedicationOffer(this);
     }
 
     @Override
@@ -80,6 +83,16 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     }
 
     @Override
+    public Boolean editMedicationOffer(MedicationOfferAndOrderDTO medicationOffer) {
+        MedicationOffer medOffer=read(medicationOffer.getOfferId()).get();
+        medOffer.setCost(medicationOffer.getCost());
+        medOffer.setShippingDate(medicationOffer.getShippingDate());
+        this.save(medOffer);
+
+        return medOffer!=null;
+    }
+
+    @Override
     public Collection<MedicationOfferDTO> getOffersByOrderId(Long orderId) {
         ArrayList<MedicationOfferDTO> medicationOfferDTOS = new ArrayList<>();
         for (MedicationOffer medicationOffer : medicationOfferRepository.getMedicationOffersByMedicationOrder(orderId)) {
@@ -111,6 +124,16 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         pharmacyService.save(pharmacy);
     }
 
+    private void updateSupplierMedicationQuantity(MedicationOrder medicationOrder, MedicationOffer medicationOffer) {
+        Supplier supplier = supplierService.getSupplierByMedicationOffer(medicationOffer);
+        for (MedicationQuantity medicationQuantitySupplier : supplier.getMedicationQuantity())
+            for (MedicationQuantity medicationQuantityOrder : medicationOrder.getMedicationQuantity())
+                if (medicationQuantityOrder.getMedication().getId().equals(medicationQuantitySupplier.getMedication().getId()))
+                    medicationQuantitySupplier.setQuantity(medicationQuantitySupplier.getQuantity() - medicationQuantityOrder.getQuantity());
+
+        supplierService.save(supplier);
+    }
+
     @Override
     public Boolean acceptOffer(MedicationOfferDTO medicationOfferDTO, Long pharmacyAdminId) {
         MedicationOrder medicationOrder = medicationOrderService.read(medicationOfferDTO.getMedicationOrderId()).get();
@@ -129,6 +152,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
                 //TODO send confirmation email to supplier
 
                 updatePharmacyMedicationQuantity(medicationOrder);
+                updateSupplierMedicationQuantity(medicationOrder, medicationOffer);
                 continue;
             }
             medicationOffer.setStatus(MedicationOfferStatus.rejected);
@@ -136,6 +160,11 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         }
         medicationOrder.setStatus(MedicationOrderStatus.processed);
         return medicationOrderService.save(medicationOrder) != null;
+    }
+
+    @Override
+    public Collection<MedicationOffer> getApprovedMedicationOffersByPharmacyAndPeriod(Long pharmacyId, LocalDateTime periodStart, LocalDateTime periodEnd) {
+        return medicationOfferRepository.getApprovedMedicationOffersByPharmacyAndPeriod(pharmacyId, periodStart, periodEnd);
     }
 
 

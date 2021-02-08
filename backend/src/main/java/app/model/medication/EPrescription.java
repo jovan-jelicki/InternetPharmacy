@@ -2,6 +2,7 @@
 package app.model.medication;
 
 import app.model.user.Patient;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class EPrescription {
     private Long id;
 
     @Column
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateIssued;
 
     @ManyToOne
@@ -23,6 +25,9 @@ public class EPrescription {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<MedicationQuantity> medicationQuantity;
+
+    @Enumerated(EnumType.ORDINAL)
+    EPrescriptionStatus status;
 
     public EPrescription() {
     }
@@ -59,8 +64,11 @@ public class EPrescription {
         this.medicationQuantity = medicationQuantity;
     }
 
-    public boolean isMedicationInEPrescription(Long medicationId) {
-        return medicationQuantity
-                .stream().anyMatch(m -> m.getMedication().getId() == medicationId);
+    public EPrescriptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EPrescriptionStatus status) {
+        this.status = status;
     }
 }

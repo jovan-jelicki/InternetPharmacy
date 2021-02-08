@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.PharmacyPlainDTO;
 import app.dto.UserPasswordDTO;
 import app.model.medication.Ingredient;
 import app.model.medication.Medication;
@@ -10,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PatientServiceImpl implements PatientService {
@@ -80,6 +83,16 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient findByEmail(String email) {
         return patientRepository.findByEmail(email);
+    }
+
+    @Override
+    public Collection<PharmacyPlainDTO> getPromotionPharmacies(Long patientId) {
+        Set<PharmacyPlainDTO> pharmacies = new HashSet<>();
+        patientRepository.findById(patientId).get().getPromotions()
+                .forEach(p -> {
+                    pharmacies.add(new PharmacyPlainDTO(p.getPharmacy()));
+                });
+        return pharmacies;
     }
 
 }

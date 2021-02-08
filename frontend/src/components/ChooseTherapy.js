@@ -1,12 +1,14 @@
 import React from "react";
 import {Button, Col, Modal, Row} from "react-bootstrap";
 import DatePicker from "react-datepicker";
+import MedicationSpecification from "./MedicationSpecification";
 
 export default class ChooseTherapy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showModal : false
+            showModal : false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
@@ -30,14 +32,14 @@ export default class ChooseTherapy extends React.Component {
                 <br/>
                 {this.props.medication.id !== undefined ?
                     <div style={{ display : "flex"}}>
-                        <div  className="m-2 bg-primary p-2" style={{ height: 45 , width : 200}}>
-                            <Button onClick={this.removeMedication} variant="primary" className="mr-3 p-0" style={{width: '1rem'}} >X</Button>
+                        <div  className="m-2 bg-primary p-2" style={{ height: 45 ,'borderRadius' : 5, width : 200}}>
+                            <Button onClick={this.removeMedication} variant="primary" className="mr-3 p-0" style={{width: '1rem'}} >x</Button>
                             <label  className='text-light'>{this.props.medication.name}</label>
                         </div>
                         <Button style={{height : 40, marginTop : 10}} onClick={this.handleModal} variant="secondary"> Information </Button>
                         <Button style={{width: 120, height : 40, marginTop : 10, marginLeft : 2}} onClick={this.createEPrescription} variant="secondary"> Prescribe </Button>
                     </div>
-                    : <div>Nema leka</div>}
+                    : <div>--</div>}
                 {this.showModalDialog()}
                 <br/>
             </div>
@@ -61,21 +63,13 @@ export default class ChooseTherapy extends React.Component {
             )
             return (
                 <Modal backdrop="static" show={this.state.showModal} onHide={this.handleModal}>
-                    <Modal.Header>
+                    <Modal.Header  style={{'background':'gray'}}>
                         <Modal.Title>{this.props.medication.name}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
-                        {this.props.medication.type !== undefined &&  <label> Medication type : {this.props.medication.type}</label> }<br/>
-                        {this.props.medication.dose !== undefined && <label> Dose : {this.props.medication.dose}</label> } <br/>
-                        {this.props.medication.medicationShape !== undefined &&  <label> Medication shape : {this.props.medication.medicationShape}</label> } <br/>
-                        {this.props.medication.manufacturer !== undefined && <label> Manufacturer : {this.props.medication.manufacturer}</label> }<br/>
-                        {this.props.medication.medicationIssue !== undefined && <label> Medication issue : {this.props.medication.medicationIssue}</label> }<br/>
-                        {this.props.medication.note !== undefined && <label> Note : {this.props.medication.note}</label> }<br/>
-                        <label> Ingredients : </label> {Ingredients} <br/>
-                        <label> Side effects : </label> {SideEffect} <br/>
-                        <label> Alternatives : </label> {Alternatives}
+                    <Modal.Body  style={{'background':'gray'}}>
+                        <MedicationSpecification medication={this.props.medication} />
                     </Modal.Body>
-                    <Modal.Footer>
+                    <Modal.Footer  style={{'background':'gray'}}>
                         <Button variant="secondary" onClick={this.handleModal}>
                             Close
                         </Button>

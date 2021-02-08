@@ -4,6 +4,7 @@ import {ButtonGroup, Input} from "rsuite";
 import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
+import PharmacyAdminService from "../../PharmacyAdminService";
 
 export default class MedicationOrdersList extends React.Component {
     constructor() {
@@ -13,10 +14,16 @@ export default class MedicationOrdersList extends React.Component {
             medicationOrders : [],
             showContent : 'listOrders',
             backupMedicationOrders : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyId : temp
+        })
         this.fetchMedicationOrders();
     }
 
@@ -34,13 +41,13 @@ export default class MedicationOrdersList extends React.Component {
                 <b>Filter by :</b>
                 <ButtonGroup>
                     <Button style={{marginRight : '1rem'}}>All
-                        <Input ref="input1" type="radio" name="radioButtonSet" value='filterAll' onChange={this.filterButton} standalone defaultChecked/>
+                        <Input ref="input1" type="radio" name="radioButtonSet" value='filterAll' onChange={this.filterButton} defaultChecked/>
                     </Button>
                     <Button style={{marginRight : '1rem'}}>Pending
-                        <Input ref="input2" type="radio" name="radioButtonSet" value='pending' standalone onChange={this.filterButton} />
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='pending' onChange={this.filterButton} />
                     </Button>
                     <Button>Processed
-                        <Input ref="input2" type="radio" name="radioButtonSet" value='processed' standalone onChange={this.filterButton} />
+                        <Input ref="input2" type="radio" name="radioButtonSet" value='processed' onChange={this.filterButton} />
                     </Button>
                 </ButtonGroup>
                 <br/>
@@ -58,7 +65,7 @@ export default class MedicationOrdersList extends React.Component {
                     </thead>
                     <tbody>
                     {this.state.medicationOrders.map((medicationOrder, index) => (
-                        <tr>
+                        <tr key={index}>
                             <th scope="row">{index+1}</th>
                             <td>{medicationOrder.pharmacyAdminFirstName + ' ' + medicationOrder.pharmacyAdminLastName}</td>
                             <td>{moment(medicationOrder.deadline).format('DD.MM.YYYY')}</td>
@@ -106,7 +113,12 @@ export default class MedicationOrdersList extends React.Component {
     }
 
     fetchMedicationOrders = () => {
-        axios.get("http://localhost:8080/api/medicationOrder/getAllMedicationOrdersByPharmacy/1")
+        axios.get("http://localhost:8080/api/medicationOrder/getAllMedicationOrdersByPharmacy/" + this.state.pharmacyId, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.setState({
                     medicationOrders : res.data,
@@ -132,7 +144,12 @@ export default class MedicationOrdersList extends React.Component {
     deleteOrder = (order) => {
         if (window.confirm('Are you sure you want to delete the order from your order list?')) {
             const path = "http://localhost:8080/api/medicationOrder/deleteMedicationOrder/" + order.id;
-            axios.delete(path)
+            axios.delete(path, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
                 .then((res) => {
                     alert("Order deleted successfully!");
                     this.fetchMedicationOrders();

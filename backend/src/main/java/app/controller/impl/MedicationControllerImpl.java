@@ -6,7 +6,9 @@ import app.service.MedicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -27,11 +29,13 @@ public class MedicationControllerImpl {
     }
 
     @PostMapping(value = "/search")
+    @PreAuthorize("hasAnyRole('patient', 'pharmacist', 'dermatologist', 'supplier', 'pharmacyAdmin', 'systemAdmin')")
     public ResponseEntity<Collection<Medication>> search(@RequestBody MedicationSearchDTO medicationName) {
         return new ResponseEntity<>(medicationService.getMedicationByNameIsContaining(medicationName),HttpStatus.OK);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('patient', 'pharmacist', 'dermatologist', 'supplier', 'pharmacyAdmin', 'systemAdmin')")
     public ResponseEntity<Collection<Medication>> read() {
         return new ResponseEntity<>(medicationService.read(), HttpStatus.OK);
     }
@@ -56,6 +60,7 @@ public class MedicationControllerImpl {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
     @GetMapping(value = "/getMedicationsForPatient/{id}")
     public ResponseEntity<Collection<Medication>> getAllMedicationsPatientIsNotAllergicTo(@PathVariable Long id){
         return new ResponseEntity<>(medicationService.getAllMedicationsPatientIsNotAllergicTo(id), HttpStatus.OK);
@@ -66,6 +71,7 @@ public class MedicationControllerImpl {
         return new ResponseEntity<>(medicationService.fetchMedicationAlternatives(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getMedicationsNotContainedInPharmacy/{pharmacyId}")
     public ResponseEntity<Collection<Medication>> getMedicationsNotContainedInPharmacy(@PathVariable Long pharmacyId){
         return new ResponseEntity<>(medicationService.getMedicationsNotContainedInPharmacy(pharmacyId), HttpStatus.OK);
