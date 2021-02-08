@@ -73,8 +73,13 @@ class Login extends React.Component {
     sendData() {
         //console.log(this.state.email)
         //console.log(this.state.password)
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/auth/users"
+            : 'http://localhost:8080/auth/users';
+
+
         axios
-            .post('http://localhost:8080/auth/users', {
+            .post(path, {
                 'email':this.state.email,
                 'password':this.state.password
             })

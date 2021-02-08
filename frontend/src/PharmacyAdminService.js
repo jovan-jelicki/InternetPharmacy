@@ -3,7 +3,13 @@ import axios from "axios";
 async function fetchPharmacyId() {
     let user = !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {};
     var pharmacyId = -1;
-    await axios.get("http://localhost:8080/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + user.id,
+
+
+    const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacyAdmin/getPharmacyAdminPharmacy/" +
+        user.id
+        : 'http://localhost:8080/api/pharmacyAdmin/getPharmacyAdminPharmacy/' + user.id;
+
+    await axios.get(path,
         {
             headers: {
                 'Content-Type': 'application/json',
