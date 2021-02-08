@@ -131,15 +131,24 @@ export default class LoyaltyProgram extends React.Component {
 
     submitForm = async (event) => {
         this.setState({ submitted: true });
+
        // this.state.submitted=true;
         console.log(this.state.submitted)
         event.preventDefault();
-        if (this.validateForm(this.state.errors)) {
+        if (this.validateForm(this.state.errors) &&  this.checkCategoryParams()) {
             console.log('Valid Form')
            this.sendData();
         } else {
             console.log('Invalid Form')
         }
+    }
+    checkCategoryParams(){
+        let valid = true;
+        if(this.state.loyalty.maxPoints<this.state.loyalty.minPoints){
+            valid=false;
+            alert("Ne moze min>max")
+        }
+        return valid;
     }
 
     submitProgramForm = async (event) => {
