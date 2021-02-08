@@ -19,12 +19,12 @@ export default class AddAppointmentModal extends React.Component {
             },
             appointmentDate : "",
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacyId
         }
     }
 
     componentDidMount() {
-        this.fetchPharmacyId();
+        // this.fetchPharmacyId();
     }
 
 

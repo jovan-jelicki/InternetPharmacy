@@ -1,11 +1,12 @@
 import React from "react";
-import {Col, Container, Nav, Row, Button, Toast} from "react-bootstrap";
+import {Col, Container, Nav, Row, Button, Toast, Navbar, NavDropdown} from "react-bootstrap";
 import UserInfo from "../components/UserInfo";
 import ChangePassword from "../components/ChangePassword";
 import axios from "axios"
 import PatientLayout from "../layout/PatientLayout";
 import PharmacyAdminLayout from "../layout/PharmacyAdminLayout";
 import AuthentificationService from "../helpers/AuthentificationService";
+import {NavLink} from "react-router-dom";
 
 export default class PharmacyAdminProfilePage extends React.Component {
     constructor(props) {
@@ -23,7 +24,9 @@ export default class PharmacyAdminProfilePage extends React.Component {
             'newPass' : '',
             'repPass' : '',
             'editMode' : false,
-            'saveDisabled' : false
+            'saveDisabled' : false,
+            'pharmacyName' : '',
+            'pharmacyId' : -1
         }
     }
 
@@ -51,7 +54,9 @@ export default class PharmacyAdminProfilePage extends React.Component {
                     'address' : pharmacyAdmin.contact.address.street,
                     'town' : pharmacyAdmin.contact.address.town,
                     'country' : pharmacyAdmin.contact.address.country,
-                    'phoneNumber' : pharmacyAdmin.contact.phoneNumber
+                    'phoneNumber' : pharmacyAdmin.contact.phoneNumber,
+                    'pharmacyName' : pharmacyAdmin.pharmacyName,
+                    'pharmacyId' : pharmacyAdmin.pharmacyId
                 })
             });
 
@@ -180,7 +185,22 @@ export default class PharmacyAdminProfilePage extends React.Component {
         const passwords = [oldPass, newPass, repPass]
 
         return (
-            <PharmacyAdminLayout>
+            <Container fluid style={{'background-color' : '#AEB6BF'}}>
+                <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+                    <Navbar.Brand as={NavLink} to="/">WebPharm</Navbar.Brand>
+                    <Navbar.Collapse id="responsive-navbar-nav">
+                        <Nav className="mr-auto">
+                            <NavDropdown title={"My pharmacy"} id="collasible-nav-dropdow">
+                                <NavDropdown.Item onClick={this.redirectToPharmacy}>{this.state.pharmacyName}</NavDropdown.Item>
+                            </NavDropdown>
+                        </Nav>
+                        <Nav>
+                            <NavDropdown title="Account" id="collasible-nav-dropdow">
+                                <NavDropdown.Item href="/pharmacy-admin-profile">My Account</NavDropdown.Item>
+                            </NavDropdown>
+                        </Nav>
+                    </Navbar.Collapse>
+                </Navbar>
                 <Row className="pt-5">
                     <Col xs={2}>
                         <Nav defaultActiveKey="/home" className="flex-column">
@@ -201,7 +221,7 @@ export default class PharmacyAdminProfilePage extends React.Component {
                         {this.state.changePasswordMode && <ChangePassword pass={passwords} onChange={this.handleInputChange} disable={this.disableSave}/>}
                     </Col>
                 </Row>
-            </PharmacyAdminLayout>
+            </Container>
         );
     }
 
@@ -210,5 +230,14 @@ export default class PharmacyAdminProfilePage extends React.Component {
             this.props.history.push({
                 pathname: "/unauthorized"
             });
+    }
+
+    redirectToPharmacy = () => {
+        this.props.history.push({
+            pathname: "/pharmacy",
+            state : {
+                pharmacyId : this.state.pharmacyId
+            }
+        });
     }
 }

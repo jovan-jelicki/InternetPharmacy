@@ -7,8 +7,8 @@ import HelperService from "../../helpers/HelperService";
 
 
 export default class PharmacyVacationsRequests extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             vacationRequests : [],
             showModal : false,
@@ -16,15 +16,15 @@ export default class PharmacyVacationsRequests extends React.Component{
                 rejectionNote:""
             },
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    async componentDidMount() {
-        let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp
-        })
+    componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.fetchVacationRequests();
     }
 

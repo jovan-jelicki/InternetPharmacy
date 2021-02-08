@@ -23,15 +23,15 @@ export default class PriceHistory extends React.Component{
                 pharmacyId : this.props.priceListingHistory.pharmacyId
             },
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacyId
         }
     }
 
-    async componentDidMount() {
-        let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp
-        })
+    componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.fetchHistoryPriceLists();
     }
 

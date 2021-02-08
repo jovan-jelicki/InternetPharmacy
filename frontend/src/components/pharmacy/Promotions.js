@@ -6,8 +6,8 @@ import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 import HelperService from "../../helpers/HelperService";
 
 export default class Promotions extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             promotions : [],
             showModal: false,
@@ -21,16 +21,16 @@ export default class Promotions extends React.Component{
                 periodEnd:'',
             },
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    async componentDidMount() {
-        let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp
-        })
-        await this.fetchPromotions();
+    componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
+        this.fetchPromotions();
     }
 
     handlePromotion=(promotion)=>{

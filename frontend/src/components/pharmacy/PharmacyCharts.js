@@ -19,8 +19,8 @@ const defaultOption = options[0];
 
 
 export default class PharmacyCharts extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             appointmentsReportOptions: options[0],
             appointmentsReportData: [],
@@ -32,15 +32,15 @@ export default class PharmacyCharts extends React.Component{
             },
             incomePeriodData : [],
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
     async componentDidMount() {
-        let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp
-        })
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.renderAppointmentMonthlyReport();
         this.renderMedicationConsumptionMonthlyReport();
     }

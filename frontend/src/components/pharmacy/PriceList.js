@@ -10,7 +10,8 @@ export default class PriceList extends React.Component{
         this.state = {
             priceLists : [],
             mode : "showCurrentPriceLists",
-            priceListingHistory : {}
+            priceListingHistory : {},
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
@@ -29,11 +30,11 @@ export default class PriceList extends React.Component{
     handleContent = () => {
         if (this.state.mode === 'showCurrentPriceLists')
             return (
-                <CurrentPriceLists showHistory={this.changeContent} showHistoryClick = {this.showHistoryClick} />
+                <CurrentPriceLists pharmacyId={this.state.pharmacyId} showHistory={this.changeContent} showHistoryClick = {this.showHistoryClick} />
             );
         else if (this.state.mode === 'showPriceHistory')
             return (
-                <PriceHistory  showCurrentPriceLists={this.changeContent} priceListingHistory={this.state.priceListingHistory} />
+                <PriceHistory pharmacyId={this.state.pharmacyId}  showCurrentPriceLists={this.changeContent} priceListingHistory={this.state.priceListingHistory} />
             );
     }
 

@@ -24,14 +24,14 @@ export default class EditOrder extends React.Component{
             deadline : moment(this.props.order.deadline).toDate(),
             isEditable : false,
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
     async componentDidMount() {
-        let temp = await PharmacyAdminService.fetchPharmacyId();
+        //let temp = await PharmacyAdminService.fetchPharmacyId();
         this.setState({
-            pharmacyId : temp
+            pharmacyAdminId : this.state.user.id
         })
         this.checkIfOrderIsEditable();
         console.log(this.props.order);

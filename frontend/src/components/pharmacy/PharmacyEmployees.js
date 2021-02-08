@@ -60,16 +60,16 @@ export default class PharmacyEmployees extends React.Component{
                     periodEnd : ""
                 },
                 pharmacy : {
-                    id : 1 //todo change pharmacy ID
+                    id : this.props.pharmacyId
                 }
             },
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacyId
         }
     }
 
     async componentDidMount() {
-        await this.fetchPharmacyId();
+        // await this.fetchPharmacyId();
         await this.fetchPharmacists();
         await this.fetchWorkingDermatologists();
     }
@@ -427,7 +427,7 @@ export default class PharmacyEmployees extends React.Component{
                     <Modal.Title>Create Pharmacist</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreatePharmacistModal closeModal = {this.handleModalCreatePharmacist} fetchPharmacists = {this.fetchPharmacists}/>
+                    <CreatePharmacistModal pharmacyId = {this.state.pharmacyId} closeModal = {this.handleModalCreatePharmacist} fetchPharmacists = {this.fetchPharmacists}/>
                 </Modal.Body>
             </Modal>
         );
@@ -440,7 +440,7 @@ export default class PharmacyEmployees extends React.Component{
                     <Modal.Title>Create Appointment</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <AddAppointmentModal closeModal = {this.handleModalAddAppointment} dermatologist={this.state.dermatologistModalAddAppointment}/>
+                    <AddAppointmentModal pharmacyId = {this.state.pharmacyId} closeModal = {this.handleModalAddAppointment} dermatologist={this.state.dermatologistModalAddAppointment}/>
                 </Modal.Body>
             </Modal>
         )

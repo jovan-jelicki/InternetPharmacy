@@ -14,7 +14,7 @@ import PharmacyCharts from "../components/pharmacy/PharmacyCharts";
 import AuthentificationService from "../helpers/AuthentificationService";
 import HelperService from "../helpers/HelperService";
 
-
+//pristupas sa  this.props.location.state.user.email
 export default class PharmacyPage extends React.Component{
     constructor(props) {
         super(props);
@@ -35,18 +35,16 @@ export default class PharmacyPage extends React.Component{
             },
             navbar : "description",
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.location.state.pharmacyId
 
         }
     }
 
     async componentDidMount() {
         this.validateUser();
-        await this.fetchPharmacyId();
+        //await this.fetchPharmacyId();
         await this.fetchPharmacy();
     }
-
-
 
 
     render() {
@@ -116,7 +114,7 @@ export default class PharmacyPage extends React.Component{
     renderNavbar = () => {
         if (this.state.navbar === "promotions")
             return (
-                <Promotions/>
+                <Promotions pharmacy = {this.state.pharmacy} />
             );
         else if (this.state.navbar === 'description')
             return (
@@ -140,23 +138,23 @@ export default class PharmacyPage extends React.Component{
             );
         else if (this.state.navbar === "medications")
             return (
-                <PharmacyMedications/>
+                <PharmacyMedications pharmacy ={this.state.pharmacy} />
             );
         else if (this.state.navbar === 'vacationRequests')
             return (
-              <PharmacyVacationsRequests />
+              <PharmacyVacationsRequests pharmacy ={this.state.pharmacy} />
             );
         else if (this.state.navbar === 'medicationOrders')
             return (
-                <PharmacyMedicationOrders showContent = 'listOrders'/>
+                <PharmacyMedicationOrders pharmacy ={this.state.pharmacy} showContent = 'listOrders'/>
             );
         else if (this.state.navbar === 'medicationQueries')
             return (
-                <PharmacyMedicationQueries />
+                <PharmacyMedicationQueries pharmacy ={this.state.pharmacy}/>
             );
         else if (this.state.navbar === 'charts')
             return (
-                <PharmacyCharts />
+                <PharmacyCharts pharmacy ={this.state.pharmacy}/>
             );
     }
 

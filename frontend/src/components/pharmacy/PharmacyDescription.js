@@ -21,16 +21,16 @@ export class PharmacyDescription extends React.Component{
             activeMarker: {},          // Shows the active marker upon click
             selectedPlace: {},
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
     async componentDidMount() {
-        let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp
-        });
-        this.fetchPharmacy();
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // });
+        //this.fetchPharmacy();
     }
 
 
@@ -109,20 +109,20 @@ export class PharmacyDescription extends React.Component{
         }
     };
 
-    fetchPharmacy = async () => {
-        await axios.get(HelperService.getPath("/api/pharmacy/" + this.state.pharmacyId),
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization : 'Bearer ' + this.state.user.jwtToken
-                }
-            })
-            .then((res) => {
-                this.setState({
-                    pharmacy : res.data
-                })
-            })
-    }
+    // fetchPharmacy = async () => {
+    //     await axios.get(HelperService.getPath("/api/pharmacy/" + this.state.pharmacyId),
+    //         {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 Authorization : 'Bearer ' + this.state.user.jwtToken
+    //             }
+    //         })
+    //         .then((res) => {
+    //             this.setState({
+    //                 pharmacy : res.data
+    //             })
+    //         })
+    // }
 }
 
 export default GoogleApiWrapper({

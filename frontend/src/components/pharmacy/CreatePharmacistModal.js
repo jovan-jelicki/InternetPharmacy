@@ -41,7 +41,7 @@ export default class CreatePharmacistModal extends React.Component {
             },
             validForm: false,
             submitted: false,
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacyId
 
 
         }
@@ -51,7 +51,7 @@ export default class CreatePharmacistModal extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchPharmacyId();
+        // this.fetchPharmacyId();
     }
 
     handleInputChange = (event) => {

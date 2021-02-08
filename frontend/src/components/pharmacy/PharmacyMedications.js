@@ -10,14 +10,9 @@ import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 import HelperService from "../../helpers/HelperService";
 
 
-const options = [
-    'one', 'two', 'three'
-];
-const defaultOption = options[0];
-
 export default class PharmacyMedications extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             showModal: false,
             showEditMedicationQuantityModal : false,
@@ -27,12 +22,12 @@ export default class PharmacyMedications extends React.Component{
                 cost: "",
                 quantity: "",
                 medicationId: "",
-                pharmacyId: 1 //todo change
+                pharmacyId: this.props.pharmacy.id
             },
             medicationForEditing : {
                 medicationId : 0,
                 medicationQuantityId : 0,
-                pharmacyId : 0, //todo change
+                pharmacyId : this.props.pharmacy.id,
                 name : "",
                 quantity : ""
             },
@@ -41,17 +36,17 @@ export default class PharmacyMedications extends React.Component{
             pharmacyMedicationListingDTOs: [],
             backupMedications : [],
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         console.log(process.env.REACT_APP_BACKEND_ADDRESS);
 
-        let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp
-        })
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
 
         this.fetchPharmacyMedicationListingDTOs();
         //this.fetchNotContainedMedicationsInPharmacy();

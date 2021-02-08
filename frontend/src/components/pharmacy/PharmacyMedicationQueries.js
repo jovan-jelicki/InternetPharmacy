@@ -7,20 +7,20 @@ import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 import HelperService from "../../helpers/HelperService";
 
 export default class PharmacyMedicationQueries extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             medicationLackingEvents : [],
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    async componentDidMount() {
-        let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp
-        })
+    componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.fetchMedicationLackingEventsListing();
     }
 
