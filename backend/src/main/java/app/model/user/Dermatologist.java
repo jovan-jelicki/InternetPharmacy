@@ -19,6 +19,9 @@ public class Dermatologist extends User {
    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private List<WorkingHours> workingHours;
 
+   @Version
+   private Long version;
+
    public Dermatologist() {
    }
 
@@ -36,6 +39,14 @@ public class Dermatologist extends User {
 
    public void setWorkingHours(List<WorkingHours> workingHours) {
       this.workingHours = workingHours;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
    }
 
 

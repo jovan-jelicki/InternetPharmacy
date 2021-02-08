@@ -29,6 +29,9 @@ public class MedicationOrder {
    @Column(nullable = false, columnDefinition = "boolean default true")
    private Boolean isActive;
 
+   @Version
+   private Long version;
+
    public MedicationOrder() {
    }
 
@@ -78,5 +81,13 @@ public class MedicationOrder {
 
    public void setActive(Boolean active) {
       isActive = active;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
    }
 }
