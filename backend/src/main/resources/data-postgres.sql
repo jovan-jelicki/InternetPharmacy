@@ -570,3 +570,6 @@ insert into loyalty_scale(id, category,discount,max_points,min_points)
 values(1001,1,20,40,32);
 insert into loyalty_scale(id, category,discount,max_points,min_points)
 values(1002,2,30,60,52);
+
+insert into loyalty_program(id, appointment_points, consulting_points)
+values(1000,0,0);

@@ -4,20 +4,19 @@ import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.medication.Medication;
+import app.model.pharmacy.LoyaltyProgram;
+import app.model.pharmacy.LoyaltyScale;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
-import app.model.user.Pharmacist;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
-import app.service.AppointmentService;
-import app.service.DermatologistService;
-import app.service.PatientService;
-import app.service.PharmacistService;
+import app.service.*;
+import org.modelmapper.internal.util.Iterables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,14 +35,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final VacationRequestRepository vacationRequestRepository;
     private final PatientService patientService;
     private DermatologistService dermatologistService;
+    private final LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientService patientService ) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientService patientService, LoyaltyProgramService loyaltyProgramService) {
         this.appointmentRepository = appointmentRepository;
         this.pharmacyRepository = pharmacyRepository;
         this.dermatologistService = dermatologistService;
         this.vacationRequestRepository = vacationRequestRepository;
         this.patientService = patientService;
+        this.loyaltyProgramService = loyaltyProgramService;
     }
 
     @PostConstruct
@@ -262,6 +263,19 @@ public class AppointmentServiceImpl implements AppointmentService {
             }else
                 throw new IllegalArgumentException("Patient is alergic!!!");
         }
+
+
+        //loyalty count
+        Patient patient=patientService.read(appointmentScheduledDTO.getPatientId()).get();
+        LoyaltyProgram first = loyaltyProgramService.read().iterator().next();
+
+        if(appointmentScheduledDTO.getType()==EmployeeType.dermatologist)
+            patient.setLoyaltyCount(patient.getLoyaltyCount()+first.getAppointmentPoints());
+        else
+            patient.setLoyaltyCount(patient.getLoyaltyCount()+first.getConsultingPoints());
+
+        patientService.setPatientCategory(appointmentScheduledDTO.getPatientId());
+
         this.save(appointment);
         return true;
     }

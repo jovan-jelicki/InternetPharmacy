@@ -4,8 +4,12 @@ import app.dto.PharmacyPlainDTO;
 import app.dto.UserPasswordDTO;
 import app.model.medication.Ingredient;
 import app.model.medication.Medication;
+import app.model.pharmacy.LoyaltyCategory;
+import app.model.pharmacy.LoyaltyProgram;
+import app.model.pharmacy.LoyaltyScale;
 import app.model.user.Patient;
 import app.repository.PatientRepository;
+import app.service.LoyaltyScaleService;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +22,12 @@ import java.util.Set;
 @Service
 public class PatientServiceImpl implements PatientService {
     private PatientRepository patientRepository;
+    private LoyaltyScaleService loyaltyScaleService;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository) {
+    public PatientServiceImpl(PatientRepository patientRepository, LoyaltyScaleService loyaltyScaleService) {
         this.patientRepository = patientRepository;
+        this.loyaltyScaleService = loyaltyScaleService;
     }
 
     @Override
@@ -93,6 +99,31 @@ public class PatientServiceImpl implements PatientService {
                     pharmacies.add(new PharmacyPlainDTO(p.getPharmacy()));
                 });
         return pharmacies;
+    }
+
+    @Override
+    public Boolean setPatientCategory(Long patientId) {
+       Patient patient=this.read(patientId).get();
+       int loyCount=patient.getLoyaltyCount();
+
+       for(LoyaltyScale loyaltyScale: loyaltyScaleService.read()){
+           if(loyCount>=loyaltyScale.getMinPoints() && loyCount<=loyaltyScale.getMaxPoints()){
+               patient.setLoyaltyCategory(loyaltyScale.getCategory());
+               this.save(patient);
+               return true;
+           }
+       }
+       //<regularMin
+        LoyaltyScale first = loyaltyScaleService.read().iterator().next();
+        if(loyCount<first.getMinPoints()){
+            patient.setLoyaltyCategory(LoyaltyCategory.regular);
+            this.save(patient);
+        }else{
+            patient.setLoyaltyCategory(LoyaltyCategory.gold);
+            this.save(patient);
+        } //>GoldMax
+       return true;
+
     }
 
 }
