@@ -9,6 +9,7 @@ import app.util.DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(pharmacyService.savePharmacy(pharmacy), HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacyDTO> read(@PathVariable Long id) {
         return new ResponseEntity<>(new PharmacyDTO(pharmacyService.read(id).get(), gradeService.findAverageGradeForEntity(id, GradeType.pharmacy)), HttpStatus.OK);
@@ -72,6 +73,7 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(new PharmacyDTO(pharmacyService.save(entity)), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(value = "/editPharmacyProfile", consumes = "application/json")
     public ResponseEntity<PharmacyDTO> editPharmacyProfile(@DTO(PharmacyDTO.class) Pharmacy pharmacy) {
         if(!pharmacyService.existsById(pharmacy.getId()))
@@ -84,6 +86,7 @@ public class PharmacyControllerImpl {
         pharmacyService.save(pharmacy);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(value = "/addNewMedication", consumes = "application/json")
     public ResponseEntity<Boolean> addNewMedication(@RequestBody AddMedicationToPharmacyDTO addMedicationToPharmacyDTO) {
         if(!pharmacyService.existsById(addMedicationToPharmacyDTO.getPharmacyId()))
@@ -93,11 +96,13 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getPharmacyMedicationListing/{pharmacyId}")
     public ResponseEntity<Collection<PharmacyMedicationListingDTO>> getPharmacyMedicationListing(@PathVariable Long pharmacyId) {
         return new ResponseEntity<>(pharmacyService.getPharmacyMedicationListingDTOs(pharmacyId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(value = "/editMedicationQuantity", consumes = "application/json")
     public ResponseEntity<Boolean> editMedicationQuantity(@RequestBody PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
         if(!pharmacyService.existsById(pharmacyMedicationListingDTO.getPharmacyId()))
@@ -119,6 +124,7 @@ public class PharmacyControllerImpl {
     }*/
 
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(value = "/deleteMedicationFromPharmacy", consumes = "application/json")
     public ResponseEntity<Boolean> deleteMedicationFromPharmacy(@RequestBody PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
         if(!pharmacyService.existsById(pharmacyMedicationListingDTO.getPharmacyId()))
@@ -128,21 +134,25 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getMedicationsConsumptionMonthlyReport/{pharmacyId}")
     public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionMonthlyReport(@PathVariable Long pharmacyId) {
         return new ResponseEntity(pharmacyService.getMedicationsConsumptionMonthlyReport(pharmacyId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getMedicationsConsumptionQuarterlyReport/{pharmacyId}")
     public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionQuarterlyReport(@PathVariable Long pharmacyId) {
         return new ResponseEntity(pharmacyService.getMedicationsConsumptionQuarterlyReport(pharmacyId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getMedicationsConsumptionYearlyReport/{pharmacyId}")
     public ResponseEntity<Collection<ReportsDTO>> getMedicationsConsumptionYearlyReport(@PathVariable Long pharmacyId) {
         return new ResponseEntity(pharmacyService.getMedicationsConsumptionYearlyReport(pharmacyId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PostMapping(value = "/getPharmacyIncomeReportByPeriod", consumes = "application/json")
     public ResponseEntity<Collection<ReportsDTO>> getPharmacyIncomeReportByPeriod(@RequestBody PharmacyIncomeReportDTO pharmacyIncomeReportDTO) {
         if (!pharmacyService.existsById(pharmacyIncomeReportDTO.getPharmacyId()) || pharmacyIncomeReportDTO.getPeriodStart().isAfter(pharmacyIncomeReportDTO.getPeriodEnd()))

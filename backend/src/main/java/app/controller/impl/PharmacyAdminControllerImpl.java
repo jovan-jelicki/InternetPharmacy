@@ -1,7 +1,6 @@
 package app.controller.impl;
 
 import app.dto.PharmacyAdminDTO;
-import app.dto.PharmacyAdminRegistrationDTO;
 import app.dto.UserPasswordDTO;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.PharmacyAdmin;
@@ -9,6 +8,7 @@ import app.service.PharmacyAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +38,7 @@ public class PharmacyAdminControllerImpl {
         return new ResponseEntity<>(pharmacyAdminDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacyAdminDTO> read(@PathVariable Long id) {
         Optional<PharmacyAdmin> pharmacyAdmin = this.pharmacyAdminService.read(id);
@@ -45,6 +46,12 @@ public class PharmacyAdminControllerImpl {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(new PharmacyAdminDTO(pharmacyAdmin.get()), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
+    @GetMapping(value = "/getPharmacyAdminPharmacy/{id}")
+    public ResponseEntity<Long> getPharmacyAdminPharmacy(@PathVariable Long id) {
+        return new ResponseEntity<>(pharmacyAdminService.getPharmacyByPharmacyAdmin(id).getId(), HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json")
@@ -68,7 +75,7 @@ public class PharmacyAdminControllerImpl {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(consumes = "application/json")
     public ResponseEntity<PharmacyAdmin> update(@RequestBody PharmacyAdmin entity) {
         if(!pharmacyAdminService.existsById(entity.getId()))

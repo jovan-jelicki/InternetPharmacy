@@ -5,6 +5,7 @@ import AddMedicationQuantity from "./AddMedicationQuantity";
 import AllergyPatientListing from "../AllergyPatientListing";
 import OrderQuantityListing from "./OrderQuantityListing";
 import axios from "axios";
+import PharmacyAdminService from "../../PharmacyAdminService";
 
 export default class CreateOrder extends React.Component{
     constructor() {
@@ -18,11 +19,21 @@ export default class CreateOrder extends React.Component{
                 status : "pending",
                 medicationQuantity : []
             },
-            quantities : []
+            quantities : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyId : temp,
+            medicationOrder : {
+                ...this.state.medicationOrder,
+                pharmacyAdminId : this.state.user.id
+            }
+        })
         this.fetchMedication();
     }
 
@@ -53,7 +64,12 @@ export default class CreateOrder extends React.Component{
     }
 
     fetchMedication = () => {
-        axios.get("http://localhost:8080/api/medications")
+        axios.get("http://localhost:8080/api/medications", {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.setState({
                     medications : res.data
@@ -99,7 +115,12 @@ export default class CreateOrder extends React.Component{
             return;
         }
 
-        axios.post("http://localhost:8080/api/medicationOrder/newMedicationOrder", this.state.medicationOrder)
+        axios.post("http://localhost:8080/api/medicationOrder/newMedicationOrder", this.state.medicationOrder, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 alert("Medication order created successfully!");
                 this.props.showListOrders("listOrders")

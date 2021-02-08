@@ -3,8 +3,10 @@ package app.controller.impl;
 
 import app.dto.PromotionDTO;
 import app.service.PromotionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import java.util.Collection;
 public class PromotionController {
     private final PromotionService promotionService;
 
+    @Autowired
     public PromotionController(PromotionService promotionService) {
         this.promotionService = promotionService;
     }
@@ -31,6 +34,7 @@ public class PromotionController {
         return new ResponseEntity<>(promotionDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getCurrentPromotionsByPharmacy/{pharmacyId}")
     public ResponseEntity<Collection<PromotionDTO>> getCurrentPromotionsByPharmacy(@PathVariable Long pharmacyId) {
         ArrayList<PromotionDTO> promotionDTOS = new ArrayList<>();
@@ -38,6 +42,7 @@ public class PromotionController {
         return new ResponseEntity<>(promotionDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/checkPatientSubscribedToPromotion/{pharmacyId}/{patientId}/{medicationId}")
     public ResponseEntity<Boolean> checkPatientSubscribedToPromotion(@PathVariable Long pharmacyId, @PathVariable Long patientId,@PathVariable Long medicationId) {
         return new ResponseEntity<>(promotionService.checkPatientSubscribedToPromotion(pharmacyId, patientId, medicationId), HttpStatus.OK);

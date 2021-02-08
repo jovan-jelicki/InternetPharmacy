@@ -2,6 +2,8 @@ import React from 'react';
 import { Map, GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react';
 import {PharmacyPage} from "../../pages/PharmacyPage";
 import StarRatings from "react-star-ratings";
+import PharmacyAdminService from "../../PharmacyAdminService";
+import axios from "axios";
 
 const mapStyles = {
     width: '50%',
@@ -18,10 +20,16 @@ export class PharmacyDescription extends React.Component{
             showingInfoWindow: false,  // Hides or shows the InfoWindow
             activeMarker: {},          // Shows the active marker upon click
             selectedPlace: {},
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyId : temp
+        });
         this.fetchPharmacy();
     }
 
@@ -101,8 +109,19 @@ export class PharmacyDescription extends React.Component{
         }
     };
 
-    fetchPharmacy = () => {
-
+    fetchPharmacy = async () => {
+        await axios.get("http://localhost:8080/api/pharmacy/" + this.state.pharmacyId,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacy : res.data
+                })
+            })
     }
 }
 
