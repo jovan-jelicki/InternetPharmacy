@@ -4,6 +4,7 @@ import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
 import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 export default class PharmacyMedicationQueries extends React.Component{
     constructor() {
@@ -55,7 +56,7 @@ export default class PharmacyMedicationQueries extends React.Component{
     }
 
     fetchMedicationLackingEventsListing = () => {
-        axios.get("http://localhost:8080/api/medicationLacking/getByPharmacyId/" + this.state.pharmacyId, {
+        axios.get(HelperService.getPath("/api/medicationLacking/getByPharmacyId/" + this.state.pharmacyId), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken

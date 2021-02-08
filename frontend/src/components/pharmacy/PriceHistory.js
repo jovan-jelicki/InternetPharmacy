@@ -4,6 +4,7 @@ import axios from "axios";
 import moment from "moment";
 import DatePicker from "react-datepicker";
 import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 export default class PriceHistory extends React.Component{
     constructor(props) {
@@ -159,9 +160,8 @@ export default class PriceHistory extends React.Component{
     }
 
     fetchHistoryPriceLists = () => {
-        const path = "http://localhost:8080/api/pricelist/getMedicationPriceListHistoryByPharmacy/" + this.state.pharmacyId + "/" + this.state.medication.medicationId;
         axios
-            .get(path, {
+            .get(HelperService.getPath("/api/pricelist/getMedicationPriceListHistoryByPharmacy/" + this.state.pharmacyId + "/" + this.state.medication.medicationId), {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -210,7 +210,7 @@ export default class PriceHistory extends React.Component{
             return;
         }
 
-        axios.put("http://localhost:8080/api/pricelist/newPriceList", temp, {
+        axios.put(HelperService.getPath("/api/pricelist/newPriceList"), temp, {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -226,9 +226,8 @@ export default class PriceHistory extends React.Component{
 
     successfulAdd = () => {
         alert("New price list added successfully!");
-        const path = "http://localhost:8080/api/pricelist/getMedicationPriceListHistoryByPharmacy/" + this.state.pharmacyId + "/" + this.state.medication.medicationId;
         axios
-            .get(path, {
+            .get(HelperService.getPath("/api/pricelist/getMedicationPriceListHistoryByPharmacy/" + this.state.pharmacyId + "/" + this.state.medication.medicationId), {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization : 'Bearer ' + this.state.user.jwtToken
