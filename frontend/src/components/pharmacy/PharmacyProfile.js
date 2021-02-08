@@ -3,6 +3,7 @@ import {Button, Container} from "react-bootstrap";
 import Script from 'react-load-script';
 import Select from "react-select";
 import axios from "axios";
+import PharmacyAdminService from "../../PharmacyAdminService";
 
 const options = [
     { value: 'Marko', label: 'Marko Markovic' },
@@ -15,7 +16,7 @@ export default class PharmacyProfile extends React.Component {
         super();
         this.state = {
             pharmacy: {
-                id : 1,
+                id : -1,
                 name: '',
                 description: '',
                 address: {
@@ -41,11 +42,21 @@ export default class PharmacyProfile extends React.Component {
                     dermatologistCost: '',
                     pharmacistCost: '',
                 },
-            }
+            },
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyId : temp,
+            pharmacy : {
+                ...this.state.pharmacy,
+                id : temp
+            }
+        })
         this.fetchPharmacy();
     }
 
@@ -263,7 +274,12 @@ export default class PharmacyProfile extends React.Component {
         if (this.validateForm(this.state.errors)) {
             //console.info('Valid Form')
             console.log(pharmacy);
-            await axios.put("http://localhost:8080/api/pharmacy/editPharmacyProfile", pharmacy).then(() => {
+            await axios.put("http://localhost:8080/api/pharmacy/editPharmacyProfile", pharmacy, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then(() => {
                     alert("Pharmacy edited successfully!");
                     this.props.triggerPharmacyDataChange();
                 }
@@ -286,10 +302,15 @@ export default class PharmacyProfile extends React.Component {
     }
 
     fetchPharmacy = () => {
-        axios.get("http://localhost:8080/api/pharmacy/" + this.state.pharmacy.id).then(res => {
+        axios.get("http://localhost:8080/api/pharmacy/" + this.state.pharmacyId, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        }).then(res => {
             this.setState({
                 pharmacy : res.data
             })
-        });
+        })
     }
 }

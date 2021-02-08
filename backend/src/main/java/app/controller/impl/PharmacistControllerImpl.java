@@ -1,10 +1,6 @@
 package app.controller.impl;
 
 import app.dto.*;
-import app.dto.PharmacistDTO;
-import app.dto.PharmacyNameIdDTO;
-import app.dto.UserPasswordDTO;
-import app.dto.WorkingHoursDTO;
 import app.model.grade.GradeType;
 import app.model.user.Pharmacist;
 import app.service.GradeService;
@@ -88,7 +84,7 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(pharmacists, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('pharmacist')")
+    @PreAuthorize("hasAnyRole('pharmacist, pharmacyAdmin')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacistDermatologistProfileDTO> read(@PathVariable Long id) {
         if (pharmacistService.read(id).isPresent())
@@ -114,6 +110,7 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(new WorkingHoursDTO(pharmacist.getWorkingHours()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "getByPharmacy/{id}")
     public ResponseEntity<Collection<PharmacistDTO>> getPharmacistsByPharmacyId(@PathVariable Long id) {
         ArrayList<PharmacistDTO> pharmacistDTOS = new ArrayList<>();

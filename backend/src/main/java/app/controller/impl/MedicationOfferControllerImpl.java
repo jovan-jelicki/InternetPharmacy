@@ -5,6 +5,7 @@ import app.dto.MedicationOfferDTO;
 import app.service.MedicationOfferService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,11 +30,13 @@ public class MedicationOfferControllerImpl {
         return new ResponseEntity<>(medicationOfferService.editMedicationOffer(medicationOffer), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getOffersByOrderId/{orderId}")
     public ResponseEntity<Collection<MedicationOfferDTO>> getOffersByOrderId(@PathVariable Long orderId){
         return new ResponseEntity<>(medicationOfferService.getOffersByOrderId(orderId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(consumes = "application/json", value = "/acceptOffer/{pharmacyAdminId}")
     public ResponseEntity<Boolean> acceptOffer(@RequestBody MedicationOfferDTO medicationOffer, @PathVariable Long pharmacyAdminId){
         if (medicationOfferService.acceptOffer(medicationOffer, pharmacyAdminId))

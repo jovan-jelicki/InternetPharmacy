@@ -1,6 +1,6 @@
 package app.service;
 
-import app.dto.PharmacyAdminRegistrationDTO;
+import app.dto.PharmacyDTO;
 import app.dto.UserPasswordDTO;
 import app.model.user.PharmacyAdmin;
 
@@ -9,4 +9,5 @@ public interface PharmacyAdminService extends CRUDService<PharmacyAdmin>{
     PharmacyAdmin findByEmailAndPassword(String email, String password);
     PharmacyAdmin findByEmail(String email);
     PharmacyAdmin getPharmacyAdminByPharmacy(Long pharmacyId);
+    PharmacyDTO getPharmacyByPharmacyAdmin(Long pharmacyAdminId);
     }

@@ -10,6 +10,7 @@ export default class PharmacyAdminProfilePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
             'firstName' : '',
             'lastName' : '',
             'email' : '',
@@ -26,9 +27,14 @@ export default class PharmacyAdminProfilePage extends React.Component {
     }
 
     async componentDidMount() {
-
+        console.log(this.state.user);
         await axios
-            .get('http://localhost:8080/api/pharmacyAdmin/1')
+            .get('http://localhost:8080/api/pharmacyAdmin/' + this.state.user.id, {
+              headers: {
+                'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 let pharmacyAdmin = res.data;
                 console.log(pharmacyAdmin)
@@ -92,6 +98,12 @@ export default class PharmacyAdminProfilePage extends React.Component {
                 'oldPassword' : this.state.oldPass,
                 'newPassword' : this.state.newPass,
                 'repeatedPassword' : this.state.repPass
+            },
+            {
+                headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
             })
             .then(res => {
                 this.setState({
@@ -145,6 +157,11 @@ export default class PharmacyAdminProfilePage extends React.Component {
                         'town' : this.state.town,
                         'country' : this.state.country
                     }
+                }
+            }, {
+                 headers: {
+                    'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
                 }
             })
             .then(res => {

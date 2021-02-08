@@ -10,16 +10,20 @@ export default class ScheduleByDateTime extends React.Component {
             message : "",
             timeForScheduling : "",
             appointmentsFree : [],
-            selected : { period : { periodStart : "Choose appointment ..."}}
+            selected : { period : { periodStart : "Choose appointment ..."}},
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
     componentDidMount() {
-        //PROMENI NA DERMATOLOGISt
-        if(this.props.appointment.type == 'pharmacist'){
+        if(this.props.appointment.type == 'ROLE_dermatologist'){
             axios
                 .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/getFreeAppointments/', {
-                    'dermatologistId' : 3,
-                    'pharmacyId' : 1
+                    'dermatologistId' : this.state.user.id,
+                    'pharmacyId' : this.props.appointment.pharmacyId
+                }, {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
                 })
                 .then(res => {
                     this.setState({
@@ -31,8 +35,6 @@ export default class ScheduleByDateTime extends React.Component {
     }
 
     render() {
-
-
 
         const Appointments = this.state.appointmentsFree.map((app, index) =>
             <option value={app.period.periodStart} key={index}> {app.period.periodStart} </option>
@@ -46,8 +48,7 @@ export default class ScheduleByDateTime extends React.Component {
                         <Button  style={{ height : 35, float : "right"}} variant="primary" onClick={this.schedule}>Schedule</Button>
                     </Col>
 
-                    //todo promeni na dermatologist
-                    {this.props.appointment.type == 'pharmacist' && <Col xs={100}>
+                    {this.props.appointment.type == 'ROLE_dermatologist' && <Col xs={100}>
                         <p>Schedule by initialized period : </p>
                         <select value={this.state.selected.period.periodStart}  onChange={this.chooseAppointment}>
                             <option disabled> Choose appointment ...</option>
@@ -66,6 +67,10 @@ export default class ScheduleByDateTime extends React.Component {
             .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/scheduling/dermatologistSchedulingCreatedAppointment/', {
                 'appointmentId' : this.state.selected.id,
                 'patientId' : this.props.appointment.patientId
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 alert("You have schedule new appointment!");
@@ -79,36 +84,56 @@ export default class ScheduleByDateTime extends React.Component {
             selected : this.state.appointmentsFree.filter(m => m.period.periodStart === event.target.value)[0]
         })
     }
-    schedule = () =>{
+    schedule = () => {
         let periodStart = this.state.timeForScheduling;
 
         //let momentDate = moment(date);
         let day = periodStart.getDate();
-        let month = parseInt(periodStart.getMonth())+1;
+        let month = parseInt(periodStart.getMonth()) + 1;
         if (month < 10)
             month = "0" + month;
-        if (parseInt(day)<10)
-            day = "0"+day;
+        if (parseInt(day) < 10)
+            day = "0" + day;
         let hours = parseInt(periodStart.getHours());
-        if(hours < 10)
+        if (hours < 10)
             hours = "0" + hours;
         let minutes = parseInt(periodStart.getMinutes());
-        if(minutes < 10)
+        if (minutes < 10)
             minutes = "0" + minutes;
 
         let fullYearStart = periodStart.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes + ":00";
 
-        //dermatologistScheduling!!!!!!
-        axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/scheduling/pharmacistScheduling/', {
-                "examinerId" : this.props.appointment.examinerId,
-                "patient" : {"id" : this.props.appointment.patientId},
-                "period" : {"periodStart" : fullYearStart},
-                "pharmacy" : {"id" : this.props.appointment.pharmacyId},
-                "type" : 1
-            })
-            .then(res => alert("You have schedule new appointment!"))
-            .catch(res => alert("Can't schedule new appointment because patient/examiner is not free at that period!"));
+        if (this.state.user.type == "ROLE_pharmacist") {
+            axios
+                .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/scheduling/pharmacistScheduling/', {
+                    "examinerId": this.state.user.id,
+                    "patient": {"id": this.props.appointment.patientId},
+                    "period": {"periodStart": fullYearStart},
+                    "pharmacy": {"id": this.props.appointment.pharmacyId},
+                    "type": this.state.user.type
+                }, {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
+                .then(res => alert("You have schedule new appointment!"))
+                .catch(res => alert("Can't schedule new appointment because patient/examiner is not free at that period!"));
+        }else {
+            axios
+                .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/scheduling/dermatologistScheduling/', {
+                    "examinerId": this.state.user.id,
+                    "patient": {"id": this.props.appointment.patientId},
+                    "period": {"periodStart": fullYearStart},
+                    "pharmacy": {"id": this.props.appointment.pharmacyId},
+                    "type": this.state.user.type
+                }, {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
+                .then(res => alert("You have schedule new appointment!"))
+                .catch(res => alert("Can't schedule new appointment because patient/examiner is not free at that period!"));
+        }
     }
     setTimeForNewAppointment = (date) => {
         this.setState({

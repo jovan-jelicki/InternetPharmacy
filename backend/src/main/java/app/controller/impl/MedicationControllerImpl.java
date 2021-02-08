@@ -34,6 +34,7 @@ public class MedicationControllerImpl {
         return new ResponseEntity<>(medicationService.getMedicationByNameIsContaining(medicationName),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping
     @PreAuthorize("hasAnyRole('patient', 'pharmacist', 'dermatologist', 'supplier', 'pharmacyAdmin', 'systemAdmin')")
     public ResponseEntity<Collection<Medication>> read() {
@@ -71,6 +72,7 @@ public class MedicationControllerImpl {
         return new ResponseEntity<>(medicationService.fetchMedicationAlternatives(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getMedicationsNotContainedInPharmacy/{pharmacyId}")
     public ResponseEntity<Collection<Medication>> getMedicationsNotContainedInPharmacy(@PathVariable Long pharmacyId){
         return new ResponseEntity<>(medicationService.getMedicationsNotContainedInPharmacy(pharmacyId), HttpStatus.OK);

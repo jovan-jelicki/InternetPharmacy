@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Modal} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
+import PharmacyAdminService from "../../PharmacyAdminService";
 
 export default class Promotions extends React.Component{
     constructor() {
@@ -18,11 +19,17 @@ export default class Promotions extends React.Component{
                 content:'',
                 periodStart: '',
                 periodEnd:'',
-            }
+            },
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
     async componentDidMount() {
+        let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyId : temp
+        })
         await this.fetchPromotions();
     }
 
@@ -132,7 +139,12 @@ export default class Promotions extends React.Component{
     }
 
     fetchPromotions = () => {
-        axios.get("http://localhost:8080/api/promotion/getCurrentPromotionsByPharmacy/1")
+        axios.get("http://localhost:8080/api/promotion/getCurrentPromotionsByPharmacy/" + this.state.pharmacyId, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.setState({
                     promotions : res.data
@@ -143,7 +155,7 @@ export default class Promotions extends React.Component{
     async checkIfSubscribed (promotion){
         console.log(promotion.id)
         await axios
-            .get('http://localhost:8080/api/promotion/checkPatientSubscribedToPromotion/'+promotion.pharmacyId+"/"+0+"/"+promotion.id)
+            .get('http://localhost:8080/api/promotion/checkPatientSubscribedToPromotion/' + promotion.pharmacyId+"/"+0+"/"+promotion.id)
             .then(res => {
                 console.log(this.state.isSubscribed)
 
