@@ -24,6 +24,7 @@ import PatientPharmacyPromotions from "./pages/patient/PatientPharmacyPromotions
 import CreateCoplaint from "./components/CreateCoplaint"
 import PatientEPrescriptionPage from './pages/patient/PatientEPrescriptionPage'
 import PatientReservationsPage from './pages/patient/PatientReservationsPage'
+import QRcode from "./components/QRcode";
 
 export default class App extends React.Component {
   constructor () {
@@ -64,6 +65,7 @@ export default class App extends React.Component {
             <Route path="/complaint" component={CreateCoplaint} role={role}/>
             <Route path="/patient-eprescription" component={PatientEPrescriptionPage} role={role}/>
             <Route path="/patient-reservations" component={PatientReservationsPage} role={role}/>
+            <Route path="/QRcode" component={QRcode} role={role}/>
           </Switch>
         </BrowserRouter>
     );
