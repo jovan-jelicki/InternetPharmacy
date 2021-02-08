@@ -6,7 +6,7 @@ import 'react-dropdown/style.css';
 import DatePicker from "react-datepicker";
 import axios from "axios";
 import StarRatings from "react-star-ratings";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 
 
 const options = [

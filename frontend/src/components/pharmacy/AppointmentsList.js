@@ -4,7 +4,7 @@ import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
 import StarRatings from "react-star-ratings";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 
 
 export default class AppointmentsList extends React.Component{

@@ -5,7 +5,7 @@ import AddMedicationQuantity from "./AddMedicationQuantity";
 import AllergyPatientListing from "../AllergyPatientListing";
 import OrderQuantityListing from "./OrderQuantityListing";
 import axios from "axios";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 
 export default class CreateOrder extends React.Component{
     constructor() {

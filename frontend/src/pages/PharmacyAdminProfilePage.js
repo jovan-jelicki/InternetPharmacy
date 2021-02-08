@@ -5,6 +5,7 @@ import ChangePassword from "../components/ChangePassword";
 import axios from "axios"
 import PatientLayout from "../layout/PatientLayout";
 import PharmacyAdminLayout from "../layout/PharmacyAdminLayout";
+import AuthentificationService from "../helpers/AuthentificationService";
 
 export default class PharmacyAdminProfilePage extends React.Component {
     constructor(props) {
@@ -27,6 +28,7 @@ export default class PharmacyAdminProfilePage extends React.Component {
     }
 
     async componentDidMount() {
+        this.validateUser();
         console.log(this.state.user);
         await axios
             .get('http://localhost:8080/api/pharmacyAdmin/' + this.state.user.id, {
@@ -201,5 +203,12 @@ export default class PharmacyAdminProfilePage extends React.Component {
                 </Row>
             </PharmacyAdminLayout>
         );
+    }
+
+    validateUser = () => {
+        if (!AuthentificationService.isLoggedIn() || this.state.user.type !== 'ROLE_pharmacyAdmin')
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
     }
 }
