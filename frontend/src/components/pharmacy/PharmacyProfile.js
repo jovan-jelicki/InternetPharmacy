@@ -4,6 +4,7 @@ import Script from 'react-load-script';
 import Select from "react-select";
 import axios from "axios";
 import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 const options = [
     { value: 'Marko', label: 'Marko Markovic' },
@@ -274,7 +275,7 @@ export default class PharmacyProfile extends React.Component {
         if (this.validateForm(this.state.errors)) {
             //console.info('Valid Form')
             console.log(pharmacy);
-            await axios.put("http://localhost:8080/api/pharmacy/editPharmacyProfile", pharmacy, {
+            await axios.put(HelperService.getPath("/api/pharmacy/editPharmacyProfile"), pharmacy, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -302,7 +303,7 @@ export default class PharmacyProfile extends React.Component {
     }
 
     fetchPharmacy = () => {
-        axios.get("http://localhost:8080/api/pharmacy/" + this.state.pharmacyId, {
+        axios.get(HelperService.getPath("/api/pharmacy/" + this.state.pharmacyId), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken

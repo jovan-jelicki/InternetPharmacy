@@ -6,6 +6,7 @@ import AllergyPatientListing from "../AllergyPatientListing";
 import OrderQuantityListing from "./OrderQuantityListing";
 import axios from "axios";
 import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 export default class CreateOrder extends React.Component{
     constructor() {
@@ -64,7 +65,7 @@ export default class CreateOrder extends React.Component{
     }
 
     fetchMedication = () => {
-        axios.get("http://localhost:8080/api/medications", {
+        axios.get(HelperService.getPath("/api/medications"), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -115,7 +116,7 @@ export default class CreateOrder extends React.Component{
             return;
         }
 
-        axios.post("http://localhost:8080/api/medicationOrder/newMedicationOrder", this.state.medicationOrder, {
+        axios.post(HelperService.getPath("/api/medicationOrder/newMedicationOrder"), this.state.medicationOrder, {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken

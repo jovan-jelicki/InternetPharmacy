@@ -9,6 +9,7 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 
 const options = [
@@ -186,7 +187,7 @@ export default class PharmacyCharts extends React.Component{
     }
 
     renderAppointmentMonthlyReport = () => {
-        axios.get("http://localhost:8080/api/appointment/getAppointmentsMonthlyReport/" + this.state.pharmacyId, {
+        axios.get(HelperService.getPath("/api/appointment/getAppointmentsMonthlyReport/" + this.state.pharmacyId), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -208,7 +209,7 @@ export default class PharmacyCharts extends React.Component{
     }
 
     renderAppointmentQuarterlyReport = () => {
-        axios.get("http://localhost:8080/api/appointment/getAppointmentsQuarterlyReport/" + this.state.pharmacyId, {
+        axios.get(HelperService.getPath("/api/appointment/getAppointmentsQuarterlyReport/" + this.state.pharmacyId), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -230,7 +231,7 @@ export default class PharmacyCharts extends React.Component{
     }
 
     renderAppointmentYearlyReport = () => {
-        axios.get("http://localhost:8080/api/appointment/getAppointmentsYearlyReport/" + this.state.pharmacyId, {
+        axios.get(HelperService.getPath("/api/appointment/getAppointmentsYearlyReport/" + this.state.pharmacyId), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -253,7 +254,7 @@ export default class PharmacyCharts extends React.Component{
 
 
     renderMedicationConsumptionMonthlyReport = () => {
-        axios.get("http://localhost:8080/api/pharmacy/getMedicationsConsumptionMonthlyReport/" + this.state.pharmacyId, {
+        axios.get(HelperService.getPath("/api/pharmacy/getMedicationsConsumptionMonthlyReport/" + this.state.pharmacyId), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -275,7 +276,7 @@ export default class PharmacyCharts extends React.Component{
     }
 
     renderMedicationConsumptionQuarterlyReport = () => {
-        axios.get("http://localhost:8080/api/pharmacy/getMedicationsConsumptionQuarterlyReport/" + this.state.pharmacyId, {
+        axios.get(HelperService.getPath("/api/pharmacy/getMedicationsConsumptionQuarterlyReport/" + this.state.pharmacyId), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -297,7 +298,7 @@ export default class PharmacyCharts extends React.Component{
     }
 
     renderMedicationConsumptionYearlyReport = () => {
-        axios.get("http://localhost:8080/api/pharmacy/getMedicationsConsumptionYearlyReport/" + this.state.pharmacyId, {
+        axios.get(HelperService.getPath("/api/pharmacy/getMedicationsConsumptionYearlyReport/" + this.state.pharmacyId), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -327,7 +328,7 @@ export default class PharmacyCharts extends React.Component{
         // temp.periodStart = this.convertDates(temp.periodStart) + " 12:00:00";
         // temp.periodEnd = this.convertDates(temp.periodEnd) + " 12:00:00";
 
-        axios.post("http://localhost:8080/api/pharmacy/getPharmacyIncomeReportByPeriod", {
+        axios.post(HelperService.getPath("/api/pharmacy/getPharmacyIncomeReportByPeriod"), {
             periodStart : this.convertDates(this.state.incomePeriod.periodStart) + " 12:00:00",
             periodEnd : this.convertDates(this.state.incomePeriod.periodEnd) + " 12:00:00",
             pharmacyId : this.state.pharmacyId

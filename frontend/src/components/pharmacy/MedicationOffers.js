@@ -3,6 +3,7 @@ import {Button} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
 import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class MedicationOffers extends React.Component {
@@ -96,7 +97,7 @@ export default class MedicationOffers extends React.Component {
     }
 
     acceptOffer = (medicationOffer) => {
-        axios.put("http://localhost:8080/api/medicationOffer/acceptOffer/" + this.state.user.id, medicationOffer,
+        axios.put(HelperService.getPath("/api/medicationOffer/acceptOffer/" + this.state.user.id), medicationOffer,
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -114,8 +115,7 @@ export default class MedicationOffers extends React.Component {
     }
 
     fetchMedicationOffers = () => {
-        const path = "http://localhost:8080/api/medicationOffer/getOffersByOrderId/" + this.state.medicationOrder.id;
-        axios.get(path, {
+        axios.get(HelperService.getPath("/api/medicationOffer/getOffersByOrderId/" + this.state.medicationOrder.id), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken

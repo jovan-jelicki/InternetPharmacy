@@ -6,6 +6,7 @@ import OrderQuantityListing from "./OrderQuantityListing";
 import axios from "axios";
 import moment from "moment";
 import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 export default class EditOrder extends React.Component{
     constructor(props) {
@@ -78,8 +79,7 @@ export default class EditOrder extends React.Component{
     }
 
     checkIfOrderIsEditable = () => {
-        const path = "http://localhost:8080/api/medicationOrder/checkIfOrderIsEditable/" + this.props.order.id;
-        axios.get(path, {
+        axios.get(HelperService.getPath("/api/medicationOrder/checkIfOrderIsEditable/" + this.props.order.id), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -93,7 +93,7 @@ export default class EditOrder extends React.Component{
     }
 
     fetchMedication = () => {
-        axios.get("http://localhost:8080/api/medications", {
+        axios.get(HelperService.getPath("/api/medications"), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -147,7 +147,7 @@ export default class EditOrder extends React.Component{
             return;
         }
 
-        axios.post("http://localhost:8080/api/medicationOrder/editMedicationOrder", this.state.medicationOrder, {
+        axios.post(HelperService.getPath("/api/medicationOrder/editMedicationOrder"), this.state.medicationOrder, {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken

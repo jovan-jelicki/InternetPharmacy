@@ -4,6 +4,7 @@ import PharmacySearch from './PharmacySearch';
 import PharmacyFilter from './PharmacyFilter';
 import axios from 'axios';
 import StarRatings from 'react-star-ratings'
+import HelperService from "../../helpers/HelperService";
 
 
 export default class PharmacyPromotions extends React.Component {
@@ -21,7 +22,7 @@ export default class PharmacyPromotions extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         await axios
-        .get('http://localhost:8080/api/patients/promotion-pharmacies/' + this.aut.id, {
+        .get(HelperService.getPath('/api/patients/promotion-pharmacies/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -45,7 +46,7 @@ export default class PharmacyPromotions extends React.Component {
 
     search({name, location}) {
         axios
-        .post('http://localhost:8080/api/pharmacy/search', {
+        .post(HelperService.getPath('/api/pharmacy/search'), {
             'name' : name,
             'street' : location.street,
             'town' : location.town,
@@ -72,7 +73,7 @@ export default class PharmacyPromotions extends React.Component {
 
     unsubscribe(pharmacy){
         axios
-            .put('http://localhost:8080/api/promotion/unsubscribe/'+pharmacy.id+"/" + this.aut.id, {}, {
+            .put(HelperService.getPath('/api/promotion/unsubscribe/'+pharmacy.id+"/" + this.aut.id), {}, {
                 headers : {
                     'Content-Type' : 'application/json',
                     Authorization : 'Bearer ' + this.aut.jwtToken 
