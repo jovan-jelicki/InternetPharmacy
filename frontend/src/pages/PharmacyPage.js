@@ -35,9 +35,9 @@ export default class PharmacyPage extends React.Component{
             },
             navbar : "description",
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : this.props.location.state.pharmacyId
+            pharmacyId : sessionStorage.getItem("pharmacyId") || this.props.location.state.pharmacyId
 
-        }
+    }
     }
 
     async componentDidMount() {

@@ -233,6 +233,7 @@ export default class PharmacyAdminProfilePage extends React.Component {
     }
 
     redirectToPharmacy = () => {
+        sessionStorage.setItem("pharmacyId", this.state.pharmacyId);
         this.props.history.push({
             pathname: "/pharmacy",
             state : {
