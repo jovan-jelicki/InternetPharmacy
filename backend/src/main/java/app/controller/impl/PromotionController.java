@@ -43,9 +43,8 @@ public class PromotionController {
         return new ResponseEntity<>(promotionDTOS, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
+    @PreAuthorize("hasAnyRole('pharmacyAdmin', 'patient')")
     @GetMapping(value = "/checkPatientSubscribedToPromotion/{pharmacyId}/{patientId}/{medicationId}")
-    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Boolean> checkPatientSubscribedToPromotion(@PathVariable Long pharmacyId, @PathVariable Long patientId,@PathVariable Long medicationId) {
         return new ResponseEntity<>(promotionService.checkPatientSubscribedToPromotion(pharmacyId, patientId, medicationId), HttpStatus.OK);
     }
