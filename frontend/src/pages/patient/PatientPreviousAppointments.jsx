@@ -35,7 +35,7 @@ class PatientPreviousAppointments extends React.Component {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
             }
-        }), 
+        }) 
         .then(res => {
             this.setState({
                 examinations : res.data
