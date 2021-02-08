@@ -47,7 +47,7 @@ export default class App extends React.Component {
             <Route exact path="/"  render={(props) => <IndexPage {...props} role={role} /> } />
             <Route path="/patient-profile" render={(props) => <PatientProfilePage {...props} role={role} /> } />
             <Route path="/pharmacy-admin-profile" render={(props) => <PharmacyAdminProfilePage {...props} role={role} /> } />
-            <ProtectedRoute path="/pharmacy"  component={PharmacyPage} role={role}/>
+            <Route path="/pharmacy"  component={PharmacyPage} role={role}/>
             <Route path="/reviewClients"  render={(props) => <ReviewedClients {...props} role={role} Id={Id}/> } />
             <Route path="/vacationRequest" render={(props) => <VacationRequest {...props} role={role} Id={Id}/> } />
             <Route path='/patient-home' render={(props) => <PatientHomePage {...props} role={role} Id={Id}/> }/>
