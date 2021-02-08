@@ -21,12 +21,12 @@ export default class PharmacyListing extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         await axios
-        .get('http://localhost:8080/api/pharmacy', {
+        .get('http://localhost:8080/api/pharmacy' /*{
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
             }
-        })
+        })*/)
         .then((res) => {
             this.setState({
                 pharmacies : res.data
@@ -52,12 +52,12 @@ export default class PharmacyListing extends React.Component {
             'street' : location.street,
             'town' : location.town,
             'country': location.country
-        }, {
+        }/*, {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
             }
-        })
+        }*/)
         .then((res) => {
             this.setState({
                 pharmacies : res.data

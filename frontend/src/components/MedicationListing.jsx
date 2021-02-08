@@ -22,12 +22,12 @@ export default class MedicationListing extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         await axios
-        .get('http://localhost:8080/api/medications', {
+        .get('http://localhost:8080/api/medications'/*, {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
             }
-        })
+        }*/)
         .then((res) => {
             this.setState({
                 medications : res.data
@@ -45,14 +45,14 @@ export default class MedicationListing extends React.Component {
 
     search({name}) {
         axios
-            .post('http://localhost:8080/api/medications/search', {
+            .post('http://localhost:8080/api/medications/search'/*, {
                 'name' : name,
             }, {
                 headers : {
                     'Content-Type' : 'application/json',
                     Authorization : 'Bearer ' + this.aut.jwtToken 
                 }
-            })
+            }*/)
             .then((res) => {
                 this.setState({
                     medications : res.data

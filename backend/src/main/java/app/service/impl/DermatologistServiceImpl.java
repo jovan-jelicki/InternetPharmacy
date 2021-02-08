@@ -14,6 +14,7 @@ import app.service.DermatologistService;
 import app.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class DermatologistServiceImpl implements DermatologistService {
     private final DermatologistRepository dermatologistRepository;
     private final PharmacyService pharmacyService;
@@ -40,6 +42,7 @@ public class DermatologistServiceImpl implements DermatologistService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<Dermatologist> _user = dermatologistRepository.findById(passwordKit.getUserId());
 //        if(_user.isEmpty())
@@ -125,6 +128,7 @@ public class DermatologistServiceImpl implements DermatologistService {
             throw new IllegalArgumentException("Entered passwords doesn't match");
     }
     @Override
+    @Transactional(readOnly = false)
     public Dermatologist save(Dermatologist entity) {
         entity.setApprovedAccount(true);
         return dermatologistRepository.save(entity);
@@ -141,6 +145,7 @@ public class DermatologistServiceImpl implements DermatologistService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(Long id) {
         dermatologistRepository.deleteById(id);
     }
@@ -152,6 +157,7 @@ public class DermatologistServiceImpl implements DermatologistService {
 
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean addDermatologistToPharmacy(DermatologistDTO dermatologistDTO) {
         boolean isOverlapping = false;
         for (WorkingHours workingHours : dermatologistDTO.getWorkingHours()) {
@@ -219,6 +225,7 @@ public class DermatologistServiceImpl implements DermatologistService {
         return dermatologistRepository.findByEmail(email);
     }
 
+    @Transactional(readOnly = false)
     public Boolean deleteDermatologistFromPharmacy(Long pharmacyId, DermatologistDTO dermatologistDTO) {
         //check if there are any scheduled appointments for dermatologist in that pharmacy
         Collection<Appointment> scheduledAppointments = appointmentService.

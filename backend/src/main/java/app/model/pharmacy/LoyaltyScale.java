@@ -20,6 +20,7 @@ public class LoyaltyScale {
    private double discount;
 
    @Version
+   @Column(nullable = false, columnDefinition = "int default 1")
    private Long version;
 
    public LoyaltyScale() {

@@ -10,14 +10,18 @@ export default class PharmacistConsultationStart extends React.Component {
         super(props);
         this.state = {
             startedConsultation : !!localStorage.getItem("startedConsultation") ? JSON.parse(localStorage.getItem("startedConsultation")) : false,
-            appointment : !!localStorage.getItem("appointment") ? JSON.parse(localStorage.getItem("appointment")) : {},
+            appointment : !!localStorage.getItem("consultation") ? JSON.parse(localStorage.getItem("consultation")) : {},
             appointments : [],
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
     componentDidMount() {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getAllScheduledByExaminer"
+            : 'http://localhost:8080/api/appointment/getAllScheduledByExaminer';
+
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getAllScheduledByExaminer', {
+            .post(path, {
                     'id' : this.state.user.id, //this.props.id
                     'type' : this.state.user.type //this.props.role
                 }, {  headers: {
@@ -51,7 +55,7 @@ export default class PharmacistConsultationStart extends React.Component {
     renderParent = (content) => {
         this.setState({
             startedConsultation : content,
-            appointment : !!localStorage.getItem("appointment") ? JSON.parse(localStorage.getItem("appointment")) : {}
+            appointment : !!localStorage.getItem("consultation") ? JSON.parse(localStorage.getItem("consultation")) : {}
         })
         this.componentDidMount();
     }
