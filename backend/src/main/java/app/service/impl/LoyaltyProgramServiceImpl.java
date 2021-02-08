@@ -34,4 +34,18 @@ public class LoyaltyProgramServiceImpl  implements LoyaltyProgramService {
 
     @Override
     public boolean existsById(Long id) { return loyaltyProgramRepository.existsById(id); }
+
+    @Override
+    public Boolean saveProgram(LoyaltyProgram entity) {
+        if(this.read().size()!=0) {
+            for (LoyaltyProgram loyaltyProgram : this.read()) {
+                    loyaltyProgram.setAppointmentPoints(entity.getAppointmentPoints());
+                    loyaltyProgram.setConsultingPoints(entity.getConsultingPoints());
+                    this.save(loyaltyProgram);
+            }
+        }else{
+            this.save(entity);
+        }
+        return true;
+    }
 }

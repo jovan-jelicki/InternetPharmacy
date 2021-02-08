@@ -18,12 +18,13 @@ public class LoyaltyProgramControllerImpl {
     }
 
     @PostMapping(value="/save", consumes = "application/json")
-    public ResponseEntity<LoyaltyProgram> save(@RequestBody LoyaltyProgram entity) {
-        return new ResponseEntity<>(loyaltyProgramService.save(entity), HttpStatus.CREATED);
+    public ResponseEntity<Boolean> saveProgram(@RequestBody LoyaltyProgram entity) {
+        return new ResponseEntity<>(loyaltyProgramService.saveProgram(entity), HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<Collection<LoyaltyProgram>> read() {
         return new ResponseEntity<>(loyaltyProgramService.read(), HttpStatus.OK);
     }
+
 }

@@ -19,7 +19,22 @@ public class LoyaltyScaleServiceImpl implements LoyaltyScaleService {
 
     @Override
     public LoyaltyScale save(LoyaltyScale entity)  {
+
         return loyaltyScaleRepository.save(entity);
+    }
+
+    public Boolean editLoyaltyScale(LoyaltyScale entity){
+        for(LoyaltyScale loyaltyScale : this.read()){
+            if(loyaltyScale.getCategory()==entity.getCategory()){
+                loyaltyScale.setMaxPoints(entity.getMaxPoints());
+                loyaltyScale.setMinPoints(entity.getMinPoints());
+                loyaltyScale.setDiscount(entity.getDiscount());
+
+                this.save(loyaltyScale);
+            }
+        }
+
+        return true;
     }
 
     @Override

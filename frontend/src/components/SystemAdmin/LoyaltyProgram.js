@@ -25,12 +25,18 @@ export default class LoyaltyProgram extends React.Component {
                 }
             },
             submitted: false,
-            loyScales:[]
+            loyScales:[],
+            loyPrograms:[],
         }
     }
 
     async componentDidMount() {
-        await axios
+       this.fetchLoyaltyScales()
+        this.fetchLoyaltyProgram()
+    }
+
+    fetchLoyaltyScales(){
+        axios
             .get('http://localhost:8080/api/loyaltyScale/')
             .then((res) => {
                 this.setState({
@@ -38,6 +44,18 @@ export default class LoyaltyProgram extends React.Component {
                 })
                 console.log("USEO")
                 console.log(this.state.loyScales);
+            })
+    }
+
+    fetchLoyaltyProgram(){
+        axios
+            .get('http://localhost:8080/api/loyaltyProgram')
+            .then((res) => {
+                this.setState({
+                    loyPrograms : res.data
+                })
+                console.log("PROGRAM")
+                console.log(this.state.loyPrograms);
             })
     }
 
@@ -51,7 +69,7 @@ export default class LoyaltyProgram extends React.Component {
             })
             .then(res => {
                 alert("Successfully added!");
-
+                this.fetchLoyaltyScales()
             }).catch(() => {
             alert("Prooooblem!")
         })
@@ -65,7 +83,7 @@ export default class LoyaltyProgram extends React.Component {
             })
             .then(res => {
                 alert("Successfully added!");
-
+                this.fetchLoyaltyProgram()
             }).catch(() => {
             alert("Prooooblem!")
         })
@@ -197,7 +215,33 @@ export default class LoyaltyProgram extends React.Component {
 
                         })
                     }
-                </div>
+                    <div style={{height:20,marginTop:20, color:'dimgray '}}>
+                        <h5>Loyalty program</h5>
+                        {this.state.loyPrograms.map((e, key) => {
+                           return  <div className="row">
+                                <div className="container-fluid">
+                                    <div className="col-md-3" style={{background:'silver'}}>
+                                        <div className="card" >
+                                            <h5 className="card-header" style={{color:'darkslategrey',background:'lightgrey '}}>Category: {e.category}</h5>
+                                            <div className="card-body" style={{background:'silver', color:'cadetblue'}}>
+                                                <p className="card-text">
+                                                    Appointment points : {e.appointmentPoints}
+                                                    <br/>
+                                                    Consulting points: {e.consultingPoints}
+                                                    <br/>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        })
+                        }
+                    </div>
+                    </div>
 
                 <div className="container">
                     <h3 style={({ textAlignVertical: "center", textAlign: "center"})}>Edit loyalty scale for users</h3>
@@ -251,7 +295,7 @@ export default class LoyaltyProgram extends React.Component {
 
 
                 <div className="container">
-                    <h3 style={({ textAlignVertical: "center", textAlign: "center", marginTop:50})}>Add loyalty program</h3>
+                    <h3 style={({ textAlignVertical: "center", textAlign: "center", marginTop:200})}>Add loyalty program</h3>
                 </div>
                 <div className="row"
                      style={{marginTop: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

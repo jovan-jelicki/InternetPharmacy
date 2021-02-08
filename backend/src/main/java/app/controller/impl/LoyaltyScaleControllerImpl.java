@@ -19,8 +19,8 @@ public class LoyaltyScaleControllerImpl {
     }
 
     @PostMapping(value="/save", consumes = "application/json")
-    public ResponseEntity<LoyaltyScale> save(@RequestBody LoyaltyScale entity) {
-        return new ResponseEntity<>(loyaltyScaleService.save(entity), HttpStatus.CREATED);
+    public ResponseEntity<Boolean> save(@RequestBody LoyaltyScale entity) {
+        return new ResponseEntity<>(loyaltyScaleService.editLoyaltyScale(entity), HttpStatus.CREATED);
     }
 
     @GetMapping

@@ -564,3 +564,9 @@ values(0,1,'Bezobrazan, nadmen.',0,0);
 insert into complaint(id,complainee_id,content,type,patient_id)
 values(1,3,'Nece da da recept!',1,0);
 
+insert into loyalty_scale(id, category,discount,max_points,min_points)
+values(1000,0,10,20,12);
+insert into loyalty_scale(id, category,discount,max_points,min_points)
+values(1001,1,20,40,32);
+insert into loyalty_scale(id, category,discount,max_points,min_points)
+values(1002,2,30,60,52);
