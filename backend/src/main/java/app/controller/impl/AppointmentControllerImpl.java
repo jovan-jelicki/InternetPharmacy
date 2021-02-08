@@ -38,8 +38,19 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>(appointmentService.getFinishedByExaminer(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 
+
+    @GetMapping(value = "/hello")
+    public ResponseEntity<String> hello() {
+        return new ResponseEntity<>("hiii", HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/kavali")
+    public ResponseEntity<String> kavali() {
+        return new ResponseEntity<>("kavali", HttpStatus.OK);
+    }
+
     @PostMapping(consumes = "application/json", value = "/getFinishedForComplaint")
-    public ResponseEntity<Collection<AppointmentEmployeeDTO>> getFinishedForComplaint(@RequestBody ExaminerDTO examinerDTO){
+    public ResponseEntity<Collection<AppointmentEmployeeDTO>> getFinishedForComplaint(@RequestBody ExaminerDTO examinerDTO) {
         return new ResponseEntity<>(appointmentService.getFinishedForComplaint(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
     }
 
@@ -171,4 +182,5 @@ public class AppointmentControllerImpl {
     public ResponseEntity<Collection<ReportsDTO>> getAppointmentsYearlyReport(@PathVariable Long pharmacyId) {
         return new ResponseEntity(appointmentService.getAppointmentsYearlyReport(pharmacyId), HttpStatus.OK);
     }
+
 }

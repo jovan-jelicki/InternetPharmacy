@@ -61,8 +61,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        if(appointment.isEmpty())
 //            throw new IllegalArgumentException("Appointment does not exist");
         Optional<Patient> patient = patientService.read(appointmentDTO.getPatientId());
-        if(patient.isEmpty())
-            throw new IllegalArgumentException("Patient does not exits");
+//        if(patient.isEmpty())
+//            throw new IllegalArgumentException("Patient does not exits");
         appointment.get().setPatient(patient.get());
         appointmentRepository.save(appointment.get());
     }
@@ -167,7 +167,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public boolean validateAppointmentTimeRegardingWorkingHours(Appointment entity) {
         WorkingHours workingHoursInPharmacy = dermatologistService.workingHoursInSpecificPharmacy(entity.getExaminerId(), entity.getPharmacy());
         if (workingHoursInPharmacy.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-            workingHoursInPharmacy.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime()))
+                workingHoursInPharmacy.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime()))
             return true;
         return false;
     }
@@ -190,7 +190,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         boolean ret = true;
         for(VacationRequest vacationRequest : vacationRequestRepository.findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(entity.getExaminerId() ,EmployeeType.ROLE_dermatologist, VacationRequestStatus.approved))
             if (vacationRequest.getPeriod().getPeriodStart().toLocalDate().isBefore(entity.getPeriod().getPeriodStart().toLocalDate()) &&
-                vacationRequest.getPeriod().getPeriodEnd().toLocalDate().isAfter(entity.getPeriod().getPeriodEnd().toLocalDate()))
+                    vacationRequest.getPeriod().getPeriodEnd().toLocalDate().isAfter(entity.getPeriod().getPeriodEnd().toLocalDate()))
                 return false;
         return ret;
     }
@@ -200,7 +200,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         for(Appointment appointment : this.getAllAppointmentsByExaminerIdAndType(entity.getExaminerId(), entity.getType())) {
             if (appointment.getPeriod().getPeriodStart().toLocalDate().equals(entity.getPeriod().getPeriodStart().toLocalDate())) {
                 if (appointment.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-                    appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
+                        appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
                     ret = false;
                 else if (entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
                         entity.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(appointment.getPeriod().getPeriodEnd().toLocalTime())) //E A A E
@@ -361,27 +361,25 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<AppointmentEmployeeDTO> appointmentEmployeeDTOs = new ArrayList<>();
 
         for(Appointment appointment : finishedAppointments){
-           AppointmentEmployeeDTO appointmentEmployeeDTO= new AppointmentEmployeeDTO();
+            AppointmentEmployeeDTO appointmentEmployeeDTO= new AppointmentEmployeeDTO();
             if(type.toString()=="dermatologist" && !dermatologsitIds.contains(appointment.getExaminerId())){
-                    Dermatologist dermatologist=dermatologistService.read(appointment.getExaminerId()).get();
-                    appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
-                    appointmentEmployeeDTO.setEmployeeFirstName(dermatologist.getFirstName());
-                    appointmentEmployeeDTO.setEmployeeLastName(dermatologist.getLastName());
-                    appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
+                Dermatologist dermatologist=dermatologistService.read(appointment.getExaminerId()).get();
+                appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
+                appointmentEmployeeDTO.setEmployeeFirstName(dermatologist.getFirstName());
+                appointmentEmployeeDTO.setEmployeeLastName(dermatologist.getLastName());
+                appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
 
-                    dermatologsitIds.add(appointment.getExaminerId());
+                dermatologsitIds.add(appointment.getExaminerId());
             }/*else if(type.toString()=="pharmacist"  && !pharmacistIds.contains(appointment.getExaminerId())){
                     Pharmacist pharmacist=pharmacistService.read(appointment.getExaminerId()).get();
                     appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
                     appointmentEmployeeDTO.setEmployeeFirstName(pharmacist.getFirstName());
                     appointmentEmployeeDTO.setEmployeeLastName(pharmacist.getLastName());
                     appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
-
                     pharmacistIds.add(appointment.getExaminerId());
-
             }*/
         }
-            return appointmentEmployeeDTOs;
+        return appointmentEmployeeDTOs;
     }
 
     @Override

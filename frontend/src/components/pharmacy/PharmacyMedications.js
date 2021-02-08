@@ -27,12 +27,12 @@ export default class PharmacyMedications extends React.Component{
                 cost: "",
                 quantity: "",
                 medicationId: "",
-                pharmacyId: 1
+                pharmacyId: 1 //todo change
             },
             medicationForEditing : {
                 medicationId : 0,
                 medicationQuantityId : 0,
-                pharmacyId : 0,
+                pharmacyId : 0, //todo change
                 name : "",
                 quantity : ""
             },
@@ -46,12 +46,16 @@ export default class PharmacyMedications extends React.Component{
     }
 
     async componentDidMount() {
-        this.fetchPharmacyMedicationListingDTOs();
-        //this.fetchNotContainedMedicationsInPharmacy();
+        console.log(process.env.REACT_APP_BACKEND_ADDRESS);
+
         let temp = await PharmacyAdminService.fetchPharmacyId();
         this.setState({
             pharmacyId : temp
         })
+
+        this.fetchPharmacyMedicationListingDTOs();
+        //this.fetchNotContainedMedicationsInPharmacy();
+
         this.setState({
             userType : "pharmacyAdmin"
         })
@@ -420,13 +424,17 @@ export default class PharmacyMedications extends React.Component{
     }
 
     fetchPharmacyMedicationListingDTOs = () => {
-        axios.get("http://localhost:8080/api/pharmacy/getPharmacyMedicationListing/" + this.state.user.id,
+        console.log(this.state.pharmacyId);
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy/getPharmacyMedicationListing/" +
+            this.state.pharmacyId
+            : 'http://localhost:8080/api/pharmacy/getPharmacyMedicationListing/' + this.state.pharmacyId;
+        axios.get(path,
             {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization : 'Bearer ' + this.state.user.jwtToken
                 }
-            }).then(res => { //todo change pharmacyid
+            }).then(res => {
             this.setState({
                 pharmacyMedicationListingDTOs : res.data,
                 backupMedications : res.data
