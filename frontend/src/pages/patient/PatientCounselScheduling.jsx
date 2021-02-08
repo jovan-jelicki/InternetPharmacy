@@ -27,7 +27,7 @@ class PatientCounselScheduling extends React.Component {
         axios
             .post('http://localhost:8080/api/scheduling/search', {
                 'timeSlot' : dateTime,
-                'employeeType' : 'pharmacist',
+                'employeeType' : 'ROLE_pharmacist',
                 'patientId' : this.aut.id
             }, {
                 headers : {
@@ -48,7 +48,7 @@ class PatientCounselScheduling extends React.Component {
         axios
         .post('http://localhost:8080/api/appointment/counseling', {
             'examinerId' : pharmacistId,
-            'type' : 'pharmacist',
+            'type' : 'ROLE_pharmacist',
             'active' : true,
             'appointmentStatus' : 'available',
             'pharmacy' : {

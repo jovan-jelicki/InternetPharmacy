@@ -39,7 +39,6 @@ class PatientScheduledAppointments extends React.Component {
             }
         })
         .then(res => {
-            alert('ok')
             this.setState({
                 examinations : res.data
             })
