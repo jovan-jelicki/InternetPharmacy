@@ -74,6 +74,7 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         PharmacyAdmin user = pharmacyAdmin.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());
+        user.setApprovedAccount(true);
         this.save(user);
     }
 
