@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +30,7 @@ public class PharmacyControllerImpl {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('patient', 'pharmacist', 'dermatologist', 'supplier', 'pharmacyAdmin', 'systemAdmin')")
     public ResponseEntity<Collection<PharmacyDTO>> read() {
         ArrayList<PharmacyDTO> pharmacyDTOS = new ArrayList<>();
         for (Pharmacy pharmacy : pharmacyService.read()) {
@@ -51,6 +53,7 @@ public class PharmacyControllerImpl {
     }
 
     @PostMapping(value = "/search")
+    @PreAuthorize("hasAnyRole('patient', 'pharmacist', 'dermatologist', 'supplier', 'pharmacyAdmin', 'systemAdmin')")
     public ResponseEntity<Collection<Pharmacy>> search(@RequestBody PharmacySearchDTO pharmacySearchDTO) {
         return new ResponseEntity<>(pharmacyService.searchByNameAndAddress(pharmacySearchDTO), HttpStatus.OK);
     }
@@ -113,6 +116,7 @@ public class PharmacyControllerImpl {
     }
 
     @GetMapping(value = "/getPharmacyByMedication/{medicationId}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<PharmacyMedicationDTO>> getPharmacyByMedication(@PathVariable Long medicationId) {
         return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
     }

@@ -12,8 +12,15 @@ class PatientEPrescriptionPage extends React.Component {
     }
 
     componentDidMount() {
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         axios
-        .get('http://localhost:8080/api/eprescriptions/patient/0')
+        .get('http://localhost:8080/api/eprescriptions/patient/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             this.setState({
                 prescriptions : res.data

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -28,12 +29,13 @@ public class MedicationControllerImpl {
     }
 
     @PostMapping(value = "/search")
+    @PreAuthorize("hasAnyRole('patient', 'pharmacist', 'dermatologist', 'supplier', 'pharmacyAdmin', 'systemAdmin')")
     public ResponseEntity<Collection<Medication>> search(@RequestBody MedicationSearchDTO medicationName) {
         return new ResponseEntity<>(medicationService.getMedicationByNameIsContaining(medicationName),HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping
+    @PreAuthorize("hasAnyRole('patient', 'pharmacist', 'dermatologist', 'supplier', 'pharmacyAdmin', 'systemAdmin')")
     public ResponseEntity<Collection<Medication>> read() {
         return new ResponseEntity<>(medicationService.read(), HttpStatus.OK);
     }

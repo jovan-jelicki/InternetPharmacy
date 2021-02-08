@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -92,6 +93,7 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
     }
 
     @PutMapping(value = "/reserve", consumes = "application/json")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> reserve(@RequestBody MakeMedicationReservationDTO entity) {
         try {
             if(medicationReservationService.reserve(entity) != null)
@@ -105,6 +107,7 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
     }
 
     @GetMapping(value = "/patient/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<MedicationReservationSimpleInfoDTO>> findAllByPatientId(@PathVariable Long id) {
         return new ResponseEntity<>(
                 medicationReservationService.findAllByPatientId(id)
@@ -115,6 +118,7 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
     }
 
     @PutMapping(value = "/cancel/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> cancel(@PathVariable Long id) {
         if(medicationReservationService.cancel(id))
             return new ResponseEntity<>(HttpStatus.OK);

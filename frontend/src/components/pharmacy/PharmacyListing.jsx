@@ -18,22 +18,20 @@ export default class PharmacyListing extends React.Component {
     }
 
     async componentDidMount() {
-        if(!this.props.promo)
-            await axios
-            .get('http://localhost:8080/api/pharmacy')
-            .then((res) => {
-                this.setState({
-                    pharmacies : res.data
-                })
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
+        await axios
+        .get('http://localhost:8080/api/pharmacy', {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
+        .then((res) => {
+            this.setState({
+                pharmacies : res.data
             })
-        else
-            await axios
-            .get('http://localhost:8080/api/patients/promotion-pharmacies/0')
-            .then((res) => {
-                this.setState({
-                    pharmacies : res.data
-                })
-            })
+        })
 
         this.pharmaciesBackup = [...this.state.pharmacies]
     }
@@ -46,13 +44,19 @@ export default class PharmacyListing extends React.Component {
     }
 
     search({name, location}) {
-        console.log(name, location)
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         axios
         .post('http://localhost:8080/api/pharmacy/search', {
             'name' : name,
             'street' : location.street,
             'town' : location.town,
             'country': location.country
+        }, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
         })
         .then((res) => {
             this.setState({
@@ -62,7 +66,6 @@ export default class PharmacyListing extends React.Component {
     }
 
     gradeFilter(grade) {
-
         this.setState({
             pharmacies : [...this.pharmaciesBackup.filter(p => p.grade >= grade)]
         })

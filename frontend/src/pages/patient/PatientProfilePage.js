@@ -28,9 +28,15 @@ export default class PatientProfilePage extends React.Component {
     }
 
     async componentDidMount() {
-
+        this.aut = JSON.parse(localStorage.getItem('user'))
+        console.log(this.user)
         await axios
-            .get('http://localhost:8080/api/patients/0')
+            .get('http://localhost:8080/api/patients/' + this.aut.id, {
+                headers : {
+                    'Content-Type' : 'application/json',
+                    Authorization : 'Bearer ' + this.aut.jwtToken 
+                }
+            })
             .then(res => {
                 let patient = res.data;
                 console.log(patient)
@@ -96,6 +102,11 @@ export default class PatientProfilePage extends React.Component {
             'oldPassword' : this.state.oldPass,
             'newPassword' : this.state.newPass,
             'repeatedPassword' : this.state.repPass
+        }, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
         })
         .then(res => {
             this.setState({
@@ -162,6 +173,11 @@ export default class PatientProfilePage extends React.Component {
                     'town' : this.state.town,
                     'country' : this.state.country
                 }
+            }
+        }, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
             }
         })
         .then(res => {

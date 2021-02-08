@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +41,7 @@ public class SchedulingControllerImpl {
     }
 
     @PostMapping(value = "/search", consumes = "application/json")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<CounselingSearchDTO>> getAvailable(@RequestBody AppointmentSearchDTO appointmentSearchKit) {
         if (appointmentSearchKit.getEmployeeType() == EmployeeType.ROLE_pharmacist) {
             Collection<CounselingSearchDTO> available = new ArrayList<>();
@@ -101,24 +103,28 @@ public class SchedulingControllerImpl {
     }
 
     @GetMapping(value = "/counseling-upcoming/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<AppointmentListingDTO>> findUpcomingCounselingsByPatientId(@PathVariable Long id) {
         Collection<AppointmentListingDTO> appointments = filterCounselings(counselingService.findUpcomingByPatientId(id));
         return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
     @GetMapping(value = "/examination-upcoming/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<AppointmentListingDTO>> findUpcomingExaminationsByPatientId(@PathVariable Long id) {
         Collection<AppointmentListingDTO> appointments = filterExaminations(examinationService.findUpcomingByPatientId(id));
         return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
     @GetMapping(value = "/counseling-previous/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<AppointmentListingDTO>> findPreviousCounselingsByPatientId(@PathVariable Long id) {
         Collection<AppointmentListingDTO> appointments = filterCounselings(counselingService.findPreviousByPatientId(id));
         return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
     @GetMapping(value = "/examination-previous/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<AppointmentListingDTO>> findPreviousExaminationsByPatientId(@PathVariable Long id) {
         Collection<AppointmentListingDTO> appointments = filterExaminations(examinationService.findPreviousByPatientId(id));
         return new ResponseEntity<>(appointments, HttpStatus.OK);
