@@ -13,8 +13,11 @@ export default class DermatologistWorkingHours extends React.Component {
     }
 
     componentDidMount() {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getEvents"
+            : 'http://localhost:8080/api/appointment/getEvents';
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getEvents', {
+            .post(path, {
                 'id' : this.state.user.id, //this.props.id
                 'type' : this.state.user.type //this.props.role
             } , {  headers: {

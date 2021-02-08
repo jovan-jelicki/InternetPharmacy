@@ -43,6 +43,7 @@ public class Pharmacy {
     private int dermatologistCost;
 
     @Version
+    @Column(nullable = false, columnDefinition = "int default 1")
     private Long version;
 
     public Pharmacy() {

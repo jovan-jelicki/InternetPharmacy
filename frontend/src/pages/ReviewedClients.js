@@ -21,8 +21,11 @@ export default class ReviewedClients extends React.Component {
     }
 
     componentDidMount() {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getFinishedByExaminer"
+            : 'http://localhost:8080/api/appointment/getFinishedByExaminer';
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getFinishedByExaminer', {
+            .post(path, {
                 id : this.state.user.id,
                 type : this.state.user.type
             }, {  headers: {
@@ -81,8 +84,11 @@ export default class ReviewedClients extends React.Component {
         );
     }
     showAppointments = (client) => {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getAllFinishedByPatientAndExaminer"
+            : 'http://localhost:8080/api/appointment/getAllFinishedByPatientAndExaminer';
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getAllFinishedByPatientAndExaminer', {
+            .post(path, {
                 patientId : client.patientId,
                 type : this.state.user.type
             }, {  headers: {

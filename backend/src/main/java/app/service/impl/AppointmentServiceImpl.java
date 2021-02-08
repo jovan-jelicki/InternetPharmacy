@@ -18,6 +18,7 @@ import app.service.DermatologistService;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
@@ -50,12 +52,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Appointment save(Appointment entity) {
         entity.setPharmacy(pharmacyRepository.findById(entity.getPharmacy().getId()).get());
         return appointmentRepository.save(entity);
     }
 
+
     @Override
+    @Transactional(readOnly = false)
     public void update(AppointmentUpdateDTO appointmentDTO) {
         Optional<Appointment> appointment = appointmentRepository.findById(appointmentDTO.getAppointmentId());
 //        if(appointment.isEmpty())
@@ -68,6 +73,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Appointment scheduleCounseling(Appointment entity) {
         LocalDateTime start = entity.getPeriod().getPeriodStart();
         entity.setPatient(patientService.read(entity.getPatient().getId()).get());
@@ -81,6 +87,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Appointment cancelCounseling(Long appointmentId) {
         Appointment entity = appointmentRepository.findById(appointmentId).get();
         if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
@@ -92,6 +99,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Appointment cancelExamination(Long appointmentId) {
         Appointment entity = appointmentRepository.findById(appointmentId).get();
         Appointment newEntity = new Appointment(entity);
@@ -152,6 +160,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(Long id) {
         Appointment appointment = appointmentRepository.findById(id).get();
         appointment.setActive(false);
@@ -220,6 +229,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean createAvailableAppointment(Appointment entity) {
         //proveriti da li ima zakazane u tom periodu
         //proveriti da li je na godisnjem
@@ -243,6 +253,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean finishAppointment(AppointmentScheduledDTO appointmentScheduledDTO) {
         Appointment appointment = read(appointmentScheduledDTO.getId()).get();
         appointment.setReport(appointmentScheduledDTO.getReport());
@@ -309,6 +320,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean patientDidNotShowUp(Long id) {
         Appointment appointment = read(id).get();
         if(appointment != null){

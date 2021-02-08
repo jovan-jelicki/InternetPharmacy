@@ -15,6 +15,8 @@ import app.service.PatientService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -23,6 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class CounselingServiceImpl implements CounselingService {
     private final AppointmentService appointmentService;
     private final PharmacistService pharmacistService;
@@ -40,6 +43,7 @@ public class CounselingServiceImpl implements CounselingService {
 
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean pharmacistScheduling(Appointment appointment){
         if(!isConsultationPossible(appointment.getExaminerId(), appointment.getPatient().getId(), appointment.getPeriod().getPeriodStart()))
             return false;

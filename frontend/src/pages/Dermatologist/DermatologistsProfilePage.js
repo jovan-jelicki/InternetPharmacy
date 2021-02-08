@@ -28,8 +28,10 @@ export default class DermatologistsProfilePage extends React.Component {
 
     async componentDidMount() {
 
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/"
+            : 'http://localhost:8080/api/dermatologists/';
         await axios
-            .get('http://localhost:8080/api/dermatologists/'  + this.state.user.id,
+            .get(path  + this.state.user.id,
                 {  headers: {
                         'Content-Type': 'application/json',
                         Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -94,8 +96,11 @@ export default class DermatologistsProfilePage extends React.Component {
     }
 
     changePass = () => {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/pass"
+            : 'http://localhost:8080/api/dermatologists/pass';
         axios
-            .put('http://localhost:8080/api/dermatologists/pass', {
+            .put(path, {
                 'userId' : this.state.id,
                 'oldPassword' : this.state.oldPass,
                 'newPassword' : this.state.newPass,
@@ -139,8 +144,11 @@ export default class DermatologistsProfilePage extends React.Component {
 
 
     save = () => {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists"
+            : 'http://localhost:8080/api/dermatologists';
         axios
-            .put('http://localhost:8080/api/dermatologists', {
+            .put(path, {
                 'id' : this.state.id,
                 'firstName' : this.state.firstName,
                 'lastName' : this.state.lastName,

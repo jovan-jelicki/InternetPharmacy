@@ -28,9 +28,9 @@ export default class PharmacistProfilePage extends React.Component {
     }
 
     async componentDidMount() {
-
         await axios
-            .get('http://localhost:8080/api/pharmacist/'  + this.state.user.id,
+            .get(process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacist/"
+                : 'http://localhost:8080/api/pharmacist/'  + this.state.user.id,
                 {  headers: {
                         'Content-Type': 'application/json',
                         Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -95,8 +95,11 @@ export default class PharmacistProfilePage extends React.Component {
     }
 
     changePass = () => {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacist/pass"
+            : 'http://localhost:8080/api/pharmacist/pass';
         axios
-            .put('http://localhost:8080/api/pharmacist/pass', {
+            .put(path, {
                 'userId' : this.state.id,
                 'oldPassword' : this.state.oldPass,
                 'newPassword' : this.state.newPass,
@@ -140,8 +143,11 @@ export default class PharmacistProfilePage extends React.Component {
 
 
     save = () => {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacist"
+            : 'http://localhost:8080/api/pharmacist';
         axios
-            .put('http://localhost:8080/api/pharmacist', {
+            .put(path, {
                 'id' : this.state.id,
                 'firstName' : this.state.firstName,
                 'lastName' : this.state.lastName,

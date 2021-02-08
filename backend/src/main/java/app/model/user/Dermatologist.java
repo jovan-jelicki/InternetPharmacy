@@ -20,6 +20,7 @@ public class Dermatologist extends User {
    private List<WorkingHours> workingHours;
 
    @Version
+   @Column(nullable = false, columnDefinition = "int default 1")
    private Long version;
 
    public Dermatologist() {
