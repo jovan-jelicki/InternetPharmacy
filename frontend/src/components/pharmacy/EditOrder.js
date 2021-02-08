@@ -12,7 +12,6 @@ export default class EditOrder extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            userType : 'pharmacyAdmin',
             medications : [],
             medicationOrder : {
                 id : this.props.order.id,

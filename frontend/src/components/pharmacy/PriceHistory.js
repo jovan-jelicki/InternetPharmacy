@@ -11,7 +11,6 @@ export default class PriceHistory extends React.Component{
         super(props);
         this.state = {
             priceLists : [],
-            userType : 'pharmacyAdmin',
             medication : this.props.priceListingHistory,
             showAddPriceListModal : false,
             addPriceList : {

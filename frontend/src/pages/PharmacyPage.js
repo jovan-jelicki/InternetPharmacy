@@ -12,6 +12,7 @@ import PharmacyProfile from "../components/pharmacy/PharmacyProfile";
 import axios from "axios";
 import PharmacyCharts from "../components/pharmacy/PharmacyCharts";
 import AuthentificationService from "../helpers/AuthentificationService";
+import HelperService from "../helpers/HelperService";
 
 
 export default class PharmacyPage extends React.Component{
@@ -33,7 +34,6 @@ export default class PharmacyPage extends React.Component{
                 grade : 0
             },
             navbar : "description",
-            userType : "pharmacyAdmin",
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
             pharmacyId : -1
 
@@ -72,30 +72,30 @@ export default class PharmacyPage extends React.Component{
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="vacationRequests" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Vacation requests</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Vacation requests</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="promotions" onClick={this.handleChange}>Actions & Promotions</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="medicationOrders" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Orders & Offers</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Orders & Offers</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="medicationQueries" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Medication queries</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Medication queries</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="priceList" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Price list</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Price list</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="editPharmacyProfile" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Edit pharmacy profile</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Edit pharmacy profile</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="charts" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Charts</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Charts</a>
                     </li>
                 </ul>
                 {this.renderNavbar()}
@@ -161,7 +161,7 @@ export default class PharmacyPage extends React.Component{
     }
 
     fetchPharmacy = async () => {
-        await axios.get("http://localhost:8080/api/pharmacy/" + this.state.pharmacyId,
+        await axios.get(HelperService.getPath("/api/pharmacy/" + this.state.pharmacyId),
         {
                 headers: {
                 'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ export default class PharmacyPage extends React.Component{
     }
 
     fetchPharmacyId = async () => {
-        await axios.get("http://localhost:8080/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id,
+        await axios.get(HelperService.getPath("/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id),
             {
                 headers: {
                     'Content-Type': 'application/json',

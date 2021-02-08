@@ -12,7 +12,6 @@ export default class AppointmentsList extends React.Component{
     constructor() {
         super();
         this.state = {
-            userType : 'pharmacyAdmin',
             appointments : [],
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
             pharmacyId : -1

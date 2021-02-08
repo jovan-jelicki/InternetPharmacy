@@ -212,7 +212,6 @@ export default class CreatePharmacistModal extends React.Component {
             await axios.post(HelperService.getPath('/api/pharmacist/createNewPharmacist'), {
                 firstName: this.state.user.firstName,
                 lastName: this.state.user.lastName,
-                userType : 1,
                 active : Boolean(true),
                 credentials: {
                     email: this.state.user.email,

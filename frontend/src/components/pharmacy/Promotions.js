@@ -10,7 +10,6 @@ export default class Promotions extends React.Component{
         super();
         this.state = {
             promotions : [],
-            userType : 'pharmacyAdmin',
             showModal: false,
             showModalAlert:false,
             isSubscribed:false,

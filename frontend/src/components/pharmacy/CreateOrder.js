@@ -12,7 +12,6 @@ export default class CreateOrder extends React.Component{
     constructor() {
         super();
         this.state = {
-            userType : 'pharmacyAdmin',
             medications : [],
             medicationOrder : {
                 deadline : "",

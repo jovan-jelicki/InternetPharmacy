@@ -8,7 +8,6 @@ export default class PriceList extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            userType : 'pharmacyAdmin',
             priceLists : [],
             mode : "showCurrentPriceLists",
             priceListingHistory : {}

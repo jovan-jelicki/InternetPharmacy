@@ -9,7 +9,6 @@ export default class PharmacyMedicationOrders extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            userType : 'pharmacyAdmin',
             medicationOrders : [],
             clickedMedicationOrder : {},
             showModal : false,

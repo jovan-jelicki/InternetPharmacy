@@ -10,7 +10,6 @@ export default class PharmacyMedicationQueries extends React.Component{
     constructor() {
         super();
         this.state = {
-            userType : 'pharmacyAdmin',
             medicationLackingEvents : [],
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
             pharmacyId : -1

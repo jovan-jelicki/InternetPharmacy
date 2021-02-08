@@ -11,7 +11,6 @@ export default class PharmacyVacationsRequests extends React.Component{
         super();
         this.state = {
             vacationRequests : [],
-            userType : 'pharmacyAdmin',
             showModal : false,
             modalVacationRequest : {
                 rejectionNote:""
@@ -63,19 +62,19 @@ export default class PharmacyVacationsRequests extends React.Component{
                                     moment(vacationRequest.period.periodEnd).format('DD.MM.YYYY')}</td>
                                 <td>{vacationRequest.vacationRequestStatus}</td>
 
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
                                     <Button variant="outline-success" onClick={() => this.acceptVacationRequest(vacationRequest)}>
                                         Accept
                                     </Button>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
                                     <Button variant="outline-danger" onClick={() => this.handleModal(vacationRequest)}>
                                         Reject
                                     </Button>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
                                 </td >
                             </tr>
                         ))}

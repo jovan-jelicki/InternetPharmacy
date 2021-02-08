@@ -10,7 +10,6 @@ export default class CurrentPriceLists extends React.Component{
     constructor() {
         super();
         this.state = {
-            userType : 'pharmacyAdmin',
             priceLists : [],
             mode : "showCurrentPriceLists",
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},

@@ -29,7 +29,6 @@ export default class PharmacyEmployees extends React.Component{
             showModalAddDermatologist : false,
             showModalCreatePharmacist : false,
             showModalAddAppointment : false,
-            userType : "pharmacyAdmin",
             dermatologistModalAddAppointment : {},
             searchPharmacist : {
                 firstName : '',
@@ -127,17 +126,17 @@ export default class PharmacyEmployees extends React.Component{
                        <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodStart).format('hh:mm a')
                         + "  -  " + moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodEnd).format('hh:mm a')}</td>
 
-                       <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
+                       <td style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="primary" onClick={this.openModalAddDermatologist}>
                                 Schedule appointment
                            </Button>
                        </td >
-                       <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                       <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="warning" onClick={(e) => this.handleModalAddAppointment(dermatologist)}>
                                Define available appointments
                            </Button>
                        </td>
-                       <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                       <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="danger" onClick={() => this.deleteDermatologist(dermatologist)}>
                                Delete dermatologist
                            </Button>
@@ -194,12 +193,12 @@ export default class PharmacyEmployees extends React.Component{
                            </td>
                            <td>{moment(pharmacist.workingHours.period.periodStart).format('hh:mm a') + "  -  " +
                             moment(pharmacist.workingHours.period.periodEnd).format('hh:mm a')}</td>
-                           <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
+                           <td style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="primary" onClick={this.handleModalAddDermatologist}>
                                    Schedule counseling
                                </Button>
                            </td >
-                           <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                           <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="danger" onClick={() => this.deletePharmacist(pharmacist)}>
                                    Delete pharmacist
                                </Button>
