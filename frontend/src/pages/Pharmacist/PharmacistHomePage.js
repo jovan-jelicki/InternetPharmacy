@@ -20,13 +20,19 @@ export default class PharmacistHomePage extends React.Component {
             newPw : "",
             repeatPw : "",
             repErr : "",
-            wrongPw : ""
+            wrongPw : "",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
     componentDidMount() {
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/pharmacist/isAccountApproved/' + 1)
+            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/pharmacist/isAccountApproved/' + this.state.user.id,
+                {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 if(!res.data){
                     this.setState({
@@ -44,7 +50,7 @@ export default class PharmacistHomePage extends React.Component {
                 <Container fluid style={{'background-color' : '#AEB6BF'}}>
                     <br/>
                     <ul className="nav justify-content-center">
-                        <h3> Welcome {this.props.role}! </h3>
+                        <h3> Welcome pharmacist! </h3>
                         <li className="nav-item">
                             <a className="nav-link active" style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' onClick={this.handleChange} name="reviewedClients"> Reviewed clients </a>
                         </li>
@@ -99,11 +105,15 @@ export default class PharmacistHomePage extends React.Component {
             return;
         axios
             .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/pharmacist/pass', {
-                'userId' : 1,
+                'userId' : this.state.user.id,
                 'oldPassword' : this.state.oldPw,
                 'newPassword' : this.state.newPw,
                 'repeatedPassword' : this.state.repeatPw
-             })
+             }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 if(!res.data){
                     this.setState({
@@ -149,27 +159,27 @@ export default class PharmacistHomePage extends React.Component {
     renderNavbar = () => {
         if (this.state.navbar === "reviewedClients")
             return (
-                <ReviewedClients Id = {this.state.id} role = {this.state.role}/>
+                <ReviewedClients />
             );
         else if (this.state.navbar === "vacationRequest")
             return (
-                <VacationRequest Id = {this.state.id} role = {this.state.role} />
+                <VacationRequest />
             );
         else if (this.state.navbar === "profile")
             return (
-                <PharmacistProfilePage Id = {this.state.id} role = {this.state.role} />
+                <PharmacistProfilePage />
             );
         else if (this.state.navbar === "workHours")
             return (
-                <PharmacistWorkingHours Id = {this.state.id} role = {this.state.role} />
+                <PharmacistWorkingHours  />
             );
         else if (this.state.navbar === "startAppointment")
             return (
-                <PharmacistConsultationStart Id = {this.state.id} role = {this.state.role} />
+                <PharmacistConsultationStart />
             );
         if (this.state.navbar === "medicine")
             return (
-                <PharmacistGiveMedicine Id = {this.state.id} role = {this.state.role} />
+                <PharmacistGiveMedicine  />
             );
         else
             return (
