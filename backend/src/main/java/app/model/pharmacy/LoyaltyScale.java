@@ -8,6 +8,9 @@ public class LoyaltyScale {
    @Id
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "loyalty_scale_generator")
    @SequenceGenerator(name="loyalty_scale_generator", sequenceName = "loyalty_scale_seq", allocationSize=50, initialValue = 1000)
+   private Long id;
+
+   @Enumerated(EnumType.ORDINAL)
    private LoyaltyCategory category;
 
    @Column
