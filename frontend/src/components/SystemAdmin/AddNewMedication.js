@@ -11,7 +11,8 @@ export default class AddNewMedication extends React.Component {
                 name:'',
                 dose:'',
                 note:'',
-                manufacturer:''
+                manufacturer:'',
+                loyaltyPoints:''
             },
             type:'',
             shape:'',
@@ -28,7 +29,8 @@ export default class AddNewMedication extends React.Component {
                     ingredient: 'Select ingredients',
                     sideEffects: 'Select side effects',
                     medIssue:'Select medication issue',
-                    manufacturer:'Enter manufacturers credentials'
+                    manufacturer:'Enter manufacturers credentials',
+                    loyaltyPoints:'Enter loyalty points'
                 }
             },
             ingredients :[],
@@ -61,6 +63,13 @@ export default class AddNewMedication extends React.Component {
     }
 
     async sendParams() {
+        console.log(this.state.shape)
+        console.log(this.state.medIngredients)
+        console.log(this.state.medAlternatives)
+        console.log(this.state.medSideEffects)
+        console.log(this.state.medIssue)
+
+        console.log(this.state.medication)
         axios
             .post('http://localhost:8080/api/medications', {
                 'id':'',
@@ -74,6 +83,7 @@ export default class AddNewMedication extends React.Component {
                 'manufacturer':this.state.medication.manufacturer,
                 'medicationIssue':this.state.medIssue,
                 'note':this.state.medication.note,
+                'loyaltyPoints':this.state.medication.loyaltyPoints
             })
             .then(res => {
                 alert("Successfully registered!");
@@ -156,6 +166,9 @@ export default class AddNewMedication extends React.Component {
                 break;
             case 'medIssue':
                 errors.medication.medIssue = value.length < 1 ? 'Select medication issue' : '';
+                break;
+            case 'loyaltyPoints':
+                errors.medication.loyaltyPoints = value.length < 1 ? 'Enter loyalty points' : '';
                 break;
             default:
                 break;
@@ -419,6 +432,15 @@ export default class AddNewMedication extends React.Component {
                     <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Note</label>
                     <div className="col-sm-6 mb-2">
                         <input type="text" value={this.state.medication.note} name="note" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="note" placeholder="Enter note" />
+                    </div>
+                    <div className="col-sm-4">
+                    </div>
+                </div>
+                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Loyalty points</label>
+                    <div className="col-sm-6 mb-2">
+                        <input type="number" value={this.state.medication.loyaltyPoints} name="loyaltyPoints" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="loyaltyPoints" placeholder="Enter loyalty points" />
+                        { this.state.submitted && this.state.errors.medication.loyaltyPoints.length > 0 && <span className="text-danger">{this.state.errors.medication.loyaltyPoints}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
