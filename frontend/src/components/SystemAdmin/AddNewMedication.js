@@ -16,9 +16,19 @@ export default class AddNewMedication extends React.Component {
             },
             type:'',
             shape:'',
-            medIngredients:[],
-            medSideEffects:[],
-            medAlternatives:[],
+            medIngredients:[{
+                id:'',
+            }],
+            ingredientsResult:[{
+                id:'',
+                name:'',
+            }],
+            medSideEffects:[{
+                id:'',
+            }],
+            medAlternatives:[{
+                id:'',
+            }],
             medIssue:'',
             errors:{
                 medication: {
@@ -69,7 +79,7 @@ export default class AddNewMedication extends React.Component {
         console.log(this.state.medSideEffects)
         console.log(this.state.medIssue)
 
-        console.log(this.state.medication)
+       // console.log(this.state.medication)
         axios
             .post('http://localhost:8080/api/medications', {
                 'id':'',
@@ -208,7 +218,7 @@ export default class AddNewMedication extends React.Component {
 
     }
 
-    handlePharmacySelected=(event) => {
+    onIssueChange=(event) => {
         var option = event.target.id
         this.setState({
             medIssue:option
@@ -225,15 +235,25 @@ export default class AddNewMedication extends React.Component {
         let ingredients = this.state.ingredients
         let ingr=[]
         ingredients.forEach(ingredient => {
+            console.log(ingredients)
             if (ingredient.name === option)
                 ingredient.isChecked =  event.target.checked
             if(ingredient.isChecked){
                 ingr.push(ingredient)
             }
         })
+        console.log("SASTOJCI")
+        console.log(ingr)
+
         this.state.medIngredients=ingr;
-        //this.setState({ingredientBackup: ingr})
         console.log(this.state.medIngredients)
+
+
+        //this.setState({ingredientBackup: ingr})
+
+        //console.log("IDD")
+        //console.log(this.state.medIngredients.id)
+
         this.validationErrorMessage(event)
 
     }
