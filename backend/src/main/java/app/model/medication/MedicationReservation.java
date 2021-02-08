@@ -34,6 +34,7 @@ public class MedicationReservation {
    private MedicationReservationStatus status;
 
    @Version
+   @Column(nullable = false, columnDefinition = "int default 1")
    private Long version;
 
    public MedicationReservation() {

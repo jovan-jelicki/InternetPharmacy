@@ -30,6 +30,7 @@ public class MedicationOrder {
    private Boolean isActive;
 
    @Version
+   @Column(nullable = false, columnDefinition = "int default 1")
    private Long version;
 
    public MedicationOrder() {

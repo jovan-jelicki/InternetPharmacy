@@ -11,12 +11,15 @@ import app.service.ExaminationService;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class ExaminationServiceImpl implements ExaminationService {
 
     private final AppointmentService appointmentService;
@@ -29,6 +32,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean dermatologistSchedulingCreatedAppointment(AppointmentUpdateDTO appointmentUpdateDTO){
         Appointment appointment = appointmentService.read(appointmentUpdateDTO.getAppointmentId()).get();
         if(appointmentService.getAllNotFinishedByPatientId(appointmentUpdateDTO.getPatientId())
@@ -41,6 +45,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean dermatologistScheduling(Appointment appointment){
         if(isExaminationPossible(appointment)) {
             appointment.setAppointmentStatus(AppointmentStatus.available);
