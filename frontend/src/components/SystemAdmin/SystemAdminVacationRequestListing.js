@@ -2,7 +2,8 @@ import React from 'react';
 import {Button, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class SystemAdminVacationRequestListing extends React.Component{
@@ -118,7 +119,7 @@ export default class SystemAdminVacationRequestListing extends React.Component{
     }
 
     rejectRequest = () => {
-        axios.put("http://localhost:8080/api/vacationRequest/rejectVacationRequest/", this.state.modalVacationRequest, {
+        axios.put(HelperService.getPath("/api/vacationRequest/rejectVacationRequest/"), this.state.modalVacationRequest, {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -141,8 +142,7 @@ export default class SystemAdminVacationRequestListing extends React.Component{
     acceptVacationRequest = (vacationRequest) => {
         let answer = window.confirm('Are you sure you want to accept the vacation request from ' + vacationRequest.employeeFirstName + '?');
         if (answer) {
-            let path = "http://localhost:8080/api/vacationRequest/confirmVacationRequest";
-            axios.put(path, vacationRequest, {
+            axios.put(HelperService.getPath("/api/vacationRequest/confirmVacationRequest"), vacationRequest, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -156,7 +156,7 @@ export default class SystemAdminVacationRequestListing extends React.Component{
 
     fetchVacationRequests = () => {
         axios
-            .get('http://localhost:8080/api/vacationRequest/findByEmployeeType/ROLE_dermatologist', {
+            .get(HelperService.getPath('/api/vacationRequest/findByEmployeeType/ROLE_dermatologist'), {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization : 'Bearer ' + this.state.user.jwtToken

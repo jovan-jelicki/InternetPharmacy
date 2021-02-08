@@ -2,7 +2,8 @@ import React from 'react';
 import {Button, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class CurrentPriceLists extends React.Component{
@@ -72,7 +73,7 @@ export default class CurrentPriceLists extends React.Component{
 
     fetchPriceLists = () => {
         axios
-            .get('http://localhost:8080/api/pricelist/getCurrentMedicationPriceListByPharmacy/' + this.state.pharmacyId, {
+            .get(HelperService.getPath('/api/pricelist/getCurrentMedicationPriceListByPharmacy/' + this.state.pharmacyId), {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization : 'Bearer ' + this.state.user.jwtToken

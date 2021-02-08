@@ -6,7 +6,8 @@ import 'react-dropdown/style.css';
 import DatePicker from "react-datepicker";
 import axios from "axios";
 import StarRatings from "react-star-ratings";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 
 const options = [
@@ -240,7 +241,7 @@ export default class PharmacyMedications extends React.Component{
 
     submitAddMedication = () => {
         console.log(this.state.addMedication);
-        axios.put("http://localhost:8080/api/pharmacy/addNewMedication", this.state.addMedication,
+        axios.put(HelperService.getPath("/api/pharmacy/addNewMedication"), this.state.addMedication,
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -274,7 +275,7 @@ export default class PharmacyMedications extends React.Component{
             alert("Medication quantity cannot be negative.");
             return;
         }
-        axios.put("http://localhost:8080/api/pharmacy/editMedicationQuantity", this.state.medicationForEditing,
+        axios.put(HelperService.getPath("/api/pharmacy/editMedicationQuantity"), this.state.medicationForEditing,
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -321,7 +322,8 @@ export default class PharmacyMedications extends React.Component{
         let isBoss = window.confirm('Are you sure you want to delete ' + medication.name + ' from your medications list?');
         if (isBoss) {
             console.log(medication);
-            axios.put("http://localhost:8080/api/pharmacy/deleteMedicationFromPharmacy", medication,
+
+            axios.put(HelperService.getPath("/api/pharmacy/deleteMedicationFromPharmacy"), medication,
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -398,7 +400,7 @@ export default class PharmacyMedications extends React.Component{
     }
 
     fetchNotContainedMedicationsInPharmacy = async () => {
-        await axios.get("http://localhost:8080/api/medications/getMedicationsNotContainedInPharmacy/" + this.state.pharmacyId,
+        await axios.get(HelperService.getPath("/api/medications/getMedicationsNotContainedInPharmacy/" + this.state.pharmacyId),
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -425,10 +427,7 @@ export default class PharmacyMedications extends React.Component{
 
     fetchPharmacyMedicationListingDTOs = () => {
         console.log(this.state.pharmacyId);
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy/getPharmacyMedicationListing/" +
-            this.state.pharmacyId
-            : 'http://localhost:8080/api/pharmacy/getPharmacyMedicationListing/' + this.state.pharmacyId;
-        axios.get(path,
+        axios.get(HelperService.getPath('/api/pharmacy/getPharmacyMedicationListing/' + this.state.pharmacyId),
             {
                 headers: {
                     'Content-Type': 'application/json',

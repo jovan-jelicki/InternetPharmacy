@@ -4,7 +4,8 @@ import {ButtonGroup, Input} from "rsuite";
 import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 export default class MedicationOrdersList extends React.Component {
     constructor() {
@@ -113,7 +114,7 @@ export default class MedicationOrdersList extends React.Component {
     }
 
     fetchMedicationOrders = () => {
-        axios.get("http://localhost:8080/api/medicationOrder/getAllMedicationOrdersByPharmacy/" + this.state.pharmacyId, {
+        axios.get(HelperService.getPath("/api/medicationOrder/getAllMedicationOrdersByPharmacy/" + this.state.pharmacyId), {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -143,8 +144,7 @@ export default class MedicationOrdersList extends React.Component {
 
     deleteOrder = (order) => {
         if (window.confirm('Are you sure you want to delete the order from your order list?')) {
-            const path = "http://localhost:8080/api/medicationOrder/deleteMedicationOrder/" + order.id;
-            axios.delete(path, {
+            axios.delete(HelperService.getPath("/api/medicationOrder/deleteMedicationOrder/" + order.id), {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization : 'Bearer ' + this.state.user.jwtToken

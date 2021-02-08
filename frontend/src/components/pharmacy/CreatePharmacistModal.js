@@ -4,6 +4,7 @@ import "../../App.css";
 import TimePicker from "react-time-picker";
 import axios from "axios";
 import moment from "moment";
+import HelperService from "../../helpers/HelperService";
 
 
 
@@ -208,7 +209,7 @@ export default class CreatePharmacistModal extends React.Component {
             console.info('Valid Form');
             console.log(this.state.user);
 
-            await axios.post('http://localhost:8080/api/pharmacist/createNewPharmacist', {
+            await axios.post(HelperService.getPath('/api/pharmacist/createNewPharmacist'), {
                 firstName: this.state.user.firstName,
                 lastName: this.state.user.lastName,
                 userType : 1,
@@ -327,7 +328,7 @@ export default class CreatePharmacistModal extends React.Component {
     }
 
     fetchPharmacyId = () => {
-        axios.get("http://localhost:8080/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.userLocalStorageData.id,
+        axios.get(HelperService.getPath("/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.userLocalStorageData.id),
             {
                 headers: {
                     'Content-Type': 'application/json',

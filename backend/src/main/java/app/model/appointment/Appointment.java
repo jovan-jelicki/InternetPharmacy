@@ -44,6 +44,9 @@ public class Appointment {
    @Column
    private Boolean isActive;
 
+   @Version
+   private Long version;
+
    public Appointment() {
    }
 
@@ -54,6 +57,7 @@ public class Appointment {
       this.type = appointment.type;
       this.period = appointment.period;
       this.isActive = appointment.isActive;
+      this.version = appointment.getVersion();
    }
 
    public Long getId() {
@@ -134,6 +138,14 @@ public class Appointment {
 
    public void setActive(Boolean active) {
       isActive = active;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
    }
 
    public boolean isOverlapping(LocalDateTime timeSlot) {

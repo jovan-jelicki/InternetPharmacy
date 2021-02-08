@@ -11,6 +11,7 @@ import AppointmentsList from "../components/pharmacy/AppointmentsList";
 import PharmacyProfile from "../components/pharmacy/PharmacyProfile";
 import axios from "axios";
 import PharmacyCharts from "../components/pharmacy/PharmacyCharts";
+import AuthentificationService from "../helpers/AuthentificationService";
 
 
 export default class PharmacyPage extends React.Component{
@@ -40,6 +41,7 @@ export default class PharmacyPage extends React.Component{
     }
 
     async componentDidMount() {
+        this.validateUser();
         await this.fetchPharmacyId();
         await this.fetchPharmacy();
     }
@@ -185,6 +187,13 @@ export default class PharmacyPage extends React.Component{
                 this.setState({
                     pharmacyId : res.data
                 })
+            });
+    }
+
+    validateUser = () => {
+        if (!AuthentificationService.isLoggedIn() || (this.state.user.type !== 'ROLE_pharmacyAdmin' & this.state.user.type !== 'ROLE_patient'))
+            this.props.history.push({
+                pathname: "/unauthorized"
             });
     }
 }

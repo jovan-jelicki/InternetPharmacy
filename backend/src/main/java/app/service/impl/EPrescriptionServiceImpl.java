@@ -59,9 +59,9 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         makeEPrescriptionDTO.getPrescription().setDateIssued(LocalDateTime.now());
         makeEPrescriptionDTO.getPrescription().setStatus(EPrescriptionStatus.pending);
         EPrescription ePrescription =  this.save(makeEPrescriptionDTO.getPrescription());
-        updateMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy.getMedicationQuantity());
-        pharmacy.getPrescriptions().add(ePrescription);
-        pharmacyService.save(pharmacy);
+//        updateMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy.getMedicationQuantity());
+//        pharmacy.getPrescriptions().add(ePrescription);
+//        pharmacyService.save(pharmacy);
         return new EPrescriptionSimpleInfoDTO(makeEPrescriptionDTO.getPrescription());
     }
 

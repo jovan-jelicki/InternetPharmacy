@@ -4,6 +4,7 @@ import "../../App.css";
 import TimePicker from "react-time-picker";
 import axios from "axios";
 import DatePicker from "react-datepicker";
+import HelperService from "../../helpers/HelperService";
 
 
 
@@ -71,7 +72,7 @@ export default class AddAppointmentModal extends React.Component {
         let fullYear = date.getFullYear() + "-" + month + "-" + day;
         let check = fullYear + " " + this.state.period.periodStart + ":00";
         let  a = "2020-01-01 12:00:00";
-        axios.post('http://localhost:8080/api/appointment', {
+        axios.post(HelperService.getPath('/api/appointment'), {
             examinerId: this.props.dermatologist.id,
             pharmacy: {
                 id : 1
@@ -117,7 +118,7 @@ export default class AddAppointmentModal extends React.Component {
     }
 
     fetchPharmacyId = () => {
-        axios.get("http://localhost:8080/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id,
+        axios.get(HelperService.getPath("/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id),
             {
                 headers: {
                     'Content-Type': 'application/json',

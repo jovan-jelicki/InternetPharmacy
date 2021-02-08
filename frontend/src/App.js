@@ -24,6 +24,8 @@ import PatientPharmacyPromotions from "./pages/patient/PatientPharmacyPromotions
 import CreateCoplaint from "./components/CreateCoplaint"
 import PatientEPrescriptionPage from './pages/patient/PatientEPrescriptionPage'
 import PatientReservationsPage from './pages/patient/PatientReservationsPage'
+import UnauthorizedPage from "./helpers/UnauthorizedPage";
+import ProtectedRoute from "./helpers/ProtectedRoute";
 
 export default class App extends React.Component {
   constructor () {
@@ -61,6 +63,7 @@ export default class App extends React.Component {
             <Route path="/scheduled-appointments" component={PatientScheduledAppointments} role={role}/>
             <Route path="/scheduled-appointments-history" component={PatientPreviousAppointments} role={role}/>
             <Route path="/grading" component={PatientGradingPage} role={role}/>
+            <Route path="/unauthorized" component={UnauthorizedPage} />
             <Route path="/complaint" component={CreateCoplaint} role={role}/>
             <Route path="/patient-eprescription" component={PatientEPrescriptionPage} role={role}/>
             <Route path="/patient-reservations" component={PatientReservationsPage} role={role}/>

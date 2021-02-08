@@ -2,8 +2,9 @@ import React from 'react';
 import { Map, GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react';
 import {PharmacyPage} from "../../pages/PharmacyPage";
 import StarRatings from "react-star-ratings";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
 
 const mapStyles = {
     width: '50%',
@@ -110,7 +111,7 @@ export class PharmacyDescription extends React.Component{
     };
 
     fetchPharmacy = async () => {
-        await axios.get("http://localhost:8080/api/pharmacy/" + this.state.pharmacyId,
+        await axios.get(HelperService.getPath("/api/pharmacy/" + this.state.pharmacyId),
             {
                 headers: {
                     'Content-Type': 'application/json',

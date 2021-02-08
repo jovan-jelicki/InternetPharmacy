@@ -12,6 +12,7 @@ import axios from "axios";
 import AddAppointmentModal from "./AddAppointmentModal";
 import Dropdown from "react-dropdown";
 import StarRatings from "react-star-ratings";
+import HelperService from "../../helpers/HelperService";
 
 
 const options = [
@@ -248,8 +249,7 @@ export default class PharmacyEmployees extends React.Component{
         const target = event.target;
         let value = event.target.value;
 
-        const path = "http://localhost:8080/api/dermatologists/getOneWithWorkingHours/" + value;
-        await axios.get(path,
+        await axios.get(HelperService.getPath("/api/dermatologists/getOneWithWorkingHours/" + value),
             {
                 headers: {
                 'Content-Type': 'application/json',
@@ -365,7 +365,7 @@ export default class PharmacyEmployees extends React.Component{
         workingHours.period.periodEnd = '2017-01-13 ' + workingHours.period.periodEnd + ":00";
         finalDermatologist.workingHours.push(workingHours);
         console.log(finalDermatologist);
-        await axios.put("http://localhost:8080/api/dermatologists/addDermatologistToPharmacy", finalDermatologist,
+        await axios.put(HelperService.getPath("/api/dermatologists/addDermatologistToPharmacy"), finalDermatologist,
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -468,7 +468,7 @@ export default class PharmacyEmployees extends React.Component{
     deleteDermatologist = (dermatologist) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + dermatologist.firstName + ' ' + dermatologist.lastName + ' from your employees list?');
         if (isBoss) {
-            axios.put("http://localhost:8080/api/dermatologists/deleteDermatologistFromPharmacy/" + this.state.pharmacyId, dermatologist,
+            axios.put(HelperService.getPath("/api/dermatologists/deleteDermatologistFromPharmacy/" + this.state.pharmacyId), dermatologist,
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -490,8 +490,7 @@ export default class PharmacyEmployees extends React.Component{
     deletePharmacist = (pharmacist) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + pharmacist.firstName + ' ' + pharmacist.lastName + ' from your employees list?');
         if (isBoss) {
-            const path = "http://localhost:8080/api/pharmacist/" + pharmacist.id;
-            axios.delete(path, {
+            axios.delete(HelperService.getPath("/api/pharmacist/" + pharmacist.id), {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -509,7 +508,7 @@ export default class PharmacyEmployees extends React.Component{
 
     fetchPharmacists = async () => {
         axios
-            .get('http://localhost:8080/api/pharmacist/getByPharmacy/' + this.state.pharmacyId,
+            .get(HelperService.getPath('/api/pharmacist/getByPharmacy/' + this.state.pharmacyId),
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -526,7 +525,7 @@ export default class PharmacyEmployees extends React.Component{
 
     fetchWorkingDermatologists = async () => {
         axios
-            .get('http://localhost:8080/api/dermatologists/getAllDermatologistWorkingInPharmacy/' + this.state.pharmacyId,
+            .get(HelperService.getPath('/api/dermatologists/getAllDermatologistWorkingInPharmacy/' + this.state.pharmacyId),
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -661,7 +660,7 @@ export default class PharmacyEmployees extends React.Component{
     }
 
     fetchDermatologistNotWorkingInThisPharmacy = async () => {
-        await axios.get("http://localhost:8080/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/" + this.state.pharmacyId,
+        await axios.get(HelperService.getPath("/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/" + this.state.pharmacyId),
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -723,7 +722,7 @@ export default class PharmacyEmployees extends React.Component{
     }
 
     fetchPharmacyId = async () => {
-        await axios.get("http://localhost:8080/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id,
+        await axios.get(HelperService.getPath("/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id),
             {
                 headers: {
                     'Content-Type': 'application/json',
