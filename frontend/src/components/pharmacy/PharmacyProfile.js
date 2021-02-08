@@ -3,7 +3,7 @@ import {Button, Container} from "react-bootstrap";
 import Script from 'react-load-script';
 import Select from "react-select";
 import axios from "axios";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 
 const options = [
     { value: 'Marko', label: 'Marko Markovic' },

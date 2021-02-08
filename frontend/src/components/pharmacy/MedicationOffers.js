@@ -2,7 +2,7 @@ import React from "react";
 import {Button} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 
 
 export default class MedicationOffers extends React.Component {

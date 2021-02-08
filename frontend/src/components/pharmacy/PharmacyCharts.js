@@ -8,7 +8,7 @@ import {Form} from "react-bootstrap";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import moment from "moment";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 
 
 const options = [

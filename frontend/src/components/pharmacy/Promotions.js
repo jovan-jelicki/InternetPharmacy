@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Modal} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 
 export default class Promotions extends React.Component{
     constructor() {

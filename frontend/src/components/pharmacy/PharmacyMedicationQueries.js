@@ -3,7 +3,7 @@ import {Button, Col, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 
 export default class PharmacyMedicationQueries extends React.Component{
     constructor() {

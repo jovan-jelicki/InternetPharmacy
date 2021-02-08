@@ -3,7 +3,7 @@ import {Button, Col, Form, FormControl, Modal} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
 import DatePicker from "react-datepicker";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 
 export default class PriceHistory extends React.Component{
     constructor(props) {

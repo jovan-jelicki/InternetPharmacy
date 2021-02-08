@@ -2,7 +2,7 @@ import React from 'react';
 import { Map, GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react';
 import {PharmacyPage} from "../../pages/PharmacyPage";
 import StarRatings from "react-star-ratings";
-import PharmacyAdminService from "../../PharmacyAdminService";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 import axios from "axios";
 
 const mapStyles = {
