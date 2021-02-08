@@ -62,11 +62,14 @@ export default class PharmacyEmployees extends React.Component{
                 pharmacy : {
                     id : 1 //todo change pharmacy ID
                 }
-            }
+            },
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
     async componentDidMount() {
+        await this.fetchPharmacyId();
         await this.fetchPharmacists();
         await this.fetchWorkingDermatologists();
     }
@@ -246,7 +249,13 @@ export default class PharmacyEmployees extends React.Component{
         let value = event.target.value;
 
         const path = "http://localhost:8080/api/dermatologists/getOneWithWorkingHours/" + value;
-        await axios.get(path).then(res => {
+        await axios.get(path,
+            {
+                headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        }).then(res => {
             this.setState({
                 dermatologistForAdding : res.data
             });
@@ -356,7 +365,13 @@ export default class PharmacyEmployees extends React.Component{
         workingHours.period.periodEnd = '2017-01-13 ' + workingHours.period.periodEnd + ":00";
         finalDermatologist.workingHours.push(workingHours);
         console.log(finalDermatologist);
-        await axios.put("http://localhost:8080/api/dermatologists/addDermatologistToPharmacy", finalDermatologist).then(() => {
+        await axios.put("http://localhost:8080/api/dermatologists/addDermatologistToPharmacy", finalDermatologist,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then(() => {
                 this.setState({
                     dermatologistForAdding : {
                         id : 0,
@@ -368,7 +383,7 @@ export default class PharmacyEmployees extends React.Component{
                             periodEnd : ""
                         },
                         pharmacy : {
-                            id : 1 //todo change pharmacy ID
+                            id : this.state.pharmacyId
                         }
                     }
                 });
@@ -378,11 +393,8 @@ export default class PharmacyEmployees extends React.Component{
             }
         ).catch(() => {
             alert("Dermatologist was not added!");
+            this.handleModalAddDermatologist();
             this.setState({
-                dermatologistForAdding : {
-                    id : 0,
-                    workingHours : []
-                },
                 workingHours : {
                     period : {
                         periodStart : "",
@@ -396,16 +408,15 @@ export default class PharmacyEmployees extends React.Component{
         })
         await this.setState({
             dermatologistForAdding : {
-                id : 0,
-                workingHours : {
-                    period : {
-                        periodStart : "",
-                        periodEnd : ""
-                    },
-                    pharmacy : {
-                        id : 2 //todo change pharmacy ID
+                workingHours : [
+                    {
+                        id : -1,
+                        period : {
+                            periodStart : "",
+                            periodEnd : ""
+                        }
                     }
-                }
+                ]
             }
         });
     }
@@ -457,7 +468,13 @@ export default class PharmacyEmployees extends React.Component{
     deleteDermatologist = (dermatologist) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + dermatologist.firstName + ' ' + dermatologist.lastName + ' from your employees list?');
         if (isBoss) {
-            axios.put("http://localhost:8080/api/dermatologists/deleteDermatologistFromPharmacy/1", dermatologist)
+            axios.put("http://localhost:8080/api/dermatologists/deleteDermatologistFromPharmacy/" + this.state.pharmacyId, dermatologist,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
                 .then(res => {
                     if (res.status === 200) {
                         alert("Dermatologist deleted successfully!");
@@ -474,7 +491,12 @@ export default class PharmacyEmployees extends React.Component{
         let isBoss = window.confirm('Are you sure you want to delete ' + pharmacist.firstName + ' ' + pharmacist.lastName + ' from your employees list?');
         if (isBoss) {
             const path = "http://localhost:8080/api/pharmacist/" + pharmacist.id;
-            axios.delete(path).then((res) => {
+            axios.delete(path, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then((res) => {
                 if (res.status === 200) {
                     alert("Pharmacist deleted successfully!");
                     this.fetchPharmacists();
@@ -487,7 +509,13 @@ export default class PharmacyEmployees extends React.Component{
 
     fetchPharmacists = async () => {
         axios
-            .get('http://localhost:8080/api/pharmacist/getByPharmacy/1') //todo change pharmacy id
+            .get('http://localhost:8080/api/pharmacist/getByPharmacy/' + this.state.pharmacyId,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                }) //todo change pharmacy id
             .then(res => {
                 this.setState({
                     pharmacists : res.data,
@@ -498,7 +526,13 @@ export default class PharmacyEmployees extends React.Component{
 
     fetchWorkingDermatologists = async () => {
         axios
-            .get('http://localhost:8080/api/dermatologists/getAllDermatologistWorkingInPharmacy/1')//todo change pharmacy ID
+            .get('http://localhost:8080/api/dermatologists/getAllDermatologistWorkingInPharmacy/' + this.state.pharmacyId,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })//todo change pharmacy ID
             .then(res => {
                 this.setState({
                     dermatologists : res.data,
@@ -627,7 +661,13 @@ export default class PharmacyEmployees extends React.Component{
     }
 
     fetchDermatologistNotWorkingInThisPharmacy = async () => {
-        await axios.get("http://localhost:8080/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/1").then( //todo change pharmacy id
+        await axios.get("http://localhost:8080/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/" + this.state.pharmacyId,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then( //todo change pharmacy id
             res => {
                 this.setState({
                     notWorkingDermatologists : res.data,
@@ -680,5 +720,20 @@ export default class PharmacyEmployees extends React.Component{
         this.setState({
             workingHours : workingHours
         })
+    }
+
+    fetchPharmacyId = async () => {
+        await axios.get("http://localhost:8080/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacyId : res.data
+                })
+            });
     }
 }

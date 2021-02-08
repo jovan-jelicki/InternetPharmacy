@@ -5,6 +5,7 @@ import app.service.MedicationLackingEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ public class MedicationLackingEventController {
         this.medicationLackingEventService = medicationLackingEventService;
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getByPharmacyId/{pharmacyId}")
     public ResponseEntity<Collection<MedicationLackingEventDTO>> read(@PathVariable Long pharmacyId) {
         return new ResponseEntity<>(medicationLackingEventService.getMedicationLackingEventListing(pharmacyId), HttpStatus.OK);

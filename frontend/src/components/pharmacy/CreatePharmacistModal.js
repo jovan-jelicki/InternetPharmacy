@@ -24,6 +24,7 @@ export default class CreatePharmacistModal extends React.Component {
                 'startShift' : '',
                 'endShift' : ''
             },
+            userLocalStorageData : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
             errors:{
                 user: {
                     'email': 'Enter email',
@@ -39,12 +40,17 @@ export default class CreatePharmacistModal extends React.Component {
             },
             validForm: false,
             submitted: false,
+            pharmacyId : -1
 
 
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.isValidPassword = this.isValidPassword.bind(this);
 
+    }
+
+    componentDidMount() {
+        this.fetchPharmacyId();
     }
 
     handleInputChange = (event) => {
@@ -227,11 +233,16 @@ export default class CreatePharmacistModal extends React.Component {
                             periodEnd: "2017-01-01 " + this.state.user.endShift + ":00"
                         },
                         pharmacy : {
-                            id : 1 //todo change pharmacy id
+                            id : this.state.pharmacyId
                         }
                     }
 
-            });
+            }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.userLocalStorageData.jwtToken
+                    }
+                });
 
             this.closeModal();
             this.props.fetchPharmacists();
@@ -313,5 +324,20 @@ export default class CreatePharmacistModal extends React.Component {
         const user = this.state.user;
         user['endShift'] = date;
         this.setState({ user });
+    }
+
+    fetchPharmacyId = () => {
+        axios.get("http://localhost:8080/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.userLocalStorageData.id,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.userLocalStorageData.jwtToken
+                }
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacyId : res.data
+                })
+            });
     }
 }

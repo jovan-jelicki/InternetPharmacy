@@ -74,6 +74,7 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getOneWithWorkingHours/{id}")
     public ResponseEntity<DermatologistDTO> getOneWithWorkingHours(@PathVariable Long id) {
         if (dermatologistService.existsById(id))
@@ -122,6 +123,7 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologist.getWorkingHours(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getAllDermatologistNotWorkingInPharmacy/{id}")
     public ResponseEntity<Collection<DermatologistDTO>> getAllDermatologistNotWorkingInPharmacy(@PathVariable Long id) {
         ArrayList<DermatologistDTO> dermatologistDTOS = new ArrayList<>();
@@ -130,6 +132,7 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getAllDermatologistWorkingInPharmacy/{id}")
     public ResponseEntity<Collection<DermatologistDTO>> getAllDermatologistWorkingInPharmacy(@PathVariable Long id) {
         ArrayList<DermatologistDTO> dermatologistDTOS = new ArrayList<>();
@@ -139,6 +142,7 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(value = "/addDermatologistToPharmacy",consumes = "application/json")
     public ResponseEntity<Boolean> addDermatologistToPharmacy(@RequestBody DermatologistDTO entity) {
         if(!dermatologistService.existsById(entity.getId()))
@@ -148,6 +152,7 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(value = "/deleteDermatologistFromPharmacy/{pharmacyId}",consumes = "application/json")
     public ResponseEntity<Boolean> deleteDermatologistFromPharmacy(@RequestBody DermatologistDTO entity, @PathVariable Long pharmacyId) {
         if(!dermatologistService.existsById(entity.getId()))

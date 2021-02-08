@@ -6,6 +6,7 @@ import 'react-dropdown/style.css';
 import DatePicker from "react-datepicker";
 import axios from "axios";
 import StarRatings from "react-star-ratings";
+import PharmacyAdminService from "../../PharmacyAdminService";
 
 
 const options = [
@@ -38,13 +39,19 @@ export default class PharmacyMedications extends React.Component{
             searchMedicationName : "",
             notContainedMedications: [],
             pharmacyMedicationListingDTOs: [],
-            backupMedications : []
+            backupMedications : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.fetchPharmacyMedicationListingDTOs();
         //this.fetchNotContainedMedicationsInPharmacy();
+        let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyId : temp
+        })
         this.setState({
             userType : "pharmacyAdmin"
         })
@@ -229,7 +236,13 @@ export default class PharmacyMedications extends React.Component{
 
     submitAddMedication = () => {
         console.log(this.state.addMedication);
-        axios.put("http://localhost:8080/api/pharmacy/addNewMedication", this.state.addMedication)
+        axios.put("http://localhost:8080/api/pharmacy/addNewMedication", this.state.addMedication,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 alert("Medication added successfully!");
                 this.setState({
@@ -239,7 +252,7 @@ export default class PharmacyMedications extends React.Component{
                         cost: "",
                         quantity: "",
                         medicationId: "",
-                        pharmacyId: 1
+                        pharmacyId: this.state.pharmacyId
                     }
                 })
                 this.fetchPharmacyMedicationListingDTOs();
@@ -257,7 +270,13 @@ export default class PharmacyMedications extends React.Component{
             alert("Medication quantity cannot be negative.");
             return;
         }
-        axios.put("http://localhost:8080/api/pharmacy/editMedicationQuantity", this.state.medicationForEditing)
+        axios.put("http://localhost:8080/api/pharmacy/editMedicationQuantity", this.state.medicationForEditing,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 alert("Medication edited successfully!");
                 this.setState({
@@ -298,7 +317,13 @@ export default class PharmacyMedications extends React.Component{
         let isBoss = window.confirm('Are you sure you want to delete ' + medication.name + ' from your medications list?');
         if (isBoss) {
             console.log(medication);
-            axios.put("http://localhost:8080/api/pharmacy/deleteMedicationFromPharmacy", medication)
+            axios.put("http://localhost:8080/api/pharmacy/deleteMedicationFromPharmacy", medication,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
                 .then((res) => {
                     alert("Medication deleted successfully from pharmacay!");
 
@@ -369,7 +394,13 @@ export default class PharmacyMedications extends React.Component{
     }
 
     fetchNotContainedMedicationsInPharmacy = async () => {
-        await axios.get("http://localhost:8080/api/medications/getMedicationsNotContainedInPharmacy/1").then(res => {
+        await axios.get("http://localhost:8080/api/medications/getMedicationsNotContainedInPharmacy/" + this.state.pharmacyId,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then(res => {
             this.setState({
                 notContainedMedications : res.data
             });
@@ -389,7 +420,13 @@ export default class PharmacyMedications extends React.Component{
     }
 
     fetchPharmacyMedicationListingDTOs = () => {
-        axios.get("http://localhost:8080/api/pharmacy/getPharmacyMedicationListing/1").then(res => { //todo change pharmacyid
+        axios.get("http://localhost:8080/api/pharmacy/getPharmacyMedicationListing/" + this.state.user.id,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then(res => { //todo change pharmacyid
             this.setState({
                 pharmacyMedicationListingDTOs : res.data,
                 backupMedications : res.data

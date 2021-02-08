@@ -4,6 +4,7 @@ import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
 import StarRatings from "react-star-ratings";
+import PharmacyAdminService from "../../PharmacyAdminService";
 
 
 export default class AppointmentsList extends React.Component{
@@ -12,10 +13,16 @@ export default class AppointmentsList extends React.Component{
         this.state = {
             userType : 'pharmacyAdmin',
             appointments : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyId : temp
+        })
         this.fetchAppointments();
     }
 
@@ -61,7 +68,13 @@ export default class AppointmentsList extends React.Component{
     }
 
     fetchAppointments = () => {
-        axios.get("http://localhost:8080/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/1").then(res => {
+        axios.get("http://localhost:8080/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/" + this.state.pharmacyId,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then(res => {
             this.setState({
                 appointments : res.data
             });
@@ -73,7 +86,14 @@ export default class AppointmentsList extends React.Component{
         .put('http://localhost:8080/api/appointment/update', {
             'patientId' : 0,
             'appointmentId' : id
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
         })
         .then(res => alert('success'))
     }
+
+
 }

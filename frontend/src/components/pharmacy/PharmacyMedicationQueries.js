@@ -3,17 +3,24 @@ import {Button, Col, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
+import PharmacyAdminService from "../../PharmacyAdminService";
 
 export default class PharmacyMedicationQueries extends React.Component{
     constructor() {
         super();
         this.state = {
             userType : 'pharmacyAdmin',
-            medicationLackingEvents : []
+            medicationLackingEvents : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyId : temp
+        })
         this.fetchMedicationLackingEventsListing();
     }
 
@@ -48,7 +55,12 @@ export default class PharmacyMedicationQueries extends React.Component{
     }
 
     fetchMedicationLackingEventsListing = () => {
-        axios.get("http://localhost:8080/api/medicationLacking/getByPharmacyId/1").then(res => {
+        axios.get("http://localhost:8080/api/medicationLacking/getByPharmacyId/" + this.state.pharmacyId, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        }).then(res => {
             this.setState({
                 medicationLackingEvents : res.data
             });

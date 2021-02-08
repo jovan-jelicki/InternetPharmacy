@@ -16,9 +16,14 @@ export default class AddAppointmentModal extends React.Component {
                 periodStart : "",
                 periodEnd : ""
             },
-            appointmentDate : ""
+            appointmentDate : "",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
         }
+    }
 
+    componentDidMount() {
+        this.fetchPharmacyId();
     }
 
 
@@ -72,13 +77,18 @@ export default class AddAppointmentModal extends React.Component {
                 id : 1
             },
             active : true,
-            type : 'dermatologist',
+            type : 'ROLE_dermatologist',
             appointmentStatus : 'available',
             period : {
                 periodStart : fullYear + " " + this.state.period.periodStart + ":00",
                 periodEnd : fullYear + " " + this.state.period.periodEnd + ":00",
             }
-        }).then( () =>
+        }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then( () =>
             {
                 alert("Appointment successfully created!");
                 this.props.closeModal();
@@ -104,5 +114,20 @@ export default class AddAppointmentModal extends React.Component {
         const period = this.state.period;
         period['periodEnd'] = date;
         this.setState({ period });
+    }
+
+    fetchPharmacyId = () => {
+        axios.get("http://localhost:8080/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacyId : res.data
+                })
+            });
     }
 }
