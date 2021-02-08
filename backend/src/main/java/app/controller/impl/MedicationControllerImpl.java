@@ -28,13 +28,13 @@ public class MedicationControllerImpl {
     }
 
     @PostMapping(value = "/search")
-    @PreAuthorize("hasRole('patient')")
+    @PreAuthorize("hasAnyRole('patient', 'pharmacist', 'dermatologist', 'supplier', 'pharmacyAdmin', 'systemAdmin')")
     public ResponseEntity<Collection<Medication>> search(@RequestBody MedicationSearchDTO medicationName) {
         return new ResponseEntity<>(medicationService.getMedicationByNameIsContaining(medicationName),HttpStatus.OK);
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('patient')")
+    @PreAuthorize("hasAnyRole('patient', 'pharmacist', 'dermatologist', 'supplier', 'pharmacyAdmin', 'systemAdmin')")
     public ResponseEntity<Collection<Medication>> read() {
         return new ResponseEntity<>(medicationService.read(), HttpStatus.OK);
     }

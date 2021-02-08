@@ -16,8 +16,15 @@ class PatientScheduledAppointments extends React.Component {
     }
 
     componentDidMount() {
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         axios
-        .get('http://localhost:8080/api/scheduling/counseling-upcoming/0')
+        .get('http://localhost:8080/api/scheduling/counseling-upcoming/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             this.setState({
                 counselings : res.data
@@ -25,7 +32,12 @@ class PatientScheduledAppointments extends React.Component {
         })
 
         axios
-        .get('http://localhost:8080/api/scheduling/examination-upcoming/0')
+        .get('http://localhost:8080/api/scheduling/examination-upcoming/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             alert('ok')
             this.setState({
@@ -36,7 +48,12 @@ class PatientScheduledAppointments extends React.Component {
 
     cancel(id) {
         axios
-        .put('http://localhost:8080/api/appointment/cancel-counseling/' + id)
+        .put('http://localhost:8080/api/appointment/cancel-counseling/' + id, {}, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             this.setState({
                 counselings : [...this.state.counselings.filter(c => c.id != id)]
@@ -48,7 +65,12 @@ class PatientScheduledAppointments extends React.Component {
 
     cancelExamination(id) {
         axios
-        .put('http://localhost:8080/api/appointment/cancel-examination/' + id)
+        .put('http://localhost:8080/api/appointment/cancel-examination/' + id, {}, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             this.setState({
                 examinations : [...this.state.examinations.filter(c => c.id != id)]

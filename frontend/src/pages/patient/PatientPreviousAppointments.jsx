@@ -14,8 +14,15 @@ class PatientPreviousAppointments extends React.Component {
     }
 
     componentDidMount() {
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         axios
-        .get('http://localhost:8080/api/scheduling/counseling-previous/0')
+        .get('http://localhost:8080/api/scheduling/counseling-previous/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             this.setState({
                 counselings : res.data
@@ -23,7 +30,12 @@ class PatientPreviousAppointments extends React.Component {
         })
 
         axios
-        .get('http://localhost:8080/api/scheduling/examination-previous/0')
+        .get('http://localhost:8080/api/scheduling/examination-previous/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        }), 
         .then(res => {
             this.setState({
                 examinations : res.data

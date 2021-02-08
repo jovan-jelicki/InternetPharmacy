@@ -106,6 +106,7 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
     }
 
     @GetMapping(value = "/patient/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<MedicationReservationSimpleInfoDTO>> findAllByPatientId(@PathVariable Long id) {
         return new ResponseEntity<>(
                 medicationReservationService.findAllByPatientId(id)
@@ -116,6 +117,7 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
     }
 
     @PutMapping(value = "/cancel/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> cancel(@PathVariable Long id) {
         if(medicationReservationService.cancel(id))
             return new ResponseEntity<>(HttpStatus.OK);

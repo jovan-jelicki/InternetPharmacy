@@ -19,12 +19,21 @@ class PatientCounselScheduling extends React.Component {
         this.schedule = this.schedule.bind(this)
     }
 
+    componentDidMount() {
+        this.aut = JSON.parse(localStorage.getItem('user'))
+    }
+
     search(dateTime) {
         axios
             .post('http://localhost:8080/api/scheduling/search', {
                 'timeSlot' : dateTime,
                 'employeeType' : 'pharmacist',
-                'patientId' : 0
+                'patientId' : this.aut.id
+            }, {
+                headers : {
+                    'Content-Type' : 'application/json',
+                    Authorization : 'Bearer ' + this.aut.jwtToken 
+                }
             })
             .then(res => {
                 this.setState({
@@ -46,10 +55,15 @@ class PatientCounselScheduling extends React.Component {
                 'id' : pharmacyId
             },
             'patient' : {
-                'id' : 0
+                'id' : this.aut.id
             },
             'period' : {
                 'periodStart' : this.state.dateTime
+            }
+        }, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
             }
         })
         .then(res => {

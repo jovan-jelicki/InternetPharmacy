@@ -87,6 +87,7 @@ public class AppointmentControllerImpl {
     }
 
     @PostMapping(value = "/counseling")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> scheduleCounseling(@RequestBody Appointment entity) {
         if(appointmentService.scheduleCounseling(entity) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -95,6 +96,7 @@ public class AppointmentControllerImpl {
     }
 
     @PutMapping(value = "/cancel-counseling/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> cancelCounseling(@PathVariable Long id) {
         if(appointmentService.cancelCounseling(id) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -102,6 +104,7 @@ public class AppointmentControllerImpl {
     }
 
     @PutMapping(value = "/cancel-examination/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Void> cancelExamination(@PathVariable Long id) {
         if(appointmentService.cancelExamination(id) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
