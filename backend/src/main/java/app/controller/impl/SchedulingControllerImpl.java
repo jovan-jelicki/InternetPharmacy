@@ -26,15 +26,17 @@ public class SchedulingControllerImpl {
     private final DermatologistService dermatologistService;
     private final EmailService emailService;
     private final GradeService gradeService;
+    private final PatientService patientService;
 
     @Autowired
-    public SchedulingControllerImpl(CounselingService counselingService, PharmacistService pharmacistService, ExaminationService examinationService, DermatologistService dermatologistService, EmailService emailService, GradeService gradeService) {
+    public SchedulingControllerImpl(PatientService patientService, CounselingService counselingService, PharmacistService pharmacistService, ExaminationService examinationService, DermatologistService dermatologistService, EmailService emailService, GradeService gradeService) {
         this.counselingService = counselingService;
         this.pharmacistService = pharmacistService;
         this.examinationService = examinationService;
         this.dermatologistService = dermatologistService;
         this.emailService = emailService;
         this.gradeService = gradeService;
+        this.patientService = patientService;
     }
 
     @PostMapping(value = "/search", consumes = "application/json")
@@ -58,7 +60,20 @@ public class SchedulingControllerImpl {
     @PreAuthorize("hasRole('dermatologist')")
     @PostMapping(value = "/dermatologistSchedulingCreatedAppointment", consumes = "application/json")
     public ResponseEntity<Boolean> dermatologistSchedulingCreatedAppointment(@RequestBody AppointmentUpdateDTO appointmentUpdateDTO){
-        return new ResponseEntity<>(examinationService.dermatologistSchedulingCreatedAppointment(appointmentUpdateDTO), HttpStatus.OK);
+        if(examinationService.dermatologistSchedulingCreatedAppointment(appointmentUpdateDTO)) {
+            sendNotificationToPatient(patientService.read(appointmentUpdateDTO.getPatientId()).get());
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(false, HttpStatus.NOT_ACCEPTABLE);    }
+
+    @PreAuthorize("hasRole('dermatologist')")
+    @PostMapping(value = "/dermatologistScheduling", consumes = "application/json")
+    public ResponseEntity<Boolean> dermatologistScheduling(@RequestBody Appointment appointment){
+        if(examinationService.dermatologistScheduling(appointment)) {
+            sendNotificationToPatient(appointment.getPatient());
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(false, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @PreAuthorize("hasRole('pharmacist')")

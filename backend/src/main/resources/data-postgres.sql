@@ -204,7 +204,7 @@ VALUES (29, '2016-02-25', 2, 5,0);
 -- kraj
 
 INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
-VALUES (0,0);
+VALUES (1,0);
 INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)
 VALUES (0,1);
 INSERT INTO pharmacy_medication_reservation (pharmacy_id, medication_reservation_id)

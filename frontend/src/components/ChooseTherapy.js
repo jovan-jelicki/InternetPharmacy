@@ -7,7 +7,8 @@ export default class ChooseTherapy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showModal : false
+            showModal : false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 

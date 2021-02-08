@@ -15,13 +15,19 @@ export default class Appointment extends React.Component {
             dateEndTherapy : "",
             medications : [],
             eprescription : {},
-            therapy : {}
+            therapy : {},
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
     componentDidMount() {
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medications/getMedicationsForPatient/' + this.props.appointment.patientId)
+            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medications/getMedicationsForPatient/' + this.props.appointment.patientId,
+                {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 this.setState({
                     medications : res.data
@@ -89,8 +95,12 @@ export default class Appointment extends React.Component {
                     }
                     ]
                 },
-                'examinerId' : 1,
-                'employeeType' : 1
+                'examinerId' : this.state.user.id,
+                'employeeType' : this.state.user.type
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 alert("You created ePrescription!");
@@ -181,6 +191,10 @@ export default class Appointment extends React.Component {
                             periodEnd : fullYearEnd
                         }
                     }
+                }, {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
                 })
                 .then(res => {
                     alert("Appointment finished!");
@@ -201,6 +215,10 @@ export default class Appointment extends React.Component {
                     'pharmacyName' : this.props.appointment.pharmacyName,
                     'appointmentStatus' : this.props.appointment.appointmentStatus,
                     'patientId' : this.props.appointment.patientId
+                }, {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
                 })
                 .then(res => {
                     alert("Appointment finished!");

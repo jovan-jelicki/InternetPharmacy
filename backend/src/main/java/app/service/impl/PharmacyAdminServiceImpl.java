@@ -69,8 +69,8 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
     @Override
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<PharmacyAdmin> pharmacyAdmin = this.read(passwordKit.getUserId());
-        if(pharmacyAdmin.isEmpty())
-            throw new NullPointerException("User not found");
+//        if(pharmacyAdmin.isEmpty())
+//            throw new NullPointerException("User not found");
         PharmacyAdmin user = pharmacyAdmin.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());
