@@ -15,8 +15,11 @@ export default class DermatologistAppointmentStart extends React.Component {
     }
 
     componentDidMount() {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getAllScheduledByExaminer"
+            : 'http://localhost:8080/api/appointment/getAllScheduledByExaminer';
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getAllScheduledByExaminer', {
+            .post(path, {
                 'id' : this.state.user.id,
                 'type' : this.state.user.type
             } ,

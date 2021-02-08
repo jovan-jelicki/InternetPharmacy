@@ -16,8 +16,10 @@ export default class ScheduleByDateTime extends React.Component {
     }
     componentDidMount() {
         if(this.props.appointment.type == 'ROLE_dermatologist'){
+            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/getFreeAppointments/"
+                : 'http://localhost:8080/api/dermatologists/getFreeAppointments/';
             axios
-                .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/getFreeAppointments/', {
+                .post(path, {
                     'dermatologistId' : this.state.user.id,
                     'pharmacyId' : this.props.appointment.pharmacyId
                 }, {  headers: {
@@ -63,8 +65,11 @@ export default class ScheduleByDateTime extends React.Component {
     }
 
     scheduleSelected = () => {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/scheduling/dermatologistSchedulingCreatedAppointment/"
+            : 'http://localhost:8080/api/scheduling/dermatologistSchedulingCreatedAppointment/';
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/scheduling/dermatologistSchedulingCreatedAppointment/', {
+            .post(path , {
                 'appointmentId' : this.state.selected.id,
                 'patientId' : this.props.appointment.patientId
             }, {  headers: {
@@ -104,8 +109,11 @@ export default class ScheduleByDateTime extends React.Component {
         let fullYearStart = periodStart.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes + ":00";
 
         if (this.state.user.type == "ROLE_pharmacist") {
+
+            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/scheduling/pharmacistScheduling/"
+                : 'http://localhost:8080/api/scheduling/pharmacistScheduling/';
             axios
-                .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/scheduling/pharmacistScheduling/', {
+                .post(path, {
                     "examinerId": this.state.user.id,
                     "patient": {"id": this.props.appointment.patientId},
                     "period": {"periodStart": fullYearStart},
@@ -119,8 +127,11 @@ export default class ScheduleByDateTime extends React.Component {
                 .then(res => alert("You have schedule new appointment!"))
                 .catch(res => alert("Can't schedule new appointment because patient/examiner is not free at that period!"));
         }else {
+
+            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/scheduling/dermatologistScheduling/"
+                : 'http://localhost:8080/api/scheduling/dermatologistScheduling/';
             axios
-                .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/scheduling/dermatologistScheduling/', {
+                .post(path, {
                     "examinerId": this.state.user.id,
                     "patient": {"id": this.props.appointment.patientId},
                     "period": {"periodStart": fullYearStart},

@@ -23,8 +23,11 @@ export default class DermatologistHomePage extends React.Component {
     }
 
     componentDidMount() {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/isAccountApproved/"
+            : 'http://localhost:8080/api/dermatologists/isAccountApproved/';
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/isAccountApproved/' + this.state.user.id,
+            .get(path + this.state.user.id,
                 {  headers: {
                         'Content-Type': 'application/json',
                         Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -96,8 +99,11 @@ export default class DermatologistHomePage extends React.Component {
     sendData = () => {
         if(this.state.repeatPw !== this.state.newPw)
             return;
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/pass"
+            : 'http://localhost:8080/api/dermatologists/pass';
         axios
-            .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/pass', {
+            .put(path, {
                 'userId' : this.state.user.id,
                 'oldPassword' : this.state.oldPw,
                 'newPassword' : this.state.newPw,

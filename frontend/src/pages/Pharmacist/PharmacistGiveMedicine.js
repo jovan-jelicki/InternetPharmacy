@@ -51,8 +51,10 @@ export default class PharmacistGiveMedicine extends React.Component {
     }
 
     giveMedicine = () => {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medicationReservation/giveMedicine/"
+            : 'http://localhost:8080/api/medicationReservation/giveMedicine/';
         axios
-            .put( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medicationReservation/giveMedicine/' + this.state.reservation.id , {},
+            .put( path + this.state.reservation.id , {},
                 {  headers: {
                         'Content-Type': 'application/json',
                         Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -80,8 +82,11 @@ export default class PharmacistGiveMedicine extends React.Component {
     }
 
     getReservation = () => {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medicationReservation/getMedicationReservation"
+            : 'http://localhost:8080/api/medicationReservation/getMedicationReservation';
         axios
-            .post( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medicationReservation/getMedicationReservation', {
+            .post( path, {
                 pharmacistId : this.state.user.id,
                 medicationId : this.state.medicineCode
             }, {  headers: {

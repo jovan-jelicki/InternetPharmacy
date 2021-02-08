@@ -20,8 +20,10 @@ export default class VacationRequest extends React.Component {
     }
     componentDidMount() {
         if(this.state.user.type == "ROLE_pharmacist"){
+            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacist/getPharmacy/"
+                : 'http://localhost:8080/api/pharmacist/getPharmacy/';
             axios
-                .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/pharmacist/getPharmacy/' + this.state.user.id, {  headers: {
+                .get(path + this.state.user.id, {  headers: {
                         'Content-Type': 'application/json',
                         Authorization : 'Bearer ' + this.state.user.jwtToken
                     }
@@ -34,8 +36,10 @@ export default class VacationRequest extends React.Component {
                 })
                 .catch(res => alert("Wrong!"));
         }else if (this.state.user.type == "ROLE_dermatologist"){
+            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/getPharmacy/"
+                : 'http://localhost:8080/api/dermatologists/getPharmacy/';
             axios
-                .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/getPharmacy/' + this.state.user.id, {  headers: {
+                .get(path + this.state.user.id, {  headers: {
                         'Content-Type': 'application/json',
                         Authorization : 'Bearer ' + this.state.user.jwtToken
                     }
@@ -120,8 +124,10 @@ export default class VacationRequest extends React.Component {
             minutes = "0" + minutes;
         let fullYearEnd = periodEnd.getFullYear() + "-" + month + "-" + day  + " " + hours + ":" + minutes + ":00";
 
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/vacationRequest/saveDto"
+            : 'http://localhost:8080/api/vacationRequest/saveDto';
         axios
-            .post( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/vacationRequest/saveDto', {
+            .post( path, {
                 'period' : {
                     periodStart: fullYearStart,
                     periodEnd: fullYearEnd
