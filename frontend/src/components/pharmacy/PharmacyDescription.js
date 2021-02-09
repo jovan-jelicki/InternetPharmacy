@@ -66,7 +66,7 @@ export class PharmacyDescription extends React.Component{
 
                 <Map
                     google={this.props.google}
-                    zoom={14}
+                    zoom={5}
                     style={mapStyles}
                     initialCenter={
                         {

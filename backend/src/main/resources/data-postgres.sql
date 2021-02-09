@@ -73,6 +73,8 @@ INSERT INTO medication_ingredient (medication_id, ingredient_id) VALUES (0, 4);
 
 INSERT INTO pharmacy_admin (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, pharmacy_id)
 VALUES (1, 'Jovan', 'Brokovich', 2, 'brokovich@gmail.com', 'broka', '0605435487', 'SRB', 41, 87, 'Avenue 3rd', 'Belgrade',1);
+INSERT INTO pharmacy_admin (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, pharmacy_id)
+VALUES (2, 'Elena', 'Kitic', 2, 'elena@gmail.com', 'pshpsh', '0605435487', 'SRB', 41, 87, 'Nemanjina', 'Belgrade',0);
 
 INSERT INTO medication_quantity (id, quantity, medication_id)
 VALUES (1, 2, 1);

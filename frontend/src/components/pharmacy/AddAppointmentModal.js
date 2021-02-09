@@ -75,7 +75,7 @@ export default class AddAppointmentModal extends React.Component {
         axios.post(HelperService.getPath('/api/appointment'), {
             examinerId: this.props.dermatologist.id,
             pharmacy: {
-                id : 1
+                id : this.state.pharmacyId
             },
             active : true,
             type : 'ROLE_dermatologist',
