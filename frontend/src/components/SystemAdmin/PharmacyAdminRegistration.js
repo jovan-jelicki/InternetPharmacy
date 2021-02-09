@@ -22,7 +22,10 @@ export default class PharmacyAdminRegistration extends React.Component {
                     longitude: -0.127758
                 },
                 telephone: '',
-                rePassword: ''
+                rePassword: '',
+                pharmacy:{
+                    id:''
+                }
             },
             errors: {
                 user: {
@@ -58,7 +61,7 @@ export default class PharmacyAdminRegistration extends React.Component {
         console.log(this.state.user)
         console.log(this.state.selectedPharmacy)
         axios
-            .post('http://localhost:8080/api/pharmacyAdmin/save', {
+            .post('http://localhost:8080/api/pharmacyAdmin/saveAdminPharmacy', {
                 'id':'',
                 'firstName' : this.state.user.firstName,
                 'lastName' : this.state.user.lastName,
@@ -78,7 +81,7 @@ export default class PharmacyAdminRegistration extends React.Component {
                     }
                 },
                 'approvedAccount':false,
-                //'pharmacy':this.state.selectedPharmacy
+                'pharmacyId': this.state.user.pharmacy.id
 
             })
             .then(res => {
@@ -91,15 +94,7 @@ export default class PharmacyAdminRegistration extends React.Component {
     }
 
     handlePharmacySelected=(event) => {
-      /*  const target = event.target;
-        let value = event.target.value;
-        let selectedPharmacy=this.state.selectedPharmacy;
-        selectedPharmacy=value;
 
-        this.setState({selectedPharmacy})
-
-        console.log(this.state.selectedPharmacy)
-        */
         const target = event.target;
 
         let value = event.target.value;
@@ -109,8 +104,8 @@ export default class PharmacyAdminRegistration extends React.Component {
                 id:value
         }
         })
-       // this.state.selectedPharmacy=value;
-        console.log(this.state.selectedPharmacy)
+        this.state.user.pharmacy.id=value;
+        console.log(this.state.user.pharmacy.id)
         this.validationErrorMessage(event)
 
     }
