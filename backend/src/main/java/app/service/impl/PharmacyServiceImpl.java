@@ -130,7 +130,6 @@ public class PharmacyServiceImpl implements PharmacyService {
         return pharmacies;
     }
 
-
     @Override
     public Pharmacy save(Pharmacy entity) {
         return pharmacyRepository.save(entity);

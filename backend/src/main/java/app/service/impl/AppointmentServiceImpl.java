@@ -3,9 +3,9 @@ package app.service.impl;
 import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
-import app.model.medication.Medication;
+import app.model.medication.*;
 import app.model.pharmacy.LoyaltyProgram;
-import app.model.pharmacy.LoyaltyScale;
+import app.model.pharmacy.Pharmacy;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
@@ -16,7 +16,6 @@ import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
 import app.service.*;
-import org.modelmapper.internal.util.Iterables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +43,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.vacationRequestRepository = vacationRequestRepository;
         this.patientService = patientService;
         this.loyaltyProgramService = loyaltyProgramService;
+
     }
 
     @PostConstruct
@@ -373,7 +373,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Collection<AppointmentEmployeeDTO> getFinishedForComplaint(Long id, EmployeeType type) {
         Collection<Appointment>  finishedAppointments=getAllFinishedByPatientAndExaminerType(id,type);
         ArrayList<Long> dermatologsitIds = new ArrayList<>();
-        ArrayList<Long> pharmacistIds = new ArrayList<>();
         ArrayList<AppointmentEmployeeDTO> appointmentEmployeeDTOs = new ArrayList<>();
 
         for(Appointment appointment : finishedAppointments){
@@ -386,18 +385,24 @@ public class AppointmentServiceImpl implements AppointmentService {
                     appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
 
                     dermatologsitIds.add(appointment.getExaminerId());
-            }/*else if(type.toString()=="pharmacist"  && !pharmacistIds.contains(appointment.getExaminerId())){
-                    Pharmacist pharmacist=pharmacistService.read(appointment.getExaminerId()).get();
-                    appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
-                    appointmentEmployeeDTO.setEmployeeFirstName(pharmacist.getFirstName());
-                    appointmentEmployeeDTO.setEmployeeLastName(pharmacist.getLastName());
-                    appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
-
-                    pharmacistIds.add(appointment.getExaminerId());
-
-            }*/
+            }
         }
             return appointmentEmployeeDTOs;
+    }
+
+    @Override
+    public Collection<PharmacyNameIdDTO> getAppointmentsPharmacyForComplaint(Long patientId) {
+        Collection<PharmacyNameIdDTO> pharmacies=new ArrayList<>();
+        ArrayList<Long> pharmacyIds = new ArrayList<>();
+
+        for(Appointment appointment : this.read()){
+            if(appointment.getPatient().getId()==patientId && !pharmacyIds.contains(appointment.getPharmacy().getId())){
+                pharmacyIds.add(appointment.getPharmacy().getId());
+                pharmacies.add(new PharmacyNameIdDTO(appointment.getPharmacy()));
+            }
+        }
+
+        return  pharmacies;
     }
 
     @Override
