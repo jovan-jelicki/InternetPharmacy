@@ -110,7 +110,7 @@ public class PharmacistControllerImpl {
         return new ResponseEntity<>(new WorkingHoursDTO(pharmacist.getWorkingHours()), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
+    @PreAuthorize("hasAnyRole('pharmacyAdmin, patient')")
     @GetMapping(value = "getByPharmacy/{id}")
     public ResponseEntity<Collection<PharmacistDTO>> getPharmacistsByPharmacyId(@PathVariable Long id) {
         ArrayList<PharmacistDTO> pharmacistDTOS = new ArrayList<>();

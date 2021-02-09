@@ -62,7 +62,8 @@ export default class PharmacyPage extends React.Component{
         return (
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
-                    <Button variant="outline-dark" className="mb-3" style={{marginLeft: "50rem"}} onClick={this.redirectToPharmacyAdminPage}>← Return to your profile</Button>
+                    <Button variant="outline-dark" className="mb-3" style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block', marginLeft: "50rem"} : {display : 'none'}} onClick={this.redirectToPharmacyAdminPage}>← Return to your profile</Button>
+                    <Button variant="outline-dark" className="mb-3" style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block', marginLeft: "50rem"} : {display : 'none'}} onClick={this.redirectToPharmacyListing}>← Return to pharmacies</Button>
                     <h1 className="display-4">{this.state.pharmacy.name}</h1>
                 </div>
                 <br/>
@@ -210,6 +211,13 @@ export default class PharmacyPage extends React.Component{
     redirectToPharmacyAdminPage = () => {
         this.props.history.push({
             pathname: "/pharmacy-admin-profile",
+        });
+    }
+
+    redirectToPharmacyListing = () => {
+        sessionStorage.removeItem('pharmacyId');
+        this.props.history.push({
+            pathname: "/",
         });
     }
 }

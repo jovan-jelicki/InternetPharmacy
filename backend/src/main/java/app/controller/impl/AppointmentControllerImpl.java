@@ -74,7 +74,7 @@ public class AppointmentControllerImpl {
     }
 
     @PutMapping(value = "/update")
-    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
+    @PreAuthorize("hasAnyRole('pharmacyAdmin, patient')")
     public ResponseEntity<Void> update(@RequestBody AppointmentUpdateDTO appointmentDTO) {
         try {
             appointmentService.update(appointmentDTO);
@@ -154,7 +154,7 @@ public class AppointmentControllerImpl {
         return new ResponseEntity(appointmentService.patientDidNotShowUp(id), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
+    @PreAuthorize("hasAnyRole('pharmacyAdmin, patient')")
     @GetMapping(value = "/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(@PathVariable Long id){
         ArrayList<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
