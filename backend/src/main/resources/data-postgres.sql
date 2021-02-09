@@ -573,3 +573,6 @@ values(1002,2,30,60,52);
 
 insert into loyalty_program(id, appointment_points, consulting_points)
 values(1000,0,0);
+
+insert into system_admin (id,country , latitude, longitude,street, town,phone_number,email,password,  first_name, last_name, user_type)
+VALUES (1,'SRB', 41, 87, 'Vuka Karadzica 4', 'Belgrade',  '06585858669','Mile@gmail.com','mile123','Mile', 'Petrovic',3);

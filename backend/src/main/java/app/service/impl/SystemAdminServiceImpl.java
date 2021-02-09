@@ -1,5 +1,7 @@
 package app.service.impl;
 
+import app.dto.UserPasswordDTO;
+import app.model.user.Supplier;
 import app.model.user.SystemAdmin;
 import app.repository.SystemAdminRepository;
 import app.service.SystemAdminService;
@@ -42,6 +44,26 @@ public class SystemAdminServiceImpl implements SystemAdminService {
     @Override
     public SystemAdmin findByEmail(String email) {
         return systemAdminRepository.findByEmail(email);
+    }
+
+    private void validatePassword(UserPasswordDTO passwordKit, SystemAdmin user) {
+        String password = user.getCredentials().getPassword();
+        if(!password.equals(passwordKit.getOldPassword()))
+            throw new IllegalArgumentException("Wrong password");
+        else if(!passwordKit.getNewPassword().equals(passwordKit.getRepeatedPassword()))
+            throw new IllegalArgumentException("Entered passwords doesn't match");
+    }
+
+    @Override
+    public void changePassword(UserPasswordDTO passwordKit) {
+        Optional<SystemAdmin> _user = systemAdminRepository.findById(passwordKit.getUserId());
+        if(_user.isEmpty())
+            throw new NullPointerException("User not found");
+        SystemAdmin user = _user.get();
+        validatePassword(passwordKit, user);
+        user.getCredentials().setPassword(passwordKit.getNewPassword());
+        user.setApprovedAccount(true);
+        save(user);
     }
 
 }
