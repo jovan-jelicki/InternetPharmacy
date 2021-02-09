@@ -6,6 +6,7 @@ import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationQuantity;
 
 import app.dto.MedicationOfferAndOrderDTO;
+import app.model.user.Dermatologist;
 import app.model.user.Supplier;
 import app.service.SupplierService;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,21 @@ public class SupplierControllerImpl {
     public ResponseEntity<Collection<MedicationOfferAndOrderDTO>> getMedicationOffersBySupplier(@PathVariable Long supplierId) {
         return new ResponseEntity<>(supplierService.getMedicationOffersBySupplier(supplierId), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<PharmacistDermatologistProfileDTO> read(@PathVariable Long id) {
+        return new ResponseEntity<>(new PharmacistDermatologistProfileDTO(supplierService.read(id).get()), HttpStatus.OK);
+    }
+
+    @PutMapping(consumes = "application/json")
+    public ResponseEntity<PharmacistDermatologistProfileDTO> update(@RequestBody PharmacistDermatologistProfileDTO entity) {
+        if(!supplierService.existsById(entity.getId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Supplier supplier = supplierService.read(entity.getId()).get();
+        supplierService.save(entity.convertDtoToSupplier(supplier));
+        return new ResponseEntity<>(entity, HttpStatus.CREATED);
+    }
+
 
     @PostMapping(value="/save", consumes = "application/json")
     public ResponseEntity<Supplier> save(@RequestBody Supplier entity) {
