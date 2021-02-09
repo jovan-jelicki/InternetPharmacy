@@ -87,7 +87,7 @@ public class PharmacyServiceImpl implements PharmacyService {
                         pmDTO.setAddress(p.getAddress());
                         pmDTO.setMedicationId(medicationId);
 
-                        double cena = medicationPriceListService.getMedicationPrice(p.getId(), medicationId);
+                        double cena = (Double)medicationPriceListService.getMedicationPrice(p.getId(), medicationId);
                         pmDTO.setMedicationPrice(cena);
                         pharmacies.add(pmDTO);
                     }

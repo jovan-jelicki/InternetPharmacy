@@ -27,14 +27,15 @@ export default class Promotions extends React.Component{
     }
 
     handlePromotion=(promotion)=>{
-        this.checkIfSubscribed(promotion)
+        this.subscribeToPromotion(promotion)
+        //this.checkIfSubscribed(promotion)
 
-        console.log(this.state.isSubscribed)
-        if(this.state.isSubscribed){
-            this.handleModalAlert()
-        }else {
-            this.subscribeToPromotion(promotion)
-        }
+        //console.log(this.state.isSubscribed)
+        //if(this.state.isSubscribed){
+         //   this.handleModalAlert()
+        //}else {
+        //    this.subscribeToPromotion(promotion)
+        //}
     }
 
     handleModal = () => {

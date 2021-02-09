@@ -100,7 +100,7 @@ INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VA
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (1, 3);
 
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
-    (1,0,0, 300, '2021-01-01', '2021-02-05');
+    (1,0,0, 300, '2021-01-01', '2021-02-20');
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
     (2,4,0, 400, '2021-01-01', '2021-02-10');
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
