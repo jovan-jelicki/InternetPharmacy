@@ -24,7 +24,7 @@ class PatientLayout extends React.Component {
                                 <NavDropdown.Item as={NavLink} to='/scheduled-appointments-history'>Appointment History</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Reservations" id="collasible-nav-dropdow">
-                                <NavDropdown.Item as={NavLink} to='/patient-home'>Medications</NavDropdown.Item>
+                                <NavDropdown.Item as={NavLink} to='/patient-medications'>Medications</NavDropdown.Item>
                                 <NavDropdown.Item as={NavLink} to='/patient-reservations'>All Reservations</NavDropdown.Item>
                             </NavDropdown>
                             <Nav.Link as={NavLink} to='/patient-eprescription'>ePrescriptions</Nav.Link>  
@@ -36,6 +36,7 @@ class PatientLayout extends React.Component {
                             </NavDropdown>
                             <Nav.Link as={NavLink} to='/grading'>Grade</Nav.Link>
                             <Nav.Link as={NavLink} to='javascript:;'>File a Complaint</Nav.Link>
+                            <Nav.Link as={NavLink} to='javascript:;'>Log out</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>

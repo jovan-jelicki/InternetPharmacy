@@ -2,12 +2,14 @@ import React from 'react';
 import {Card, Col, Row, Alert, Button} from "react-bootstrap";
 import PharmacySearch from './PharmacySearch';
 import PharmacyFilter from './PharmacyFilter';
+import PharmacySorting from './PharmacySorting'
 import axios from 'axios';
 import StarRatings from 'react-star-ratings'
 import helpers from './../../helpers/AuthentificationService'
+import { withRouter } from "react-router-dom";
 
 
-export default class PharmacyListing extends React.Component {
+class PharmacyListing extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -16,6 +18,8 @@ export default class PharmacyListing extends React.Component {
         this.search = this.search.bind(this)
         this.cancel = this.cancel.bind(this)
         this.gradeFilter = this.gradeFilter.bind(this)
+        this.visitPharmacy = this.visitPharmacy.bind(this)
+        this.sorting = this.sorting.bind(this)
     }
 
     async componentDidMount() {
@@ -35,6 +39,16 @@ export default class PharmacyListing extends React.Component {
         })
 
         this.pharmaciesBackup = [...this.state.pharmacies]
+    }
+
+    visitPharmacy(id) {
+        sessionStorage.setItem('pharmacyId', id)
+        this.props.history.push({
+            pathname: '/pharmacy',
+            state : {
+                pharmacyId : id
+            }
+        })
     }
 
     cancel() {
@@ -60,6 +74,7 @@ export default class PharmacyListing extends React.Component {
             }
         }*/)
         .then((res) => {
+            console.log(res.data)
             this.setState({
                 pharmacies : res.data
             })
@@ -72,8 +87,39 @@ export default class PharmacyListing extends React.Component {
         })
     }
 
+    sorting(method) {
+        if(method == 'name') {
+            this.setState({
+                pharmacies : [...this.state.pharmacies.sort((a, b) => {
+                    let fa = a.name.toLowerCase(), fb = b.name.toLowerCase()
+                    if(fa < fb)
+                        return -1
+                    if(fa > fb)
+                        return 1
+                })]
+            })
+        }
+        else if(method == 'city') {
+            this.setState({
+                pharmacies : [...this.state.pharmacies.sort((a, b) => {
+                    let fa = a.address.town.toLowerCase(), fb = b.address.town.toLowerCase()
+                    if(fa < fb)
+                        return -1
+                    if(fa > fb)
+                        return 1
+                })]
+            })
+        }
+        else if(method == 'grade') {
+            this.setState({
+                pharmacies : [...this.state.pharmacies.sort((a, b) => {
+                    return a.grade - b.grade
+                })]
+            })
+        }
+    }
+
     render() {
-        console.log(helpers.isLoggedIn())
         const pharmacies = this.state.pharmacies.map((pharmacy, index) => {
             const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country 
             return (
@@ -85,7 +131,7 @@ export default class PharmacyListing extends React.Component {
                         <Card.Text>
                         {pharmacy.description}
                         <br/>
-                        {helpers.isLoggedIn() && <Button variant={'outline-light'}>Visit & Schedule</Button>}
+                        {helpers.isLoggedIn() && <Button variant={'outline-light'} onClick={() => this.visitPharmacy(pharmacy.id)}>Visit & Schedule</Button>}
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>
@@ -107,6 +153,7 @@ export default class PharmacyListing extends React.Component {
                 </Row>
                 <PharmacySearch search={this.search} cancel={this.cancel}/>
                 <PharmacyFilter gradeFilter={this.gradeFilter}/>
+                <PharmacySorting sorting={this.sorting}/>
                 {this.state.pharmacies.length != 0 ?
                     <Row className={'mt-4'}>
                             {pharmacies}
@@ -122,3 +169,5 @@ export default class PharmacyListing extends React.Component {
     }
 
 }
+
+export default withRouter(PharmacyListing)
