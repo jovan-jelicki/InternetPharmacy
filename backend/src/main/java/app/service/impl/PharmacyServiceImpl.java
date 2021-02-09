@@ -46,6 +46,8 @@ public class PharmacyServiceImpl implements PharmacyService {
         this.medicationOfferService = medicationOfferService;
     }
 
+
+
     @Override
     public Pharmacy savePharmacy(PharmacyAdminPharmacyDTO pharmacyAdminPharmacyDTO) {
         Pharmacy pharmacy = new Pharmacy();
@@ -87,6 +89,34 @@ public class PharmacyServiceImpl implements PharmacyService {
                     pmDTO.setMedicationPrice(cena);
                     pharmacies.add(pmDTO);
                 }
+            }
+        });
+        return pharmacies;
+    }
+
+    @Override
+    public Collection<PharmacyMedicationDTO> getPharmacyByListOfMedications(String names) {
+        ArrayList<PharmacyMedicationDTO> pharmacies = new ArrayList<>();
+        Collection<Medication> medications=medicationService.read();
+
+        String []parseString=names.split(",");
+
+        read().forEach(p -> {
+            for (MedicationQuantity q : p.getMedicationQuantity()) {
+                    for(String name: parseString){
+                        System.out.println(name);
+                        if (q.getMedication().getName().equals(name)) {
+                            PharmacyMedicationDTO pmDTO = new PharmacyMedicationDTO();
+                            pmDTO.setId(p.getId());
+                            pmDTO.setName(p.getName());
+                            pmDTO.setAddress(p.getAddress());
+                            pmDTO.setMedicationId(q.getMedication().getId());
+
+                            double cena = medicationPriceListService.getMedicationPrice(p.getId(), q.getMedication().getId());
+                            pmDTO.setMedicationPrice(cena);
+                            pharmacies.add(pmDTO);
+                        }
+                    }
             }
         });
         return pharmacies;

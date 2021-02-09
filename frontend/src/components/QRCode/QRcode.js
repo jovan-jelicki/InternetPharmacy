@@ -3,19 +3,22 @@ import {Button, Container} from "react-bootstrap";
 import PatientLayout from "../../layout/PatientLayout";
 import jsQR from "jsqr";
 import png from "png.js";
+import {text} from "@fortawesome/fontawesome-svg-core";
+import axios from "axios";
 
 
 export default class QRcode extends React.Component{
     constructor(props) {
         super(props);
+
         this.state = {
             image: null,
-            loaded:false,
-            fileReader : new FileReader()
+            medications:{ data:[]},
+            boolBLa:false
         };
         this.onImageChange = this.onImageChange.bind(this);
     }
-    
+
     onImageChange = (event)=> {
         var fileReader=new FileReader();
         var fileInput = document.getElementById("file");
@@ -26,8 +29,9 @@ export default class QRcode extends React.Component{
         });
 
 
-        fileReader.onload= function(event){
+       fileReader.onload= function(event){
             const pngReader = new png(event.target.result);
+
             pngReader.parse(function(err, pngData) {
                 if (err) throw err;
                 const pixelArray = new Uint8ClampedArray(pngData.width * pngData.height * 4);
@@ -40,10 +44,35 @@ export default class QRcode extends React.Component{
                         pixelArray[(y * pngData.width + x) * 4 + 3] = pixelData[3];
                     }
                 }
-                console.log(jsQR(pixelArray, pngData.width, pngData.height));
+                let result=jsQR(pixelArray, pngData.width, pngData.height)
+                localStorage.setItem("text", JSON.stringify(result));
             });
         };
+
+       this.handleQrCode()
     };
+
+    handleQrCode=()=> {
+        if (!!localStorage.getItem("text") ) {
+            let meds=JSON.parse(localStorage.getItem("text"))
+            if(meds!=null) {
+                this.state.medications=meds;
+                this.sendData();
+            }
+            else alert("Please upload QR code")
+        }
+    }
+    async sendData() {
+        console.log("BLA")
+        console.log(this.state.medications.data)
+        axios
+            .get('http://localhost:8080/api/pharmacy/getPharmacyByListOfMedications', {
+                'names': this.state.medications.data
+            })
+            .then(res => {
+
+            });
+    }
 
     render() {
         return (

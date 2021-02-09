@@ -112,6 +112,10 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/getPharmacyByListOfMedications")
+    public ResponseEntity<Collection<PharmacyMedicationDTO>> getPharmacyByListOfMedications(@RequestBody  String names) {
+        return new ResponseEntity<>(pharmacyService.getPharmacyByListOfMedications(names), HttpStatus.OK);
+    }
 
     /*@GetMapping(value = "/getPharmacyContainsMedication")
     public ResponseEntity<Collection<Pharmacy>> getPharmacyMedicationListing(@PathVariable Long pharmacyId) {
