@@ -24,7 +24,7 @@ import PatientPharmacyPromotions from "./pages/patient/PatientPharmacyPromotions
 import CreateCoplaint from "./components/CreateCoplaint"
 import PatientEPrescriptionPage from './pages/patient/PatientEPrescriptionPage'
 import PatientReservationsPage from './pages/patient/PatientReservationsPage'
-import QRcode from "./components/QRcode";
+import QRcode from "./components/QRCode/QRcode";
 
 export default class App extends React.Component {
   constructor () {
