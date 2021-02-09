@@ -1,9 +1,10 @@
 import React from 'react';
-import {Card, Col, Row, Alert} from "react-bootstrap";
+import {Card, Col, Row, Alert, Button} from "react-bootstrap";
 import PharmacySearch from './PharmacySearch';
 import PharmacyFilter from './PharmacyFilter';
 import axios from 'axios';
 import StarRatings from 'react-star-ratings'
+import helpers from './../../helpers/AuthentificationService'
 
 
 export default class PharmacyListing extends React.Component {
@@ -72,6 +73,7 @@ export default class PharmacyListing extends React.Component {
     }
 
     render() {
+        console.log(helpers.isLoggedIn())
         const pharmacies = this.state.pharmacies.map((pharmacy, index) => {
             const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country 
             return (
@@ -82,10 +84,12 @@ export default class PharmacyListing extends React.Component {
                         <Card.Subtitle className="mb-5 mt-2 text-muted">{address}</Card.Subtitle>
                         <Card.Text>
                         {pharmacy.description}
+                        <br/>
+                        {helpers.isLoggedIn() && <Button variant={'outline-light'}>Visit & Schedule</Button>}
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>
-                    <StarRatings
+                    <StarRatings 
                             starDimension={'25px'}
                             rating={pharmacy.grade}
                             starRatedColor='yellow'

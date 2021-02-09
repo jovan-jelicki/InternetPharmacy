@@ -114,7 +114,6 @@ public class PharmacyControllerImpl {
     }
 
     @GetMapping(value = "/getPharmacyByMedication/{medicationId}")
-    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<PharmacyMedicationDTO>> getPharmacyByMedication(@PathVariable Long medicationId) {
         return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
     }
