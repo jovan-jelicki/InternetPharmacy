@@ -110,16 +110,14 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public Boolean checkPatientSubscribedToPromotion(Long pharmacyId, Long patientId, Long medicationId) {
-        ArrayList<Promotion> promotions = (ArrayList<Promotion>) promotionRepository.getCurrentPromotionsByPharmacyAndDate(pharmacyId, LocalDateTime.now());
+    public Boolean checkPatientSubscribedToPromotion(Long promotionId, Long patientId) {
         Patient patient = patientService.read(patientId).get();
-        for (Promotion promotionPatient : patient.getPromotions())
-            for (Promotion promotionPharmacy : promotions)
-                if (promotionPatient.getId().equals(promotionPharmacy.getId()) && promotionPharmacy.getMedicationsOnPromotion()
-                        .stream().filter(medication -> medication.getId().equals(medicationId)).count() != 0)
-                    return true;
-
-        return false;
+        for (Promotion promotionPatient : patient.getPromotions()){
+            if (promotionPatient.getId().equals(promotionId)){
+                return true;
+            }
+        }
+        return  false;
     }
 
     @Override
@@ -127,13 +125,10 @@ public class PromotionServiceImpl implements PromotionService {
         Patient patient = patientService.read(patientId).get();
         Promotion promotion = this.read(promotionId).get();
 
-        //checks if the promotion is still valid
-        if (promotion.getPeriod().getPeriodEnd().isBefore(LocalDateTime.now()))
+        if (this.checkPatientSubscribedToPromotion(promotionId,patientId))// && promotion.getPeriod().getPeriodEnd().isBefore(LocalDateTime.now()))
             return false;
 
         patient.getPromotions().add(promotion);
-
-        //TODO send an email of confirmation to the patient
 
         return patientService.save(patient) != null;
     }
