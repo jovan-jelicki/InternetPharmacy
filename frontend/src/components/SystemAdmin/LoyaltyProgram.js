@@ -27,6 +27,10 @@ export default class LoyaltyProgram extends React.Component {
             submitted: false,
             loyScales:[],
             loyPrograms:[],
+            regularCategory:[],
+            silverCategory:[],
+            goldCategory:[]
+
         }
     }
 
@@ -44,8 +48,32 @@ export default class LoyaltyProgram extends React.Component {
                 })
                 console.log("USEO")
                 console.log(this.state.loyScales);
+                this.getCategories();
             })
     }
+
+    getCategories=()=>{
+        let scales=this.state.loyScales;
+        for (var j = 0, l = scales.length; j < l; j++) {
+            if(scales[j].category=="regular"){
+                this.setState({
+                    regularCategory:scales[j]
+                })
+            }
+            if(scales[j].category=="silver"){
+                this.setState({
+                    silverCategory:scales[j]
+                })
+            }
+            if(scales[j].category=="gold"){
+                this.setState({
+                    goldCategory:scales[j]
+                })
+            }
+        }
+    }
+
+
 
     fetchLoyaltyProgram(){
         axios
@@ -54,8 +82,8 @@ export default class LoyaltyProgram extends React.Component {
                 this.setState({
                     loyPrograms : res.data
                 })
-                console.log("PROGRAM")
-                console.log(this.state.loyPrograms);
+                //console.log("PROGRAM")
+                //console.log(this.state.loyPrograms);
             })
     }
 
@@ -135,18 +163,19 @@ export default class LoyaltyProgram extends React.Component {
        // this.state.submitted=true;
         console.log(this.state.submitted)
         event.preventDefault();
-        if (this.validateForm(this.state.errors) &&  this.checkCategoryParams()) {
+        if (this.validateForm(this.state.errors) &&  this.checkValues()) {
             console.log('Valid Form')
            this.sendData();
         } else {
             console.log('Invalid Form')
         }
     }
-    checkCategoryParams(){
+
+    checkValues(){
         let valid = true;
-        if(this.state.loyalty.maxPoints<this.state.loyalty.minPoints){
+        if(this.state.loyalty.maxPoints <= this.state.loyalty.minPoints){
             valid=false;
-            alert("Ne moze min>max")
+            alert("Please check min and max value of points.")
         }
         return valid;
     }
@@ -209,9 +238,9 @@ export default class LoyaltyProgram extends React.Component {
                                                 <h5 className="card-header" style={{color:'darkslategrey',background:'lightgrey '}}>Category: {e.category}</h5>
                                                 <div className="card-body" style={{background:'silver', color:'cadetblue'}}>
                                                     <p className="card-text">
-                                                        Max points : {e.maxPoints}
-                                                        <br/>
                                                         Min points: {e.minPoints}
+                                                        <br/>
+                                                        Max points : {e.maxPoints}
                                                         <br/>
                                                         <br/>
                                                         Discount: {e.discount}

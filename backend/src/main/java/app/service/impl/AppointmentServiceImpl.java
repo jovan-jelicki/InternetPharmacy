@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PharmacyRepository pharmacyRepository;
-
     private final VacationRequestRepository vacationRequestRepository;
     private final PatientService patientService;
     private DermatologistService dermatologistService;
@@ -263,9 +262,13 @@ public class AppointmentServiceImpl implements AppointmentService {
             }else
                 throw new IllegalArgumentException("Patient is alergic!!!");
         }
+         setPatientLoyalityScale(appointmentScheduledDTO);
 
+        this.save(appointment);
+        return true;
+    }
 
-        //loyalty count
+    public void setPatientLoyalityScale(AppointmentScheduledDTO appointmentScheduledDTO){
         Patient patient=patientService.read(appointmentScheduledDTO.getPatientId()).get();
         LoyaltyProgram first = loyaltyProgramService.read().iterator().next();
 
@@ -275,9 +278,6 @@ public class AppointmentServiceImpl implements AppointmentService {
             patient.setLoyaltyCount(patient.getLoyaltyCount()+first.getConsultingPoints());
 
         patientService.setPatientCategory(appointmentScheduledDTO.getPatientId());
-
-        this.save(appointment);
-        return true;
     }
 
     @Override

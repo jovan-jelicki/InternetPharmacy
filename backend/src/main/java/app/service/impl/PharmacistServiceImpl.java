@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.PharmacistDTO;
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
 import app.model.appointment.Appointment;
@@ -118,6 +119,25 @@ public class PharmacistServiceImpl implements PharmacistService {
     @Override
     public Boolean createNewPharmacist(Pharmacist entity) {
         return this.save(entity) != null;
+    }
+
+    @Override
+    public Collection<PharmacistDTO> getPharmacistsPatientAppointments(Long patientId) {
+        Collection<PharmacistDTO> pharmacistDTOS= new ArrayList<>();
+        ArrayList<Long> pharmacistIds = new ArrayList<>();
+
+        for(Appointment appointment : appointmentService.read()){
+              if(appointment.getPatient().getId()!=null){
+                if (appointment.getType() == EmployeeType.pharmacist && appointment.getPatient().getId() == patientId) {
+                    Pharmacist pharmacist = this.read(appointment.getExaminerId()).get();
+                    if(!pharmacistIds.contains(appointment.getExaminerId())){
+                      pharmacistIds.add(appointment.getExaminerId());
+                      pharmacistDTOS.add(new PharmacistDTO(pharmacist));
+                    }
+                }
+            }
+        }
+        return pharmacistDTOS;
     }
 
 }

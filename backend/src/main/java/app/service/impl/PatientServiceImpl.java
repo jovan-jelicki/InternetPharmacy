@@ -104,10 +104,10 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Boolean setPatientCategory(Long patientId) {
        Patient patient=this.read(patientId).get();
-       int loyCount=patient.getLoyaltyCount();
+       int patientLoyaltyCount=patient.getLoyaltyCount();
 
        for(LoyaltyScale loyaltyScale: loyaltyScaleService.read()){
-           if(loyCount>=loyaltyScale.getMinPoints() && loyCount<=loyaltyScale.getMaxPoints()){
+           if(patientLoyaltyCount>=loyaltyScale.getMinPoints() && patientLoyaltyCount<=loyaltyScale.getMaxPoints()){
                patient.setLoyaltyCategory(loyaltyScale.getCategory());
                this.save(patient);
                return true;
@@ -115,13 +115,13 @@ public class PatientServiceImpl implements PatientService {
        }
        //<regularMin
         LoyaltyScale first = loyaltyScaleService.read().iterator().next();
-        if(loyCount<first.getMinPoints()){
+        if(patientLoyaltyCount<first.getMinPoints()){
             patient.setLoyaltyCategory(LoyaltyCategory.regular);
             this.save(patient);
         }else{
             patient.setLoyaltyCategory(LoyaltyCategory.gold);
             this.save(patient);
-        } //>GoldMax
+        }
        return true;
 
     }

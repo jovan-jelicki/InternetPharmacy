@@ -13,6 +13,7 @@ export default class CreateCoplaint extends React.Component{
         super(props)
         this.state = {
             dermatologists:[],
+            pharmacists:[],
             boolDermatologist:false,
             boolPharmacist:false,
             boolPharmacy:false,
@@ -38,6 +39,15 @@ export default class CreateCoplaint extends React.Component{
             });
             console.log("Probaj")
             console.log(this.state.dermatologists)
+        })
+
+        await axios.get("http://localhost:8080/api/pharmacist/getPharmacistsByPatient/"+this.state.patient.id)
+            .then(res => {
+            this.setState({
+                pharmacists : res.data
+            });
+            console.log("Probaj")
+            console.log(this.state.pharmacists)
         })
 
 
@@ -73,7 +83,7 @@ export default class CreateCoplaint extends React.Component{
         this.validationErrorMessage(event);
     }
 
-    handleDermatologistSelected=(event)=>{
+    handleOptionSelected=(event)=>{
         console.log("DASAO")
         const target = event.target;
         let value = event.target.value;
@@ -87,6 +97,7 @@ export default class CreateCoplaint extends React.Component{
 
         //this.validationErrorMessage(event)
     }
+
 
     validateForm = (errors) => {
         let valid = true;
@@ -138,15 +149,16 @@ export default class CreateCoplaint extends React.Component{
     }
 
     async sendData() {
-        console.log( this.state.patient.id)
-        console.log( this.state.content)
-        console.log( this.state.employeeId)
+        let type;
+        if(this.state.boolPharmacist) type="pharmacist"
+        else if(this.state.boolDermatologist) type="dermatologist"
+        else type="pharmacy"
         axios
             .post('http://localhost:8080/api/complaints/save', {
                 'id':'',
                 'patient' : this.state.patient,
                 'content' : this.state.content,
-                'type' : 0,
+                'type' : type,
                 'complaineeId' : this.state.employeeId,
                 'active':true
             })
@@ -178,7 +190,7 @@ export default class CreateCoplaint extends React.Component{
                         {
                         this.state.boolDermatologist && !this.state.boolPharmacist && !this.state.boolPharmacy &&
                         <Form.Control placeholder="Choose dermatologist" as={"select"} value={this.state.dermatologists.employeeId}
-                                      onChange={(e)=>{this.handleDermatologistSelected(e)}}>
+                                      onChange={(e)=>{this.handleOptionSelected(e)}}>
                             <option disabled={true} selected="selected">Choose dermatologist</option>
                             {this.state.dermatologists.map(dermatologist =>
                                 <option key={dermatologist.employeeId}
@@ -189,12 +201,12 @@ export default class CreateCoplaint extends React.Component{
 
                     {
                         !this.state.boolDermatologist && this.state.boolPharmacist && !this.state.boolPharmacy &&
-                        <Form.Control placeholder="Choose pharamacist" as={"select"} value={this.state.dermatologists.id}
-                                      onChange={(e)=>{this.handlePharmacistSelected(e)}}>
+                        <Form.Control placeholder="Choose pharamacist" as={"select"} value={this.state.pharmacists.id}
+                                      onChange={(e)=>{this.handleOptionSelected(e)}}>
                             <option disabled={true} selected="selected">Choose pharamacist</option>
-                            {this.state.dermatologists.map(dermatologist =>
-                                <option key={dermatologist.id}
-                                        value={dermatologist.id}>{dermatologist.firstName} {dermatologist.lastName}</option>
+                            {this.state.pharmacists.map(pharmacist =>
+                                <option key={pharmacist.id}
+                                        value={pharmacist.id}>{pharmacist.firstName} {pharmacist.lastName}</option>
                             )}
 
                         </Form.Control>
