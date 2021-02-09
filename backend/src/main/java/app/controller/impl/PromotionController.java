@@ -35,7 +35,7 @@ public class PromotionController {
         return new ResponseEntity<>(promotionDTOS, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
+    @PreAuthorize("hasAnyRole('pharmacyAdmin, patient')")
     @GetMapping(value = "/getCurrentPromotionsByPharmacy/{pharmacyId}")
     public ResponseEntity<Collection<PromotionDTO>> getCurrentPromotionsByPharmacy(@PathVariable Long pharmacyId) {
         ArrayList<PromotionDTO> promotionDTOS = new ArrayList<>();

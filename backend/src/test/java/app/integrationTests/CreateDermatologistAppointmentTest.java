@@ -36,7 +36,7 @@ public class CreateDermatologistAppointmentTest {
         pharmacy.setId(0L);
         appointment1.setActive(true);
         appointment1.setExaminerId(3L);
-        appointment1.setPeriod(new Period(LocalDateTime.now().minusHours(7), LocalDateTime.now().minusHours(6)));
+        appointment1.setPeriod(new Period(LocalDateTime.now().minusHours(12), LocalDateTime.now().minusHours(10)));
         appointment1.setPharmacy(pharmacy);
         appointment1.setType(EmployeeType.ROLE_dermatologist);
         appointment1.setPatient(null);
@@ -44,7 +44,7 @@ public class CreateDermatologistAppointmentTest {
 
         appointment2.setActive(true);
         appointment2.setExaminerId(3L);
-        appointment2.setPeriod(new Period(LocalDateTime.now().minusHours(7), LocalDateTime.now().minusHours(6)));
+        appointment2.setPeriod(new Period(LocalDateTime.now().minusHours(12), LocalDateTime.now().minusHours(10)));
         appointment2.setPharmacy(pharmacy);
         appointment2.setType(EmployeeType.ROLE_dermatologist);
         appointment2.setPatient(null);
