@@ -14,7 +14,11 @@ export default class QRcode extends React.Component{
         this.state = {
             image: null,
             medications:{ data:[]},
-            boolBLa:false
+            quantity:{ data:[]},
+            boolBLa:false,
+            parameters:[{
+                'medicationId':''
+            }]
         };
         this.onImageChange = this.onImageChange.bind(this);
     }
@@ -65,13 +69,25 @@ export default class QRcode extends React.Component{
     async sendData() {
         console.log("BLA")
         console.log(this.state.medications.data)
+        let pom=[]
+        pom=this.state.medications.data.split(",")
+        console.log(pom)
+        this.setState({
+            parameters:{
+                medicationId:pom,
+            }
+        })
+        this.state.parameters=pom
+        console.log(this.state.parameters)
         axios
-            .get('http://localhost:8080/api/pharmacy/getPharmacyByListOfMedications', {
-                'names': this.state.medications.data
+            .post('http://localhost:8080/api/pharmacy/getPharmacyByListOfMedications', {
+                'medicationIds': this.state.parameters
             })
             .then(res => {
-
+                    console.log(res.data)
             });
+
+
     }
 
     render() {

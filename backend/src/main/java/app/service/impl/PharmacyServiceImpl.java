@@ -5,6 +5,7 @@ import app.model.grade.GradeType;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
+import app.model.user.Address;
 import app.model.user.EmployeeType;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
@@ -94,31 +95,37 @@ public class PharmacyServiceImpl implements PharmacyService {
         return pharmacies;
     }
 
-    @Override
-    public Collection<PharmacyMedicationDTO> getPharmacyByListOfMedications(String names) {
-        ArrayList<PharmacyMedicationDTO> pharmacies = new ArrayList<>();
-        Collection<Medication> medications=medicationService.read();
 
-        String []parseString=names.split(",");
+    @Override
+    public Collection<PharmacyQRDTO> getPharmacyByListOfMedications(MedicationQRDTO medciationQuantityIds) {
+        ArrayList<PharmacyQRDTO> pharmacies = new ArrayList<>();
 
         read().forEach(p -> {
+            int count=0;
             for (MedicationQuantity q : p.getMedicationQuantity()) {
-                    for(String name: parseString){
-                        System.out.println(name);
-                        if (q.getMedication().getName().equals(name)) {
-                            PharmacyMedicationDTO pmDTO = new PharmacyMedicationDTO();
-                            pmDTO.setId(p.getId());
-                            pmDTO.setName(p.getName());
-                            pmDTO.setAddress(p.getAddress());
-                            pmDTO.setMedicationId(q.getMedication().getId());
-
-                            double cena = medicationPriceListService.getMedicationPrice(p.getId(), q.getMedication().getId());
-                            pmDTO.setMedicationPrice(cena);
-                            pharmacies.add(pmDTO);
+                    for(String medciationId : medciationQuantityIds.getMedicationIds()){
+                        if (q.getId()==Long.valueOf(medciationId).longValue()) {
+                            count=count+1;
                         }
                     }
             }
+
+            if(count == medciationQuantityIds.getMedicationIds().size()){
+                PharmacyQRDTO pmDTO = new PharmacyQRDTO();
+                pmDTO.setName(p.getName());
+                pmDTO.setAddress(p.getAddress());
+                //pmDTO.setPharmacyGrade(p.get);
+                //medId
+                //medQuantity
+                double cena=0;
+                for(String medciationId : medciationQuantityIds.getMedicationIds()){
+                    cena += medicationPriceListService.getMedicationPrice(p.getId(), Long.valueOf(medciationId).longValue());
+                }
+                pmDTO.setMedicationPrice(cena);
+                pharmacies.add(pmDTO);
+            }
         });
+
         return pharmacies;
     }
 

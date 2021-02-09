@@ -127,10 +127,11 @@ export default class Complaints extends React.Component {
                          <td>{complaint.patientFullName}</td>
                          <td>{complaint.type}</td>
                          <td>{complaint.name}</td>
-                        <td>{complaint.content}</td>
-                         <td>   <Button variant="danger" onClick={() => this.handleModal(complaint)}>
-                             Answer
-                         </Button></td>
+                        <td>{complaint.content} +{complaint.active}</td>
+                         {complaint.active &&
+                         <td><Button variant="danger" onClick={() => this.handleModal(complaint)}>Answer</Button>
+                         </td>
+                         }
                      </tr>
                             )}
 

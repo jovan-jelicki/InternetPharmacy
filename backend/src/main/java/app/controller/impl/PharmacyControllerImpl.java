@@ -112,9 +112,10 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/getPharmacyByListOfMedications")
-    public ResponseEntity<Collection<PharmacyMedicationDTO>> getPharmacyByListOfMedications(@RequestBody  String names) {
-        return new ResponseEntity<>(pharmacyService.getPharmacyByListOfMedications(names), HttpStatus.OK);
+    @PostMapping(value = "/getPharmacyByListOfMedications", consumes = "application/json")
+    public ResponseEntity<Collection<PharmacyQRDTO>> getPharmacyByListOfMedications(@RequestBody  MedicationQRDTO medicationIds) {
+        pharmacyService.getPharmacyByListOfMedications(medicationIds);
+        return new ResponseEntity<>(pharmacyService.getPharmacyByListOfMedications(medicationIds), HttpStatus.OK);
     }
 
     /*@GetMapping(value = "/getPharmacyContainsMedication")
