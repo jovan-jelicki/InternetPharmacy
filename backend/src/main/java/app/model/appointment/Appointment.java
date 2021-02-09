@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-//@Table(uniqueConstraints={@UniqueConstraint(columnNames={"examinerId", "type"})})
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"examinerId", "type", "periodStart"})})
 public class Appointment {
    @Id
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointment_generator")
