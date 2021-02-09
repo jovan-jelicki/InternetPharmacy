@@ -18,6 +18,8 @@ import app.service.DermatologistService;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -229,7 +231,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = false, isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
     public Boolean createAvailableAppointment(Appointment entity) {
         //proveriti da li ima zakazane u tom periodu
         //proveriti da li je na godisnjem
