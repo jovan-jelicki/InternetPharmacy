@@ -1,5 +1,6 @@
 package app.controller.impl;
 
+import app.dto.MedicationGradeDTO;
 import app.dto.MedicationSearchDTO;
 import app.model.medication.Medication;
 import app.service.MedicationService;
@@ -34,6 +35,11 @@ public class MedicationControllerImpl {
     @GetMapping
     public ResponseEntity<Collection<Medication>> read() {
         return new ResponseEntity<>(medicationService.read(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "medicationGrades")
+    public ResponseEntity<Collection<MedicationGradeDTO>> readMediactionAndGrades() {
+        return new ResponseEntity<>(medicationService.readMediactionAndGrades(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")

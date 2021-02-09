@@ -1,11 +1,14 @@
 package app.service.impl;
 
+import app.dto.MedicationGradeDTO;
 import app.dto.MedicationSearchDTO;
+import app.model.grade.GradeType;
 import app.model.medication.Ingredient;
 import app.model.medication.Medication;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
 import app.repository.MedicationRepository;
+import app.service.GradeService;
 import app.service.MedicationService;
 import app.service.PatientService;
 import app.service.PharmacyService;
@@ -20,12 +23,14 @@ public class MedicationServiceImpl implements MedicationService {
     private final MedicationRepository medicationRepository;
     private final PatientService patientService;
     private PharmacyService pharmacyService;
+    private final GradeService gradeService;
 
     @Autowired
-    public MedicationServiceImpl(MedicationRepository medicationRepository, PatientService patientService, PharmacyService pharmacyService) {
+    public MedicationServiceImpl(MedicationRepository medicationRepository, PatientService patientService, PharmacyService pharmacyService, GradeService gradeService) {
         this.medicationRepository = medicationRepository;
         this.patientService = patientService;
         this.pharmacyService = pharmacyService;
+        this.gradeService = gradeService;
     }
 
     @Override
@@ -103,5 +108,18 @@ public class MedicationServiceImpl implements MedicationService {
                 medications.add(m);
         });
         return medications;
+    }
+
+    @Override
+    public Collection<MedicationGradeDTO> readMediactionAndGrades() {
+        ArrayList<MedicationGradeDTO> medicationGradeDTOS = new ArrayList<>();
+        for(Medication medication: this.read()){
+            MedicationGradeDTO medicationGradeDTO=new MedicationGradeDTO();
+            medicationGradeDTO.setMedication(medication);
+            medicationGradeDTO.setGrade(gradeService.findAverageGradeForEntity(medication.getId(), GradeType.medication));
+
+            medicationGradeDTOS.add(medicationGradeDTO);
+        }
+        return medicationGradeDTOS;
     }
 }

@@ -64,4 +64,22 @@ public class SupplierControllerImpl {
     public ResponseEntity<Boolean> deleteMedicationQuantity(@RequestBody MedicationSupplierDTO   medicationSupplierDTO) {
         return new ResponseEntity<>(supplierService.deleteMedicationQuantity(medicationSupplierDTO), HttpStatus.OK);
     }
+    @GetMapping(value = "/isAccountApproved/{id}")
+    public ResponseEntity<Boolean> isAccountApproved(@PathVariable Long id){
+        return new ResponseEntity<>(supplierService.read(id).get().getApprovedAccount(), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/pass")
+    public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
+        try {
+            supplierService.changePassword(passwordKit);
+        }
+        catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

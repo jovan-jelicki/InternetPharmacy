@@ -22,9 +22,12 @@ export default class MedicationListing extends React.Component {
         await axios
         .get('http://localhost:8080/api/medications')
         .then((res) => {
+            console.log("IDEMO")
+            console.log(res.data)
             this.setState({
                 medications : res.data
             })
+            console.log(this.state.medications)
         })
         this.medicationsBackup = [...this.state.medications]
     }
