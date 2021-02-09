@@ -13,6 +13,7 @@ import axios from "axios";
 import PharmacyCharts from "../components/pharmacy/PharmacyCharts";
 import AuthentificationService from "../helpers/AuthentificationService";
 import HelperService from "../helpers/HelperService";
+import {Button} from "react-bootstrap";
 
 //pristupas sa  this.props.location.state.user.email
 export default class PharmacyPage extends React.Component{
@@ -35,12 +36,22 @@ export default class PharmacyPage extends React.Component{
             },
             navbar : "description",
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : sessionStorage.getItem("pharmacyId") || this.props.location.state.pharmacyId
+            pharmacyId : -1
 
     }
     }
 
     async componentDidMount() {
+        if (sessionStorage.getItem("pharmacyId") === null && this.props.location.state === undefined) {
+            let path = process.env.REACT_APP_BACKEND_ADDRESS ? 'https://isa-pharmacy-frontend.herokuapp.com/unauthorized'
+                : 'http://localhost:3000/unauthorized';
+            window.location.replace(path);
+        }
+
+        await this.setState({
+            pharmacyId : sessionStorage.getItem("pharmacyId") || this.props.location.state.pharmacyId
+        })
+
         this.validateUser();
         //await this.fetchPharmacyId();
         await this.fetchPharmacy();
@@ -51,6 +62,7 @@ export default class PharmacyPage extends React.Component{
         return (
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
+                    <Button variant="outline-dark" className="mb-3" style={{marginLeft: "50rem"}} onClick={this.redirectToPharmacyAdminPage}>← Return to your profile</Button>
                     <h1 className="display-4">{this.state.pharmacy.name}</h1>
                 </div>
                 <br/>
@@ -193,5 +205,11 @@ export default class PharmacyPage extends React.Component{
             this.props.history.push({
                 pathname: "/unauthorized"
             });
+    }
+
+    redirectToPharmacyAdminPage = () => {
+        this.props.history.push({
+            pathname: "/pharmacy-admin-profile",
+        });
     }
 }

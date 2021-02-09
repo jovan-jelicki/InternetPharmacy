@@ -90,6 +90,7 @@ export default class PharmacyAdminProfilePage extends React.Component {
                         <Nav>
                             <NavDropdown title="Account" id="collasible-nav-dropdow">
                                 <NavDropdown.Item href="/pharmacy-admin-profile">My Account</NavDropdown.Item>
+                                <NavDropdown.Item href="#" onClick={this.logoutPharmacyAdmin}>Logout</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
@@ -319,5 +320,12 @@ export default class PharmacyAdminProfilePage extends React.Component {
                 }
             })
             .catch(res => alert("Greska!"));
+    }
+
+    logoutPharmacyAdmin = () => {
+        localStorage.removeItem('user');
+        this.props.history.push({
+            pathname: "/",
+        });
     }
 }
