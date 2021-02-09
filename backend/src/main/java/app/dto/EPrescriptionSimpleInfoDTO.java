@@ -1,6 +1,7 @@
 package app.dto;
 
 import app.model.medication.EPrescription;
+import app.model.medication.EPrescriptionStatus;
 import app.model.medication.MedicationQuantity;
 
 import java.time.LocalDateTime;
@@ -10,11 +11,13 @@ public class EPrescriptionSimpleInfoDTO {
     private Long id;
     private Collection<MedicationQuantity>  medicationQuantity;
     private LocalDateTime dateIssued;
+    private EPrescriptionStatus status;
 
     public EPrescriptionSimpleInfoDTO(EPrescription ePrescription) {
         this.id = ePrescription.getId();
         this.medicationQuantity = ePrescription.getMedicationQuantity();
         this.dateIssued = ePrescription.getDateIssued();
+        this.status = ePrescription.getStatus();
     }
 
     public EPrescriptionSimpleInfoDTO() {
@@ -42,5 +45,13 @@ public class EPrescriptionSimpleInfoDTO {
 
     public void setDateIssued(LocalDateTime dateIssued) {
         this.dateIssued = dateIssued;
+    }
+
+    public EPrescriptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EPrescriptionStatus status) {
+        this.status = status;
     }
 }
