@@ -57,6 +57,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional(readOnly = false)
     public Appointment save(Appointment entity) {
         entity.setPharmacy(pharmacyRepository.findById(entity.getPharmacy().getId()).get());
+        entity.getPeriod().setPeriodStart(entity.getPeriod().getPeriodStart().withMinute(0).withSecond(0).withNano(0));
+        entity.getPeriod().setPeriodEnd(entity.getPeriod().getPeriodEnd().withMinute(0).withSecond(0).withNano(0));
         return appointmentRepository.save(entity);
     }
 

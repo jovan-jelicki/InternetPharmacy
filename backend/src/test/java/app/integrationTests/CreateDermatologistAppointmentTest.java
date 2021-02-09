@@ -28,21 +28,23 @@ public class CreateDermatologistAppointmentTest {
     public Appointment appointment1 = new Appointment();
     public Appointment appointment2 = new Appointment();
     public Pharmacy pharmacy = new Pharmacy();
+    public boolean result1;
+    public boolean result2;
 
     @Before
     public void setUp() throws Exception {
-        pharmacy.setId(1L);
+        pharmacy.setId(0L);
         appointment1.setActive(true);
-        appointment1.setExaminerId(1L);
-        appointment1.setPeriod(new Period(LocalDateTime.now(), LocalDateTime.now().plusMinutes(40)));
+        appointment1.setExaminerId(3L);
+        appointment1.setPeriod(new Period(LocalDateTime.now().minusHours(7), LocalDateTime.now().minusHours(6)));
         appointment1.setPharmacy(pharmacy);
         appointment1.setType(EmployeeType.ROLE_dermatologist);
         appointment1.setPatient(null);
         appointment1.setAppointmentStatus(AppointmentStatus.available);
 
         appointment2.setActive(true);
-        appointment2.setExaminerId(1L);
-        appointment2.setPeriod(new Period(LocalDateTime.now(), LocalDateTime.now().plusMinutes(40)));
+        appointment2.setExaminerId(3L);
+        appointment2.setPeriod(new Period(LocalDateTime.now().minusHours(7), LocalDateTime.now().minusHours(6)));
         appointment2.setPharmacy(pharmacy);
         appointment2.setType(EmployeeType.ROLE_dermatologist);
         appointment2.setPatient(null);
@@ -58,7 +60,7 @@ public class CreateDermatologistAppointmentTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 1");
-                appointment1 =  appointmentService.save(appointment1);
+                result1 =  appointmentService.createAvailableAppointment(appointment1);
                 //System.out.println(appointment.getId());
 
             }
@@ -69,7 +71,7 @@ public class CreateDermatologistAppointmentTest {
             public void run() {
                 System.out.println("Startovan Thread 2");
                 //try { Thread.sleep(1000); } catch (InterruptedException e) {}
-                appointment2 = appointmentService.save(appointment2);
+                result2 = appointmentService.createAvailableAppointment(appointment2);
 
                 //System.out.println(appointment.getId());
             }
@@ -83,11 +85,15 @@ public class CreateDermatologistAppointmentTest {
 //            e.printStackTrace();
 //        }
 
+        try {
+            future2.get();
+            future1.get();
+        }
+        catch (Exception ex) {
+            System.out.println(appointment1.getId());
+            System.out.println(appointment2.getId());
+        }
 
-        future2.get();
-        future1.get();
-        System.out.println(appointment1.getId());
-        System.out.println(appointment2.getId());
         //System.out.println(appointment.getId());
 
         executor.shutdown();
