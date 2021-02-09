@@ -4,8 +4,12 @@ import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.user.EmployeeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 
+import javax.persistence.LockModeType;
+import javax.persistence.QueryHint;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -24,6 +28,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("select a from Appointment a where a.examinerId = ?1 and a.type = ?2 and a.appointmentStatus = 0 and a.patient is not null and a.isActive=true")
     Collection<Appointment> getAllScheduledNotFinishedByExaminer(Long examinerId, EmployeeType type);
 
+    /*@Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value ="0")})*/
     @Query("select a from Appointment a where a.patient.id = ?1 and a.appointmentStatus = ?2 and a.isActive=true")
     Collection<Appointment> getAllNotFinishedByPatientId(Long patientId,AppointmentStatus status);
 
