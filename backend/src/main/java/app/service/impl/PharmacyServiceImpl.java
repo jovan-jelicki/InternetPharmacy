@@ -13,6 +13,7 @@ import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -76,22 +77,22 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     @Override
     public Collection<PharmacyMedicationDTO> getPharmacyByMedication(Long medicationId) {
-        ArrayList<PharmacyMedicationDTO> pharmacies = new ArrayList<>();
-        read().forEach(p -> {
-            for (MedicationQuantity q : p.getMedicationQuantity()) {
-                if (q.getMedication().getId() == medicationId) {
-                    PharmacyMedicationDTO pmDTO = new PharmacyMedicationDTO();
-                    pmDTO.setId(p.getId());
-                    pmDTO.setName(p.getName());
-                    pmDTO.setAddress(p.getAddress());
-                    pmDTO.setMedicationId(medicationId);
+            ArrayList<PharmacyMedicationDTO> pharmacies = new ArrayList<>();
+            read().forEach(p -> {
+                for (MedicationQuantity q : p.getMedicationQuantity()) {
+                    if (q.getMedication().getId() == medicationId) {
+                        PharmacyMedicationDTO pmDTO = new PharmacyMedicationDTO();
+                        pmDTO.setId(p.getId());
+                        pmDTO.setName(p.getName());
+                        pmDTO.setAddress(p.getAddress());
+                        pmDTO.setMedicationId(medicationId);
 
-                    double cena = medicationPriceListService.getMedicationPrice(p.getId(), medicationId);
-                    pmDTO.setMedicationPrice(cena);
-                    pharmacies.add(pmDTO);
+                        double cena = medicationPriceListService.getMedicationPrice(p.getId(), medicationId);
+                        pmDTO.setMedicationPrice(cena);
+                        pharmacies.add(pmDTO);
+                    }
                 }
-            }
-        });
+            });
         return pharmacies;
     }
 

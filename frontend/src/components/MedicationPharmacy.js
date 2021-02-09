@@ -20,6 +20,7 @@ class MedicationPharmacy extends React.Component {
     }
 
     async componentDidMount() {
+        console.log(this.props.medication.id)
         await axios
             .get('http://localhost:8080/api/pharmacy/getPharmacyByMedication/'+this.props.medication.id)
             .then((res) => {

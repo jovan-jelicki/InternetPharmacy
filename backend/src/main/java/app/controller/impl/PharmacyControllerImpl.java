@@ -109,6 +109,7 @@ public class PharmacyControllerImpl {
 
     @GetMapping(value = "/getPharmacyByMedication/{medicationId}")
     public ResponseEntity<Collection<PharmacyMedicationDTO>> getPharmacyByMedication(@PathVariable Long medicationId) {
+        pharmacyService.getPharmacyByMedication(medicationId)
         return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
     }
 

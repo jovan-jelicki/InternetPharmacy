@@ -114,8 +114,7 @@ public class MedicationServiceImpl implements MedicationService {
     public Collection<MedicationGradeDTO> readMediactionAndGrades() {
         ArrayList<MedicationGradeDTO> medicationGradeDTOS = new ArrayList<>();
         for(Medication medication: this.read()){
-            MedicationGradeDTO medicationGradeDTO=new MedicationGradeDTO();
-            medicationGradeDTO.setMedication(medication);
+            MedicationGradeDTO medicationGradeDTO=new MedicationGradeDTO(medication);
             medicationGradeDTO.setGrade(gradeService.findAverageGradeForEntity(medication.getId(), GradeType.medication));
 
             medicationGradeDTOS.add(medicationGradeDTO);
