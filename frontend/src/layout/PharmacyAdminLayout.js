@@ -14,7 +14,7 @@ class PharmacyAdminLayout extends React.Component {
                     <Navbar.Brand as={NavLink} to="/">WebPharm</Navbar.Brand>
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="mr-auto">
-                            <NavDropdown title="Pharmacies" id="collasible-nav-dropdow">
+                            <NavDropdown title="Pharmacy" id="collasible-nav-dropdow">
                                 <NavDropdown.Item href="/pharmacy">My pharmacy</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>

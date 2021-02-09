@@ -7,25 +7,24 @@ import HelperService from "../../helpers/HelperService";
 
 
 export default class PharmacyVacationsRequests extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             vacationRequests : [],
-            userType : 'pharmacyAdmin',
             showModal : false,
             modalVacationRequest : {
                 rejectionNote:""
             },
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    async componentDidMount() {
-        let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp
-        })
+    componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.fetchVacationRequests();
     }
 
@@ -63,19 +62,19 @@ export default class PharmacyVacationsRequests extends React.Component{
                                     moment(vacationRequest.period.periodEnd).format('DD.MM.YYYY')}</td>
                                 <td>{vacationRequest.vacationRequestStatus}</td>
 
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
                                     <Button variant="outline-success" onClick={() => this.acceptVacationRequest(vacationRequest)}>
                                         Accept
                                     </Button>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
                                     <Button variant="outline-danger" onClick={() => this.handleModal(vacationRequest)}>
                                         Reject
                                     </Button>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
                                 </td >
                             </tr>
                         ))}

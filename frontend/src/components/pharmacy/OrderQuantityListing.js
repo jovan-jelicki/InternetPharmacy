@@ -5,7 +5,6 @@ export default class OrderQuantityListing extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            userType : 'pharmacyAdmin'
         }
     }
 

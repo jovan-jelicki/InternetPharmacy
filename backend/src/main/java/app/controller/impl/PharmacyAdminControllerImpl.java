@@ -88,7 +88,7 @@ public class PharmacyAdminControllerImpl {
         return new ResponseEntity<>(pharmacyAdminService.save(entity), HttpStatus.CREATED);
     }
 
-
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(value = "/pass")
     public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
         try {
@@ -101,5 +101,11 @@ public class PharmacyAdminControllerImpl {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('pharmacyAdmin')")
+    @GetMapping(value = "/isAccountApproved/{id}")
+    public ResponseEntity<Boolean> isAccountApproved(@PathVariable Long id){
+        return new ResponseEntity<>(pharmacyAdminService.read(id).get().getApprovedAccount(), HttpStatus.OK);
     }
 }

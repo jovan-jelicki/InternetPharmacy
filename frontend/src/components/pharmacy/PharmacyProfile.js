@@ -13,11 +13,11 @@ const options = [
 ];
 
 export default class PharmacyProfile extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             pharmacy: {
-                id : -1,
+                id : this.props.pharmacy.id,
                 name: '',
                 description: '',
                 address: {
@@ -45,19 +45,19 @@ export default class PharmacyProfile extends React.Component {
                 },
             },
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    async componentDidMount() {
-        let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp,
-            pharmacy : {
-                ...this.state.pharmacy,
-                id : temp
-            }
-        })
+    componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp,
+        //     pharmacy : {
+        //         ...this.state.pharmacy,
+        //         id : temp
+        //     }
+        // })
         this.fetchPharmacy();
     }
 

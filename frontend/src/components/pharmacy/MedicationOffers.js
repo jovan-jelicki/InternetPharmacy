@@ -13,16 +13,16 @@ export default class MedicationOffers extends React.Component {
             medicationOrder : props.order,
             medicationOffers : [],
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         console.log(this.state.medicationOrder)
-        let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp
-        })
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.fetchMedicationOffers();
     }
 

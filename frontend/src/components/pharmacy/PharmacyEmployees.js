@@ -29,7 +29,6 @@ export default class PharmacyEmployees extends React.Component{
             showModalAddDermatologist : false,
             showModalCreatePharmacist : false,
             showModalAddAppointment : false,
-            userType : "pharmacyAdmin",
             dermatologistModalAddAppointment : {},
             searchPharmacist : {
                 firstName : '',
@@ -61,16 +60,16 @@ export default class PharmacyEmployees extends React.Component{
                     periodEnd : ""
                 },
                 pharmacy : {
-                    id : 1 //todo change pharmacy ID
+                    id : this.props.pharmacyId
                 }
             },
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
+            pharmacyId : this.props.pharmacyId
         }
     }
 
     async componentDidMount() {
-        await this.fetchPharmacyId();
+        // await this.fetchPharmacyId();
         await this.fetchPharmacists();
         await this.fetchWorkingDermatologists();
     }
@@ -127,17 +126,17 @@ export default class PharmacyEmployees extends React.Component{
                        <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodStart).format('hh:mm a')
                         + "  -  " + moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodEnd).format('hh:mm a')}</td>
 
-                       <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
+                       <td style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="primary" onClick={this.openModalAddDermatologist}>
                                 Schedule appointment
                            </Button>
                        </td >
-                       <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                       <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="warning" onClick={(e) => this.handleModalAddAppointment(dermatologist)}>
                                Define available appointments
                            </Button>
                        </td>
-                       <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                       <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                            <Button variant="danger" onClick={() => this.deleteDermatologist(dermatologist)}>
                                Delete dermatologist
                            </Button>
@@ -194,12 +193,12 @@ export default class PharmacyEmployees extends React.Component{
                            </td>
                            <td>{moment(pharmacist.workingHours.period.periodStart).format('hh:mm a') + "  -  " +
                             moment(pharmacist.workingHours.period.periodEnd).format('hh:mm a')}</td>
-                           <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
+                           <td style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="primary" onClick={this.handleModalAddDermatologist}>
                                    Schedule counseling
                                </Button>
                            </td >
-                           <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                           <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="danger" onClick={() => this.deletePharmacist(pharmacist)}>
                                    Delete pharmacist
                                </Button>
@@ -289,14 +288,14 @@ export default class PharmacyEmployees extends React.Component{
                         <Form.Row>
                             <div style={({ marginLeft: '1rem' })}>
                                 <label style={({ marginRight: '1rem' })}>Select start of work time : </label>
-                                <TimePicker  name="periodStart" format="h:m a" value={this.state.workingHours.period.periodStart} onChange={this.setPeriodStart}/>
+                                <TimePicker  name="periodStart" disableClock={true}  format="h a" value={this.state.workingHours.period.periodStart} onChange={this.setPeriodStart}/>
                             </div>
                         </Form.Row>
                         <br/>
                         <Form.Row>
                             <div style={({ marginLeft: '1rem' })}>
                                 <label style={({ marginRight: '1rem' })}>Select end of work time : </label>
-                                <TimePicker  name="periodEnd" format="h:m a" value={this.state.workingHours.period.periodEnd} onChange={this.setPeriodEnd}/>
+                                <TimePicker  name="periodEnd" disableClock={true}  format="h a" value={this.state.workingHours.period.periodEnd} onChange={this.setPeriodEnd}/>
                             </div>
                         </Form.Row>
 
@@ -428,7 +427,7 @@ export default class PharmacyEmployees extends React.Component{
                     <Modal.Title>Create Pharmacist</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreatePharmacistModal closeModal = {this.handleModalCreatePharmacist} fetchPharmacists = {this.fetchPharmacists}/>
+                    <CreatePharmacistModal pharmacyId = {this.state.pharmacyId} closeModal = {this.handleModalCreatePharmacist} fetchPharmacists = {this.fetchPharmacists}/>
                 </Modal.Body>
             </Modal>
         );
@@ -441,7 +440,7 @@ export default class PharmacyEmployees extends React.Component{
                     <Modal.Title>Create Appointment</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <AddAppointmentModal closeModal = {this.handleModalAddAppointment} dermatologist={this.state.dermatologistModalAddAppointment}/>
+                    <AddAppointmentModal pharmacyId = {this.state.pharmacyId} closeModal = {this.handleModalAddAppointment} dermatologist={this.state.dermatologistModalAddAppointment}/>
                 </Modal.Body>
             </Modal>
         )
