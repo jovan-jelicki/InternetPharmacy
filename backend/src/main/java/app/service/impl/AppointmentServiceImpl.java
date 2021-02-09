@@ -57,6 +57,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional(readOnly = false)
     public Appointment save(Appointment entity) {
         entity.setPharmacy(pharmacyRepository.findById(entity.getPharmacy().getId()).get());
+        entity.getPeriod().setPeriodStart(entity.getPeriod().getPeriodStart().withMinute(0).withSecond(0).withNano(0));
+        entity.getPeriod().setPeriodEnd(entity.getPeriod().getPeriodEnd().withMinute(0).withSecond(0).withNano(0));
         return appointmentRepository.save(entity);
     }
 
@@ -247,7 +249,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             return false;
         else if (!entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodEnd().toLocalTime()))
             return false;
-        else if (Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) > 60 ||
+        else if (Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) > 120 ||
                 Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) <10)
             return false;
 

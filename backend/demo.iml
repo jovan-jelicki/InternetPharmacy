@@ -19,7 +19,7 @@
         <datasource-mapping>
           <factory-entry name="Entities" />
           <factory-entry name="demo" />
-          <factory-entry name="entityManagerFactory" />
+          <factory-entry name="entityManagerFactory" value="885405eb-43df-4017-ae38-16048b20f9b1" />
         </datasource-mapping>
         <naming-strategy-map />
       </configuration>

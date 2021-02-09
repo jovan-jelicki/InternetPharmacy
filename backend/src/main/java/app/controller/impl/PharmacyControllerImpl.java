@@ -45,7 +45,7 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(pharmacyService.savePharmacy(pharmacy), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
+    @PreAuthorize("hasAnyRole('pharmacyAdmin, patient')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacyDTO> read(@PathVariable Long id) {
         return new ResponseEntity<>(new PharmacyDTO(pharmacyService.read(id).get(), gradeService.findAverageGradeForEntity(id, GradeType.pharmacy)), HttpStatus.OK);
@@ -97,7 +97,7 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
+    @PreAuthorize("hasAnyRole('pharmacyAdmin, patient')")
     @GetMapping(value = "/getPharmacyMedicationListing/{pharmacyId}")
     public ResponseEntity<Collection<PharmacyMedicationListingDTO>> getPharmacyMedicationListing(@PathVariable Long pharmacyId) {
         return new ResponseEntity<>(pharmacyService.getPharmacyMedicationListingDTOs(pharmacyId), HttpStatus.OK);

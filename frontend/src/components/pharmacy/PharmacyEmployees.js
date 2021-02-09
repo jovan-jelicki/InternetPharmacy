@@ -110,39 +110,39 @@ export default class PharmacyEmployees extends React.Component{
                    </tr>
                    </thead>
                    <tbody>
-               {this.state.dermatologists.map((dermatologist, index) => (
-                   <tr key={index}>
-                       <th scope="row">{index+1}</th>
-                       <td>{dermatologist.firstName}</td>
-                       <td>{dermatologist.lastName}</td>
-                       <td>
-                           <StarRatings
-                               starDimension={'25px'}
-                               rating={dermatologist.grade}
-                               starRatedColor='gold'
-                               numberOfStars={5}
-                           />
-                       </td>
-                       <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodStart).format('hh:mm a')
-                        + "  -  " + moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodEnd).format('hh:mm a')}</td>
+                   {this.state.dermatologists.length !== 0 && this.state.dermatologists.map((dermatologist, index) => (
+                       <tr key={index}>
+                           <th scope="row">{index+1}</th>
+                           <td>{dermatologist.firstName}</td>
+                           <td>{dermatologist.lastName}</td>
+                           <td>
+                               <StarRatings
+                                   starDimension={'25px'}
+                                   rating={dermatologist.grade}
+                                   starRatedColor='gold'
+                                   numberOfStars={5}
+                               />
+                           </td>
+                           <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === this.state.pharmacyId)[0].period.periodStart).format('hh:mm a')
+                           + "  -  " + moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === this.state.pharmacyId)[0].period.periodEnd).format('hh:mm a')}</td>
 
-                       <td style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block'} : {display : 'none'}}>
-                           <Button variant="primary" onClick={this.openModalAddDermatologist}>
-                                Schedule appointment
-                           </Button>
-                       </td >
-                       <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                           <Button variant="warning" onClick={(e) => this.handleModalAddAppointment(dermatologist)}>
-                               Define available appointments
-                           </Button>
-                       </td>
-                       <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                           <Button variant="danger" onClick={() => this.deleteDermatologist(dermatologist)}>
-                               Delete dermatologist
-                           </Button>
-                       </td>
-                   </tr>
-               ))}
+                           <td style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block'} : {display : 'none'}}>
+                               <Button variant="primary" onClick={this.openModalAddDermatologist}>
+                                   Schedule appointment
+                               </Button>
+                           </td >
+                           <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                               <Button variant="warning" onClick={(e) => this.handleModalAddAppointment(dermatologist)}>
+                                   Define available appointments
+                               </Button>
+                           </td>
+                           <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                               <Button variant="danger" onClick={() => this.deleteDermatologist(dermatologist)}>
+                                   Delete dermatologist
+                               </Button>
+                           </td>
+                       </tr>
+                   ))}
                    </tbody>
                </table>
 
@@ -350,14 +350,14 @@ export default class PharmacyEmployees extends React.Component{
         endTime = moment(endTime + ":00", "HH:mm:ss a");
         let duration = moment.duration(endTime.diff(startTime));
 
-        return Math.abs(parseInt(duration.asMinutes())) < 120;
+        return Math.abs(parseInt(duration.asMinutes())) < 120 || Math.abs(parseInt(duration.asMinutes())) > 480;
     }
 
     addDermatologist = async () => {
         let finalDermatologist = this.state.dermatologistForAdding;
         let workingHours = this.state.workingHours;
         if (this.validateWorkingHoursDifference(workingHours.period.periodStart, workingHours.period.periodEnd)) {
-            alert("Dermatologist should work at least 2 hours.");
+            alert("Dermatologist should work at least 2 hours and not more than 8.");
             return;
         }
         workingHours.period.periodStart = '2017-01-13 ' + workingHours.period.periodStart + ":00";
@@ -400,7 +400,7 @@ export default class PharmacyEmployees extends React.Component{
                         periodEnd : ""
                     },
                     pharmacy : {
-                        id : 2 //todo change pharmacy ID
+                        id : this.state.pharmacyId
                     }
                 }
             });
@@ -513,7 +513,7 @@ export default class PharmacyEmployees extends React.Component{
                         'Content-Type': 'application/json',
                         Authorization : 'Bearer ' + this.state.user.jwtToken
                     }
-                }) //todo change pharmacy id
+                })
             .then(res => {
                 this.setState({
                     pharmacists : res.data,
@@ -530,7 +530,7 @@ export default class PharmacyEmployees extends React.Component{
                         'Content-Type': 'application/json',
                         Authorization : 'Bearer ' + this.state.user.jwtToken
                     }
-                })//todo change pharmacy ID
+                })
             .then(res => {
                 this.setState({
                     dermatologists : res.data,
@@ -665,7 +665,7 @@ export default class PharmacyEmployees extends React.Component{
                     'Content-Type': 'application/json',
                     Authorization : 'Bearer ' + this.state.user.jwtToken
                 }
-            }).then( //todo change pharmacy id
+            }).then(
             res => {
                 this.setState({
                     notWorkingDermatologists : res.data,
@@ -681,7 +681,7 @@ export default class PharmacyEmployees extends React.Component{
                         periodEnd : ""
                     },
                     pharmacy : {
-                        id : 1 //todo change pharmacy ID
+                        id : this.state.pharmacyId
                     }
                 }
             })
@@ -697,7 +697,7 @@ export default class PharmacyEmployees extends React.Component{
                         periodEnd : ""
                     },
                     pharmacy : {
-                        id : 1 //todo change pharmacy ID
+                        id : this.state.pharmacyId
                     }
                 }
             })
