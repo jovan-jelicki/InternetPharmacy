@@ -4,6 +4,8 @@ import axios from "axios";
 import MedicationSearch from "./MedicationSearch";
 import DateTimePicker from 'react-datetime-picker';
 import NumericInput from 'react-numeric-input';
+import helpers from "./../helpers/AuthentificationService"
+
 
 class MedicationPharmacy extends React.Component {
     constructor(props) {
@@ -23,12 +25,12 @@ class MedicationPharmacy extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         await axios
-            .get('http://localhost:8080/api/pharmacy/getPharmacyByMedication/' + this.props.medication.id, {
+            .get('http://localhost:8080/api/pharmacy/getPharmacyByMedication/' + this.props.medication.id /*, {
                 headers : {
                     'Content-Type' : 'application/json',
                     Authorization : 'Bearer ' + this.aut.jwtToken 
                 }
-            })
+            }*/)
             .then((res) => {
                 this.setState({
                     pharmacy : res.data
@@ -58,7 +60,7 @@ class MedicationPharmacy extends React.Component {
                                 <td >{pharmacy.name}</td>
                                 <td >{pharmacy.address.country} {pharmacy.address.town} {pharmacy.address.street}</td>
                                 <td>{pharmacy.medicationPrice}</td>
-                                <td><Button variant={'outline-light'} onClick={() => this.handleModal(pharmacy)}>Reserve</Button></td>
+                                <td>{helpers.isLoggedIn() && <Button variant={'outline-light'} onClick={() => this.handleModal(pharmacy)}>Reserve</Button>}</td>
                             </tr>
                         </tbody>
                         ))}

@@ -249,7 +249,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             return false;
         else if (!entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodEnd().toLocalTime()))
             return false;
-        else if (Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) > 60 ||
+        else if (Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) > 120 ||
                 Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) <10)
             return false;
 

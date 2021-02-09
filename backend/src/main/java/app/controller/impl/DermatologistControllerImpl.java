@@ -133,7 +133,7 @@ public class DermatologistControllerImpl implements DermatologistController {
         return new ResponseEntity<>(dermatologistDTOS, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
+    @PreAuthorize("hasAnyRole('pharmacyAdmin, patient')")
     @GetMapping(value = "/getAllDermatologistWorkingInPharmacy/{id}")
     public ResponseEntity<Collection<DermatologistDTO>> getAllDermatologistWorkingInPharmacy(@PathVariable Long id) {
         ArrayList<DermatologistDTO> dermatologistDTOS = new ArrayList<>();

@@ -1,10 +1,19 @@
 import React from 'react'
 import { Container, Navbar, NavDropdown, Nav } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
+import helper from './../helpers/AuthentificationService'
 
 class PatientLayout extends React.Component {
     constructor(props) {
         super(props)
+    }
+
+    logout = () => {
+        helper.logout()
+        this.props.history.push({
+            pathname: "/"
+        });
     }
 
     render() {
@@ -24,7 +33,7 @@ class PatientLayout extends React.Component {
                                 <NavDropdown.Item as={NavLink} to='/scheduled-appointments-history'>Appointment History</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Reservations" id="collasible-nav-dropdow">
-                                <NavDropdown.Item as={NavLink} to='/patient-home'>Medications</NavDropdown.Item>
+                                <NavDropdown.Item as={NavLink} to='/patient-medications'>Medications</NavDropdown.Item>
                                 <NavDropdown.Item as={NavLink} to='/patient-reservations'>All Reservations</NavDropdown.Item>
                             </NavDropdown>
                             <Nav.Link as={NavLink} to='/patient-eprescription'>ePrescriptions</Nav.Link>  
@@ -36,6 +45,7 @@ class PatientLayout extends React.Component {
                             </NavDropdown>
                             <Nav.Link as={NavLink} to='/grading'>Grade</Nav.Link>
                             <Nav.Link as={NavLink} to='javascript:;'>File a Complaint</Nav.Link>
+                            <Nav.Link onClick={this.logout}>Log out</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
@@ -45,4 +55,4 @@ class PatientLayout extends React.Component {
     }
 }
 
-export default PatientLayout
+export default withRouter(PatientLayout)

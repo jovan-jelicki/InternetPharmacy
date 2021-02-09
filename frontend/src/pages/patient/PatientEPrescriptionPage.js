@@ -1,5 +1,6 @@
 import React from 'react'
 import PatientLayout from '../../layout/PatientLayout'
+import EPrescriptionSort from './../../components/EPrescriptionSort'
 import {Col, Card, Row, Table, Accordion} from "react-bootstrap";
 import axios from 'axios'
 
@@ -7,7 +8,8 @@ class PatientEPrescriptionPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            prescriptions : []
+            prescriptions : [],
+            status : 'All'
         }
     }
 
@@ -22,10 +24,34 @@ class PatientEPrescriptionPage extends React.Component {
             }
         })
         .then(res => {
+            this.backup = res.data
             this.setState({
                 prescriptions : res.data
             })
         })
+    }
+
+    sortByDate = (method) => {
+        this.setState({
+            prescriptions : [...this.state.prescriptions.sort((a, b) => {
+                let da = new Date(a.dateIssued), db = new Date(b.dateIssued)
+                if(method == 'asc')
+                    return da - db
+                else
+                    return db - da
+            })]
+        })
+    }
+
+    filterByStatus = () => {
+        if(this.state.status == 'All')
+            this.setState({
+                prescriptions : [...this.backup]
+            })
+        else
+            this.setState({
+                prescriptions : [...this.backup.filter(p => p.status == this.state.status)]
+            })
     }
 
     render() {
@@ -41,13 +67,13 @@ class PatientEPrescriptionPage extends React.Component {
                     </tr>
                 )
             })
-
             return (
                 <Col xs={12}>
                 <Accordion defaultActiveKey="1" className={'mt-3 mb-3'} key={index}>
                     <Card bg={'dark'} text={'white'}>
                         <Accordion.Toggle as={Card.Header} eventKey="0">
-                            {this.formatDate(p.dateIssued)}
+                            <Row>{this.formatDate(p.dateIssued)}</Row>
+                            <Row>{p.status}</Row>
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey="0">
                             <Card text={'white'} bg={'dark'}>
@@ -79,6 +105,14 @@ class PatientEPrescriptionPage extends React.Component {
         return (
             <PatientLayout>
                 <h2 className="mt-3 mb-3">ePrescription History</h2>
+                <label>Filter by Status</label>
+                <select value={this.state.status} onChange={this.changeStatus}>
+                    <option>All</option>
+                    <option>successful</option>
+                    <option>pending</option>
+                    <option>denied</option>
+                </select>
+                <EPrescriptionSort sorting={this.sortByDate}/>
                 <Row>
                     {prescriptions}
                 </Row>
@@ -89,6 +123,14 @@ class PatientEPrescriptionPage extends React.Component {
     formatDate = (dateTime) => {
         const parts = dateTime.substring(0, 10).split('-')
         return parts[2] + '. ' + parts[1] + '. ' + parts[0] + '.'
+    }
+
+    changeStatus = async (e) => {
+        await this.setState({
+            status : e.target.value
+        })
+
+        this.filterByStatus()
     }
 }
 
