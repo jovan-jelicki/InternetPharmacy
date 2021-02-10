@@ -311,8 +311,7 @@ export default class Registration extends React.Component {
                     </Alert>
                 }
 
-                    <div className="row" style={{
-                        marginTop: '3rem',
+                    <div className="row" style={{ marginTop: '3rem',
                         marginLeft: '20rem',
                         display: 'flex',
                         justifyContent: 'center',

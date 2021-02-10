@@ -49,7 +49,6 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
 
-
     @Override
     public Pharmacy savePharmacy(PharmacyAdminPharmacyDTO pharmacyAdminPharmacyDTO) {
         Pharmacy pharmacy = new Pharmacy();
@@ -62,13 +61,10 @@ public class PharmacyServiceImpl implements PharmacyService {
         return pharmacy;
     }
 
-
-
     @Override
     public void setMedicationService(MedicationService medicationService) {
         this.medicationService = medicationService;
     }
-
 
     @Override
     public void setMedicationPriceListService(MedicationPriceListServiceImpl medicationPriceListService) {
@@ -93,40 +89,6 @@ public class PharmacyServiceImpl implements PharmacyService {
                     }
                 }
             });
-        return pharmacies;
-    }
-
-
-    @Override
-    public Collection<PharmacyQRDTO> getPharmacyByListOfMedications(MedicationQRDTO medciationQuantityIds) {
-        ArrayList<PharmacyQRDTO> pharmacies = new ArrayList<>();
-
-        read().forEach(p -> {
-            int count=0;
-            for (MedicationQuantity q : p.getMedicationQuantity()) {
-                    for(String medciationId : medciationQuantityIds.getMedicationIds()){
-                        if (q.getId()==Long.valueOf(medciationId).longValue()) {
-                            count=count+1;
-                        }
-                    }
-            }
-
-            if(count == medciationQuantityIds.getMedicationIds().size()){
-                PharmacyQRDTO pmDTO = new PharmacyQRDTO();
-                pmDTO.setName(p.getName());
-                pmDTO.setAddress(p.getAddress());
-                //pmDTO.setPharmacyGrade(p.get);
-                //medId
-                //medQuantity
-                double cena=0;
-                for(String medciationId : medciationQuantityIds.getMedicationIds()){
-                    cena += medicationPriceListService.getMedicationPrice(p.getId(), Long.valueOf(medciationId).longValue());
-                }
-                pmDTO.setMedicationPrice(cena);
-                pharmacies.add(pmDTO);
-            }
-        });
-
         return pharmacies;
     }
 
@@ -195,7 +157,6 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         return medicationPriceListService.save(new MedicationPriceList(medication, addMedicationToPharmacyDTO.getCost(), new Period
                 (addMedicationToPharmacyDTO.getPriceDateStart(), addMedicationToPharmacyDTO.getPriceDateEnd()), pharmacy)) != null;
-
     }
 
     @Override

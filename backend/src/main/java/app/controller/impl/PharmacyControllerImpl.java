@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.dto.*;
 import app.model.grade.GradeType;
+import app.model.medication.EPrescription;
 import app.model.pharmacy.Pharmacy;
 import app.service.GradeService;
 import app.service.PharmacyService;
@@ -112,17 +113,6 @@ public class PharmacyControllerImpl {
         pharmacyService.getPharmacyByMedication(medicationId);
         return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
     }
-
-    @PostMapping(value = "/getPharmacyByListOfMedications", consumes = "application/json")
-    public ResponseEntity<Collection<PharmacyQRDTO>> getPharmacyByListOfMedications(@RequestBody  MedicationQRDTO medicationIds) {
-        pharmacyService.getPharmacyByListOfMedications(medicationIds);
-        return new ResponseEntity<>(pharmacyService.getPharmacyByListOfMedications(medicationIds), HttpStatus.OK);
-    }
-
-    /*@GetMapping(value = "/getPharmacyContainsMedication")
-    public ResponseEntity<Collection<Pharmacy>> getPharmacyMedicationListing(@PathVariable Long pharmacyId) {
-        return new ResponseEntity<>(pharmacyService.getPharmacyMedicationListingDTOs(pharmacyId), HttpStatus.OK);
-    }*/
 
 
     @PutMapping(value = "/deleteMedicationFromPharmacy", consumes = "application/json")

@@ -6,16 +6,18 @@ public class PharmacyQRDTO {
     private String name;
     private Address address;
     private Long medicationId;
+    private String medicationName;
     private int medicationQuantity;
     private Double medicationPrice;
     private Double pharmacyGrade;
 
     public PharmacyQRDTO(){}
 
-    public PharmacyQRDTO(String name, Address address, Long medicationId, int medicationQuantity, Double medicationPrice, Double pharmacyGrade) {
+    public PharmacyQRDTO(String name, Address address, Long medicationId, String medicationName, int medicationQuantity, Double medicationPrice, Double pharmacyGrade) {
         this.name = name;
         this.address = address;
         this.medicationId = medicationId;
+        this.medicationName = medicationName;
         this.medicationQuantity = medicationQuantity;
         this.medicationPrice = medicationPrice;
         this.pharmacyGrade = pharmacyGrade;
@@ -68,4 +70,8 @@ public class PharmacyQRDTO {
     public void setPharmacyGrade(Double pharmacyGrade) {
         this.pharmacyGrade = pharmacyGrade;
     }
+
+    public String getMedicationName() { return medicationName;}
+
+    public void setMedicationName(String medicationName) {this.medicationName = medicationName;}
 }

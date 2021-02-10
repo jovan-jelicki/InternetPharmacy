@@ -2,6 +2,7 @@ package app.controller.impl;
 
 import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
+import app.dto.PharmacyQRDTO;
 import app.service.EPrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,5 +37,12 @@ public class EPrescriptionControllerImpl {
                 .map(EPrescriptionSimpleInfoDTO::new)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(prescriptions, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getPharmacyForQR/{ePrescriptionId}")
+    public ResponseEntity<Collection<PharmacyQRDTO>> getPharmacyForQR(@PathVariable Long ePrescriptionId) {
+        Collection<PharmacyQRDTO> pharmacyQRDTOS=ePrescriptionService.getPharmacyForQR(ePrescriptionId);
+        return new ResponseEntity(pharmacyQRDTOS, HttpStatus.OK);
+
     }
 }

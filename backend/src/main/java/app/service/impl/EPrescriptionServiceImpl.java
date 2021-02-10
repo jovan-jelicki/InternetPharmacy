@@ -2,8 +2,11 @@ package app.service.impl;
 
 import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
+import app.dto.PharmacyQRDTO;
+import app.model.grade.GradeType;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
+import app.model.user.Address;
 import app.model.user.PharmacyAdmin;
 import app.repository.EPrescriptionRepository;
 import app.service.*;
@@ -23,15 +26,19 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     private final PharmacyAdminService pharmacyAdminService;
     private final EmailService emailService;
     private final MedicationLackingEventService medicationLackingEventService;
+    private final  MedicationPriceListService medicationPriceListService;
+    private final GradeService gradeService;
 
     @Autowired
-    public EPrescriptionServiceImpl(EmailService emailService,MedicationLackingEventService medicationLackingEventService ,PharmacyAdminService pharmacyAdminService, PatientService patientService, EPrescriptionRepository ePrescriptionRepository, PharmacyService pharmacyService) {
+    public EPrescriptionServiceImpl(EmailService emailService, MedicationLackingEventService medicationLackingEventService, PharmacyAdminService pharmacyAdminService, PatientService patientService, EPrescriptionRepository ePrescriptionRepository, PharmacyService pharmacyService, MedicationPriceListService medicationPriceListService, GradeService gradeService) {
         this.ePrescriptionRepository = ePrescriptionRepository;
         this.pharmacyService = pharmacyService;
         this.patientService = patientService;
         this.pharmacyAdminService = pharmacyAdminService;
         this.emailService = emailService;
         this.medicationLackingEventService = medicationLackingEventService;
+        this.medicationPriceListService = medicationPriceListService;
+        this.gradeService = gradeService;
     }
 
     @Override
@@ -111,5 +118,33 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     @Override
     public boolean existsById(Long id) {
         return ePrescriptionRepository.existsById(id);
+    }
+
+    @Override
+    public Collection<PharmacyQRDTO> getPharmacyForQR(Long ePrescriptionId) {
+        Collection<PharmacyQRDTO> pharmacyQRDTOS= new ArrayList<>();
+        Collection<Pharmacy> pharmacies= pharmacyService.read();
+
+        EPrescription prescription= this.read(ePrescriptionId).get();
+
+        for (Pharmacy pharmacy : pharmacies){
+            for(MedicationQuantity pharmacyQuantity : pharmacy.getMedicationQuantity()) {
+                for (MedicationQuantity medicationQuantity : prescription.getMedicationQuantity()) {
+                    PharmacyQRDTO pharmacyQRDTO=new PharmacyQRDTO();
+                    if (pharmacyQuantity.getMedication().getId()==medicationQuantity.getMedication().getId() && pharmacyQuantity.getQuantity()>medicationQuantity.getQuantity()){
+                            pharmacyQRDTO.setName(pharmacy.getName());
+                            pharmacyQRDTO.setMedicationName(medicationQuantity.getMedication().getName());
+                            pharmacyQRDTO.setAddress(pharmacy.getAddress());
+                            pharmacyQRDTO.setMedicationId(medicationQuantity.getMedication().getId());
+                            pharmacyQRDTO.setMedicationQuantity(medicationQuantity.getQuantity());
+                            pharmacyQRDTO.setMedicationPrice((medicationPriceListService.getMedicationPrice(pharmacy.getId(), pharmacyQuantity.getMedication().getId()))*medicationQuantity.getQuantity());
+                            pharmacyQRDTO.setPharmacyGrade(gradeService.findAverageGradeForEntity(pharmacyQuantity.getMedication().getId(), GradeType.medication));
+
+                            pharmacyQRDTOS.add(pharmacyQRDTO);
+                    }
+                }
+            }
+        }
+        return pharmacyQRDTOS;
     }
 }
