@@ -122,6 +122,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(Long id) {
         pharmacyRepository.deleteById(id);
     }
@@ -154,6 +155,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean addNewMedication(AddMedicationToPharmacyDTO addMedicationToPharmacyDTO) {
         Pharmacy pharmacy = this.read(addMedicationToPharmacyDTO.getPharmacyId()).get();
         //circular dependency
@@ -209,6 +211,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     // izbrisem aspirin, dodam aspirin pa pokusam opet da izbrisem
     @Override
+    @Transactional(readOnly = false)
     public Boolean deleteMedicationFromPharmacy(PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
         Pharmacy pharmacy = this.read(pharmacyMedicationListingDTO.getPharmacyId()).get();
 
