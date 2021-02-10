@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UsersMethodsTests {
+public class UsersServiceTests {
 
     @Mock
     private DermatologistRepository dermatologistRepository;

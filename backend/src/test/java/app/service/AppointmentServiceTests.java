@@ -25,7 +25,7 @@ import java.util.Collection;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AppointmentMethodsTests {
+public class AppointmentServiceTests {
 
     @Mock
     private AppointmentRepository appointmentRepository;

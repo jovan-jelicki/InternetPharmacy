@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SchedulingMethodsTests {
+public class SchedulingMethodsTestsForTransactions {
 
     @Autowired
     private AppointmentService appointmentService;
