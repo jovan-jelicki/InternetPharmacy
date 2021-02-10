@@ -54,7 +54,9 @@ export default class QRcode extends React.Component{
                     }
                 }
                 let result=jsQR(pixelArray, pngData.width, pngData.height)
-                localStorage.setItem("text", JSON.stringify(result.data));
+                if(result!=null) {
+                    localStorage.setItem("text", JSON.stringify(result.data));
+                }
             });
         };
 
@@ -221,27 +223,31 @@ render() {
                     {this.state.boolImage &&
                     <div>
                         <div className="row" style={{marginTop: '1rem'}}>
-                            <h>Select Image</h>
+                            <h5 style={{marginLeft: '1rem',marginRight: '1rem'}}>Select Image</h5>
                             <input id="file" accept="image/png" type="file" onChange={this.onImageChange}/>
                         </div>
-                        <img style={{height: 300, width: 300, marginLeft: '1rem', marginBottom: 10}}
-                             src={this.state.image}/>
+
                     </div>
                     }
                     {!this.state.boolImage &&
                         <div>
-                        <PharmacySearch search={this.search} cancel={this.cancel}/>
-                        <PharmacyFilter gradeFilter={this.gradeFilter}/>
-                        <Button onClick={this.sortByGrade} style={{height : 40, marginRight:10}}  type="button" className="btn btn-secondary"> Sort by grade</Button>
-                        <Button onClick={this.sortByPrice} style={{height : 40}}  type="button" className="btn btn-secondary"> Sort by price</Button>
-                        </div>
+                            <img style={{height: 300, width: 300, marginLeft: '1rem', marginBottom: 10}}
+                                 src={this.state.image}/>
+                            {this.state.pharmacies.length != 0 &&
+                             <div>
+                               < PharmacySearch search={this.search} cancel={this.cancel}/>
+                                <PharmacyFilter gradeFilter={this.gradeFilter}/>
+                                <Button onClick={this.sortByGrade} style={{height : 40, marginRight:10}}  type="button" className="btn btn-secondary"> Sort by grade</Button>
+                                <Button onClick={this.sortByPrice} style={{height : 40}}  type="button" className="btn btn-secondary"> Sort by price</Button>
+                                </div>
+                            }</div>
                     }
                     {this.state.pharmacies.length != 0 ?
                             <Row className={'mt-4'}>
                                 {pharmacies}
                             </Row>
                         :
-                        <Alert variant='dark'  show={true}  style={({textAlignVertical: "center", textAlign: "center", marginLeft:'5rem',marginRight:'5rem', backgroundColor:'darkgray'})}>
+                        <Alert variant='dark'  show={true}  style={({textAlignVertical: "center", textAlign: "center", marginTop:'10rem',marginLeft:'5rem',marginRight:'5rem', backgroundColor:'darkgray'})}>
                             No records found. Try again.
                         </Alert>
                     }
