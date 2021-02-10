@@ -9,6 +9,7 @@ import app.repository.PatientRepository;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PatientServiceImpl implements PatientService {
     private PatientRepository patientRepository;
 
@@ -27,6 +28,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<Patient> _user = patientRepository.findById(passwordKit.getUserId());
 //        if(_user.isEmpty())
@@ -60,6 +62,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Patient save(Patient entity) {
         return patientRepository.save(entity);
     }
@@ -73,6 +76,7 @@ public class PatientServiceImpl implements PatientService {
     public Optional<Patient> read(Long id) {return patientRepository.findById(id); }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void delete(Long id) {patientRepository.deleteById(id);}
 
     @Override
