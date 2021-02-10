@@ -41,14 +41,17 @@ export default class SupplierRegistration extends React.Component {
 
                 }
             },
+            userLog : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
             validForm: false,
             submitted: false,
         }
     }
 
     async sendParams() {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/save"
+            : 'http://localhost:8080/api/suppliers/save';
         axios
-            .post('http://localhost:8080/api/suppliers/save', {
+            .post(path, {
                 'id':'',
                 'firstName' : this.state.supplier.firstName,
                 'lastName' : this.state.supplier.lastName,
@@ -69,6 +72,11 @@ export default class SupplierRegistration extends React.Component {
                 },
                 'approvedAccount':false
 
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.userLog.jwtToken
+                }
             })
             .then(res => {
                 alert("Successfully registered!");

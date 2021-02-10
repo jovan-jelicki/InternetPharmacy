@@ -24,6 +24,7 @@ public class MedicationControllerImpl {
         this.medicationService = medicationService;
     }
 
+    @PreAuthorize("hasRole('systemAdmin')")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Medication> save(@RequestBody Medication entity) {
         return new ResponseEntity<>(medicationService.save(entity), HttpStatus.CREATED);
@@ -33,8 +34,8 @@ public class MedicationControllerImpl {
     public ResponseEntity<Collection<Medication>> search(@RequestBody MedicationSearchDTO medicationName) {
         return new ResponseEntity<>(medicationService.getMedicationByNameIsContaining(medicationName),HttpStatus.OK);
     }
-    @PreAuthorize("hasRole('supplier')")
-    @GetMapping
+
+    @GetMapping(value="getAll")
     public ResponseEntity<Collection<Medication>> read() {
         return new ResponseEntity<>(medicationService.read(), HttpStatus.OK);
     }

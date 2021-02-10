@@ -43,25 +43,38 @@ export default class PharmacyAdminRegistration extends React.Component {
             pharmacys:[],
             selectedPharmacy:{
                 id:''
-            }
+            },
+            localUser : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
 
         }
     }
     async componentDidMount() {
-        await axios.get("http://localhost:8080/api/pharmacy").then(res => {
+        await this.fetchPharmacy();
+    }
+
+    fetchPharmacy(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy"
+            : 'http://localhost:8080/api/pharmacy';
+
+         axios.get(path,{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.localUser.jwtToken
+            }
+        }).then(res => {
             this.setState({
                 pharmacys : res.data
             });
         })
-        console.log("nema")
-        console.log(this.state.pharmacys)
-    }
+        console.log(this.state.pharmacys)    }
 
     async sendParams() {
-        console.log(this.state.user)
-        console.log(this.state.selectedPharmacy)
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacyAdmin/saveAdminPharmacy"
+            : 'http://localhost:8080/api/pharmacyAdmin/saveAdminPharmacy';
+
         axios
-            .post('http://localhost:8080/api/pharmacyAdmin/saveAdminPharmacy', {
+            .post(path, {
                 'id':'',
                 'firstName' : this.state.user.firstName,
                 'lastName' : this.state.user.lastName,
@@ -83,6 +96,11 @@ export default class PharmacyAdminRegistration extends React.Component {
                 'approvedAccount':false,
                 'pharmacyId': this.state.user.pharmacy.id
 
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.localUser.jwtToken
+                }
             })
             .then(res => {
                 alert("Successfully registered!");

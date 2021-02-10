@@ -7,6 +7,7 @@ import app.model.user.Patient;
 import app.service.ComplaintService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class ComplaintControllerImpl {
         this.complaintService = complaintService;
     }
 
+    @PreAuthorize("hasAnyRole('systemAdmin','patient')")
     @PostMapping(value="/save", consumes = "application/json")
     public ResponseEntity<Void> save(@RequestBody Complaint complaint) {
         complaintService.save(complaint);
@@ -30,14 +32,15 @@ public class ComplaintControllerImpl {
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
-
+    @PreAuthorize("hasRole('systemAdmin')")
     @GetMapping
     public ResponseEntity<Collection<ComplaintDTO>> getComplaints() {
         return new ResponseEntity<>(complaintService.getComplaints(), HttpStatus.OK);
     }
 
-    @PutMapping (value = "/edit/{complaintId}")
-    public ResponseEntity<Boolean> editComplaint(@PathVariable Long complaintId) {
+    @PreAuthorize("hasRole('systemAdmin')")
+    @GetMapping(value = "/edit/{complaintId}")
+    public ResponseEntity<Boolean> editComplaint(@RequestBody Long complaintId) {
         return new ResponseEntity<>(complaintService.editComplaint(complaintId), HttpStatus.OK);
 
     }

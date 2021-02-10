@@ -25,20 +25,26 @@ export class SystemAdminHomePage extends React.Component {
             newPw : "",
             repeatPw : "",
             repErr : "",
-            wrongPw : ""
+            wrongPw : "",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
         }
     }
     componentDidMount() {
-        let  pharmacyAdmin= {
-            firstName: 'Snezana',
-            lastName: 'Bulajic',
-        }
-        this.setState({
-            pharmacyAdmin : pharmacyAdmin
-        })
+        if (this.state.user.type == undefined || this.state.user.type != "ROLE_systemAdmin")
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
 
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/systemAdmin/isAccountApproved/"
+            : 'http://localhost:8080/api/systemAdmin/isAccountApproved/';
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/systemAdmin/isAccountApproved/' + 1)
+            .get(path + this.state.user.id,
+                {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
             .then(res => {
                 if(!res.data){
                     this.setState({
@@ -87,7 +93,7 @@ export class SystemAdminHomePage extends React.Component {
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="systemAdmin" onClick={this.handleChange}>System admin registration</a>
                     </li>
-
+                    <button type="button" className="btn btn-dark"  onClick={this.logOut}>Log out</button>
 
                 </ul>
                 {this.renderNavbar()}
@@ -95,7 +101,12 @@ export class SystemAdminHomePage extends React.Component {
             </div>
         );
     }
-
+    logOut = () => {
+        localStorage.removeItem("user");
+        this.props.history.push({
+            pathname: "/"
+        });
+    }
     showModalDialog = () => {
         return (
             <Modal backdrop="static" show={this.state.showModal} onHide={this.handleModal}>
@@ -124,12 +135,21 @@ export class SystemAdminHomePage extends React.Component {
     sendData = () => {
         if(this.state.repeatPw !== this.state.newPw)
             return;
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/systemAdmin/pass"
+            : 'http://localhost:8080/api/systemAdmin/pass';
+
         axios
-            .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/systemAdmin/pass', {
+            .put(path, {
                 'userId' : 1,
                 'oldPassword' : this.state.oldPw,
                 'newPassword' : this.state.newPw,
                 'repeatedPassword' : this.state.repeatPw
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 if(!res.data){

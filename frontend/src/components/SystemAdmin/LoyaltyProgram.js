@@ -29,7 +29,9 @@ export default class LoyaltyProgram extends React.Component {
             loyPrograms:[],
             regularCategory:[],
             silverCategory:[],
-            goldCategory:[]
+            goldCategory:[],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
 
         }
     }
@@ -40,14 +42,19 @@ export default class LoyaltyProgram extends React.Component {
     }
 
     fetchLoyaltyScales(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyScale/"
+            : 'http://localhost:8080/api/loyaltyScale/';
         axios
-            .get('http://localhost:8080/api/loyaltyScale/')
+            .get(path,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then((res) => {
                 this.setState({
                     loyScales : res.data
                 })
-                console.log("USEO")
-                console.log(this.state.loyScales);
                 this.getCategories();
             })
     }
@@ -76,8 +83,15 @@ export default class LoyaltyProgram extends React.Component {
 
 
     fetchLoyaltyProgram(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyProgram/"
+            : 'http://localhost:8080/api/loyaltyProgram/';
         axios
-            .get('http://localhost:8080/api/loyaltyProgram')
+            .get(path,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then((res) => {
                 this.setState({
                     loyPrograms : res.data
@@ -88,12 +102,19 @@ export default class LoyaltyProgram extends React.Component {
     }
 
     async sendData() {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyScale/save"
+            : 'http://localhost:8080/api/loyaltyScale/save';
         axios
-            .post('http://localhost:8080/api/loyaltyScale/save', {
+            .post(path, {
                 'category': this.state.loyalty.category,
                 'minPoints': this.state.loyalty.minPoints,
                 'maxPoints' : this.state.loyalty.maxPoints,
                 'discount' : this.state.loyalty.discount,
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 alert("Successfully added!");
@@ -104,10 +125,17 @@ export default class LoyaltyProgram extends React.Component {
     }
 
     async sendProgram() {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyProgram/save"
+            : 'http://localhost:8080/api/loyaltyProgram/save';
         axios
-            .post('http://localhost:8080/api/loyaltyProgram/save', {
+            .post(path, {
                 'appointmentPoints': this.state.program.appointmentPoints,
                 'consultingPoints': this.state.program.consultingPoints,
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 alert("Successfully added!");

@@ -49,39 +49,67 @@ export default class AddNewMedication extends React.Component {
             ingredientBackup:[],
             validForm: false,
             submitted: false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
         }
     }
 
     async componentDidMount() {
-        await axios.get("http://localhost:8080/api/ingredients/").then(res => {
+        await this.fetchIngredients()
+        await this.fetchAlternatives()
+        await this.fetchSideEffects()
+
+    }
+
+    fetchIngredients(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/ingredients/getAll"
+            : 'http://localhost:8080/api/ingredients/getAll';
+         axios.get(path,{
+             headers: {
+                 'Content-Type': 'application/json',
+                 Authorization: 'Bearer ' + this.state.user.jwtToken
+             }
+         }).then(res => {
             this.setState({
                 ingredients : res.data
             });
         })
-        await axios.get("http://localhost:8080/api/medications/").then(res => {
+    }
+
+    fetchAlternatives(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications/getAll"
+            : 'http://localhost:8080/api/medications/getAll';
+        axios.get(path,{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.user.jwtToken
+            }
+        }).then(res => {
             this.setState({
                 alternatives : res.data
             });
         })
-        await axios.get("http://localhost:8080/api/sideEffects/getAll").then(res => {
+    }
+    fetchSideEffects(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/sideEffects/getAll"
+            : 'http://localhost:8080/api/sideEffects/getAll';
+        axios.get(path,{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.user.jwtToken
+            }
+        }).then(res => {
             this.setState({
-                sideEffects : res.data
+                sideEffects: res.data
             });
         })
-        console.log("side")
-        console.log(this.state.sideEffects);
     }
 
     async sendParams() {
-        console.log(this.state.shape)
-        console.log(this.state.medIngredients)
-        console.log(this.state.medAlternatives)
-        console.log(this.state.medSideEffects)
-        console.log(this.state.medIssue)
-
-       // console.log(this.state.medication)
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications"
+            : 'http://localhost:8080/api/medications';
         axios
-            .post('http://localhost:8080/api/medications', {
+            .post(path, {
                 'id':'',
                 'name': this.state.medication.name,
                 'dose' :this.state.medication.dose,
@@ -94,6 +122,11 @@ export default class AddNewMedication extends React.Component {
                 'medicationIssue':this.state.medIssue,
                 'note':this.state.medication.note,
                 'loyaltyPoints':this.state.medication.loyaltyPoints
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 alert("Successfully registered!");

@@ -5,6 +5,7 @@ import app.model.user.Patient;
 import app.service.LoyaltyScaleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -18,11 +19,14 @@ public class LoyaltyScaleControllerImpl {
         this.loyaltyScaleService = loyaltyScaleService;
     }
 
+
+    @PreAuthorize("hasRole('systemAdmin')")
     @PostMapping(value="/save", consumes = "application/json")
     public ResponseEntity<Boolean> save(@RequestBody LoyaltyScale entity) {
         return new ResponseEntity<>(loyaltyScaleService.editLoyaltyScale(entity), HttpStatus.CREATED);
     }
-
+    
+    @PreAuthorize("hasRole('systemAdmin')")
     @GetMapping
     public ResponseEntity<Collection<LoyaltyScale>> read() {
         return new ResponseEntity<>(loyaltyScaleService.read(), HttpStatus.OK);

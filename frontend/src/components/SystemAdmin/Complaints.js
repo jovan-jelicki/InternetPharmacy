@@ -5,12 +5,12 @@ import CreateNewOffer from "../Supplier/CreateNewOffer";
 import ComplainAnswer from "./ComplainAnswer";
 
 export default class Complaints extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             complaints:[],
             showModal:false,
-
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
         }
     }
 
@@ -21,14 +21,19 @@ export default class Complaints extends React.Component {
     }
 
     async fetchComplaints(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/complaints"
+            : 'http://localhost:8080/api/complaints';
         await axios
-            .get('http://localhost:8080/api/complaints')
+            .get(path,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then((res) => {
                 this.setState({
                     complaints: res.data
                 })
-                console.log("pokupi")
-                console.log(this.state.complaints);
             }).catch(
                 console.log("greska")
             )
