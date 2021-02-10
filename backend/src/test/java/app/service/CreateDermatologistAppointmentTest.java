@@ -1,11 +1,10 @@
-package app.integrationTests;
+package app.service;
 
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
-import app.service.AppointmentService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

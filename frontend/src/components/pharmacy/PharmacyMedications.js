@@ -57,9 +57,9 @@ export default class PharmacyMedications extends React.Component{
         return (
             <div style={({ marginLeft: '1rem' })}>
                 <br/><br/>
-                <h1>Lekovi</h1>
+                <h1>Medications</h1>
 
-                <Button variant="success" onClick={this.openAddMedicationModal} >Add medication</Button>
+                <Button variant="success" onClick={this.openAddMedicationModal} style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>Add medication</Button>
                 <Button variant="primary" style={({ marginLeft: '1rem' })}>Check availability via ePrescription</Button>
                 <br/><br/>
 
@@ -261,6 +261,7 @@ export default class PharmacyMedications extends React.Component{
     }
 
     submitEditMedication= () => {
+        alert(this.state.medicationForEditing.medicationQuantityVersion);
         console.log(this.state.medicationForEditing);
         if (parseInt(this.state.medicationForEditing.quantity) < 0) {
             alert("Medication quantity cannot be negative.");
@@ -340,6 +341,7 @@ export default class PharmacyMedications extends React.Component{
                 medicationId : medication.medicationId,
                 medicationQuantityId : medication.medicationQuantityId,
                 pharmacyId : medication.pharmacyId,
+                medicationQuantityVersion : medication.medicationQuantityVersion
             },
         });
         this.handleEditModal();

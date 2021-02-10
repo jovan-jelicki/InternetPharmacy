@@ -28,6 +28,7 @@ export default class DermatologistsProfilePage extends React.Component {
 
     async componentDidMount() {
 
+
         const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/"
             : 'http://localhost:8080/api/dermatologists/';
         await axios
