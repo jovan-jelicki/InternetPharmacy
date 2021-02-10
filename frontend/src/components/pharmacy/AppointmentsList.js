@@ -69,7 +69,7 @@ class AppointmentsList extends React.Component{
     }
 
     fetchAppointments = () => {
-        axios.get(HelperService.getPath("/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/" + this.state.pharmacyId),
+        axios.get(HelperService.getPath("/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/" + this.state.pharmacyId + '/' + this.state.user.id),
             {
                 headers: {
                     'Content-Type': 'application/json',

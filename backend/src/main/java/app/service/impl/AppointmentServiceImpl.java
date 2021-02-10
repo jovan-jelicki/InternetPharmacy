@@ -331,9 +331,23 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId) {
-        return appointmentRepository.getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(LocalDateTime.now(), pharmacyId);
+    public Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId, Long patientId) {
+        Collection<Appointment> available = new ArrayList<>();
+        Collection<AppointmentCancelled> cancelled = appointmentCancelledRepository.findAllByPatient_IdAndPharmacy_IdAndType(patientId, pharmacyId, EmployeeType.ROLE_dermatologist);
+        appointmentRepository
+                .getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(LocalDateTime.now(), pharmacyId)
+                .forEach(a -> {
+                    boolean overlaps = false;
+                    overlaps = cancelled
+                            .stream()
+                            .anyMatch(ca -> ca.isOverlapping(a.getPeriod().getPeriodStart()));
+                    if(!overlaps)
+                        available.add(a);
+                });
+        return available;
     }
+
+
 
     @Override
     @Transactional(readOnly = false)

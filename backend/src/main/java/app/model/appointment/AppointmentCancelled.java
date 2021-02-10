@@ -102,9 +102,10 @@ public class AppointmentCancelled {
     }
 
     public boolean isOverlapping(LocalDateTime timeSlot) {
-        LocalDateTime start = period.getPeriodStart().minusMinutes(1);
-        LocalDateTime end = period.getPeriodEnd().plusMinutes(1);
+        LocalDateTime start = period.getPeriodStart().plusMinutes(1);
+        LocalDateTime end = period.getPeriodEnd().minusMinutes(1);
         return (start.isBefore(timeSlot) && end.isAfter(timeSlot)) ||
-                (start.isBefore(timeSlot.plusHours(1)) && end.isAfter(timeSlot.plusHours(1)));
+                (start.isBefore(timeSlot.plusHours(1)) && end.isAfter(timeSlot.plusHours(1))) ||
+                (start.isAfter(timeSlot) && end.isBefore(timeSlot.plusHours(1)));
     }
 }

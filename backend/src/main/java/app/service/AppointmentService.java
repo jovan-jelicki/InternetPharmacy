@@ -52,7 +52,7 @@ public interface AppointmentService extends CRUDService<Appointment>{
     Collection<Appointment> findAppointmentsByPatient_IdAndType(Long id, EmployeeType type);
 
     Boolean patientDidNotShowUp(Long id);
-    Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId);
+    Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId, Long patientId);
 
     boolean validateAppointmentTimeRegardingWorkingHours(Appointment entity);
      boolean validateAppointmentTimeRegardingAllWorkingHours(Appointment entity);

@@ -9,4 +9,5 @@ import java.util.Collection;
 
 public interface AppointmentCancelledRepository extends JpaRepository<AppointmentCancelled, Long> {
     Collection<AppointmentCancelled> findAllByPatient_IdAndType(Long id, EmployeeType type);
+    Collection<AppointmentCancelled> findAllByPatient_IdAndPharmacy_IdAndType(Long patientId, Long pharmacyId, EmployeeType type);
 }
