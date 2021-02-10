@@ -5,6 +5,7 @@ import app.dto.MedicationOfferDTO;
 import app.service.MedicationOfferService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,14 @@ public class MedicationOfferControllerImpl {
     @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(consumes = "application/json", value = "/acceptOffer/{pharmacyAdminId}")
     public ResponseEntity<Boolean> acceptOffer(@RequestBody MedicationOfferDTO medicationOffer, @PathVariable Long pharmacyAdminId){
-        if (medicationOfferService.acceptOffer(medicationOffer, pharmacyAdminId))
+        boolean result;
+        try {
+            result = medicationOfferService.acceptOffer(medicationOffer, pharmacyAdminId);
+        }
+        catch (ObjectOptimisticLockingFailureException ex) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        if (result)
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
