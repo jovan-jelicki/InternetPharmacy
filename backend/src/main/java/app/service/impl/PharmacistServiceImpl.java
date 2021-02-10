@@ -127,7 +127,7 @@ public class PharmacistServiceImpl implements PharmacistService {
         ArrayList<Long> pharmacistIds = new ArrayList<>();
 
         for(Appointment appointment : appointmentService.read()){
-              if(appointment.getPatient().getId()!=null){
+              if(appointment.getPatient()!=null){
                 if (appointment.getType() == EmployeeType.pharmacist && appointment.getPatient().getId() == patientId) {
                     Pharmacist pharmacist = this.read(appointment.getExaminerId()).get();
                     if(!pharmacistIds.contains(appointment.getExaminerId())){

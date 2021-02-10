@@ -396,9 +396,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<Long> pharmacyIds = new ArrayList<>();
 
         for(Appointment appointment : this.read()){
-            if(appointment.getPatient().getId()==patientId && !pharmacyIds.contains(appointment.getPharmacy().getId())){
-                pharmacyIds.add(appointment.getPharmacy().getId());
-                pharmacies.add(new PharmacyNameIdDTO(appointment.getPharmacy()));
+            if(appointment.getPatient()!=null){
+                if(appointment.getPatient().getId()==patientId && !pharmacyIds.contains(appointment.getPharmacy().getId())) {
+                    pharmacyIds.add(appointment.getPharmacy().getId());
+                    pharmacies.add(new PharmacyNameIdDTO(appointment.getPharmacy()));
+
+                }
             }
         }
 
