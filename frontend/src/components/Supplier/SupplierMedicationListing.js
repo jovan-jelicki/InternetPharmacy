@@ -43,7 +43,7 @@ export default class SupplierMedicationListing extends React.Component{
                 });
             })
     }
-    
+
     fetchSuppliersMedicationListing=()=>{
         const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/getSuppliersMedicationList/"
             : 'http://localhost:8080/api/suppliers/getSuppliersMedicationList/';
