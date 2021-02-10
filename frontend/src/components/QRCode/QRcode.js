@@ -5,6 +5,8 @@ import jsQR from "jsqr";
 import png from "png.js";
 import axios from "axios";
 import StarRatings from "react-star-ratings";
+import PharmacySearch from "../pharmacy/PharmacySearch";
+import PharmacyFilter from "../pharmacy/PharmacyFilter";
 
 
 export default class QRcode extends React.Component{
@@ -15,12 +17,12 @@ export default class QRcode extends React.Component{
             image: null,
             ePrescription:{ data:[]},
             pharmacies:[],
-            boolBLa:false,
-            parameters:[{
-                'medicationId':''
-            }]
+            boolImage:true
         };
         this.onImageChange = this.onImageChange.bind(this);
+        this.gradeFilter = this.gradeFilter.bind(this)
+        this.search = this.search.bind(this)
+        this.cancel = this.cancel.bind(this)
     }
 
     onImageChange = (event)=> {
@@ -62,6 +64,9 @@ export default class QRcode extends React.Component{
             if(meds!=null) {
                 this.state.ePrescription=meds;
                 console.log(this.state.ePrescription);
+                this.setState({
+                    boolImage:false
+                })
                 this.sendData();
             }
             else alert("Please upload QR code")
@@ -77,12 +82,48 @@ export default class QRcode extends React.Component{
                     pharmacies:res.data
                     }
                 )
+                console.log("BLAAA")
                 console.log(this.state.pharmacies)
+                this.pharmaciesBackup = [...this.state.pharmacies]
+                console.log(this.pharmaciesBackup)
             });
     }
 
+    cancel() {
+        this.setState({
+            pharmacies : this.pharmaciesBackup
+        })
+    }
+
+    search({name, location}) {
+        console.log(name, location)
+        axios
+            .post('http://localhost:8080/api/pharmacy/search', {
+                'name' : name,
+                'street' : location.street,
+                'town' : location.town,
+                'country': location.country
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacies : res.data
+                })
+                console.log(this.state.pharmacies)
+
+            })
+    }
+
+    gradeFilter(grade) {
+
+        this.setState({
+            pharmacies : [...this.pharmaciesBackup.filter(p => p.pharmacyGrade >= grade)]
+        })
+    }
+
+
 render() {
         const pharmacies = this.state.pharmacies.map((pharmacy, index) => {
+            const medicationName=pharmacy.medicationName;
             const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country
             return (
                 <Col xs={4} >
@@ -113,16 +154,26 @@ render() {
             <PatientLayout>
                 <Container fluid>
                     <h3 style={{marginLeft:'1rem', marginTop:'2rem'}}>QR code</h3>
-                    <div className="row"style={{marginTop: '1rem'}}>
-                        <h>Select Image</h>
-                        <input id="file" accept="image/png" type="file" onChange={this.onImageChange} />
+                    {this.state.boolImage &&
+                    <div>
+                        <div className="row" style={{marginTop: '1rem'}}>
+                            <h>Select Image</h>
+                            <input id="file" accept="image/png" type="file" onChange={this.onImageChange}/>
+                        </div>
+                        <img style={{height: 300, width: 300, marginLeft: '1rem', marginBottom: 10}}
+                             src={this.state.image}/>
                     </div>
-                    <img style={{height:300, width:300,marginLeft:'1rem'}} src={this.state.image} />
-
+                    }
+                    {!this.state.boolImage &&
+                        <div>
+                        <PharmacySearch search={this.search} cancel={this.cancel}/>
+                        <PharmacyFilter gradeFilter={this.gradeFilter}/>
+                        </div>
+                    }
                     {this.state.pharmacies.length != 0 ?
-                        <Row className={'mt-4'}>
-                            {pharmacies}
-                        </Row>
+                            <Row className={'mt-4'}>
+                                {pharmacies}
+                            </Row>
                         :
                         <Alert variant='dark'  show={true}  style={({textAlignVertical: "center", textAlign: "center", marginLeft:'5rem',marginRight:'5rem', backgroundColor:'darkgray'})}>
                             No records found. Try again.
