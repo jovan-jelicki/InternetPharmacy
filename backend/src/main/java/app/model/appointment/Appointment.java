@@ -62,6 +62,15 @@ public class Appointment {
       this.version = appointment.getVersion();
    }
 
+   public Appointment(AppointmentCancelled appointmentCancelled) {
+      examinerId = appointmentCancelled.getExaminerId();
+      pharmacy = appointmentCancelled.getPharmacy();
+      appointmentStatus = appointmentCancelled.getAppointmentStatus();
+      type = appointmentCancelled.getType();
+      period = appointmentCancelled.getPeriod();
+      patient = appointmentCancelled.getPatient();
+   }
+
    public Long getId() {
       return id;
    }

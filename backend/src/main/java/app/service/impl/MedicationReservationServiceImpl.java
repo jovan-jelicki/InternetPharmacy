@@ -122,7 +122,10 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
 //            throw new IllegalArgumentException("Pharmacy Id does not exist");
         //proveri stanje u apoteci pre rezervisanja leka
         MedicationReservation medicationReservation = entity.getMedicationReservation();
-        medicationReservation.setPatient(patientService.read(medicationReservation.getPatient().getId()).get());
+        Patient patient = patientService.read(medicationReservation.getPatient().getId()).get();
+        if(patient.getPenaltyCount() >= 3)
+            throw new IllegalArgumentException("Patient is blocked");
+        medicationReservation.setPatient(patient);
         updateMedicationQuantity(pharmacy.get().getMedicationQuantity(),
                 medicationReservation.getMedicationQuantity());
         medicationReservation = this.save(medicationReservation);

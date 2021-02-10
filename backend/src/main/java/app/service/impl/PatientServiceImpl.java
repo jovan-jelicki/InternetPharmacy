@@ -8,6 +8,7 @@ import app.model.user.Patient;
 import app.repository.PatientRepository;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,6 +96,16 @@ public class PatientServiceImpl implements PatientService {
                     pharmacies.add(new PharmacyPlainDTO(p.getPharmacy()));
                 });
         return pharmacies;
+    }
+
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void resetPenalties() {
+        patientRepository.findAll().forEach(p -> {
+            if(p.getPenaltyCount() != 0) {
+                p.setPenaltyCount(0);
+                save(p);
+            }
+        });
     }
 
 }

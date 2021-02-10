@@ -6,6 +6,7 @@ import app.model.appointment.AppointmentStatus;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
+import app.repository.AppointmentCancelledRepository;
 import app.service.AppointmentService;
 import app.service.ExaminationService;
 import app.service.PatientService;
@@ -24,11 +25,13 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     private final AppointmentService appointmentService;
     private final PatientService patientService;
+    private final AppointmentCancelledRepository appointmentCancelledRepository;
 
     @Autowired
-    public ExaminationServiceImpl(PatientService patientService, AppointmentService appointmentService) {
+    public ExaminationServiceImpl(PatientService patientService, AppointmentService appointmentService, AppointmentCancelledRepository appointmentCancelledRepository) {
         this.appointmentService = appointmentService;
         this.patientService = patientService;
+        this.appointmentCancelledRepository = appointmentCancelledRepository;
     }
 
     @Override
@@ -80,8 +83,11 @@ public class ExaminationServiceImpl implements ExaminationService {
     public Collection<Appointment> findPreviousByPatientId(Long patientId) {
         Collection<Appointment> appointments = appointmentService
                 .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.ROLE_dermatologist);
-        Collection<Appointment> cancelled = appointmentService
-                .findCancelledByPatientIdAndType(patientId, EmployeeType.ROLE_dermatologist);
+            Collection<Appointment> cancelled = appointmentCancelledRepository
+                    .findAllByPatient_IdAndType(patientId, EmployeeType.ROLE_dermatologist)
+                    .stream()
+                    .map(Appointment::new)
+                    .collect(Collectors.toList());
         Collection<Appointment> all = appointments
                 .stream()
                 .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()))
