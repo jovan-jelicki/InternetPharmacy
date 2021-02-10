@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Button, Card, Col, Container, Row, Table} from "react-bootstrap";
+import {Alert, Button, Card, Col, Container, FormGroup, Row, Table} from "react-bootstrap";
 import PatientLayout from "../../layout/PatientLayout";
 import jsQR from "jsqr";
 import png from "png.js";
@@ -17,7 +17,7 @@ export default class QRcode extends React.Component{
             image: null,
             ePrescription:{ data:[]},
             pharmacies:[],
-            boolImage:true
+            boolImage:true,
         };
         this.onImageChange = this.onImageChange.bind(this);
         this.gradeFilter = this.gradeFilter.bind(this)
@@ -120,6 +120,32 @@ export default class QRcode extends React.Component{
         })
     }
 
+    sortByGrade = () => {
+        if(this.state.sortType === "desc")
+            this.setState({
+                pharmacies: this.state.pharmacies.sort((a, b) => (a.pharmacyGrade > b.pharmacyGrade) ? -1 : 1),
+                sortType : "asc"
+            })
+        else
+            this.setState({
+                pharmacies: this.state.pharmacies.sort((a, b) => (a.pharmacyGrade > b.pharmacyGrade) ? 1 : -1),
+                sortType : "desc"
+            })
+    }
+
+    sortByPrice = () => {
+        if(this.state.sortType === "desc")
+            this.setState({
+                pharmacies: this.state.pharmacies.sort((a, b) => (a.medicationPrice > b.medicationPrice) ? -1 : 1),
+                sortType : "asc"
+            })
+        else
+            this.setState({
+                pharmacies: this.state.pharmacies.sort((a, b) => (a.medicationPrice > b.medicationPrice) ? 1 : -1),
+                sortType : "desc"
+            })
+    }
+
 
 render() {
         const pharmacies = this.state.pharmacies.map((pharmacy, index) => {
@@ -150,6 +176,7 @@ render() {
             )
         })
 
+
         return (
             <PatientLayout>
                 <Container fluid>
@@ -168,6 +195,8 @@ render() {
                         <div>
                         <PharmacySearch search={this.search} cancel={this.cancel}/>
                         <PharmacyFilter gradeFilter={this.gradeFilter}/>
+                        <Button onClick={this.sortByGrade} style={{height : 40, marginRight:10}}  type="button" className="btn btn-secondary"> Sort by grade</Button>
+                        <Button onClick={this.sortByPrice} style={{height : 40}}  type="button" className="btn btn-secondary"> Sort by price</Button>
                         </div>
                     }
                     {this.state.pharmacies.length != 0 ?
