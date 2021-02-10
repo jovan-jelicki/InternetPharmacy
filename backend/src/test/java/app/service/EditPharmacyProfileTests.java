@@ -1,7 +1,6 @@
 package app.service;
 
-import app.model.time.VacationRequest;
-import app.model.time.VacationRequestStatus;
+import app.model.pharmacy.Pharmacy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,10 @@ import java.util.concurrent.Future;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class VacationRequestTests {
+public class EditPharmacyProfileTests {
 
     @Autowired
-    private VacationRequestService vacationRequestService;
+    private PharmacyService pharmacyService;
 
 
 
@@ -29,7 +28,7 @@ public class VacationRequestTests {
     //Rezultat je da ce jedan korisnik uspesno zakazati, a drugi dobiti poruku da je dati termin zakazan.
     @Rollback(true)
     @Test(expected = ObjectOptimisticLockingFailureException.class)
-    public void vacationRequestEditing() throws Throwable {
+    public void editPharmacyProfile() throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         final Boolean[] res1 = new Boolean[1];
         final Boolean[] res2 = new Boolean[1];
@@ -39,12 +38,12 @@ public class VacationRequestTests {
             @Transactional
             public void run() {
                 System.out.println("Startovan Thread 1");
-                VacationRequest vacationRequest = vacationRequestService.read(1L).get();
+                Pharmacy pharmacy = pharmacyService.read(2L).get();
                 try { Thread.sleep(3000); } catch (InterruptedException e) {}
 
-                vacationRequest.setVacationRequestStatus(VacationRequestStatus.approved);
+                pharmacy.setPharmacistCost(3000);
 
-                res1[0] = vacationRequestService.save(vacationRequest) != null;
+                res1[0] = pharmacyService.save(pharmacy) != null;
             }
         });
         Future<?> future2 = executor.submit(new Runnable() {
@@ -53,11 +52,10 @@ public class VacationRequestTests {
             @Transactional
             public void run() {
                 System.out.println("Startovan Thread 2");
-                VacationRequest vacationRequest = vacationRequestService.read(1L).get();
+                Pharmacy pharmacy = pharmacyService.read(2L).get();
+                pharmacy.setPharmacistCost(1000);
 
-                vacationRequest.setVacationRequestStatus(VacationRequestStatus.rejected);
-
-                res2[0] = vacationRequestService.save(vacationRequest) != null;
+                res1[0] = pharmacyService.save(pharmacy) != null;
             }
         });
         try {

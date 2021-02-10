@@ -1,27 +1,18 @@
 package app.service;
 
-import app.dto.PharmacyMedicationListingDTO;
-import app.model.appointment.Appointment;
-import app.model.appointment.AppointmentStatus;
-import app.model.appointment.Therapy;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
-import app.model.time.Period;
-import app.model.user.EmployeeType;
 import app.repository.PharmacyRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -91,7 +82,7 @@ public class EditMedicationQuantityTests {
                 medicationQuantity.setQuantity(800);
 
 
-                res1[0] = pharmacyService.save(pharmacy) != null;
+                res2[0] = pharmacyService.save(pharmacy) != null;
             }
         });
         try {

@@ -11,6 +11,8 @@ import app.repository.VacationRequestRepository;
 import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class VacationRequestServiceImpl implements VacationRequestService {
     private final VacationRequestRepository vacationRequestRepository;
     private final DermatologistService dermatologistService;
@@ -36,6 +39,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public VacationRequest save(VacationRequest entity) {
         return vacationRequestRepository.save(entity);
     }

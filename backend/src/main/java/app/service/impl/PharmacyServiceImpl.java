@@ -102,6 +102,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
 
     @Override
+    @Transactional(readOnly = false)
     public Pharmacy save(Pharmacy entity) {
         return pharmacyRepository.save(entity);
     }
