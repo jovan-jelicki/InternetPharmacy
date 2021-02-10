@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Button, Card, Col, Container, FormGroup, Row, Table} from "react-bootstrap";
+import {Alert, Button, Card, Col, Container, FormGroup, Modal, Row, Table} from "react-bootstrap";
 import PatientLayout from "../../layout/PatientLayout";
 import jsQR from "jsqr";
 import png from "png.js";
@@ -18,6 +18,7 @@ export default class QRcode extends React.Component{
             ePrescription:{ data:[]},
             pharmacies:[],
             boolImage:true,
+            showModal:false,
         };
         this.onImageChange = this.onImageChange.bind(this);
         this.gradeFilter = this.gradeFilter.bind(this)
@@ -93,6 +94,7 @@ export default class QRcode extends React.Component{
         this.setState({
             pharmacies : this.pharmaciesBackup
         })
+
     }
 
     search({name, location}) {
@@ -146,6 +148,23 @@ export default class QRcode extends React.Component{
             })
     }
 
+    async buyMedication(pharmacy){
+        await axios
+            .post('http://localhost:8080/api/eprescriptions/buyMedication',{
+                'pharmacyId':0,
+                'prescriptionId':1
+        })
+            .then((res) => {
+                this.handleModal();
+            })
+
+        }
+
+    handleModal = () => {
+        this.setState({
+            showModal : !this.state.showModal
+        });
+    }
 
 render() {
         const pharmacies = this.state.pharmacies.map((pharmacy, index) => {
@@ -153,14 +172,14 @@ render() {
             const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country
             return (
                 <Col xs={4} >
-                    <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '15rem' }} className="mb-2">
+                    <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '20rem' }} className="mb-2">
                         <Card.Body>
                             <Card.Title>
                                 <label className=" col-form-label">{pharmacy.name}</label>
-                                <Button style={{ marginLeft:170}} variant="outline-light">Buy</Button>
+                                <Button style={{ marginLeft:170}} variant="outline-light" onClick={() => this.buyMedication(pharmacy.pharmacyId)}>Buy</Button>
                             </Card.Title>
                             <Card.Subtitle className="mb-5 mt-2 text-muted">{address}</Card.Subtitle>
-                            <Card.Text>{pharmacy.description} </Card.Text>
+                            <Card.Text>{pharmacy.medicationName} </Card.Text>
                             <table className="table table-dark">
                                 <tr>
                                     <td>Medication price</td>
@@ -208,8 +227,26 @@ render() {
                             No records found. Try again.
                         </Alert>
                     }
-
                 </Container>
+                <Modal show={this.state.showModal} onHide={this.handleModal}>
+                    <Modal.Header closeButton style={{'background':'silver'}}>
+                        <Modal.Title>Successfully!</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body style={{'background':'silver'}}>
+                        <div className="row" >
+                            <div className="col-md-12">
+                                <div className="card">
+                                    <div className="card-body" style={{padding : '1rem'}}>
+                                        <p className="card-text">
+                                           Successfully
+                                        </p>
+                                    </div>
+                                </div>
+                                <br/><br/>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
             </PatientLayout>
 
         );

@@ -6,7 +6,6 @@ import app.dto.PharmacyQRDTO;
 import app.model.grade.GradeType;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
-import app.model.user.Address;
 import app.model.user.PharmacyAdmin;
 import app.repository.EPrescriptionRepository;
 import app.service.*;
@@ -135,16 +134,33 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
                             pharmacyQRDTO.setName(pharmacy.getName());
                             pharmacyQRDTO.setMedicationName(medicationQuantity.getMedication().getName());
                             pharmacyQRDTO.setAddress(pharmacy.getAddress());
-                            pharmacyQRDTO.setMedicationId(medicationQuantity.getMedication().getId());
-                            pharmacyQRDTO.setMedicationQuantity(medicationQuantity.getQuantity());
+                            pharmacyQRDTO.setPharmacyId(pharmacy.getId());
+                            pharmacyQRDTO.setMedicationQuantity(medicationQuantity);
                             pharmacyQRDTO.setMedicationPrice((medicationPriceListService.getMedicationPrice(pharmacy.getId(), pharmacyQuantity.getMedication().getId()))*medicationQuantity.getQuantity());
                             pharmacyQRDTO.setPharmacyGrade(gradeService.findAverageGradeForEntity(pharmacyQuantity.getMedication().getId(), GradeType.medication));
-
+                            pharmacyQRDTO.setePrescriptionId(ePrescriptionId);
                             pharmacyQRDTOS.add(pharmacyQRDTO);
                     }
                 }
             }
         }
         return pharmacyQRDTOS;
+    }
+
+    @Override
+    public Boolean buyMedication(Long pharmacyId, Long prescriptionId) {
+        Collection<PharmacyQRDTO> pharmacyQRDTOS= new ArrayList<>();
+        Pharmacy pharmacy= pharmacyService.read(pharmacyId).get();
+
+        EPrescription prescription= this.read(prescriptionId).get();
+
+            for(MedicationQuantity pharmacyQuantity : pharmacy.getMedicationQuantity()) {
+                for (MedicationQuantity medicationQuantity : prescription.getMedicationQuantity()) {
+                    if (pharmacyQuantity.getMedication().getId()==medicationQuantity.getMedication().getId() && pharmacyQuantity.getQuantity()>medicationQuantity.getQuantity()){
+                        pharmacyQuantity.setQuantity(pharmacyQuantity.getQuantity()-medicationQuantity.getQuantity());
+                    }
+                }
+            }
+        return pharmacyService.save(pharmacy)!=null;
     }
 }
