@@ -2,6 +2,7 @@ package app.repository;
 
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
+import app.model.pharmacy.Pharmacy;
 import app.model.user.EmployeeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -64,4 +65,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("select a from Appointment  a where a.patient.id = ?1 and a.appointmentStatus = 1 and a.type = ?2")
     Collection<Appointment> getAllFinishedByPatientAndExaminerType(Long patientId, EmployeeType type);
+
 }

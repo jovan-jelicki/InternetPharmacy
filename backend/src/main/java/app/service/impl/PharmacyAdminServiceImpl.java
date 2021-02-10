@@ -1,5 +1,6 @@
 package app.service.impl;
 
+import app.dto.PharmacyAdminRegistrationDTO;
 import app.dto.PharmacyDTO;
 import app.dto.UserPasswordDTO;
 import app.model.grade.GradeType;
@@ -34,6 +35,19 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         return pharmacyAdminRepository.getPharmacyAdminByPharmacy(pharmacyId);
     }
 
+    @Override
+    public Boolean saveAdmin(PharmacyAdminRegistrationDTO pharmacyAdminDTO) {
+        PharmacyAdmin pharmacyAdmin = new PharmacyAdmin();
+        pharmacyAdmin.setFirstName(pharmacyAdminDTO.getFirstName());
+        pharmacyAdmin.setLastName(pharmacyAdminDTO.getLastName());
+        pharmacyAdmin.setUserType(pharmacyAdminDTO.getUserType());
+        pharmacyAdmin.setCredentials(pharmacyAdminDTO.getCredentials());
+        pharmacyAdmin.setContact(pharmacyAdminDTO.getContact());
+        pharmacyAdmin.setPharmacy(pharmacyService.read(pharmacyAdminDTO.getPharmacyId()).get());
+        this.save(pharmacyAdmin);
+
+        return true;
+    }
     @Override
     public PharmacyDTO getPharmacyByPharmacyAdmin(Long pharmacyAdminId) {
         PharmacyAdmin pharmacyAdmin = this.read(pharmacyAdminId).get();

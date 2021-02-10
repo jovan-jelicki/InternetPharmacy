@@ -5,6 +5,7 @@ import MedicationSearch from "./MedicationSearch";
 import MedicationSpecification from "./MedicationSpecification";
 import MedicationPharmacy from "./MedicationPharmacy";
 import MedicationFilter from "./MedicationFilter";
+import StarRatings from "react-star-ratings";
 
 export default class MedicationListing extends React.Component {
     constructor() {
@@ -29,9 +30,12 @@ export default class MedicationListing extends React.Component {
             }
         }*/)
         .then((res) => {
+            console.log("IDEMO")
+            console.log(res.data)
             this.setState({
                 medications : res.data
             })
+            console.log(this.state.medications)
         })
         this.medicationsBackup = [...this.state.medications]
     }
@@ -84,11 +88,19 @@ export default class MedicationListing extends React.Component {
 
         const medications = this.state.medications.map((medication, index) => {
             return (
-                <Col xs={6} key={index}>
-                <Card bg={'dark'} key={index} text={'white'} style={{ width: '35rem', height: '30rem' }}  className="mb-2">
+                <Col xs={4} key={index}>
+                    <Card bg={'dark'} key={index} text={'white'} style={{ width: '25rem', height: '55rem' }} className="mb-2">
                     <Card.Body>
                     <Card.Title>{medication.name}</Card.Title>
-                        <Card.Subtitle className="mb-5 mt-2 text-muted">{medication.type}</Card.Subtitle>
+                        <Card.Subtitle className="mb-5 mt-2 ">{medication.type}</Card.Subtitle>
+                        <Card.Subtitle className=" mt-2 text-muted">Grade    </Card.Subtitle>
+                        <Card.Subtitle className="mb-5 mt-2 text-muted">   <StarRatings
+                                starDimension={'25px'}
+                                rating={medication.grade}
+                                starRatedColor='gold'
+                                numberOfStars={5}
+                            />
+                        </Card.Subtitle>
                         <Card.Text>
                             <Button variant="link" onClick={() => this.handleModal(medication)} >Check medication specification</Button>
                             <hr style={{'background-color' : 'gray'}}/>

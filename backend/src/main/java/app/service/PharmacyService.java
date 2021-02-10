@@ -1,10 +1,12 @@
 package app.service;
 
 import app.dto.*;
+import app.model.medication.EPrescription;
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
 import app.service.impl.MedicationPriceListServiceImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
@@ -37,6 +39,7 @@ public interface PharmacyService extends CRUDService<Pharmacy> {
     Collection<ReportIncomeDTO> getPharmacyIncomeReportByPeriod(LocalDateTime periodStart, LocalDateTime periodEnd, Long pharmacyId);
 
     void setPromotionService(PromotionService promotionService);
+
     Pharmacy savePharmacy( PharmacyAdminPharmacyDTO pharmacy);
 
     void setMedicationOffer(MedicationOfferService medicationOfferService);

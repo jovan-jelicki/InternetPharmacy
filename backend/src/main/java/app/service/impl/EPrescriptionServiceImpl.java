@@ -2,6 +2,8 @@ package app.service.impl;
 
 import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
+import app.dto.PharmacyQRDTO;
+import app.model.grade.GradeType;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.PharmacyAdmin;
@@ -23,15 +25,19 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     private final PharmacyAdminService pharmacyAdminService;
     private final EmailService emailService;
     private final MedicationLackingEventService medicationLackingEventService;
+    private final  MedicationPriceListService medicationPriceListService;
+    private final GradeService gradeService;
 
     @Autowired
-    public EPrescriptionServiceImpl(EmailService emailService,MedicationLackingEventService medicationLackingEventService ,PharmacyAdminService pharmacyAdminService, PatientService patientService, EPrescriptionRepository ePrescriptionRepository, PharmacyService pharmacyService) {
+    public EPrescriptionServiceImpl(EmailService emailService, MedicationLackingEventService medicationLackingEventService, PharmacyAdminService pharmacyAdminService, PatientService patientService, EPrescriptionRepository ePrescriptionRepository, PharmacyService pharmacyService, MedicationPriceListService medicationPriceListService, GradeService gradeService) {
         this.ePrescriptionRepository = ePrescriptionRepository;
         this.pharmacyService = pharmacyService;
         this.patientService = patientService;
         this.pharmacyAdminService = pharmacyAdminService;
         this.emailService = emailService;
         this.medicationLackingEventService = medicationLackingEventService;
+        this.medicationPriceListService = medicationPriceListService;
+        this.gradeService = gradeService;
     }
 
     @Override
@@ -111,5 +117,50 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     @Override
     public boolean existsById(Long id) {
         return ePrescriptionRepository.existsById(id);
+    }
+
+    @Override
+    public Collection<PharmacyQRDTO> getPharmacyForQR(Long ePrescriptionId) {
+        Collection<PharmacyQRDTO> pharmacyQRDTOS= new ArrayList<>();
+        Collection<Pharmacy> pharmacies= pharmacyService.read();
+
+        EPrescription prescription= this.read(ePrescriptionId).get();
+
+        for (Pharmacy pharmacy : pharmacies){
+            for(MedicationQuantity pharmacyQuantity : pharmacy.getMedicationQuantity()) {
+                for (MedicationQuantity medicationQuantity : prescription.getMedicationQuantity()) {
+                    PharmacyQRDTO pharmacyQRDTO=new PharmacyQRDTO();
+                    if (pharmacyQuantity.getMedication().getId()==medicationQuantity.getMedication().getId() && pharmacyQuantity.getQuantity()>medicationQuantity.getQuantity()){
+                            pharmacyQRDTO.setName(pharmacy.getName());
+                            pharmacyQRDTO.setMedicationName(medicationQuantity.getMedication().getName());
+                            pharmacyQRDTO.setAddress(pharmacy.getAddress());
+                            pharmacyQRDTO.setPharmacyId(pharmacy.getId());
+                            pharmacyQRDTO.setMedicationQuantity(medicationQuantity);
+                            pharmacyQRDTO.setMedicationPrice((medicationPriceListService.getMedicationPrice(pharmacy.getId(), pharmacyQuantity.getMedication().getId()))*medicationQuantity.getQuantity());
+                            pharmacyQRDTO.setPharmacyGrade(gradeService.findAverageGradeForEntity(pharmacyQuantity.getMedication().getId(), GradeType.medication));
+                            pharmacyQRDTO.setePrescriptionId(ePrescriptionId);
+                            pharmacyQRDTOS.add(pharmacyQRDTO);
+                    }
+                }
+            }
+        }
+        return pharmacyQRDTOS;
+    }
+
+    @Override
+    public Boolean buyMedication(Long pharmacyId, Long prescriptionId) {
+        Collection<PharmacyQRDTO> pharmacyQRDTOS= new ArrayList<>();
+        Pharmacy pharmacy= pharmacyService.read(pharmacyId).get();
+
+        EPrescription prescription= this.read(prescriptionId).get();
+
+            for(MedicationQuantity pharmacyQuantity : pharmacy.getMedicationQuantity()) {
+                for (MedicationQuantity medicationQuantity : prescription.getMedicationQuantity()) {
+                    if (pharmacyQuantity.getMedication().getId()==medicationQuantity.getMedication().getId() && pharmacyQuantity.getQuantity()>medicationQuantity.getQuantity()){
+                        pharmacyQuantity.setQuantity(pharmacyQuantity.getQuantity()-medicationQuantity.getQuantity());
+                    }
+                }
+            }
+        return pharmacyService.save(pharmacy)!=null;
     }
 }

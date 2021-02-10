@@ -4,23 +4,32 @@ import Dropdown from "react-dropdown";
 import axios from "axios";
 import MedicationSpecification from "../MedicationSpecification";
 import EditOffer from "./EditOffer";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class SupplierMedicationOffers extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            role : props.role,
+            Id : props.Id,
             medicationOffers : [],
             selectedOption:"",
             medicationOffersPom:[],
-            timeBool: true
+            timeBool: true,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
         }
     }
 
-
     async componentDidMount() {
         await axios
-            .get('http://localhost:8080/api/suppliers/getAllBySupplier/'+1)
+            .get(HelperService.getPath("/api/suppliers/getAllBySupplier/" + this.state.user.id), {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then((res) => {
                 this.setState({
                     medicationOffers : res.data

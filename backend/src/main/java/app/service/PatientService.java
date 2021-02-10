@@ -19,5 +19,7 @@ public interface PatientService extends CRUDService<Patient> {
     Patient findByEmail(String email);
 
     Collection<PharmacyPlainDTO> getPromotionPharmacies(Long patientId);
+
+    Boolean setPatientCategory(Long patientId);
 }
 

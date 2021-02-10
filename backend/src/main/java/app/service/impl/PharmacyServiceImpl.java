@@ -15,7 +15,6 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -69,13 +68,10 @@ public class PharmacyServiceImpl implements PharmacyService {
         return pharmacy;
     }
 
-
-
     @Override
     public void setMedicationService(MedicationService medicationService) {
         this.medicationService = medicationService;
     }
-
 
     @Override
     public void setMedicationPriceListService(MedicationPriceListServiceImpl medicationPriceListService) {
@@ -84,25 +80,24 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     @Override
     public Collection<PharmacyMedicationDTO> getPharmacyByMedication(Long medicationId) {
-        ArrayList<PharmacyMedicationDTO> pharmacies = new ArrayList<>();
-        read().forEach(p -> {
-            for (MedicationQuantity q : p.getMedicationQuantity()) {
-                if (q.getMedication().getId() == medicationId) {
-                    PharmacyMedicationDTO pmDTO = new PharmacyMedicationDTO();
-                    pmDTO.setId(p.getId());
-                    pmDTO.setName(p.getName());
-                    pmDTO.setAddress(p.getAddress());
-                    pmDTO.setMedicationId(medicationId);
+            ArrayList<PharmacyMedicationDTO> pharmacies = new ArrayList<>();
+            read().forEach(p -> {
+                for (MedicationQuantity q : p.getMedicationQuantity()) {
+                    if (q.getMedication().getId() == medicationId) {
+                        PharmacyMedicationDTO pmDTO = new PharmacyMedicationDTO();
+                        pmDTO.setId(p.getId());
+                        pmDTO.setName(p.getName());
+                        pmDTO.setAddress(p.getAddress());
+                        pmDTO.setMedicationId(medicationId);
 
-                    double cena = medicationPriceListService.getMedicationPrice(p.getId(), medicationId);
-                    pmDTO.setMedicationPrice(cena);
-                    pharmacies.add(pmDTO);
+                        double cena = (Double)medicationPriceListService.getMedicationPrice(p.getId(), medicationId);
+                        pmDTO.setMedicationPrice(cena);
+                        pharmacies.add(pmDTO);
+                    }
                 }
-            }
-        });
+            });
         return pharmacies;
     }
-
 
     @Override
     @Transactional(readOnly = false)
@@ -171,7 +166,6 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         return medicationPriceListService.save(new MedicationPriceList(medication, addMedicationToPharmacyDTO.getCost(), new Period
                 (addMedicationToPharmacyDTO.getPriceDateStart(), addMedicationToPharmacyDTO.getPriceDateEnd()), pharmacy)) != null;
-
     }
 
     @Override

@@ -7,10 +7,10 @@ INSERT INTO ingredient (id, name) VALUES (5, 'Insulin');
 
 
 
-INSERT INTO patient (id, first_name, last_name, user_type, penalty_count, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (0, 'Tom', 'Peterson', 4, 0, 'tom.peterson@gmail.com', 'tommy123', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
-INSERT INTO patient (id, first_name, last_name, user_type, penalty_count, email, password, phone_number, country, latitude, longitude, street, town)
-                    VALUES (6, 'Jovana', 'Jeremic', 4, 0, 'jovana.jeremic@gmail.com', 'malakojacinicuda', '+988795562', 'France', 49, 2, 'Lui V', 'Paris');
+INSERT INTO patient (id, first_name, last_name, user_type, penalty_count, email, password, phone_number, country, latitude, longitude, street, town,loyalty_count)
+                    VALUES (0, 'Tom', 'Peterson', 4, 0, 'tom.peterson@gmail.com', 'tommy123', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',5);
+INSERT INTO patient (id, first_name, last_name, user_type, penalty_count, email, password, phone_number, country, latitude, longitude, street, town,loyalty_count)
+                    VALUES (6, 'Jovana', 'Jeremic', 4, 0, 'jovana.jeremic@gmail.com', 'malakojacinicuda', '+988795562', 'France', 49, 2, 'Lui V', 'Paris',77);
 
 INSERT INTO dermatologist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town)
                     VALUES (3, 'Pera', 'Peric', 0, 'pera.Dermatologist@gmail.com', 'perap', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago');
@@ -102,7 +102,7 @@ INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VA
 INSERT INTO pharmacy_medication_quantity(pharmacy_id, medication_quantity_id) VALUES (1, 3);
 
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
-    (1,0,0, 300, '2021-01-01', '2021-02-05');
+    (1,0,0, 300, '2021-01-01', '2021-02-20');
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
     (2,4,0, 400, '2021-01-01', '2021-02-10');
 insert into medication_price_list(id,medication_id, pharmacy_id, cost, period_start, period_end) values
@@ -290,6 +290,8 @@ INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALU
 INSERT INTO dermatologist_working_hours(dermatologist_id, working_hours_id) VALUES (5,5);
 
 INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id, is_active)
+VALUES (0, 'MArija', 'Markovic', 1, 'maki@gmail.com', 'maki', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'NY',2, true);
+INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id, is_active)
     VALUES (1, 'Jovan', 'Jovic', 1, 'jovan.Pharmacist@gmail.com', 'jovanj', '00987563214', 'USA', 41, 87, 'Fifth Ave', 'Chicago',1, true);
 INSERT INTO pharmacist (id, first_name, last_name, user_type, email, password, phone_number, country, latitude, longitude, street, town, working_hours_id, is_active)
     VALUES (2, 'Filip', 'Markovic', 1, 'filip@gmail.com', 'filip', '00987563214', 'SRB', 41, 87, 'Fifth Ave', 'NY',2, true);
@@ -302,35 +304,34 @@ INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_
 INSERT INTO vacation_request(id, employee_id, employee_type, period_end, period_start, vacation_note, vacation_request_status,pharmacy_id)
     VALUES (2,1,1, '2021-07-08', '2021-04-01', 'Godisnji odmor farmaceut', 0, 1);
 
-
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (1,3,0, null, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 1, null,null,0, true);
+values (1,3,0, null, '2021-03-01 11:00:00', '2021-03-01 10:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (2,3,0, null, '2021-03-01 12:00:00', '2021-03-01 11:00:00', 1, null,null,0, true);
+values (2,3,0, null, '2021-03-01 12:00:00', '2021-03-01 11:00:00', 1, null,null,0, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (3,3,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 1, null,null,0, true);
-
-insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (4,1,0, 0, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 1, null,null,1, true);
-insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (5,1,3, 0, '2021-03-08 13:00:00', '2021-03-08 12:00:00', 1, null,null,1, true);
-insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (6,0,0, null, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 0, null,null,1, true);
+values (3,3,0, null, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 1, null,null,0, true);
 
 insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (40,1,1, 0, '2021-03-01 14:00:00', '2021-03-01 13:00:00', 1, null,null,1, true);
+values (4,1,0, 0, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 1, null,null,1, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (41,1,1, 0, '2021-03-08 08:00:00', '2021-03-08 09:00:00', 1, null,null,1, true);
+values (5,1,3, 0, '2021-03-08 13:00:00', '2021-03-08 12:00:00', 1, null,null,1, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (42,1,1, 0, '2021-01-01 10:00:00', '2021-01-01 11:00:00', 0, null,null,1, true);
+values (6,0,0, null, '2021-01-01 13:00:00', '2021-01-01 12:00:00', 0, null,null,1, true);
+
+insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (40,1,1, 0, '2021-03-01 14:00:00', '2021-03-01 13:00:00', 1, null,null,1, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (41,1,1, 0, '2021-03-08 08:00:00', '2021-03-08 09:00:00', 1, null,null,1, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (42,1,1, 0, '2021-01-01 10:00:00', '2021-01-01 11:00:00', 0, null,null,1, true);
 
 -- NE DIRAJ MI OVA TRI!!!!!  Potpis : Jovan!!!
 insert into appointment (id,   examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (7,2,0, 0, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,1, true);
+values (7,2,0, 0, '2021-03-01 13:00:00', '2021-03-01 12:00:00', 0, null,null,1, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (8,2, 0, 6, '2021-03-01 14:00:00', '2021-03-01 13:00:00', 0, null,null,1, true);
+values (8,2, 0, 6, '2021-03-01 14:00:00', '2021-03-01 13:00:00', 0, null,null,1, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
-    values (9,2 ,0, 0, '2021-01-01 16:00:00', '2021-01-01 15:00:00', 0, null,null,1, true);
+values (9,2 ,0, 0, '2021-01-01 16:00:00', '2021-01-01 15:00:00', 0, null,null,1, true);
 
 
 -- NE DIRAJ MI OVO NI SLUCAJNO, TREBA MI ZA DUGOROCNI REPORT!!!!!  Potpis : David!!!
@@ -444,7 +445,7 @@ insert into medication_lacking_event(id, employee_id, employee_type, event_date,
 values (3, 1,1, '2021-02-03', 4,1);
 
 insert into supplier (id,country , latitude, longitude,street, town,phone_number,email,password,  first_name, last_name, user_type)
-VALUES (1,'SRB', 41, 87, 'Avenue 3rd', 'Belgrade',  '0605435487','jovancica@gmail.com','jole123','Jovana', 'Markovic',1);
+VALUES (1,'SRB', 41, 87, 'Avenue 3rd', 'Belgrade',  '0605435487','jovancica@gmail.com','jole123','Jovana', 'Markovic',5);
 
 insert into supplier_medication_quantity(supplier_id, medication_quantity_id)
 VALUES(1,1);
@@ -566,3 +567,15 @@ values(0,1,'Bezobrazan, nadmen.',0,0);
 insert into complaint(id,complainee_id,content,type,patient_id)
 values(1,3,'Nece da da recept!',1,0);
 
+insert into loyalty_scale(id, category,discount,max_points,min_points)
+values(1000,0,10,20,12);
+insert into loyalty_scale(id, category,discount,max_points,min_points)
+values(1001,1,20,40,32);
+insert into loyalty_scale(id, category,discount,max_points,min_points)
+values(1002,2,30,60,52);
+
+insert into loyalty_program(id, appointment_points, consulting_points)
+values(1000,0,0);
+
+insert into system_admin (id,country , latitude, longitude,street, town,phone_number,email,password,  first_name, last_name, user_type)
+VALUES (1,'SRB', 41, 87, 'Vuka Karadzica 4', 'Belgrade',  '06585858669','Mile@gmail.com','mile123','Mile', 'Petrovic',3);

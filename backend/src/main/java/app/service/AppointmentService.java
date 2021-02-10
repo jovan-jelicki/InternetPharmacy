@@ -3,6 +3,7 @@ package app.service;
 import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
+import app.model.pharmacy.Pharmacy;
 import app.model.user.EmployeeType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,6 +68,6 @@ public interface AppointmentService extends CRUDService<Appointment>{
 
     Collection<Appointment> getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(LocalDateTime dateStart, LocalDateTime dateEnd ,Long pharmacyId, EmployeeType employeeType);
     Collection<AppointmentEmployeeDTO> getFinishedForComplaint(Long id, EmployeeType type);
+    Collection<PharmacyNameIdDTO> getAppointmentsPharmacyForComplaint(Long patientId);
 
-
-    }
+}

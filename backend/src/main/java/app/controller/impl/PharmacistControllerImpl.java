@@ -118,4 +118,8 @@ public class PharmacistControllerImpl {
             pharmacistDTOS.add(new PharmacistDTO(pharmacist, gradeService.findAverageGradeForEntity(pharmacist.getId(), GradeType.pharmacist)));
         return new ResponseEntity<>(pharmacistDTOS, HttpStatus.OK);
     }
+    @GetMapping(value = "getPharmacistsByPatient/{patientId}")
+    public ResponseEntity<Collection<PharmacistDTO>> getPharmacistsPatientAppointments(@PathVariable Long patientId) {
+        return new ResponseEntity<>(pharmacistService.getPharmacistsPatientAppointments(patientId), HttpStatus.OK);
+    }
 }

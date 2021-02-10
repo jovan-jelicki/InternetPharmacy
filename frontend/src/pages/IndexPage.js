@@ -3,6 +3,7 @@ import {Button} from "react-bootstrap";
 import UnregisteredLayout from "../layout/UnregisteredLayout"
 import PharmacyListing from "../components/pharmacy/PharmacyListing"
 import MedicationListing from "../components/MedicationListing"
+import Registration from "./Registration";
 
 export default class IndexPage extends React.Component{
     constructor(props) {
@@ -15,6 +16,7 @@ export default class IndexPage extends React.Component{
                 <UnregisteredLayout>
                     <PharmacyListing/>
                     <MedicationListing/>
+                    <Registration/>
                 </UnregisteredLayout>
             </div>
         );

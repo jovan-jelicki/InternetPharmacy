@@ -3,6 +3,7 @@ package app.service;
 import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationQuantityDTO;
 import app.dto.MedicationSupplierDTO;
+import app.dto.UserPasswordDTO;
 import app.model.medication.Medication;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationQuantity;
@@ -24,4 +25,6 @@ public interface SupplierService extends CRUDService<Supplier> {
     Boolean editSuppliersMedicationQuantity(MedicationSupplierDTO medicationSupplierDTO);
     Boolean deleteMedicationQuantity( MedicationSupplierDTO   medicationSupplierDTO);
     Supplier getSupplierByMedicationOffer(MedicationOffer medicationOffer);
+    void changePassword(UserPasswordDTO passwordKit);
+
 }

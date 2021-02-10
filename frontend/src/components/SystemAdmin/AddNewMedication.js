@@ -11,13 +11,24 @@ export default class AddNewMedication extends React.Component {
                 name:'',
                 dose:'',
                 note:'',
-                manufacturer:''
+                manufacturer:'',
+                loyaltyPoints:''
             },
             type:'',
             shape:'',
-            medIngredients:[],
-            medSideEffects:[],
-            medAlternatives:[],
+            medIngredients:[{
+                id:'',
+            }],
+            ingredientsResult:[{
+                id:'',
+                name:'',
+            }],
+            medSideEffects:[{
+                id:'',
+            }],
+            medAlternatives:[{
+                id:'',
+            }],
             medIssue:'',
             errors:{
                 medication: {
@@ -28,7 +39,8 @@ export default class AddNewMedication extends React.Component {
                     ingredient: 'Select ingredients',
                     sideEffects: 'Select side effects',
                     medIssue:'Select medication issue',
-                    manufacturer:'Enter manufacturers credentials'
+                    manufacturer:'Enter manufacturers credentials',
+                    loyaltyPoints:'Enter loyalty points'
                 }
             },
             ingredients :[],
@@ -37,32 +49,67 @@ export default class AddNewMedication extends React.Component {
             ingredientBackup:[],
             validForm: false,
             submitted: false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
         }
     }
 
     async componentDidMount() {
-        await axios.get("http://localhost:8080/api/ingredients/").then(res => {
+        await this.fetchIngredients()
+        await this.fetchAlternatives()
+        await this.fetchSideEffects()
+
+    }
+
+    fetchIngredients(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/ingredients/getAll"
+            : 'http://localhost:8080/api/ingredients/getAll';
+         axios.get(path,{
+             headers: {
+                 'Content-Type': 'application/json',
+                 Authorization: 'Bearer ' + this.state.user.jwtToken
+             }
+         }).then(res => {
             this.setState({
                 ingredients : res.data
             });
         })
-        await axios.get("http://localhost:8080/api/medications/").then(res => {
+    }
+
+    fetchAlternatives(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications"
+            : 'http://localhost:8080/api/medications';
+        axios.get(path,{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.user.jwtToken
+            }
+        }).then(res => {
             this.setState({
                 alternatives : res.data
             });
         })
-        await axios.get("http://localhost:8080/api/sideEffects/getAll").then(res => {
+    }
+    fetchSideEffects(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/sideEffects/getAll"
+            : 'http://localhost:8080/api/sideEffects/getAll';
+        axios.get(path,{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.user.jwtToken
+            }
+        }).then(res => {
             this.setState({
-                sideEffects : res.data
+                sideEffects: res.data
             });
         })
-        console.log("side")
-        console.log(this.state.sideEffects);
     }
 
     async sendParams() {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications"
+            : 'http://localhost:8080/api/medications';
         axios
-            .post('http://localhost:8080/api/medications', {
+            .post(path, {
                 'id':'',
                 'name': this.state.medication.name,
                 'dose' :this.state.medication.dose,
@@ -74,6 +121,12 @@ export default class AddNewMedication extends React.Component {
                 'manufacturer':this.state.medication.manufacturer,
                 'medicationIssue':this.state.medIssue,
                 'note':this.state.medication.note,
+                'loyaltyPoints':this.state.medication.loyaltyPoints
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 alert("Successfully registered!");
@@ -157,6 +210,9 @@ export default class AddNewMedication extends React.Component {
             case 'medIssue':
                 errors.medication.medIssue = value.length < 1 ? 'Select medication issue' : '';
                 break;
+            case 'loyaltyPoints':
+                errors.medication.loyaltyPoints = value.length < 1 ? 'Enter loyalty points' : '';
+                break;
             default:
                 break;
         }
@@ -195,7 +251,7 @@ export default class AddNewMedication extends React.Component {
 
     }
 
-    handlePharmacySelected=(event) => {
+    onIssueChange=(event) => {
         var option = event.target.id
         this.setState({
             medIssue:option
@@ -212,15 +268,25 @@ export default class AddNewMedication extends React.Component {
         let ingredients = this.state.ingredients
         let ingr=[]
         ingredients.forEach(ingredient => {
+            console.log(ingredients)
             if (ingredient.name === option)
                 ingredient.isChecked =  event.target.checked
             if(ingredient.isChecked){
                 ingr.push(ingredient)
             }
         })
+        console.log("SASTOJCI")
+        console.log(ingr)
+
         this.state.medIngredients=ingr;
-        //this.setState({ingredientBackup: ingr})
         console.log(this.state.medIngredients)
+
+
+        //this.setState({ingredientBackup: ingr})
+
+        //console.log("IDD")
+        //console.log(this.state.medIngredients.id)
+
         this.validationErrorMessage(event)
 
     }
@@ -419,6 +485,15 @@ export default class AddNewMedication extends React.Component {
                     <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Note</label>
                     <div className="col-sm-6 mb-2">
                         <input type="text" value={this.state.medication.note} name="note" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="note" placeholder="Enter note" />
+                    </div>
+                    <div className="col-sm-4">
+                    </div>
+                </div>
+                <div className="row"style={{marginTop: '1rem', marginLeft:'20rem'}}>
+                    <label  className="col-sm-2 col-form-label"  style={{fontWeight: "bolder"}}>Loyalty points</label>
+                    <div className="col-sm-6 mb-2">
+                        <input type="number" value={this.state.medication.loyaltyPoints} name="loyaltyPoints" onChange={(e) => { this.handleInputChange(e)} }  className="form-control" id="loyaltyPoints" placeholder="Enter loyalty points" />
+                        { this.state.submitted && this.state.errors.medication.loyaltyPoints.length > 0 && <span className="text-danger">{this.state.errors.medication.loyaltyPoints}</span>}
                     </div>
                     <div className="col-sm-4">
                     </div>
