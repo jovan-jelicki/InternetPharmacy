@@ -21,10 +21,6 @@ export default class PharmacyVacationsRequests extends React.Component{
     }
 
     componentDidMount() {
-        // let temp = await PharmacyAdminService.fetchPharmacyId();
-        // this.setState({
-        //     pharmacyId : temp
-        // })
         this.fetchVacationRequests();
     }
 

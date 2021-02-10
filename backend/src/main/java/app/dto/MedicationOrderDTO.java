@@ -19,6 +19,7 @@ public class MedicationOrderDTO {
     private LocalDateTime deadline;
     private List<MedicationQuantity> medicationQuantity;
     private MedicationOrderStatus status;
+    private Long medicationOrderVersion;
 
     public MedicationOrderDTO() {
     }
@@ -31,5 +32,6 @@ public class MedicationOrderDTO {
         this.deadline = medicationOrder.getDeadline();
         this.medicationQuantity = medicationOrder.getMedicationQuantity();
         this.status = medicationOrder.getStatus();
+        this.medicationOrderVersion = medicationOrder.getVersion();
     }
 }

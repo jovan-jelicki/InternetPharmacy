@@ -18,7 +18,8 @@ export default class EditOrder extends React.Component{
                 deadline : "",
                 pharmacyAdminId : 1,
                 status : "pending",
-                medicationQuantity : []
+                medicationQuantity : [],
+                medicationOrderVersion : this.props.order.medicationOrderVersion
             },
             quantities : this.props.order.medicationQuantity,
             deadline : moment(this.props.order.deadline).toDate(),

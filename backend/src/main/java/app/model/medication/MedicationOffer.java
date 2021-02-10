@@ -21,6 +21,10 @@ public class MedicationOffer {
    @Enumerated(EnumType.ORDINAL)
    private MedicationOfferStatus status;
 
+   @Version
+   @Column(nullable = false, columnDefinition = "int default 1")
+   private Long version;
+
    public MedicationOffer() {
    }
 
@@ -62,5 +66,13 @@ public class MedicationOffer {
 
    public void setShippingDate(LocalDateTime shippingDate) {
       this.shippingDate = shippingDate;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
    }
 }

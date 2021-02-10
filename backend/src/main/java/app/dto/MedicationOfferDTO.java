@@ -15,6 +15,8 @@ public class MedicationOfferDTO {
     private Long supplierId;
     private String supplierFirstName;
     private String supplierLastName;
+    private Long medicationOfferVersion;
+    private Long medicationOrderVersion;
 
     public MedicationOfferDTO(){}
 
@@ -37,6 +39,8 @@ public class MedicationOfferDTO {
         this.supplierId = supplier.getId();
         this.supplierFirstName = supplier.getFirstName();
         this.supplierLastName = supplier.getLastName();
+        this.medicationOfferVersion = medicationOffer.getVersion();
+        this.medicationOrderVersion = medicationOffer.getMedicationOrder().getVersion();
     }
 
     public Long getSupplierId() {
@@ -102,5 +106,21 @@ public class MedicationOfferDTO {
 
     public void setSupplierLastName(String supplierLastName) {
         this.supplierLastName = supplierLastName;
+    }
+
+    public Long getMedicationOfferVersion() {
+        return medicationOfferVersion;
+    }
+
+    public void setMedicationOfferVersion(Long medicationOfferVersion) {
+        this.medicationOfferVersion = medicationOfferVersion;
+    }
+
+    public Long getMedicationOrderVersion() {
+        return medicationOrderVersion;
+    }
+
+    public void setMedicationOrderVersion(Long medicationOrderVersion) {
+        this.medicationOrderVersion = medicationOrderVersion;
     }
 }
