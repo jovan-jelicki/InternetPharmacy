@@ -79,7 +79,7 @@ export default class PharmacyVacationsRequests extends React.Component{
 
 
 
-                    <Modal show={this.state.showModal} onHide={this.handleModal}>
+                    <Modal backdrop="static" show={this.state.showModal} onHide={this.handleModal}>
                         <Modal.Header closeButton>
                             <Modal.Title>Reject vacation request</Modal.Title>
                         </Modal.Header>
@@ -114,6 +114,11 @@ export default class PharmacyVacationsRequests extends React.Component{
     }
 
     rejectRequest = () => {
+        console.info(this.state.modalVacationRequest);
+        if (this.state.modalVacationRequest.rejectionNote === "" || this.state.modalVacationRequest.rejectionNote === null || this.state.modalVacationRequest.rejectionNote === undefined) {
+            alert("Rejection note cannot be empty!");
+            return;
+        }
         axios.put(HelperService.getPath("/api/vacationRequest/rejectVacationRequest/"), this.state.modalVacationRequest,
             {
                 headers: {
