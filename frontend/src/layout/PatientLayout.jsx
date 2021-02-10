@@ -36,7 +36,8 @@ class PatientLayout extends React.Component {
                                 <NavDropdown.Item as={NavLink} to='/patient-medications'>Medications</NavDropdown.Item>
                                 <NavDropdown.Item as={NavLink} to='/patient-reservations'>All Reservations</NavDropdown.Item>
                             </NavDropdown>
-                            <Nav.Link as={NavLink} to='/patient-eprescription'>ePrescriptions</Nav.Link>  
+                            <Nav.Link as={NavLink} to='/patient-eprescription'>ePrescriptions</Nav.Link>
+                            <Nav.Link as={NavLink} to='/qrCode'>Upload QR code</Nav.Link>
                         </Nav>
                         <Nav>
                             <NavDropdown title="Account" id="collasible-nav-dropdow">

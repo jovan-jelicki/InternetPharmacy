@@ -41,12 +41,13 @@ public class EPrescriptionControllerImpl {
         return new ResponseEntity<>(prescriptions, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('patient')")
     @GetMapping(value = "/getPharmacyForQR/{ePrescriptionId}")
     public ResponseEntity<Collection<PharmacyQRDTO>> getPharmacyForQR(@PathVariable Long ePrescriptionId) {
         Collection<PharmacyQRDTO> pharmacyQRDTOS=ePrescriptionService.getPharmacyForQR(ePrescriptionId);
         return new ResponseEntity(pharmacyQRDTOS, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('patient')")
     @PostMapping(value = "/buyMedication")
     public ResponseEntity<Boolean> buyMedication(@RequestBody PharmacyPrescriptionDTO pharmacyPrescriptionDTO) {
         if(!ePrescriptionService.existsById(pharmacyPrescriptionDTO.getPrescriptionId()))

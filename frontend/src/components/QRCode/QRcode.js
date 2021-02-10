@@ -19,6 +19,8 @@ export default class QRcode extends React.Component{
             pharmacies:[],
             boolImage:true,
             showModal:false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
         };
         this.onImageChange = this.onImageChange.bind(this);
         this.gradeFilter = this.gradeFilter.bind(this)
@@ -75,18 +77,21 @@ export default class QRcode extends React.Component{
     }
 
     async sendData() {
-        console.log(this.state.ePrescription)
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/eprescriptions/getPharmacyForQR/"
+            : 'http://localhost:8080/api/eprescriptions/getPharmacyForQR/';
         axios
-            .get('http://localhost:8080/api/eprescriptions/getPharmacyForQR/'+this.state.ePrescription)
+            .get(path+this.state.ePrescription,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 this.setState({
                     pharmacies:res.data
                     }
                 )
-                console.log("BLAAA")
-                console.log(this.state.pharmacies)
                 this.pharmaciesBackup = [...this.state.pharmacies]
-                console.log(this.pharmaciesBackup)
             });
     }
 
@@ -98,13 +103,19 @@ export default class QRcode extends React.Component{
     }
 
     search({name, location}) {
-        console.log(name, location)
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy/search"
+            : 'http://localhost:8080/api/pharmacy/search';
         axios
-            .post('http://localhost:8080/api/pharmacy/search', {
+            .post(path, {
                 'name' : name,
                 'street' : location.street,
                 'town' : location.town,
                 'country': location.country
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then((res) => {
                 this.setState({
@@ -149,11 +160,18 @@ export default class QRcode extends React.Component{
     }
 
     async buyMedication(pharmacy){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/eprescriptions/buyMedication"
+            : 'http://localhost:8080/api/eprescriptions/buyMedication';
         await axios
-            .post('http://localhost:8080/api/eprescriptions/buyMedication',{
+            .post(path,{
                 'pharmacyId':0,
                 'prescriptionId':1
-        })
+        },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then((res) => {
                 this.handleModal();
             })
