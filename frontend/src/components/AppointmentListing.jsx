@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Table, Row } from 'react-bootstrap'
-import AppointmentSorting from './AppointmentSorting'
 
 class AppointmentListing extends React.Component {
     constructor(props) {

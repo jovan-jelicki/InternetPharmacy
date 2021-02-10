@@ -51,10 +51,22 @@ class PharmacySearch extends React.Component {
                 country : this.state.country
             }
         })
+        this.setState({
+            name : '',
+            street : '',
+            town : '',
+            country : ''
+        })
     }
 
     cancel() {
         this.props.cancel()
+        this.setState({
+            name : '',
+            street : '',
+            town : '',
+            country : ''
+        })
     }
 
     render() {
