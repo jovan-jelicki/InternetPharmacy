@@ -10,16 +10,25 @@ export default class PharmacistConsultationStart extends React.Component {
         super(props);
         this.state = {
             startedConsultation : !!localStorage.getItem("startedConsultation") ? JSON.parse(localStorage.getItem("startedConsultation")) : false,
-            appointment : !!localStorage.getItem("appointment") ? JSON.parse(localStorage.getItem("appointment")) : {},
+            appointment : !!localStorage.getItem("consultation") ? JSON.parse(localStorage.getItem("consultation")) : {},
             appointments : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
     componentDidMount() {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getAllScheduledByExaminer"
+            : 'http://localhost:8080/api/appointment/getAllScheduledByExaminer';
+
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getAllScheduledByExaminer', {
-                    'id' : 2, //this.props.id
-                    'type' : 1 //this.props.role
-                } )
+            .post(path, {
+                    'id' : this.state.user.id, //this.props.id
+                    'type' : this.state.user.type //this.props.role
+                }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
                 .then(res => {
                     this.setState({
                         appointments : res.data
@@ -37,16 +46,16 @@ export default class PharmacistConsultationStart extends React.Component {
     }
     handleContent = () => {
         if(!this.state.startedConsultation)
-            return ( <ScheduledAppointments renderParent={this.renderParent} role={this.props.role} Id={this.props.Id} events={this.state.appointments}/>)
+            return ( <ScheduledAppointments renderParent={this.renderParent} events={this.state.appointments}/>)
         else if(this.state.startedConsultation)
-            return (<Appointment appointment={this.state.appointment} role={this.props.role} Id={this.props.Id} renderParent={this.renderParent}/>)
+            return (<Appointment appointment={this.state.appointment}  renderParent={this.renderParent}/>)
 
     }
 
     renderParent = (content) => {
         this.setState({
             startedConsultation : content,
-            appointment : !!localStorage.getItem("appointment") ? JSON.parse(localStorage.getItem("appointment")) : {}
+            appointment : !!localStorage.getItem("consultation") ? JSON.parse(localStorage.getItem("consultation")) : {}
         })
         this.componentDidMount();
     }

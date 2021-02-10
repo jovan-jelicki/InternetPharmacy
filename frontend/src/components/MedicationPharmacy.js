@@ -4,6 +4,8 @@ import axios from "axios";
 import MedicationSearch from "./MedicationSearch";
 import DateTimePicker from 'react-datetime-picker';
 import NumericInput from 'react-numeric-input';
+import helpers from "./../helpers/AuthentificationService"
+
 
 class MedicationPharmacy extends React.Component {
     constructor(props) {
@@ -20,9 +22,15 @@ class MedicationPharmacy extends React.Component {
     }
 
     async componentDidMount() {
-        console.log(this.props.medication.id)
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         await axios
-            .get('http://localhost:8080/api/pharmacy/getPharmacyByMedication/'+this.props.medication.id)
+            .get('http://localhost:8080/api/pharmacy/getPharmacyByMedication/' + this.props.medication.id /*, {
+                headers : {
+                    'Content-Type' : 'application/json',
+                    Authorization : 'Bearer ' + this.aut.jwtToken 
+                }
+            }*/)
             .then((res) => {
                 this.setState({
                     pharmacy : res.data
@@ -52,7 +60,7 @@ class MedicationPharmacy extends React.Component {
                                 <td >{pharmacy.name}</td>
                                 <td >{pharmacy.address.country} {pharmacy.address.town} {pharmacy.address.street}</td>
                                 <td>{pharmacy.medicationPrice}</td>
-                                <td><Button variant={'outline-light'} onClick={() => this.handleModal(pharmacy)}>Reserve</Button></td>
+                                <td>{helpers.isLoggedIn() && <Button variant={'outline-light'} onClick={() => this.handleModal(pharmacy)}>Reserve</Button>}</td>
                             </tr>
                         </tbody>
                         ))}
@@ -147,10 +155,15 @@ class MedicationPharmacy extends React.Component {
                     'medication' : this.props.medication
                 },
                 'patient' : {
-                    'id' : 0
+                    'id' : this.aut.id
                 },
                 'status' : 'requested',
                 'pickUpDate' : this.getDate()
+            }
+        }, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
             }
         }).
         then(res => alert('SUCCESS'))
@@ -171,8 +184,13 @@ class MedicationPharmacy extends React.Component {
 
     checkIfPatientHasPromotion = () => { //todo change patient id dynamically
         const path = "http://localhost:8080/api/promotion/checkPatientSubscribedToPromotion/" +
-            this.state.selectedPharmacy.id + "/" + 0 + "/" + this.props.medication.id;
-        axios.get(path)
+            this.state.selectedPharmacy.id + "/" + this.aut.id + "/" + this.props.medication.id;
+        axios.get(path, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
             .then((res) => {
                 this.setState({
                     isDiscounted : res.data

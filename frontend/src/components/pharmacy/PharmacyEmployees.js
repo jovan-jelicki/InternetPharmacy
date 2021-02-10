@@ -12,6 +12,7 @@ import axios from "axios";
 import AddAppointmentModal from "./AddAppointmentModal";
 import Dropdown from "react-dropdown";
 import StarRatings from "react-star-ratings";
+import HelperService from "../../helpers/HelperService";
 
 
 const options = [
@@ -28,7 +29,6 @@ export default class PharmacyEmployees extends React.Component{
             showModalAddDermatologist : false,
             showModalCreatePharmacist : false,
             showModalAddAppointment : false,
-            userType : "pharmacyAdmin",
             dermatologistModalAddAppointment : {},
             searchPharmacist : {
                 firstName : '',
@@ -60,13 +60,16 @@ export default class PharmacyEmployees extends React.Component{
                     periodEnd : ""
                 },
                 pharmacy : {
-                    id : 1 //todo change pharmacy ID
+                    id : this.props.pharmacyId
                 }
-            }
+            },
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacyId
         }
     }
 
     async componentDidMount() {
+        // await this.fetchPharmacyId();
         await this.fetchPharmacists();
         await this.fetchWorkingDermatologists();
     }
@@ -107,39 +110,39 @@ export default class PharmacyEmployees extends React.Component{
                    </tr>
                    </thead>
                    <tbody>
-               {this.state.dermatologists.map((dermatologist, index) => (
-                   <tr key={index}>
-                       <th scope="row">{index+1}</th>
-                       <td>{dermatologist.firstName}</td>
-                       <td>{dermatologist.lastName}</td>
-                       <td>
-                           <StarRatings
-                               starDimension={'25px'}
-                               rating={dermatologist.grade}
-                               starRatedColor='gold'
-                               numberOfStars={5}
-                           />
-                       </td>
-                       <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodStart).format('hh:mm a')
-                        + "  -  " + moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === 1)[0].period.periodEnd).format('hh:mm a')}</td>
+                   {this.state.dermatologists.length !== 0 && this.state.dermatologists.map((dermatologist, index) => (
+                       <tr key={index}>
+                           <th scope="row">{index+1}</th>
+                           <td>{dermatologist.firstName}</td>
+                           <td>{dermatologist.lastName}</td>
+                           <td>
+                               <StarRatings
+                                   starDimension={'25px'}
+                                   rating={dermatologist.grade}
+                                   starRatedColor='gold'
+                                   numberOfStars={5}
+                               />
+                           </td>
+                           <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === this.state.pharmacyId)[0].period.periodStart).format('hh:mm a')
+                           + "  -  " + moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === this.state.pharmacyId)[0].period.periodEnd).format('hh:mm a')}</td>
 
-                       <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
-                           <Button variant="primary" onClick={this.openModalAddDermatologist}>
-                                Schedule appointment
-                           </Button>
-                       </td >
-                       <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                           <Button variant="warning" onClick={(e) => this.handleModalAddAppointment(dermatologist)}>
-                               Define available appointments
-                           </Button>
-                       </td>
-                       <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
-                           <Button variant="danger" onClick={() => this.deleteDermatologist(dermatologist)}>
-                               Delete dermatologist
-                           </Button>
-                       </td>
-                   </tr>
-               ))}
+                           <td style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block'} : {display : 'none'}}>
+                               <Button variant="primary" onClick={this.openModalAddDermatologist}>
+                                   Schedule appointment
+                               </Button>
+                           </td >
+                           <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                               <Button variant="warning" onClick={(e) => this.handleModalAddAppointment(dermatologist)}>
+                                   Define available appointments
+                               </Button>
+                           </td>
+                           <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                               <Button variant="danger" onClick={() => this.deleteDermatologist(dermatologist)}>
+                                   Delete dermatologist
+                               </Button>
+                           </td>
+                       </tr>
+                   ))}
                    </tbody>
                </table>
 
@@ -190,12 +193,12 @@ export default class PharmacyEmployees extends React.Component{
                            </td>
                            <td>{moment(pharmacist.workingHours.period.periodStart).format('hh:mm a') + "  -  " +
                             moment(pharmacist.workingHours.period.periodEnd).format('hh:mm a')}</td>
-                           <td style={this.state.userType === 'patient' ? {display : 'inline-block'} : {display : 'none'}}>
+                           <td style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="primary" onClick={this.handleModalAddDermatologist}>
                                    Schedule counseling
                                </Button>
                            </td >
-                           <td style={this.state.userType === 'pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
+                           <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="danger" onClick={() => this.deletePharmacist(pharmacist)}>
                                    Delete pharmacist
                                </Button>
@@ -245,8 +248,13 @@ export default class PharmacyEmployees extends React.Component{
         const target = event.target;
         let value = event.target.value;
 
-        const path = "http://localhost:8080/api/dermatologists/getOneWithWorkingHours/" + value;
-        await axios.get(path).then(res => {
+        await axios.get(HelperService.getPath("/api/dermatologists/getOneWithWorkingHours/" + value),
+            {
+                headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        }).then(res => {
             this.setState({
                 dermatologistForAdding : res.data
             });
@@ -280,14 +288,14 @@ export default class PharmacyEmployees extends React.Component{
                         <Form.Row>
                             <div style={({ marginLeft: '1rem' })}>
                                 <label style={({ marginRight: '1rem' })}>Select start of work time : </label>
-                                <TimePicker  name="periodStart" format="h:m a" value={this.state.workingHours.period.periodStart} onChange={this.setPeriodStart}/>
+                                <TimePicker  name="periodStart" disableClock={true}  format="h a" value={this.state.workingHours.period.periodStart} onChange={this.setPeriodStart}/>
                             </div>
                         </Form.Row>
                         <br/>
                         <Form.Row>
                             <div style={({ marginLeft: '1rem' })}>
                                 <label style={({ marginRight: '1rem' })}>Select end of work time : </label>
-                                <TimePicker  name="periodEnd" format="h:m a" value={this.state.workingHours.period.periodEnd} onChange={this.setPeriodEnd}/>
+                                <TimePicker  name="periodEnd" disableClock={true}  format="h a" value={this.state.workingHours.period.periodEnd} onChange={this.setPeriodEnd}/>
                             </div>
                         </Form.Row>
 
@@ -342,21 +350,27 @@ export default class PharmacyEmployees extends React.Component{
         endTime = moment(endTime + ":00", "HH:mm:ss a");
         let duration = moment.duration(endTime.diff(startTime));
 
-        return Math.abs(parseInt(duration.asMinutes())) < 120;
+        return Math.abs(parseInt(duration.asMinutes())) < 120 || Math.abs(parseInt(duration.asMinutes())) > 480;
     }
 
     addDermatologist = async () => {
         let finalDermatologist = this.state.dermatologistForAdding;
         let workingHours = this.state.workingHours;
         if (this.validateWorkingHoursDifference(workingHours.period.periodStart, workingHours.period.periodEnd)) {
-            alert("Dermatologist should work at least 2 hours.");
+            alert("Dermatologist should work at least 2 hours and not more than 8.");
             return;
         }
         workingHours.period.periodStart = '2017-01-13 ' + workingHours.period.periodStart + ":00";
         workingHours.period.periodEnd = '2017-01-13 ' + workingHours.period.periodEnd + ":00";
         finalDermatologist.workingHours.push(workingHours);
         console.log(finalDermatologist);
-        await axios.put("http://localhost:8080/api/dermatologists/addDermatologistToPharmacy", finalDermatologist).then(() => {
+        await axios.put(HelperService.getPath("/api/dermatologists/addDermatologistToPharmacy"), finalDermatologist,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then(() => {
                 this.setState({
                     dermatologistForAdding : {
                         id : 0,
@@ -368,7 +382,7 @@ export default class PharmacyEmployees extends React.Component{
                             periodEnd : ""
                         },
                         pharmacy : {
-                            id : 1 //todo change pharmacy ID
+                            id : this.state.pharmacyId
                         }
                     }
                 });
@@ -378,34 +392,30 @@ export default class PharmacyEmployees extends React.Component{
             }
         ).catch(() => {
             alert("Dermatologist was not added!");
+            this.handleModalAddDermatologist();
             this.setState({
-                dermatologistForAdding : {
-                    id : 0,
-                    workingHours : []
-                },
                 workingHours : {
                     period : {
                         periodStart : "",
                         periodEnd : ""
                     },
                     pharmacy : {
-                        id : 2 //todo change pharmacy ID
+                        id : this.state.pharmacyId
                     }
                 }
             });
         })
         await this.setState({
             dermatologistForAdding : {
-                id : 0,
-                workingHours : {
-                    period : {
-                        periodStart : "",
-                        periodEnd : ""
-                    },
-                    pharmacy : {
-                        id : 2 //todo change pharmacy ID
+                workingHours : [
+                    {
+                        id : -1,
+                        period : {
+                            periodStart : "",
+                            periodEnd : ""
+                        }
                     }
-                }
+                ]
             }
         });
     }
@@ -417,7 +427,7 @@ export default class PharmacyEmployees extends React.Component{
                     <Modal.Title>Create Pharmacist</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreatePharmacistModal closeModal = {this.handleModalCreatePharmacist} fetchPharmacists = {this.fetchPharmacists}/>
+                    <CreatePharmacistModal pharmacyId = {this.state.pharmacyId} closeModal = {this.handleModalCreatePharmacist} fetchPharmacists = {this.fetchPharmacists}/>
                 </Modal.Body>
             </Modal>
         );
@@ -430,7 +440,7 @@ export default class PharmacyEmployees extends React.Component{
                     <Modal.Title>Create Appointment</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <AddAppointmentModal closeModal = {this.handleModalAddAppointment} dermatologist={this.state.dermatologistModalAddAppointment}/>
+                    <AddAppointmentModal pharmacyId = {this.state.pharmacyId} closeModal = {this.handleModalAddAppointment} dermatologist={this.state.dermatologistModalAddAppointment}/>
                 </Modal.Body>
             </Modal>
         )
@@ -457,7 +467,13 @@ export default class PharmacyEmployees extends React.Component{
     deleteDermatologist = (dermatologist) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + dermatologist.firstName + ' ' + dermatologist.lastName + ' from your employees list?');
         if (isBoss) {
-            axios.put("http://localhost:8080/api/dermatologists/deleteDermatologistFromPharmacy/1", dermatologist)
+            axios.put(HelperService.getPath("/api/dermatologists/deleteDermatologistFromPharmacy/" + this.state.pharmacyId), dermatologist,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
                 .then(res => {
                     if (res.status === 200) {
                         alert("Dermatologist deleted successfully!");
@@ -473,8 +489,12 @@ export default class PharmacyEmployees extends React.Component{
     deletePharmacist = (pharmacist) => {
         let isBoss = window.confirm('Are you sure you want to delete ' + pharmacist.firstName + ' ' + pharmacist.lastName + ' from your employees list?');
         if (isBoss) {
-            const path = "http://localhost:8080/api/pharmacist/" + pharmacist.id;
-            axios.delete(path).then((res) => {
+            axios.delete(HelperService.getPath("/api/pharmacist/" + pharmacist.id), {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then((res) => {
                 if (res.status === 200) {
                     alert("Pharmacist deleted successfully!");
                     this.fetchPharmacists();
@@ -487,7 +507,13 @@ export default class PharmacyEmployees extends React.Component{
 
     fetchPharmacists = async () => {
         axios
-            .get('http://localhost:8080/api/pharmacist/getByPharmacy/1') //todo change pharmacy id
+            .get(HelperService.getPath('/api/pharmacist/getByPharmacy/' + this.state.pharmacyId),
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
             .then(res => {
                 this.setState({
                     pharmacists : res.data,
@@ -498,7 +524,13 @@ export default class PharmacyEmployees extends React.Component{
 
     fetchWorkingDermatologists = async () => {
         axios
-            .get('http://localhost:8080/api/dermatologists/getAllDermatologistWorkingInPharmacy/1')//todo change pharmacy ID
+            .get(HelperService.getPath('/api/dermatologists/getAllDermatologistWorkingInPharmacy/' + this.state.pharmacyId),
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
             .then(res => {
                 this.setState({
                     dermatologists : res.data,
@@ -627,7 +659,13 @@ export default class PharmacyEmployees extends React.Component{
     }
 
     fetchDermatologistNotWorkingInThisPharmacy = async () => {
-        await axios.get("http://localhost:8080/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/1").then( //todo change pharmacy id
+        await axios.get(HelperService.getPath("/api/dermatologists/getAllDermatologistNotWorkingInPharmacy/" + this.state.pharmacyId),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then(
             res => {
                 this.setState({
                     notWorkingDermatologists : res.data,
@@ -643,7 +681,7 @@ export default class PharmacyEmployees extends React.Component{
                         periodEnd : ""
                     },
                     pharmacy : {
-                        id : 1 //todo change pharmacy ID
+                        id : this.state.pharmacyId
                     }
                 }
             })
@@ -659,7 +697,7 @@ export default class PharmacyEmployees extends React.Component{
                         periodEnd : ""
                     },
                     pharmacy : {
-                        id : 1 //todo change pharmacy ID
+                        id : this.state.pharmacyId
                     }
                 }
             })
@@ -680,5 +718,20 @@ export default class PharmacyEmployees extends React.Component{
         this.setState({
             workingHours : workingHours
         })
+    }
+
+    fetchPharmacyId = async () => {
+        await axios.get(HelperService.getPath("/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacyId : res.data
+                })
+            });
     }
 }

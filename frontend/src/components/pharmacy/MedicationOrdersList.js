@@ -4,19 +4,26 @@ import {ButtonGroup, Input} from "rsuite";
 import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 export default class MedicationOrdersList extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            userType : 'pharmacyAdmin',
             medicationOrders : [],
             showContent : 'listOrders',
             backupMedicationOrders : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.fetchMedicationOrders();
     }
 
@@ -106,7 +113,12 @@ export default class MedicationOrdersList extends React.Component {
     }
 
     fetchMedicationOrders = () => {
-        axios.get("http://localhost:8080/api/medicationOrder/getAllMedicationOrdersByPharmacy/1")
+        axios.get(HelperService.getPath("/api/medicationOrder/getAllMedicationOrdersByPharmacy/" + this.state.pharmacyId), {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.setState({
                     medicationOrders : res.data,
@@ -131,8 +143,12 @@ export default class MedicationOrdersList extends React.Component {
 
     deleteOrder = (order) => {
         if (window.confirm('Are you sure you want to delete the order from your order list?')) {
-            const path = "http://localhost:8080/api/medicationOrder/deleteMedicationOrder/" + order.id;
-            axios.delete(path)
+            axios.delete(HelperService.getPath("/api/medicationOrder/deleteMedicationOrder/" + order.id), {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
                 .then((res) => {
                     alert("Order deleted successfully!");
                     this.fetchMedicationOrders();

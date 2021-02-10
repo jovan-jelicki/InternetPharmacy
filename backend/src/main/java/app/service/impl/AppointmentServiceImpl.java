@@ -16,8 +16,14 @@ import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
 import app.service.*;
+import app.service.AppointmentService;
+import app.service.DermatologistService;
+import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
@@ -26,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
@@ -52,24 +59,30 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Appointment save(Appointment entity) {
         entity.setPharmacy(pharmacyRepository.findById(entity.getPharmacy().getId()).get());
+        entity.getPeriod().setPeriodStart(entity.getPeriod().getPeriodStart().withMinute(0).withSecond(0).withNano(0));
+        entity.getPeriod().setPeriodEnd(entity.getPeriod().getPeriodEnd().withMinute(0).withSecond(0).withNano(0));
         return appointmentRepository.save(entity);
     }
 
+
     @Override
+    @Transactional(readOnly = false)
     public void update(AppointmentUpdateDTO appointmentDTO) {
         Optional<Appointment> appointment = appointmentRepository.findById(appointmentDTO.getAppointmentId());
-        if(appointment.isEmpty())
-            throw new IllegalArgumentException("Appointment does not exist");
+//        if(appointment.isEmpty())
+//            throw new IllegalArgumentException("Appointment does not exist");
         Optional<Patient> patient = patientService.read(appointmentDTO.getPatientId());
-        if(patient.isEmpty())
-            throw new IllegalArgumentException("Patient does not exits");
+//        if(patient.isEmpty())
+//            throw new IllegalArgumentException("Patient does not exits");
         appointment.get().setPatient(patient.get());
         appointmentRepository.save(appointment.get());
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Appointment scheduleCounseling(Appointment entity) {
         LocalDateTime start = entity.getPeriod().getPeriodStart();
         entity.setPatient(patientService.read(entity.getPatient().getId()).get());
@@ -83,6 +96,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Appointment cancelCounseling(Long appointmentId) {
         Appointment entity = appointmentRepository.findById(appointmentId).get();
         if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
@@ -94,6 +108,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Appointment cancelExamination(Long appointmentId) {
         Appointment entity = appointmentRepository.findById(appointmentId).get();
         Appointment newEntity = new Appointment(entity);
@@ -154,6 +169,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(Long id) {
         Appointment appointment = appointmentRepository.findById(id).get();
         appointment.setActive(false);
@@ -169,7 +185,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public boolean validateAppointmentTimeRegardingWorkingHours(Appointment entity) {
         WorkingHours workingHoursInPharmacy = dermatologistService.workingHoursInSpecificPharmacy(entity.getExaminerId(), entity.getPharmacy());
         if (workingHoursInPharmacy.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-            workingHoursInPharmacy.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime()))
+                workingHoursInPharmacy.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime()))
             return true;
         return false;
     }
@@ -190,9 +206,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public boolean validateAppointmentTimeRegardingVacationRequests(Appointment entity) {
         boolean ret = true;
-        for(VacationRequest vacationRequest : vacationRequestRepository.findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(entity.getExaminerId() ,EmployeeType.dermatologist, VacationRequestStatus.approved))
+        for(VacationRequest vacationRequest : vacationRequestRepository.findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(entity.getExaminerId() ,EmployeeType.ROLE_dermatologist, VacationRequestStatus.approved))
             if (vacationRequest.getPeriod().getPeriodStart().toLocalDate().isBefore(entity.getPeriod().getPeriodStart().toLocalDate()) &&
-                vacationRequest.getPeriod().getPeriodEnd().toLocalDate().isAfter(entity.getPeriod().getPeriodEnd().toLocalDate()))
+                    vacationRequest.getPeriod().getPeriodEnd().toLocalDate().isAfter(entity.getPeriod().getPeriodEnd().toLocalDate()))
                 return false;
         return ret;
     }
@@ -202,7 +218,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         for(Appointment appointment : this.getAllAppointmentsByExaminerIdAndType(entity.getExaminerId(), entity.getType())) {
             if (appointment.getPeriod().getPeriodStart().toLocalDate().equals(entity.getPeriod().getPeriodStart().toLocalDate())) {
                 if (appointment.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-                    appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
+                        appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
                     ret = false;
                 else if (entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
                         entity.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(appointment.getPeriod().getPeriodEnd().toLocalTime())) //E A A E
@@ -222,6 +238,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     @Override
+    @Transactional(readOnly = false, isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
     public Boolean createAvailableAppointment(Appointment entity) {
         //proveriti da li ima zakazane u tom periodu
         //proveriti da li je na godisnjem
@@ -237,7 +254,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             return false;
         else if (!entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodEnd().toLocalTime()))
             return false;
-        else if (Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) > 60 ||
+        else if (Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) > 120 ||
                 Math.abs(Duration.between(entity.getPeriod().getPeriodEnd(), entity.getPeriod().getPeriodStart()).toMinutes()) <10)
             return false;
 
@@ -245,6 +262,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean finishAppointment(AppointmentScheduledDTO appointmentScheduledDTO) {
         Appointment appointment = read(appointmentScheduledDTO.getId()).get();
         appointment.setReport(appointmentScheduledDTO.getReport());
@@ -272,7 +290,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Patient patient=patientService.read(appointmentScheduledDTO.getPatientId()).get();
         LoyaltyProgram first = loyaltyProgramService.read().iterator().next();
 
-        if(appointmentScheduledDTO.getType()==EmployeeType.dermatologist)
+        if(appointmentScheduledDTO.getType()==EmployeeType.ROLE_dermatologist)
             patient.setLoyaltyCount(patient.getLoyaltyCount()+first.getAppointmentPoints());
         else
             patient.setLoyaltyCount(patient.getLoyaltyCount()+first.getConsultingPoints());
@@ -325,6 +343,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean patientDidNotShowUp(Long id) {
         Appointment appointment = read(id).get();
         if(appointment != null){
@@ -376,14 +395,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<AppointmentEmployeeDTO> appointmentEmployeeDTOs = new ArrayList<>();
 
         for(Appointment appointment : finishedAppointments){
-           AppointmentEmployeeDTO appointmentEmployeeDTO= new AppointmentEmployeeDTO();
-            if(type.toString()=="dermatologist" && !dermatologsitIds.contains(appointment.getExaminerId())){
-                    Dermatologist dermatologist=dermatologistService.read(appointment.getExaminerId()).get();
-                    appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
-                    appointmentEmployeeDTO.setEmployeeFirstName(dermatologist.getFirstName());
-                    appointmentEmployeeDTO.setEmployeeLastName(dermatologist.getLastName());
-                    appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
-
+            AppointmentEmployeeDTO appointmentEmployeeDTO= new AppointmentEmployeeDTO();
+            if(type==EmployeeType.ROLE_dermatologist && !dermatologsitIds.contains(appointment.getExaminerId())){
+                Dermatologist dermatologist=dermatologistService.read(appointment.getExaminerId()).get();
+                appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
+                appointmentEmployeeDTO.setEmployeeFirstName(dermatologist.getFirstName());
+                appointmentEmployeeDTO.setEmployeeLastName(dermatologist.getLastName());
+                appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
                     dermatologsitIds.add(appointment.getExaminerId());
             }
         }
@@ -433,7 +451,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByMonth = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.ROLE_dermatologist).size();
             String monthName = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
             appointmentCountByMonth.add(new ReportsDTO(monthName,temp));
         }
@@ -466,7 +484,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByQuarter = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.ROLE_dermatologist).size();
             String monthNameStart = allDates.get(i).format(DateTimeFormatter.ofPattern("MMM"));
             String monthNameEnd = allDates.get(i+1).format(DateTimeFormatter.ofPattern("MMM"));
             appointmentCountByQuarter.add(new ReportsDTO(monthNameStart + "-" + monthNameEnd,temp));
@@ -500,7 +518,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ArrayList<ReportsDTO> appointmentCountByYear = new ArrayList<>();
 
         for (int i = 0; i < allDates.size()-1; i++) {
-            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.dermatologist).size();
+            int temp = this.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(allDates.get(i).atStartOfDay(), allDates.get(i+1).atStartOfDay(), pharmacyId, EmployeeType.ROLE_dermatologist).size();
             String year = allDates.get(i).format(DateTimeFormatter.ofPattern("yyyy"));
             appointmentCountByYear.add(new ReportsDTO(year,temp));
         }

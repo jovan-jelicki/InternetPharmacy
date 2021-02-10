@@ -11,6 +11,7 @@ import app.model.user.Supplier;
 import app.service.SupplierService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,16 +26,18 @@ public class SupplierControllerImpl {
         this.supplierService = supplierService;
     }
 
+    @PreAuthorize("hasRole('supplier')")
     @GetMapping(value = "/getAllBySupplier/{supplierId}")
     public ResponseEntity<Collection<MedicationOfferAndOrderDTO>> getMedicationOffersBySupplier(@PathVariable Long supplierId) {
         return new ResponseEntity<>(supplierService.getMedicationOffersBySupplier(supplierId), HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('supplier')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacistDermatologistProfileDTO> read(@PathVariable Long id) {
         return new ResponseEntity<>(new PharmacistDermatologistProfileDTO(supplierService.read(id).get()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('supplier')")
     @PutMapping(consumes = "application/json")
     public ResponseEntity<PharmacistDermatologistProfileDTO> update(@RequestBody PharmacistDermatologistProfileDTO entity) {
         if(!supplierService.existsById(entity.getId()))
@@ -44,23 +47,25 @@ public class SupplierControllerImpl {
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
-
+    @PreAuthorize("hasRole('systemAdmin')")
     @PostMapping(value="/save", consumes = "application/json")
     public ResponseEntity<Supplier> save(@RequestBody Supplier entity) {
         return new ResponseEntity<>(supplierService.save(entity), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('supplier')")
     @GetMapping(value = "/getSuppliersMedicationList/{supplierId}")
     public ResponseEntity<Collection<MedicationQuantity>> getSuppliersMedicationList(@PathVariable Long supplierId) {
         return new ResponseEntity<>(supplierService.getSuppliersMedicationList(supplierId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('supplier')")
     @GetMapping(value = "/getNonMedicationsBySupplier/{supplierId}")
     public ResponseEntity<Collection<Medication>> getNonMedicationsBySupplier(@PathVariable Long supplierId) {
         return new ResponseEntity<>(supplierService.getNonMedicationsBySupplier(supplierId), HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasRole('supplier')")
     @PutMapping(value = "/addNewMedication", consumes = "application/json")
     public ResponseEntity<Boolean> addNewMedication(@RequestBody MedicationSupplierDTO   medicationSupplierDTO) {
         if(!supplierService.existsById(medicationSupplierDTO.getSupplierId()))
@@ -70,21 +75,25 @@ public class SupplierControllerImpl {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-
+    @PreAuthorize("hasRole('supplier')")
     @PostMapping(consumes = "application/json", value = "/edit")
     public ResponseEntity<Boolean> editSuppliersMedicationQuantity(@RequestBody MedicationSupplierDTO medicationSupplierDTO){
         return new ResponseEntity<>(supplierService.editSuppliersMedicationQuantity(medicationSupplierDTO), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('supplier')")
     @PutMapping(value = "/deleteMedicationQuantity", consumes = "application/json")
     public ResponseEntity<Boolean> deleteMedicationQuantity(@RequestBody MedicationSupplierDTO   medicationSupplierDTO) {
         return new ResponseEntity<>(supplierService.deleteMedicationQuantity(medicationSupplierDTO), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('supplier')")
     @GetMapping(value = "/isAccountApproved/{id}")
     public ResponseEntity<Boolean> isAccountApproved(@PathVariable Long id){
         return new ResponseEntity<>(supplierService.read(id).get().getApprovedAccount(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('supplier')")
     @PutMapping(value = "/pass")
     public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
         try {

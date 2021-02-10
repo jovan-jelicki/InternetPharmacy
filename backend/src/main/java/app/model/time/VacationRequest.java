@@ -33,6 +33,10 @@ public class VacationRequest {
    @Enumerated(EnumType.ORDINAL)
    private EmployeeType employeeType;
 
+   @Version
+   @Column(nullable = false, columnDefinition = "int default 1")
+   private Long version;
+
    public VacationRequest() {
    }
 
@@ -98,5 +102,13 @@ public class VacationRequest {
 
    public void setEmployeeType(EmployeeType employeeType) {
       this.employeeType = employeeType;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
    }
 }

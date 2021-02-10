@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
 
@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
                 .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
 
                 // svim korisnicima dopusti da pristupe putanjama /auth/**, (/h2-console/** ako se koristi H2 baza) i /api/foo
-                .authorizeRequests().antMatchers("/auth/**").permitAll().antMatchers("/h2-console/**").permitAll()
+                .authorizeRequests().antMatchers("/auth/**").permitAll().antMatchers("/h2-console/**").permitAll().antMatchers("/api/medications").permitAll().antMatchers("/api/medications/search").permitAll().antMatchers("/api/pharmacy").permitAll().antMatchers("/api/pharmacy/search").permitAll().antMatchers("/api/pharmacy/getPharmacyByMedication/{medicationId}").permitAll()
                 // za svaki drugi zahtev korisnik mora biti autentifikovan
                 .anyRequest().authenticated().and()
                 // za development svrhe ukljuci konfiguraciju za CORS iz WebConfig klase
@@ -71,8 +71,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
     @Override
     public void configure(WebSecurity web) throws Exception {
         // TokenAuthenticationFilter ce ignorisati sve ispod navedene putanje
-        web.ignoring().antMatchers(HttpMethod.POST, "/auth/login");
-        web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html",
+        web.ignoring().antMatchers(HttpMethod.POST, "/auth/login", "/api/pharmacy/search", "/api/medications/search");
+        web.ignoring().antMatchers(HttpMethod.GET, "/api/pharmacy",  "/api/medications", "/api/pharmacy/getPharmacyByMedication/{medicationId}", "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html",
                 "/**/*.css", "/**/*.js");
     }
 }

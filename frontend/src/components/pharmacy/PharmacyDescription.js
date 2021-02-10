@@ -2,6 +2,9 @@ import React from 'react';
 import { Map, GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react';
 import {PharmacyPage} from "../../pages/PharmacyPage";
 import StarRatings from "react-star-ratings";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import axios from "axios";
+import HelperService from "../../helpers/HelperService";
 
 const mapStyles = {
     width: '50%',
@@ -13,16 +16,21 @@ export class PharmacyDescription extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            userType : 'pharmacyAdmin',
             pharmacy : this.props.pharmacy,
             showingInfoWindow: false,  // Hides or shows the InfoWindow
             activeMarker: {},          // Shows the active marker upon click
             selectedPlace: {},
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    componentDidMount() {
-        this.fetchPharmacy();
+    async componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // });
+        //this.fetchPharmacy();
     }
 
 
@@ -58,7 +66,7 @@ export class PharmacyDescription extends React.Component{
 
                 <Map
                     google={this.props.google}
-                    zoom={14}
+                    zoom={5}
                     style={mapStyles}
                     initialCenter={
                         {
@@ -101,9 +109,20 @@ export class PharmacyDescription extends React.Component{
         }
     };
 
-    fetchPharmacy = () => {
-
-    }
+    // fetchPharmacy = async () => {
+    //     await axios.get(HelperService.getPath("/api/pharmacy/" + this.state.pharmacyId),
+    //         {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 Authorization : 'Bearer ' + this.state.user.jwtToken
+    //             }
+    //         })
+    //         .then((res) => {
+    //             this.setState({
+    //                 pharmacy : res.data
+    //             })
+    //         })
+    // }
 }
 
 export default GoogleApiWrapper({

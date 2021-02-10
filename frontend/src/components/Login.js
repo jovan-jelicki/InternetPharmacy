@@ -73,8 +73,13 @@ class Login extends React.Component {
     sendData() {
         //console.log(this.state.email)
         //console.log(this.state.password)
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/auth/users"
+            : 'http://localhost:8080/auth/users';
+
+
         axios
-            .post('http://localhost:8080/auth/users', {
+            .post(path, {
                 'email':this.state.email,
                 'password':this.state.password
             })
@@ -87,7 +92,6 @@ class Login extends React.Component {
                 this.state.error = false
 
                 this.redirect()
-
             })
             .catch( res =>
                 this.setState({ error:true })
@@ -100,65 +104,35 @@ class Login extends React.Component {
         console.log(type)
         const history = createHashHistory()
         if(type=="ROLE_patient"){ //ROLE_patient
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
-                pathname: "/patient-home",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id,
-                    jwtToken: this.state.user.jwtToken,
-                    role: this.state.user.type
-                }
-            });
 
+                pathname: "/patient-home"
+            });
         }else if(type=="ROLE_dermatologist"){ //ROLE_dermatologist
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
                 pathname: "/dermatologistHomePage",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id,
-                    jwtToken: this.state.user.jwtToken,
-                    role: this.state.user.type
-                }
             });
         }else if(type=="ROLE_pharmacist"){ //ROLE_pharmacist
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
                 pathname: "/pharmacistHomePage",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id,
-                    jwtToken: this.state.user.jwtToken,
-                    role: this.state.user.type
-                }
             });
         }else if(type=="ROLE_pharmacyAdmin"){ //ROLE_pharmacyAdmin
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
                 pathname: "/pharmacy-admin-profile",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id,
-                    jwtToken: this.state.user.jwtToken,
-                    role: this.state.user.type
-                }
             });
         }else if(type=="ROLE_supplier"){ //ROLE_supplier
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
                 pathname: "/supplierHomePage",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id,
-                    jwtToken: this.state.user.jwtToken,
-                    role: this.state.user.type
-                }
             });
         }else if(type=="ROLE_systemAdmin"){ //ROLE_systemAdmin
+            localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
                 pathname: "/SystemAdmin",
-                state: {
-                    email: this.state.user.email,  //pristupas sa  this.props.location.state.email
-                    userId: this.state.user.id,
-                    jwtToken: this.state.user.jwtToken,
-                    role: this.state.user.type
-                }
             });
         }
     }

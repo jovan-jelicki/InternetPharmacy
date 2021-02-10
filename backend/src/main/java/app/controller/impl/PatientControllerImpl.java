@@ -32,22 +32,24 @@ public class PatientControllerImpl {
         return new ResponseEntity<>(patientService.save(entity), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('patient')")
     @PutMapping(consumes = "application/json")
     public ResponseEntity<PatientDTO> update(@RequestBody PatientDTO entity) {
         Optional<Patient> p = patientService.read(entity.getId());
-        if(p.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        if(p.isEmpty())
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Patient patient = p.get();
         entity.merge(patient);
         return new ResponseEntity<>(new PatientDTO(patientService.save(patient)), HttpStatus.CREATED);
     }
 
-   // @PreAuthorize("hasRole('pharmacist')")
+    //@PreAuthorize("hasRole('patient')")
     @GetMapping
     public ResponseEntity<Collection<Patient>> read() {
         return new ResponseEntity<>(patientService.read(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('patient')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<PatientDTO> read(@PathVariable Long id) {
         return new ResponseEntity<>(new PatientDTO(patientService.read(id).get()), HttpStatus.OK);
@@ -69,6 +71,7 @@ public class PatientControllerImpl {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @PreAuthorize("hasRole('patient')")
     @PutMapping(value = "/pass")
     public ResponseEntity<Void> changePassword(@RequestBody UserPasswordDTO passwordKit) {
         try {
@@ -84,6 +87,7 @@ public class PatientControllerImpl {
     }
 
     @GetMapping(value = "/promotion-pharmacies/{id}")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Collection<PharmacyPlainDTO>> getPromotionPharmacies(@PathVariable Long id) {
         return new ResponseEntity<>(patientService.getPromotionPharmacies(id), HttpStatus.OK);
     }

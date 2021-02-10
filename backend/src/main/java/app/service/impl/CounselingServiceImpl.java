@@ -15,6 +15,8 @@ import app.service.PatientService;
 import app.service.PharmacistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -23,6 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class CounselingServiceImpl implements CounselingService {
     private final AppointmentService appointmentService;
     private final PharmacistService pharmacistService;
@@ -40,6 +43,7 @@ public class CounselingServiceImpl implements CounselingService {
 
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean pharmacistScheduling(Appointment appointment){
         if(!isConsultationPossible(appointment.getExaminerId(), appointment.getPatient().getId(), appointment.getPeriod().getPeriodStart()))
             return false;
@@ -73,7 +77,7 @@ public class CounselingServiceImpl implements CounselingService {
     @Override
     public Collection<Appointment> findUpcomingByPatientId(Long patientId) {
         Collection<Appointment> appointments = appointmentService
-                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.pharmacist);
+                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.ROLE_pharmacist);
         return appointments
                 .stream()
                 .filter(a -> a.getPeriod().getPeriodStart().isAfter(LocalDateTime.now()))
@@ -83,9 +87,9 @@ public class CounselingServiceImpl implements CounselingService {
     @Override
     public Collection<Appointment> findPreviousByPatientId(Long patientId) {
         Collection<Appointment> appointments = appointmentService
-                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.pharmacist);
+                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.ROLE_pharmacist);
         Collection<Appointment> cancelled = appointmentService
-                .findCancelledByPatientIdAndType(patientId, EmployeeType.pharmacist);
+                .findCancelledByPatientIdAndType(patientId, EmployeeType.ROLE_pharmacist);
         Collection<Appointment> all = appointments
                                         .stream()
                                         .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()))
@@ -117,7 +121,7 @@ public class CounselingServiceImpl implements CounselingService {
     private Set<Pharmacist> findUnavailable(LocalDateTime dateTime, Long patientId) {
         Set<Pharmacist> unavailable = new HashSet<>();
         Collection<Appointment> scheduledAvailable = appointmentService
-                .findAppointmentsByPatientNotNullAndType(EmployeeType.pharmacist);
+                .findAppointmentsByPatientNotNullAndType(EmployeeType.ROLE_pharmacist);
         scheduledAvailable.forEach(a -> {
             Pharmacist pharmacist = pharmacistService.read(a.getExaminerId()).get();
             if(a.isOverlapping(dateTime)) {
@@ -131,7 +135,7 @@ public class CounselingServiceImpl implements CounselingService {
     private Set<Pharmacist> findUnavailableCanceled(LocalDateTime dateTime, Long patientId) {
         Set<Pharmacist> unavailable = new HashSet<>();
         Collection<Appointment> scheduledCancelled = appointmentService
-                .findCancelledByPatientIdAndType(patientId, EmployeeType.pharmacist);
+                .findCancelledByPatientIdAndType(patientId, EmployeeType.ROLE_pharmacist);
         scheduledCancelled.forEach(a -> {
             Pharmacist pharmacist = pharmacistService.read(a.getExaminerId()).get();
             if(a.isOverlapping(dateTime)) {
@@ -143,7 +147,7 @@ public class CounselingServiceImpl implements CounselingService {
 
     private boolean isOnVacation(LocalDateTime dateTime, Long id) {
         Collection<VacationRequest> vacations = vacationRequestRepository
-                .findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(id, EmployeeType.pharmacist, VacationRequestStatus.approved);
+                .findByEmployeeIdAndEmployeeTypeAndVacationRequestStatus(id, EmployeeType.ROLE_pharmacist, VacationRequestStatus.approved);
         for (VacationRequest vacation: vacations) {
             LocalDateTime start = vacation.getPeriod().getPeriodStart();
             LocalDateTime end = vacation.getPeriod().getPeriodEnd();

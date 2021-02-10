@@ -13,6 +13,7 @@ import app.service.LoyaltyScaleService;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Transactional
 public class PatientServiceImpl implements PatientService {
     private PatientRepository patientRepository;
     private LoyaltyScaleService loyaltyScaleService;
@@ -33,8 +35,8 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<Patient> _user = patientRepository.findById(passwordKit.getUserId());
-        if(_user.isEmpty())
-            throw new NullPointerException("User not found");
+//        if(_user.isEmpty())
+//            throw new NullPointerException("User not found");
         Patient user = _user.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());

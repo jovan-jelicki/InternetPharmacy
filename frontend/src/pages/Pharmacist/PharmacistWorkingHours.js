@@ -8,15 +8,23 @@ export default class PharmacistWorkingHours extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            myEvents : []
+            myEvents : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
     componentDidMount() {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getEvents"
+            : 'http://localhost:8080/api/appointment/getEvents';
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getEvents', {
-                'id' : 3, //this.props.id
-                'type' : 0 //this.props.role
-            } )
+            .post(path, {
+                'id' : this.state.user.id, //this.props.id
+                'type' : this.state.user.type //this.props.role
+            } , {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 this.setState({
                     myEvents : res.data

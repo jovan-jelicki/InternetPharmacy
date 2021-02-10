@@ -12,6 +12,7 @@ import app.repository.PharmacyRepository;
 import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
@@ -21,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class PharmacyServiceImpl implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
@@ -359,9 +361,9 @@ public class PharmacyServiceImpl implements PharmacyService {
             dayStart.with(LocalTime.of(0, 0));
             double income = 0;
             double expense = 0;
-            income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.dermatologist)
+            income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.ROLE_dermatologist)
                     .size() * pharmacy.getDermatologistCost();
-            income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.pharmacist)
+            income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.ROLE_pharmacist)
                     .size() * pharmacy.getPharmacistCost();
 
             ArrayList<MedicationReservation> medicationReservations = (ArrayList<MedicationReservation>) pharmacy.getMedicationReservation().stream().filter(medicationReservation -> medicationReservation.getPickUpDate().toLocalDate().isEqual(dayStart.toLocalDate()))

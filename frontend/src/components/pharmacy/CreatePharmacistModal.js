@@ -4,6 +4,7 @@ import "../../App.css";
 import TimePicker from "react-time-picker";
 import axios from "axios";
 import moment from "moment";
+import HelperService from "../../helpers/HelperService";
 
 
 
@@ -24,6 +25,7 @@ export default class CreatePharmacistModal extends React.Component {
                 'startShift' : '',
                 'endShift' : ''
             },
+            userLocalStorageData : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
             errors:{
                 user: {
                     'email': 'Enter email',
@@ -39,12 +41,17 @@ export default class CreatePharmacistModal extends React.Component {
             },
             validForm: false,
             submitted: false,
+            pharmacyId : this.props.pharmacyId
 
 
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.isValidPassword = this.isValidPassword.bind(this);
 
+    }
+
+    componentDidMount() {
+        // this.fetchPharmacyId();
     }
 
     handleInputChange = (event) => {
@@ -152,14 +159,14 @@ export default class CreatePharmacistModal extends React.Component {
                 <div className="row">
                     <div style={({ marginLeft: '1rem' })}>
                         <label style={({ marginRight: '1rem' })}>Select start of work time : </label>
-                        <TimePicker  name="startShift" format="h:m a" value={this.state.user.startShift} onChange={this.setStartShift}/>
+                        <TimePicker  name="startShift" disableClock={true}  format="h a" value={this.state.user.startShift} onChange={this.setStartShift}/>
 
                     </div>
                 </div>
                 <div className="row">
                     <div style={({ marginLeft: '1rem' })}>
                         <label style={({ marginRight: '1rem' })}>Select end of work time : </label>
-                        <TimePicker  name="endShift" format="h:m a" value={this.state.user.endShift} onChange={this.setEndShift}/>
+                        <TimePicker  name="endShift" disableClock={true}  format="h a" value={this.state.user.endShift} onChange={this.setEndShift}/>
 
                     </div>
                 </div>
@@ -202,10 +209,9 @@ export default class CreatePharmacistModal extends React.Component {
             console.info('Valid Form');
             console.log(this.state.user);
 
-            await axios.post('http://localhost:8080/api/pharmacist/createNewPharmacist', {
+            await axios.post(HelperService.getPath('/api/pharmacist/createNewPharmacist'), {
                 firstName: this.state.user.firstName,
                 lastName: this.state.user.lastName,
-                userType : 1,
                 active : Boolean(true),
                 credentials: {
                     email: this.state.user.email,
@@ -227,11 +233,16 @@ export default class CreatePharmacistModal extends React.Component {
                             periodEnd: "2017-01-01 " + this.state.user.endShift + ":00"
                         },
                         pharmacy : {
-                            id : 1 //todo change pharmacy id
+                            id : this.state.pharmacyId
                         }
                     }
 
-            });
+            }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.userLocalStorageData.jwtToken
+                    }
+                });
 
             this.closeModal();
             this.props.fetchPharmacists();
@@ -313,5 +324,20 @@ export default class CreatePharmacistModal extends React.Component {
         const user = this.state.user;
         user['endShift'] = date;
         this.setState({ user });
+    }
+
+    fetchPharmacyId = () => {
+        axios.get(HelperService.getPath("/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.userLocalStorageData.id),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.userLocalStorageData.jwtToken
+                }
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacyId : res.data
+                })
+            });
     }
 }

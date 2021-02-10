@@ -17,8 +17,15 @@ class PatientGradingPage extends React.Component {
     }
 
     componentDidMount() {
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         axios
-        .get('http://localhost:8080/api/grades/dermatologists/0')
+        .get('http://localhost:8080/api/grades/dermatologists/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             console.log(res.data)
             this.setState({
@@ -27,7 +34,12 @@ class PatientGradingPage extends React.Component {
         })
 
         axios
-        .get('http://localhost:8080/api/grades/pharmacist/0')
+        .get('http://localhost:8080/api/grades/pharmacist/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             this.setState({
                 pharmacists : res.data
@@ -35,7 +47,12 @@ class PatientGradingPage extends React.Component {
         })
 
         axios
-        .get('http://localhost:8080/api/grades/medication/0')
+        .get('http://localhost:8080/api/grades/medication/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             this.setState({
                 medications : res.data
@@ -43,7 +60,12 @@ class PatientGradingPage extends React.Component {
         })
 
         axios
-        .get('http://localhost:8080/api/grades/pharmacy/0')
+        .get('http://localhost:8080/api/grades/pharmacy/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             this.setState({
                 pharmacies : res.data
@@ -64,9 +86,14 @@ class PatientGradingPage extends React.Component {
             'gradedId' : gradedId,
             'gradeType' : entity.type,
             'patient' : {
-                'id' : 0                    //TODO POPRAVITI
+                'id' : this.aut.id
             },
             'grade' : entity.grade
+        }, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
         })
         .then(res => {
             console.log('Success')

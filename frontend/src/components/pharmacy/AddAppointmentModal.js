@@ -4,6 +4,7 @@ import "../../App.css";
 import TimePicker from "react-time-picker";
 import axios from "axios";
 import DatePicker from "react-datepicker";
+import HelperService from "../../helpers/HelperService";
 
 
 
@@ -16,9 +17,14 @@ export default class AddAppointmentModal extends React.Component {
                 periodStart : "",
                 periodEnd : ""
             },
-            appointmentDate : ""
+            appointmentDate : "",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacyId
         }
+    }
 
+    componentDidMount() {
+        // this.fetchPharmacyId();
     }
 
 
@@ -27,13 +33,13 @@ export default class AddAppointmentModal extends React.Component {
             <div >
                 <Form>
                     <label style={{marginRight : 10}}>Select date of appointment: </label>
-                    <DatePicker selected={this.state.appointmentDate} dateFormat="dd MMMM yyyy"  name="appointmentDate" minDate={new Date()} onChange={this.setDate} />
+                    <DatePicker selected={this.state.appointmentDate}  dateFormat="dd MMMM yyyy"  name="appointmentDate" minDate={new Date()} onChange={this.setDate} />
                     <br/>
                     <label style={{marginRight : 10}}>Select start time of appointment: </label>
-                    <TimePicker  name="startShift" format="h:m a" value={this.state.period.periodStart} onChange={this.setPeriodStart}/>
+                    <TimePicker  name="startShift" disableClock={true}  format="h a" value={this.state.period.periodStart} onChange={this.setPeriodStart}/>
                     <br/>
                     <label style={{marginRight : 10}}>Select end time of appointment: </label>
-                    <TimePicker  name="endShift" format="h:m a" value={this.state.period.periodEnd} onChange={this.setPeriodEnd}/>
+                    <TimePicker  name="endShift" disableClock={true}  format="h a" value={this.state.period.periodEnd} onChange={this.setPeriodEnd}/>
 
                     <hr className="mt-2 mb-3"/>
 
@@ -66,19 +72,24 @@ export default class AddAppointmentModal extends React.Component {
         let fullYear = date.getFullYear() + "-" + month + "-" + day;
         let check = fullYear + " " + this.state.period.periodStart + ":00";
         let  a = "2020-01-01 12:00:00";
-        axios.post('http://localhost:8080/api/appointment', {
+        axios.post(HelperService.getPath('/api/appointment'), {
             examinerId: this.props.dermatologist.id,
             pharmacy: {
-                id : 1
+                id : this.state.pharmacyId
             },
             active : true,
-            type : 'dermatologist',
+            type : 'ROLE_dermatologist',
             appointmentStatus : 'available',
             period : {
                 periodStart : fullYear + " " + this.state.period.periodStart + ":00",
                 periodEnd : fullYear + " " + this.state.period.periodEnd + ":00",
             }
-        }).then( () =>
+        }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then( () =>
             {
                 alert("Appointment successfully created!");
                 this.props.closeModal();
@@ -104,5 +115,20 @@ export default class AddAppointmentModal extends React.Component {
         const period = this.state.period;
         period['periodEnd'] = date;
         this.setState({ period });
+    }
+
+    fetchPharmacyId = () => {
+        axios.get(HelperService.getPath("/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacyId : res.data
+                })
+            });
     }
 }

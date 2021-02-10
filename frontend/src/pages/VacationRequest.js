@@ -13,14 +13,21 @@ export default class VacationRequest extends React.Component {
             endDate : new Date(),
             pharmacy : "",
             pharmacies : [],
-            vacationNote : ""
+            vacationNote : "",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
         this.handleChange = this.handleChange.bind(this);
     }
     componentDidMount() {
-     /*   if(this.props.role == "Pharmacist"){*/
+        if(this.state.user.type == "ROLE_pharmacist"){
+            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacist/getPharmacy/"
+                : 'http://localhost:8080/api/pharmacist/getPharmacy/';
             axios
-                .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/pharmacist/getPharmacy/' + 1)
+                .get(path + this.state.user.id, {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
                 .then(res => {
                     this.setState({
                         pharmacies : [res.data],
@@ -28,16 +35,22 @@ export default class VacationRequest extends React.Component {
                     })
                 })
                 .catch(res => alert("Wrong!"));
-   /*     }else if (this.props.role == "Dermatologist"){
+        }else if (this.state.user.type == "ROLE_dermatologist"){
+            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/getPharmacy/"
+                : 'http://localhost:8080/api/dermatologists/getPharmacy/';
             axios
-                .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologist/getPharmacy/' + this.props.Id)
+                .get(path + this.state.user.id, {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
                 .then(res => {
                     this.setState({
                         pharmacies : res.data
                     })
                 })
                 .catch(res => alert("Wrong!"));
-        }*/
+        }
     }
 
     handleChange(event) {
@@ -111,17 +124,23 @@ export default class VacationRequest extends React.Component {
             minutes = "0" + minutes;
         let fullYearEnd = periodEnd.getFullYear() + "-" + month + "-" + day  + " " + hours + ":" + minutes + ":00";
 
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/vacationRequest/saveDto"
+            : 'http://localhost:8080/api/vacationRequest/saveDto';
         axios
-            .post( process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/vacationRequest/saveDto', {
+            .post( path, {
                 'period' : {
                     periodStart: fullYearStart,
                     periodEnd: fullYearEnd
                 },
                 'pharmacy' : this.state.pharmacy,
-                'employeeType' : 1, //props.role
-                'employeeId' : 1, //props.Id
+                'employeeType' : this.state.user.type,
+                'employeeId' : this.state.user.id,
                 'vacationNote' : this.state.vacationNote,
                 'vacationRequestStatus' : 0
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 alert('You have successfully submitted the request!');

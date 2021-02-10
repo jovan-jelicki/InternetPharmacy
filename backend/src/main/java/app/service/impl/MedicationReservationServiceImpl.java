@@ -118,8 +118,9 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
     @Override
     public MedicationReservation reserve(MakeMedicationReservationDTO entity) {
         Optional<Pharmacy> pharmacy = pharmacyRepository.findById(entity.getPharmacyId());
-        if(pharmacy.isEmpty())
-            throw new IllegalArgumentException("Pharmacy Id does not exist");
+//        if(pharmacy.isEmpty())
+//            throw new IllegalArgumentException("Pharmacy Id does not exist");
+        //proveri stanje u apoteci pre rezervisanja leka
         MedicationReservation medicationReservation = entity.getMedicationReservation();
         medicationReservation.setPatient(patientService.read(medicationReservation.getPatient().getId()).get());
         updateMedicationQuantity(pharmacy.get().getMedicationQuantity(),

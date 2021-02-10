@@ -33,6 +33,10 @@ public class MedicationReservation {
    @Enumerated(EnumType.ORDINAL)
    private MedicationReservationStatus status;
 
+   @Version
+   @Column(nullable = false, columnDefinition = "int default 1")
+   private Long version;
+
    public MedicationReservation() {
    }
 
@@ -82,5 +86,13 @@ public class MedicationReservation {
 
    public void setDiscounted(Boolean discounted) {
       isDiscounted = discounted;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
    }
 }

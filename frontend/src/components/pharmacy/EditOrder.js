@@ -5,12 +5,13 @@ import AddMedicationQuantity from "./AddMedicationQuantity";
 import OrderQuantityListing from "./OrderQuantityListing";
 import axios from "axios";
 import moment from "moment";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 export default class EditOrder extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            userType : 'pharmacyAdmin',
             medications : [],
             medicationOrder : {
                 id : this.props.order.id,
@@ -21,11 +22,17 @@ export default class EditOrder extends React.Component{
             },
             quantities : this.props.order.medicationQuantity,
             deadline : moment(this.props.order.deadline).toDate(),
-            isEditable : false
+            isEditable : false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        //let temp = await PharmacyAdminService.fetchPharmacyId();
+        this.setState({
+            pharmacyAdminId : this.state.user.id
+        })
         this.checkIfOrderIsEditable();
         console.log(this.props.order);
         this.fetchMedication();
@@ -71,8 +78,12 @@ export default class EditOrder extends React.Component{
     }
 
     checkIfOrderIsEditable = () => {
-        const path = "http://localhost:8080/api/medicationOrder/checkIfOrderIsEditable/" + this.props.order.id;
-        axios.get(path)
+        axios.get(HelperService.getPath("/api/medicationOrder/checkIfOrderIsEditable/" + this.props.order.id), {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.setState({
                     isEditable : res.data
@@ -81,7 +92,12 @@ export default class EditOrder extends React.Component{
     }
 
     fetchMedication = () => {
-        axios.get("http://localhost:8080/api/medications")
+        axios.get(HelperService.getPath("/api/medications"), {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.setState({
                     medications : res.data
@@ -130,7 +146,12 @@ export default class EditOrder extends React.Component{
             return;
         }
 
-        axios.post("http://localhost:8080/api/medicationOrder/editMedicationOrder", this.state.medicationOrder)
+        axios.post(HelperService.getPath("/api/medicationOrder/editMedicationOrder"), this.state.medicationOrder, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 alert("Medication order edited successfully!");
                 this.props.showListOrders("listOrders")

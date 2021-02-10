@@ -42,6 +42,10 @@ public class Pharmacy {
     @Column
     private int dermatologistCost;
 
+    @Version
+    @Column(nullable = false, columnDefinition = "int default 1")
+    private Long version;
+
     public Pharmacy() {
     }
 
@@ -119,6 +123,14 @@ public class Pharmacy {
 
     public void setDermatologistConst(int dermatologistCost) {
         this.dermatologistCost = dermatologistCost;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     public boolean isEqual(PharmacySearchDTO pharmacySearchDTO) {

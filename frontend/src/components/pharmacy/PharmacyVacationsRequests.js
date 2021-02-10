@@ -2,22 +2,29 @@ import React from 'react';
 import {Button, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class PharmacyVacationsRequests extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             vacationRequests : [],
-            userType : 'pharmacyAdmin',
             showModal : false,
             modalVacationRequest : {
                 rejectionNote:""
-            }
+            },
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
     componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.fetchVacationRequests();
     }
 
@@ -55,19 +62,19 @@ export default class PharmacyVacationsRequests extends React.Component{
                                     moment(vacationRequest.period.periodEnd).format('DD.MM.YYYY')}</td>
                                 <td>{vacationRequest.vacationRequestStatus}</td>
 
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
                                     <Button variant="outline-success" onClick={() => this.acceptVacationRequest(vacationRequest)}>
                                         Accept
                                     </Button>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'requested' ? {display : 'inline-block'} : {display : 'none'}}>
                                     <Button variant="outline-danger" onClick={() => this.handleModal(vacationRequest)}>
                                         Reject
                                     </Button>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
                                 </td >
-                                <td style={this.state.userType === 'pharmacyAdmin' && vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
+                                <td style={vacationRequest.vacationRequestStatus === 'rejected' ? {display : 'none'} : {}}>
                                 </td >
                             </tr>
                         ))}
@@ -111,7 +118,13 @@ export default class PharmacyVacationsRequests extends React.Component{
     }
 
     rejectRequest = () => {
-        axios.put("http://localhost:8080/api/vacationRequest/rejectVacationRequest/", this.state.modalVacationRequest).then(() => {
+        axios.put(HelperService.getPath("/api/vacationRequest/rejectVacationRequest/"), this.state.modalVacationRequest,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then(() => {
             this.fetchVacationRequests();
             this.setState({
                 showModal : !this.state.showModal
@@ -129,8 +142,13 @@ export default class PharmacyVacationsRequests extends React.Component{
     acceptVacationRequest = (vacationRequest) => {
         let answer = window.confirm('Are you sure you want to accept the vacation request from ' + vacationRequest.employeeFirstName + '?');
         if (answer) {
-            let path = "http://localhost:8080/api/vacationRequest/confirmVacationRequest/";
-            axios.put(path, vacationRequest).then(() => this.fetchVacationRequests())
+            axios.put(HelperService.getPath("/api/vacationRequest/confirmVacationRequest/"), vacationRequest,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                }).then(() => this.fetchVacationRequests())
                 .catch(() => {
                     alert("Request cannot be accepted because pharmacist has scheduled appointments for that period.");
                 });
@@ -139,7 +157,13 @@ export default class PharmacyVacationsRequests extends React.Component{
 
     fetchVacationRequests = () => {
         axios
-            .get('http://localhost:8080/api/vacationRequest/findByPharmacyAndEmployeeType/1/pharmacist') //todo change pharmacyId
+            .get(HelperService.getPath('/api/vacationRequest/findByPharmacyAndEmployeeType/' + this.state.pharmacyId + '/ROLE_pharmacist'),
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
             .then(res => {
                 this.setState({
                     vacationRequests : res.data,

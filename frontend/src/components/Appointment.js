@@ -15,13 +15,22 @@ export default class Appointment extends React.Component {
             dateEndTherapy : "",
             medications : [],
             eprescription : {},
-            therapy : {}
+            therapy : {},
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
     componentDidMount() {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications/getMedicationsForPatient/"
+            : 'http://localhost:8080/api/medications/getMedicationsForPatient/';
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/medications/getMedicationsForPatient/' + this.props.appointment.patientId)
+            .get(path + this.props.appointment.patientId,
+                {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 this.setState({
                     medications : res.data
@@ -78,8 +87,11 @@ export default class Appointment extends React.Component {
 
 
     createEPrescription = () => {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/eprescriptions/"
+            : 'http://localhost:8080/api/eprescriptions/';
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/eprescriptions/', {
+            .post(path, {
                 'pharmacyId' : this.props.appointment.pharmacyId,
                 'prescription' : {
                     'patient' : {id : this.props.appointment.patientId},
@@ -89,8 +101,12 @@ export default class Appointment extends React.Component {
                     }
                     ]
                 },
-                'examinerId' : 1,
-                'employeeType' : 1
+                'examinerId' : this.state.user.id,
+                'employeeType' : this.state.user.type
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 alert("You created ePrescription!");
@@ -165,8 +181,10 @@ export default class Appointment extends React.Component {
 
             let fullYearEnd = periodEnd.getFullYear() + "-" + month + "-" + day + " " + "00" + ":" + "00" + ":00";
 
+            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/finishAppointment"
+                : 'http://localhost:8080/api/appointment/finishAppointment';
             axios
-                .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/finishAppointment', {
+                .put(path, {
                     'id' : this.props.appointment.id,
                     'examinerId' : this.props.appointment.examinerId,
                     'report' : this.state.report,
@@ -181,10 +199,14 @@ export default class Appointment extends React.Component {
                             periodEnd : fullYearEnd
                         }
                     }
+                }, {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
                 })
                 .then(res => {
                     alert("Appointment finished!");
-                    localStorage.clear();
+                    this.removeFromStorage();
                     this.props.renderParent(false);
                 })
                 .catch(res => {
@@ -192,8 +214,10 @@ export default class Appointment extends React.Component {
                 })
 
         }else {
+            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/finishAppointment"
+                : 'http://localhost:8080/api/appointment/finishAppointment';
             axios
-                .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/finishAppointment', {
+                .put(path, {
                     'id' : this.props.appointment.id,
                     'examinerId' : this.props.appointment.examinerId,
                     'report' : this.state.report,
@@ -201,10 +225,14 @@ export default class Appointment extends React.Component {
                     'pharmacyName' : this.props.appointment.pharmacyName,
                     'appointmentStatus' : this.props.appointment.appointmentStatus,
                     'patientId' : this.props.appointment.patientId
+                }, {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
                 })
                 .then(res => {
                     alert("Appointment finished!");
-                    localStorage.clear();
+                    this.removeFromStorage();
                     this.props.renderParent(false);
                 })
                 .catch(res => {
@@ -212,7 +240,15 @@ export default class Appointment extends React.Component {
                 });
 
         }
+    }
 
-
+    removeFromStorage = () => {
+        if(this.state.user.type == "ROLE_dermatologist"){
+            localStorage.removeItem("appointment");
+            localStorage.removeItem("startedAppointment");
+        }else {
+            localStorage.removeItem("consultation");
+            localStorage.removeItem("startedConsultation");
+        }
     }
 }

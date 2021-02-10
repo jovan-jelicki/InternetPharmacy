@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"examinerId", "type", "periodStart"})})
 public class Appointment {
    @Id
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointment_generator")
@@ -44,6 +45,10 @@ public class Appointment {
    @Column
    private Boolean isActive;
 
+   @Version
+   @Column(nullable = false, columnDefinition = "int default 1")
+   private Long version;
+
    public Appointment() {
    }
 
@@ -54,6 +59,7 @@ public class Appointment {
       this.type = appointment.type;
       this.period = appointment.period;
       this.isActive = appointment.isActive;
+      this.version = appointment.getVersion();
    }
 
    public Long getId() {
@@ -134,6 +140,14 @@ public class Appointment {
 
    public void setActive(Boolean active) {
       isActive = active;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
    }
 
    public boolean isOverlapping(LocalDateTime timeSlot) {

@@ -8,7 +8,8 @@ export default class ScheduledAppointments extends React.Component {
         super(props);
         this.state = {
             modal : false,
-            appointmentForDelete : {}
+            appointmentForDelete : {},
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
@@ -74,8 +75,16 @@ export default class ScheduledAppointments extends React.Component {
     }
 
     cancelAppointment = () => {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/patientDidNotShowUp/"
+            : 'http://localhost:8080/api/appointment/patientDidNotShowUp/';
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/patientDidNotShowUp/' + this.state.appointmentForDelete.id)
+            .get(path + this.state.appointmentForDelete.id,
+                {  headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
             .then(res => {
                 this.props.renderParent(false);
                 this.state.modal = false;
@@ -99,8 +108,15 @@ export default class ScheduledAppointments extends React.Component {
     }
 
     handleClickStart = (appointment) => {
-        localStorage.setItem("appointment", JSON.stringify(appointment));
-        localStorage.setItem("startedConsultation", JSON.stringify(true));
+        if(this.state.user.type == "ROLE_dermatologist"){
+            localStorage.setItem("appointment", JSON.stringify(appointment));
+            localStorage.setItem("startedAppointment", JSON.stringify(true));
+
+        }else {
+            localStorage.setItem("consultation", JSON.stringify(appointment));
+            localStorage.setItem("startedConsultation", JSON.stringify(true));
+        }
+
         this.props.renderParent(true);
     }
 }

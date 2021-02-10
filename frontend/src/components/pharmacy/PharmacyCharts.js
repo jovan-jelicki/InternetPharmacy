@@ -8,6 +8,8 @@ import {Form} from "react-bootstrap";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import moment from "moment";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 
 const options = [
@@ -17,8 +19,8 @@ const defaultOption = options[0];
 
 
 export default class PharmacyCharts extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             appointmentsReportOptions: options[0],
             appointmentsReportData: [],
@@ -28,11 +30,17 @@ export default class PharmacyCharts extends React.Component{
                 periodStart : "",
                 periodEnd : ""
             },
-            incomePeriodData : []
+            incomePeriodData : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.renderAppointmentMonthlyReport();
         this.renderMedicationConsumptionMonthlyReport();
     }
@@ -179,7 +187,12 @@ export default class PharmacyCharts extends React.Component{
     }
 
     renderAppointmentMonthlyReport = () => {
-        axios.get("http://localhost:8080/api/appointment/getAppointmentsMonthlyReport/1")
+        axios.get(HelperService.getPath("/api/appointment/getAppointmentsMonthlyReport/" + this.state.pharmacyId), {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 let temp = [];
                 res.data.map(reportDTO => {
@@ -196,7 +209,12 @@ export default class PharmacyCharts extends React.Component{
     }
 
     renderAppointmentQuarterlyReport = () => {
-        axios.get("http://localhost:8080/api/appointment/getAppointmentsQuarterlyReport/1")
+        axios.get(HelperService.getPath("/api/appointment/getAppointmentsQuarterlyReport/" + this.state.pharmacyId), {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 let temp = [];
                 res.data.map(reportDTO => {
@@ -213,7 +231,12 @@ export default class PharmacyCharts extends React.Component{
     }
 
     renderAppointmentYearlyReport = () => {
-        axios.get("http://localhost:8080/api/appointment/getAppointmentsYearlyReport/1")
+        axios.get(HelperService.getPath("/api/appointment/getAppointmentsYearlyReport/" + this.state.pharmacyId), {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 let temp = [];
                 res.data.map(reportDTO => {
@@ -231,7 +254,12 @@ export default class PharmacyCharts extends React.Component{
 
 
     renderMedicationConsumptionMonthlyReport = () => {
-        axios.get("http://localhost:8080/api/pharmacy/getMedicationsConsumptionMonthlyReport/1")
+        axios.get(HelperService.getPath("/api/pharmacy/getMedicationsConsumptionMonthlyReport/" + this.state.pharmacyId), {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 let temp = [];
                 res.data.map(reportDTO => {
@@ -248,7 +276,12 @@ export default class PharmacyCharts extends React.Component{
     }
 
     renderMedicationConsumptionQuarterlyReport = () => {
-        axios.get("http://localhost:8080/api/pharmacy/getMedicationsConsumptionQuarterlyReport/1")
+        axios.get(HelperService.getPath("/api/pharmacy/getMedicationsConsumptionQuarterlyReport/" + this.state.pharmacyId), {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 let temp = [];
                 res.data.map(reportDTO => {
@@ -265,7 +298,12 @@ export default class PharmacyCharts extends React.Component{
     }
 
     renderMedicationConsumptionYearlyReport = () => {
-        axios.get("http://localhost:8080/api/pharmacy/getMedicationsConsumptionYearlyReport/1")
+        axios.get(HelperService.getPath("/api/pharmacy/getMedicationsConsumptionYearlyReport/" + this.state.pharmacyId), {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 let temp = [];
                 res.data.map(reportDTO => {
@@ -290,10 +328,15 @@ export default class PharmacyCharts extends React.Component{
         // temp.periodStart = this.convertDates(temp.periodStart) + " 12:00:00";
         // temp.periodEnd = this.convertDates(temp.periodEnd) + " 12:00:00";
 
-        axios.post("http://localhost:8080/api/pharmacy/getPharmacyIncomeReportByPeriod", {
+        axios.post(HelperService.getPath("/api/pharmacy/getPharmacyIncomeReportByPeriod"), {
             periodStart : this.convertDates(this.state.incomePeriod.periodStart) + " 12:00:00",
             periodEnd : this.convertDates(this.state.incomePeriod.periodEnd) + " 12:00:00",
-            pharmacyId : 1
+            pharmacyId : this.state.pharmacyId
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
         })
             .then((res) => {
                 let temp = [];

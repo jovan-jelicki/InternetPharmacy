@@ -3,13 +3,14 @@ import {Button, Col, Form, FormControl, Modal} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
 import DatePicker from "react-datepicker";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 export default class PriceHistory extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             priceLists : [],
-            userType : 'pharmacyAdmin',
             medication : this.props.priceListingHistory,
             showAddPriceListModal : false,
             addPriceList : {
@@ -20,11 +21,17 @@ export default class PriceHistory extends React.Component{
                 },
                 medicationId : this.props.priceListingHistory.medicationId,
                 pharmacyId : this.props.priceListingHistory.pharmacyId
-            }
+            },
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacyId
         }
     }
 
     componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.fetchHistoryPriceLists();
     }
 
@@ -152,9 +159,13 @@ export default class PriceHistory extends React.Component{
     }
 
     fetchHistoryPriceLists = () => {
-        const path = "http://localhost:8080/api/pricelist/getMedicationPriceListHistoryByPharmacy/1/" + this.state.medication.medicationId;
         axios
-            .get(path) //todo change pharmacyId
+            .get(HelperService.getPath("/api/pricelist/getMedicationPriceListHistoryByPharmacy/" + this.state.pharmacyId + "/" + this.state.medication.medicationId), {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 this.setState({
                     priceLists : res.data
@@ -198,7 +209,12 @@ export default class PriceHistory extends React.Component{
             return;
         }
 
-        axios.put("http://localhost:8080/api/pricelist/newPriceList", temp)
+        axios.put(HelperService.getPath("/api/pricelist/newPriceList"), temp, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.successfulAdd();
             })
@@ -209,9 +225,13 @@ export default class PriceHistory extends React.Component{
 
     successfulAdd = () => {
         alert("New price list added successfully!");
-        const path = "http://localhost:8080/api/pricelist/getMedicationPriceListHistoryByPharmacy/1/" + this.state.medication.medicationId;
         axios
-            .get(path) //todo change pharmacyId
+            .get(HelperService.getPath("/api/pricelist/getMedicationPriceListHistoryByPharmacy/" + this.state.pharmacyId + "/" + this.state.medication.medicationId), {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 this.setState({
                     priceLists : res.data,

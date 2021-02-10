@@ -1,16 +1,5 @@
 import React from "react";
-import PharmacyRegistration from "../components/SystemAdmin/PharmacyRegistration";
-import DermatologistRegistration from "../components/SystemAdmin/DermatologistRegistration";
-import SupplierRegistration from "../components/SystemAdmin/SupplierRegistration";
-import AddNewMedication from "../components/SystemAdmin/AddNewMedication";
-import Complaints from "../components/SystemAdmin/Complaints";
-import LoyaltyProgram from "../components/SystemAdmin/LoyaltyProgram";
-import PharmacyAdminRegistration from "../components/SystemAdmin/PharmacyAdminRegistration";
 import MedicationOrdersForSupplier from "../components/Supplier/MedicationOrdersForSupplier";
-import MedicationOrdersList from "../components/pharmacy/MedicationOrdersList";
-import MedicationOffers from "../components/pharmacy/MedicationOffers";
-import CreateOrder from "../components/pharmacy/CreateOrder";
-import CreateNewOffer from "../components/Supplier/CreateNewOffer";
 import SupplierMedicationOffers from "../components/Supplier/SupplierMedicationOffers";
 import SupplierProfile from "../components/Supplier/SupplierProfile";
 import SupplierMedicationListing from "../components/Supplier/SupplierMedicationListing";
@@ -25,6 +14,8 @@ export default class SupplierHomePage extends React.Component {
                 firstName:'',
                 lastName:'',
             },
+            role: this.props.role,
+            Id: this.props.Id,
             navbar : "",
             showContent:"",
             showModal : false,
@@ -32,22 +23,26 @@ export default class SupplierHomePage extends React.Component {
             newPw : "",
             repeatPw : "",
             repErr : "",
-            wrongPw : ""
+            wrongPw : "",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
         }
     }
     componentDidMount() {
-        console.log("LOKACIJA")
-        console.log(this.props.location)
-        let  supplier= {
-            firstName: 'Manja',
-            lastName: 'Babic',
-        }
-        this.setState({
-            supplier : supplier
-        })
+        if (this.state.user.type == undefined || this.state.user.type != "ROLE_supplier")
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
 
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/isAccountApproved/"
+            : 'http://localhost:8080/api/suppliers/isAccountApproved/';
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/suppliers/isAccountApproved/' + 1)
+            .get(path + this.state.user.id,
+                {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
             .then(res => {
                 if(!res.data){
                     this.setState({
@@ -62,9 +57,6 @@ export default class SupplierHomePage extends React.Component {
     render() {
         return (
             <div className="jumbotron jumbotron-fluid">
-                <div className="container">
-                    <h1 className="display-4">{this.state.supplier.firstName +" " +this.state.supplier.lastName}</h1>
-                </div>
                 <ul className="nav justify-content-center">
                     <li className="nav-item">
                         <a className="nav-link active" href='#' onClick={this.handleChange} name="order">Medication orders</a>
@@ -78,11 +70,20 @@ export default class SupplierHomePage extends React.Component {
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="profile" onClick={this.handleChange}>Profile</a>
                     </li>
+                    <Button onClick={this.logOut}>Log out</Button>
                 </ul>
                 {this.renderNavbar()}
                 {this.showModalDialog()}
+
             </div>
         );
+    }
+
+    logOut = () => {
+        localStorage.removeItem("user");
+        this.props.history.push({
+            pathname: "/"
+        });
     }
 
     showModalDialog = () => {
@@ -111,14 +112,24 @@ export default class SupplierHomePage extends React.Component {
 
 
     sendData = () => {
+        console.log(this.state.oldPw)
         if(this.state.repeatPw !== this.state.newPw)
             return;
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/pass"
+            : 'http://localhost:8080/api/suppliers/pass';
+
         axios
-            .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/suppliers/pass', {
-                'userId' : 1,
+            .put(path, {
+                'userId' : this.state.user.id,
                 'oldPassword' : this.state.oldPw,
                 'newPassword' : this.state.newPw,
                 'repeatedPassword' : this.state.repeatPw
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 if(!res.data){

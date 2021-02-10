@@ -109,8 +109,22 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionRepository.getCurrentPromotionsByPharmacyAndDate(pharmacyId, date);
     }
 
+
+
     @Override
-    public Boolean checkPatientSubscribedToPromotion(Long promotionId, Long patientId) {
+    public Boolean checkPatientSubscribedToPromotion(Long pharmacyId, Long patientId, Long medicationId) {
+        ArrayList<Promotion> promotions = (ArrayList<Promotion>) promotionRepository.getCurrentPromotionsByPharmacyAndDate(pharmacyId, LocalDateTime.now());
+        Patient patient = patientService.read(patientId).get();
+        for (Promotion promotionPatient : patient.getPromotions())
+            for (Promotion promotionPharmacy : promotions)
+                if (promotionPatient.getId().equals(promotionPharmacy.getId()) && promotionPharmacy.getMedicationsOnPromotion()
+                        .stream().filter(medication -> medication.getId().equals(medicationId)).count() != 0)
+                    return true;
+
+        return false;
+    }
+
+    public Boolean checkIfSubscribe(Long promotionId, Long patientId) {
         Patient patient = patientService.read(patientId).get();
         for (Promotion promotionPatient : patient.getPromotions()){
             if (promotionPatient.getId().equals(promotionId)){
@@ -125,7 +139,7 @@ public class PromotionServiceImpl implements PromotionService {
         Patient patient = patientService.read(patientId).get();
         Promotion promotion = this.read(promotionId).get();
 
-        if (this.checkPatientSubscribedToPromotion(promotionId,patientId))// && promotion.getPeriod().getPeriodEnd().isBefore(LocalDateTime.now()))
+        if (this.checkIfSubscribe(promotionId,patientId))// && promotion.getPeriod().getPeriodEnd().isBefore(LocalDateTime.now()))
             return false;
 
         patient.getPromotions().add(promotion);

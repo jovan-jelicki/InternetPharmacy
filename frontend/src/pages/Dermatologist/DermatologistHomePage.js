@@ -6,26 +6,38 @@ import DermatologistsProfilePage from "./DermatologistsProfilePage";
 import DermatologistWorkingHours from "./DermatologistWorkingHours";
 import DermatologistAppointmentStart from "./DermatologistAppointmentStart";
 import axios from "axios";
+import AuthentificationService from "../../helpers/AuthentificationService";
 
 export default class DermatologistHomePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            role: this.props.role,
-            Id: this.props.Id,
             navbar : "reviewedClients",
             showModal : false,
             oldPw : "",
             newPw : "",
             repeatPw : "",
             repErr : "",
-            wrongPw : ""
+            wrongPw : "",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
     componentDidMount() {
+        if (this.state.user.type == undefined || this.state.user.type != "ROLE_dermatologist")
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/isAccountApproved/"
+            : 'http://localhost:8080/api/dermatologists/isAccountApproved/';
         axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/isAccountApproved/' + 3)
+            .get(path + this.state.user.id,
+                {  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }
+                })
             .then(res => {
                 if(!res.data){
                     this.setState({
@@ -42,7 +54,7 @@ export default class DermatologistHomePage extends React.Component {
                 <Container fluid style={{'background-color' : '#AEB6BF'}}>
                     <br/>
                 <ul className="nav justify-content-center">
-                    <h3> Welcome {this.props.role}! </h3>
+                    <h3> Welcome dermatologist! </h3>
                     <li className="nav-item">
                         <a className="nav-link active" style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' onClick={this.handleChange} name="reviewedClients">Reviewed clients</a>
                     </li>
@@ -58,12 +70,20 @@ export default class DermatologistHomePage extends React.Component {
                     <li className="nav-item">
                         <a className="nav-link " style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' name="profile" onClick={this.handleChange}>Account</a>
                     </li>
+                    <Button onClick={this.logOut}>Log out</Button>
                 </ul>
                 </Container>
                 {this.renderNavbar()}
                 {this.showModalDialog()}
             </div>
         );
+    }
+
+    logOut = () => {
+        localStorage.removeItem("user");
+        this.props.history.push({
+            pathname: "/"
+        });
     }
     showModalDialog = () => {
         return (
@@ -92,12 +112,19 @@ export default class DermatologistHomePage extends React.Component {
     sendData = () => {
         if(this.state.repeatPw !== this.state.newPw)
             return;
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/pass"
+            : 'http://localhost:8080/api/dermatologists/pass';
         axios
-            .put(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/dermatologists/pass', {
-                'userId' : 3,
+            .put(path, {
+                'userId' : this.state.user.id,
                 'oldPassword' : this.state.oldPw,
                 'newPassword' : this.state.newPw,
                 'repeatedPassword' : this.state.repeatPw
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 if(!res.data){
@@ -132,27 +159,35 @@ export default class DermatologistHomePage extends React.Component {
             'repErr': repErr
         })
     }
+    handleChange = (event) => {
+        const target = event.target;
+        const name = target.name;
+
+        this.setState({
+            navbar : name
+        });
+    }
 
     renderNavbar = () => {
         if (this.state.navbar === "reviewedClients")
             return (
-                <ReviewedClients Id = {this.state.id} role = {this.state.role}/>
+                <ReviewedClients />
             );
         else if (this.state.navbar === "vacationRequest")
             return (
-                <VacationRequest Id = {this.state.id} role = {this.state.role} />
+                <VacationRequest  />
             );
         else if (this.state.navbar === "profile")
             return (
-                <DermatologistsProfilePage Id = {this.state.id} role = {this.state.role} />
+                <DermatologistsProfilePage  />
             );
         else if (this.state.navbar === "workHours")
             return (
-                <DermatologistWorkingHours Id = {this.state.id} role = {this.state.role} />
+                <DermatologistWorkingHours />
             );
         else if (this.state.navbar === "startAppointment")
             return (
-                <DermatologistAppointmentStart Id = {this.state.id} role = {this.state.role} />
+                <DermatologistAppointmentStart />
             );
         else
             return (

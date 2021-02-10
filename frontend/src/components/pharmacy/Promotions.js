@@ -2,13 +2,14 @@ import React from 'react';
 import {Button, Modal} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 export default class Promotions extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             promotions : [],
-            userType : 'pharmacyAdmin',
             showModal: false,
             showModalAlert:false,
             isSubscribed:false,
@@ -18,12 +19,18 @@ export default class Promotions extends React.Component{
                 content:'',
                 periodStart: '',
                 periodEnd:'',
-            }
+            },
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
-    async componentDidMount() {
-        await this.fetchPromotions();
+    componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
+        this.fetchPromotions();
     }
 
     handlePromotion=(promotion)=>{
@@ -136,7 +143,12 @@ export default class Promotions extends React.Component{
     }
 
     fetchPromotions = () => {
-        axios.get("http://localhost:8080/api/promotion/getCurrentPromotionsByPharmacy/1")
+        axios.get(HelperService.getPath("/api/promotion/getCurrentPromotionsByPharmacy/" + this.state.pharmacyId), {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.setState({
                     promotions : res.data
@@ -147,7 +159,7 @@ export default class Promotions extends React.Component{
     async checkIfSubscribed (promotion){
         console.log(promotion.id)
         await axios
-            .get('http://localhost:8080/api/promotion/checkPatientSubscribedToPromotion/'+promotion.pharmacyId+"/"+0+"/"+promotion.id)
+            .get(HelperService.getPath('/api/promotion/checkPatientSubscribedToPromotion/' + promotion.pharmacyId + "/" + 0 + "/" + promotion.id))
             .then(res => {
                 console.log(this.state.isSubscribed)
 

@@ -7,13 +7,15 @@ import PharmacyMedicationOrders from "../components/pharmacy/PharmacyMedicationO
 import PharmacyMedicationQueries from "../components/pharmacy/PharmacyMedicationQueries";
 import PharmacyDescription from "../components/pharmacy/PharmacyDescription";
 import PriceList from "../components/pharmacy/PriceList";
-import PharmacyReports from "../components/pharmacy/PharmacyReports";
 import AppointmentsList from "../components/pharmacy/AppointmentsList";
 import PharmacyProfile from "../components/pharmacy/PharmacyProfile";
 import axios from "axios";
 import PharmacyCharts from "../components/pharmacy/PharmacyCharts";
+import AuthentificationService from "../helpers/AuthentificationService";
+import HelperService from "../helpers/HelperService";
+import {Button} from "react-bootstrap";
 
-
+//pristupas sa  this.props.location.state.user.email
 export default class PharmacyPage extends React.Component{
     constructor(props) {
         super(props);
@@ -33,22 +35,35 @@ export default class PharmacyPage extends React.Component{
                 grade : 0
             },
             navbar : "description",
-            userType : "pharmacyAdmin"
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : -1
 
+    }
+    }
+
+    async componentDidMount() {
+        if (sessionStorage.getItem("pharmacyId") === null && this.props.location.state === undefined) {
+            let path = process.env.REACT_APP_BACKEND_ADDRESS ? 'https://isa-pharmacy-frontend.herokuapp.com/unauthorized'
+                : 'http://localhost:3000/unauthorized';
+            window.location.replace(path);
         }
+
+        await this.setState({
+            pharmacyId : sessionStorage.getItem("pharmacyId") || this.props.location.state.pharmacyId
+        })
+
+        this.validateUser();
+        //await this.fetchPharmacyId();
+        await this.fetchPharmacy();
     }
-
-    componentDidMount() {
-       this.fetchPharmacy();
-    }
-
-
 
 
     render() {
         return (
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
+                    <Button variant="outline-dark" className="mb-3" style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block', marginLeft: "50rem"} : {display : 'none'}} onClick={this.redirectToPharmacyAdminPage}>← Return to your profile</Button>
+                    <Button variant="outline-dark" className="mb-3" style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block', marginLeft: "50rem"} : {display : 'none'}} onClick={this.redirectToPharmacyListing}>← Return to pharmacies</Button>
                     <h1 className="display-4">{this.state.pharmacy.name}</h1>
                 </div>
                 <br/>
@@ -68,30 +83,30 @@ export default class PharmacyPage extends React.Component{
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="vacationRequests" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Vacation requests</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Vacation requests</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="promotions" onClick={this.handleChange}>Actions & Promotions</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="medicationOrders" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Orders & Offers</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Orders & Offers</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="medicationQueries" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Medication queries</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Medication queries</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="priceList" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Price list</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Price list</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="editPharmacyProfile" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Edit pharmacy profile</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Edit pharmacy profile</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" name="charts" onClick={this.handleChange}
-                           style={this.state.userType === 'pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Charts</a>
+                           style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'block'} : {display : 'none'}}>Charts</a>
                     </li>
                 </ul>
                 {this.renderNavbar()}
@@ -112,7 +127,7 @@ export default class PharmacyPage extends React.Component{
     renderNavbar = () => {
         if (this.state.navbar === "promotions")
             return (
-                <Promotions/>
+                <Promotions pharmacy = {this.state.pharmacy} />
             );
         else if (this.state.navbar === 'description')
             return (
@@ -136,32 +151,73 @@ export default class PharmacyPage extends React.Component{
             );
         else if (this.state.navbar === "medications")
             return (
-                <PharmacyMedications/>
+                <PharmacyMedications pharmacy ={this.state.pharmacy} />
             );
         else if (this.state.navbar === 'vacationRequests')
             return (
-              <PharmacyVacationsRequests />
+              <PharmacyVacationsRequests pharmacy ={this.state.pharmacy} />
             );
         else if (this.state.navbar === 'medicationOrders')
             return (
-                <PharmacyMedicationOrders showContent = 'listOrders'/>
+                <PharmacyMedicationOrders pharmacy ={this.state.pharmacy} showContent = 'listOrders'/>
             );
         else if (this.state.navbar === 'medicationQueries')
             return (
-                <PharmacyMedicationQueries />
+                <PharmacyMedicationQueries pharmacy ={this.state.pharmacy}/>
             );
         else if (this.state.navbar === 'charts')
             return (
-                <PharmacyCharts />
+                <PharmacyCharts pharmacy ={this.state.pharmacy}/>
             );
     }
 
-    fetchPharmacy = () => {
-        axios.get("http://localhost:8080/api/pharmacy/1")
+    fetchPharmacy = async () => {
+        await axios.get(HelperService.getPath("/api/pharmacy/" + this.state.pharmacyId),
+        {
+                headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then((res) => {
                 this.setState({
                     pharmacy : res.data
                 })
             })
+    }
+
+    fetchPharmacyId = async () => {
+        await axios.get(HelperService.getPath("/api/pharmacyAdmin/getPharmacyAdminPharmacy/" + this.state.user.id),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacyId : res.data
+                })
+            });
+    }
+
+    validateUser = () => {
+        if (!AuthentificationService.isLoggedIn() || (this.state.user.type !== 'ROLE_pharmacyAdmin' & this.state.user.type !== 'ROLE_patient'))
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
+    }
+
+    redirectToPharmacyAdminPage = () => {
+        this.props.history.push({
+            pathname: "/pharmacy-admin-profile",
+        });
+    }
+
+    redirectToPharmacyListing = () => {
+        sessionStorage.removeItem('pharmacyId');
+        this.props.history.push({
+            pathname: "/",
+        });
     }
 }

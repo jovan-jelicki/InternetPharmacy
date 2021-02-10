@@ -4,18 +4,25 @@ import Dropdown from "react-dropdown";
 import axios from "axios";
 import moment from "moment";
 import StarRatings from "react-star-ratings";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class AppointmentsList extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            userType : 'pharmacyAdmin',
             appointments : [],
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacy.id
         }
     }
 
     componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.fetchAppointments();
     }
 
@@ -61,7 +68,13 @@ export default class AppointmentsList extends React.Component{
     }
 
     fetchAppointments = () => {
-        axios.get("http://localhost:8080/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/1").then(res => {
+        axios.get(HelperService.getPath("/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/" + this.state.pharmacyId),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then(res => {
             this.setState({
                 appointments : res.data
             });
@@ -70,10 +83,17 @@ export default class AppointmentsList extends React.Component{
 
     scheduleAppointment = (id) => {
         axios
-        .put('http://localhost:8080/api/appointment/update', {
+        .put(HelperService.getPath('/api/appointment/update'), {
             'patientId' : 0,
             'appointmentId' : id
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization : 'Bearer ' + this.state.user.jwtToken
+            }
         })
         .then(res => alert('success'))
     }
+
+
 }

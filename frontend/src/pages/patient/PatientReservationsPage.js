@@ -12,8 +12,15 @@ class PatientReservationsPage extends React.Component {
     }
 
     componentDidMount() {
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         axios
-        .get('http://localhost:8080/api/medicationReservation/patient/0')
+        .get('http://localhost:8080/api/medicationReservation/patient/' + this.aut.id, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => {
             this.setState({
                 reservations : res.data
@@ -66,7 +73,12 @@ class PatientReservationsPage extends React.Component {
 
     cancel = (id) => {
         axios
-        .put('http://localhost:8080/api/medicationReservation/cancel/' + id)
+        .put('http://localhost:8080/api/medicationReservation/cancel/' + id, {}, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })
         .then(res => alert('Success'));
     }
 }

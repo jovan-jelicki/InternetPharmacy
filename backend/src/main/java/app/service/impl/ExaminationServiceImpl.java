@@ -11,12 +11,15 @@ import app.service.ExaminationService;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class ExaminationServiceImpl implements ExaminationService {
 
     private final AppointmentService appointmentService;
@@ -29,8 +32,11 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean dermatologistSchedulingCreatedAppointment(AppointmentUpdateDTO appointmentUpdateDTO){
         Appointment appointment = appointmentService.read(appointmentUpdateDTO.getAppointmentId()).get();
+        if(appointment.getPatient() != null)
+            return false;
         if(appointmentService.getAllNotFinishedByPatientId(appointmentUpdateDTO.getPatientId())
                 .stream().filter(a -> a.isOverlapping(appointment.getPeriod().getPeriodStart())).findFirst().orElse(null) != null)
             return false;
@@ -41,6 +47,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean dermatologistScheduling(Appointment appointment){
         if(isExaminationPossible(appointment)) {
             appointment.setAppointmentStatus(AppointmentStatus.available);
@@ -59,12 +66,6 @@ public class ExaminationServiceImpl implements ExaminationService {
         if(appointmentService.getAllNotFinishedByPatientId(appointment.getPatient().getId())
                 .stream().filter(a -> a.isOverlapping(appointment.getPeriod().getPeriodStart())).findFirst().orElse(null) != null)
             return false;
-        if (!appointmentService.validateAppointmentTimeRegardingWorkingHours(appointment))
-            return false;
-        if (!appointmentService.validateAppointmentTimeRegardingAllWorkingHours(appointment))
-            return false;
-        else if (!appointmentService.validateAppointmentTimeRegardingVacationRequests(appointment))
-            return false;
 
         return true;
     }
@@ -74,9 +75,9 @@ public class ExaminationServiceImpl implements ExaminationService {
         @Override
     public Collection<Appointment> findPreviousByPatientId(Long patientId) {
         Collection<Appointment> appointments = appointmentService
-                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.dermatologist);
+                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.ROLE_dermatologist);
         Collection<Appointment> cancelled = appointmentService
-                .findCancelledByPatientIdAndType(patientId, EmployeeType.dermatologist);
+                .findCancelledByPatientIdAndType(patientId, EmployeeType.ROLE_dermatologist);
         Collection<Appointment> all = appointments
                 .stream()
                 .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()))
@@ -88,7 +89,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Override
     public Collection<Appointment> findUpcomingByPatientId(Long patientId) {
         Collection<Appointment> appointments = appointmentService
-                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.dermatologist);
+                .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.ROLE_dermatologist);
         return appointments
                 .stream()
                 .filter(a -> a.getPeriod().getPeriodStart().isAfter(LocalDateTime.now()))

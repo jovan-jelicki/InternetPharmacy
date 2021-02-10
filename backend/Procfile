@@ -1,2 +1,1 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -jar "target/YOURAPPNAME.jar"  -Dspring.profiles
-.active=test
+web: java -Dspring.profiles.active=default -Dserver.port=$PORT -jar target/*.war

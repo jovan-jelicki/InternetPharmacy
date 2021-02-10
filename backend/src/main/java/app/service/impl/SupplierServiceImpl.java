@@ -102,6 +102,7 @@ public class SupplierServiceImpl implements SupplierService{
     public Collection<Medication> getNonMedicationsBySupplier(Long supplierId) {
         Set<Medication> supplierMedications = new HashSet<>();
         Set<Medication> allMedications = new HashSet<Medication>(medicationService.read());
+
         for (MedicationQuantity medicationQuantity : read(supplierId).get().getMedicationQuantity()){
             supplierMedications.add(medicationQuantity.getMedication());
         }
@@ -177,8 +178,6 @@ public class SupplierServiceImpl implements SupplierService{
     @Override
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<Supplier> _user = supplierRepository.findById(passwordKit.getUserId());
-        if(_user.isEmpty())
-            throw new NullPointerException("User not found");
         Supplier user = _user.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());

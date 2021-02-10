@@ -22,6 +22,10 @@ public class LoyaltyScale {
    @Column
    private double discount;
 
+   @Version
+   @Column(nullable = false, columnDefinition = "int default 1")
+   private Long version;
+
    public LoyaltyScale() {
    }
 
@@ -61,7 +65,9 @@ public class LoyaltyScale {
       return id;
    }
 
-   public void setId(Long id) {
-      this.id = id;
-   }
+   public void setId(Long id) {  this.id = id;}
+
+   public Long getVersion() { return version;}
+
+   public void setVersion(Long version) { this.version = version;}
 }

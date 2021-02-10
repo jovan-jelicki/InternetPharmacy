@@ -1,12 +1,15 @@
 import React from 'react';
-import {Card, Col, Row, Alert} from "react-bootstrap";
+import {Card, Col, Row, Alert, Button} from "react-bootstrap";
 import PharmacySearch from './PharmacySearch';
 import PharmacyFilter from './PharmacyFilter';
+import PharmacySorting from './PharmacySorting'
 import axios from 'axios';
 import StarRatings from 'react-star-ratings'
+import helpers from './../../helpers/AuthentificationService'
+import { withRouter } from "react-router-dom";
 
 
-export default class PharmacyListing extends React.Component {
+class PharmacyListing extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -15,27 +18,37 @@ export default class PharmacyListing extends React.Component {
         this.search = this.search.bind(this)
         this.cancel = this.cancel.bind(this)
         this.gradeFilter = this.gradeFilter.bind(this)
+        this.visitPharmacy = this.visitPharmacy.bind(this)
+        this.sorting = this.sorting.bind(this)
     }
 
     async componentDidMount() {
-        if(!this.props.promo)
-            await axios
-            .get('http://localhost:8080/api/pharmacy')
-            .then((res) => {
-                this.setState({
-                    pharmacies : res.data
-                })
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
+        await axios
+        .get('http://localhost:8080/api/pharmacy' /*{
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        })*/)
+        .then((res) => {
+            this.setState({
+                pharmacies : res.data
             })
-        else
-            await axios
-            .get('http://localhost:8080/api/patients/promotion-pharmacies/0')
-            .then((res) => {
-                this.setState({
-                    pharmacies : res.data
-                })
-            })
+        })
 
         this.pharmaciesBackup = [...this.state.pharmacies]
+    }
+
+    visitPharmacy(id) {
+        sessionStorage.setItem('pharmacyId', id)
+        this.props.history.push({
+            pathname: '/pharmacy',
+            state : {
+                pharmacyId : id
+            }
+        })
     }
 
     cancel() {
@@ -46,15 +59,22 @@ export default class PharmacyListing extends React.Component {
     }
 
     search({name, location}) {
-        console.log(name, location)
+        this.aut = JSON.parse(localStorage.getItem('user'))
+
         axios
         .post('http://localhost:8080/api/pharmacy/search', {
             'name' : name,
             'street' : location.street,
             'town' : location.town,
             'country': location.country
-        })
+        }/*, {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : 'Bearer ' + this.aut.jwtToken 
+            }
+        }*/)
         .then((res) => {
+            console.log(res.data)
             this.setState({
                 pharmacies : res.data
             })
@@ -62,10 +82,41 @@ export default class PharmacyListing extends React.Component {
     }
 
     gradeFilter(grade) {
-
         this.setState({
             pharmacies : [...this.pharmaciesBackup.filter(p => p.grade >= grade)]
         })
+    }
+
+    sorting(method) {
+        if(method == 'name') {
+            this.setState({
+                pharmacies : [...this.state.pharmacies.sort((a, b) => {
+                    let fa = a.name.toLowerCase(), fb = b.name.toLowerCase()
+                    if(fa < fb)
+                        return -1
+                    if(fa > fb)
+                        return 1
+                })]
+            })
+        }
+        else if(method == 'city') {
+            this.setState({
+                pharmacies : [...this.state.pharmacies.sort((a, b) => {
+                    let fa = a.address.town.toLowerCase(), fb = b.address.town.toLowerCase()
+                    if(fa < fb)
+                        return -1
+                    if(fa > fb)
+                        return 1
+                })]
+            })
+        }
+        else if(method == 'grade') {
+            this.setState({
+                pharmacies : [...this.state.pharmacies.sort((a, b) => {
+                    return a.grade - b.grade
+                })]
+            })
+        }
     }
 
     render() {
@@ -79,10 +130,12 @@ export default class PharmacyListing extends React.Component {
                         <Card.Subtitle className="mb-5 mt-2 text-muted">{address}</Card.Subtitle>
                         <Card.Text>
                         {pharmacy.description}
+                        <br/>
+                        {helpers.isLoggedIn() && <Button variant={'outline-light'} onClick={() => this.visitPharmacy(pharmacy.id)}>Visit & Schedule</Button>}
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>
-                    <StarRatings
+                    <StarRatings 
                             starDimension={'25px'}
                             rating={pharmacy.grade}
                             starRatedColor='yellow'
@@ -100,6 +153,7 @@ export default class PharmacyListing extends React.Component {
                 </Row>
                 <PharmacySearch search={this.search} cancel={this.cancel}/>
                 <PharmacyFilter gradeFilter={this.gradeFilter}/>
+                <PharmacySorting sorting={this.sorting}/>
                 {this.state.pharmacies.length != 0 ?
                     <Row className={'mt-4'}>
                             {pharmacies}
@@ -115,3 +169,5 @@ export default class PharmacyListing extends React.Component {
     }
 
 }
+
+export default withRouter(PharmacyListing)

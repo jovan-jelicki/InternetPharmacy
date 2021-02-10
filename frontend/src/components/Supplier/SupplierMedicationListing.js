@@ -2,12 +2,15 @@ import React from 'react';
 import {Button, Col, Form, FormControl, Modal, Table} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class SupplierMedicationListing extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            role: this.props.role,
+            Id: this.props.Id,
             supplierId:1,
             medicationId:'',
             quantity:'',
@@ -15,24 +18,42 @@ export default class SupplierMedicationListing extends React.Component{
             containedMedications:[],
 
             changedQuantity:'',
-            quantityId:''
-
+            quantityId:'',
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
 
     }
     async componentDidMount() {
-        await axios.get("http://localhost:8080/api/suppliers/getNonMedicationsBySupplier/1").then(res => {
-            this.setState({
-                notContainedMedications : res.data
-            });
-        })
-        console.log("nema")
-        console.log(this.state.notContainedMedications)
+        this.fetchNonMedicationListing()
         this.fetchSuppliersMedicationListing()
     }
+    fetchNonMedicationListing=()=>{
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/getNonMedicationsBySupplier/"
+            : 'http://localhost:8080/api/suppliers/getNonMedicationsBySupplier/';
 
+         axios
+            .get(path+this.state.user.id,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then(res => {
+                this.setState({
+                    notContainedMedications : res.data
+                });
+            })
+    }
+    
     fetchSuppliersMedicationListing=()=>{
-         axios.get("http://localhost:8080/api/suppliers/getSuppliersMedicationList/1").then(res => {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/getSuppliersMedicationList/"
+            : 'http://localhost:8080/api/suppliers/getSuppliersMedicationList/';
+         axios.get(path+this.state.user.id,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization :'Bearer ' + this.state.user.jwtToken
+            }
+        }).then(res => {
             this.setState({
                 containedMedications : res.data
             });
@@ -72,13 +93,23 @@ export default class SupplierMedicationListing extends React.Component{
     }
 
     submitAddMedication = () => {
-        axios.put("http://localhost:8080/api/suppliers/addNewMedication", {
-            supplierId:1,
-            medicationId:this.state.medicationId,
-            quantity:this.state.quantity,
-        })
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/addNewMedication"
+            : 'http://localhost:8080/api/suppliers/addNewMedication';
+        axios.put(path,{
+                supplierId:this.state.user.id,
+                medicationId:this.state.medicationId,
+                quantity:this.state.quantity,
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization :'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 //alert("Medication added successfully!");
+                this.fetchNonMedicationListing();
                 this.fetchSuppliersMedicationListing();
             })
             .catch(() => {
@@ -87,13 +118,21 @@ export default class SupplierMedicationListing extends React.Component{
     }
 
     submitEditMedication=()=>{
-        axios.post("http://localhost:8080/api/suppliers/edit", {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/edit"
+            : 'http://localhost:8080/api/suppliers/edit';
+        axios.post(path, {
             supplierId:1,
             quantity:this.state.changedQuantity,
             medicationQuantityId:this.state.quantityId
+        },{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization :'Bearer ' + this.state.user.jwtToken
+            }
         })
             .then(res => {
                // alert("Medication edited successfully!");
+                this.fetchNonMedicationListing();
                 this.fetchSuppliersMedicationListing();
             })
             .catch(() => {
@@ -105,14 +144,21 @@ export default class SupplierMedicationListing extends React.Component{
         let isBoss = window.confirm('Are you sure you want to delete ' + medicationQuantity.medication.name + ' from your medications list?');
         if (isBoss) {
             console.log(medicationQuantity);
+            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/deleteMedicationQuantity"
+                : 'http://localhost:8080/api/suppliers/deleteMedicationQuantity';
 
-            axios.put("http://localhost:8080/api/suppliers/deleteMedicationQuantity", {
+            axios.put(path, {
                 "medicationQuantityId":medicationQuantity.id,
                 "supplierId":1
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization :'Bearer ' + this.state.user.jwtToken
+                }
             })
                 .then((res) => {
                     alert("Medication deleted successfully from pharmacay!");
-
+                    this.fetchNonMedicationListing();
                     this.fetchSuppliersMedicationListing();
                 })
         }

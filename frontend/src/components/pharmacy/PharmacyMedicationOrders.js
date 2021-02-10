@@ -9,7 +9,6 @@ export default class PharmacyMedicationOrders extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            userType : 'pharmacyAdmin',
             medicationOrders : [],
             clickedMedicationOrder : {},
             showModal : false,
@@ -45,19 +44,19 @@ export default class PharmacyMedicationOrders extends React.Component{
     handleContent = () => {
         if (this.state.showContent === 'listOrders')
             return (
-                <MedicationOrdersList showOffers={this.changeContent} updateClickedMedicationOrder = {this.updateClickedMedicationOrder}/>
+                <MedicationOrdersList showOffers={this.changeContent} pharmacy={this.props.pharmacy} updateClickedMedicationOrder = {this.updateClickedMedicationOrder}/>
             );
         else if (this.state.showContent === 'showOffers')
             return (
-              <MedicationOffers order = {this.state.clickedMedicationOrder}  showListOrders={this.changeContent}/>
+              <MedicationOffers order = {this.state.clickedMedicationOrder}  pharmacy={this.props.pharmacy} showListOrders={this.changeContent}/>
             );
         else if (this.state.showContent === 'showCreateOrder')
             return (
-              <CreateOrder showListOrders={this.changeContent} />
+              <CreateOrder showListOrders={this.changeContent} pharmacy={this.props.pharmacy}/>
             );
         else if (this.state.showContent === 'editOrder')
             return (
-                <EditOrder showListOrders={this.changeContent} order = {this.state.clickedMedicationOrder}/>
+                <EditOrder showListOrders={this.changeContent} pharmacy={this.props.pharmacy} order = {this.state.clickedMedicationOrder}/>
             );
     }
 

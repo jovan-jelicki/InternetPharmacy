@@ -10,9 +10,7 @@ import java.util.List;
 
 public interface PromotionService extends CRUDService<Promotion> {
     Collection<Promotion> getCurrentPromotionsByPharmacyAndDate(Long pharmacyId, LocalDateTime date);
-
-    Boolean checkPatientSubscribedToPromotion(Long pharmacyId, Long patientId);
-
+    Boolean checkPatientSubscribedToPromotion(Long pharmacyId, Long patientId, Long medicationId);
     Boolean subscribeToPromotion(Long patientId, Long promotionId);
     Boolean unsubscribe( Long pharmacyId,  Long patientId);
 }

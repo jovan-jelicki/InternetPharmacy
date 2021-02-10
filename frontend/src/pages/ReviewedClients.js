@@ -15,15 +15,23 @@ export default class ReviewedClients extends React.Component {
             searchApp : [],
             query : "",
             sortType : "desc",
-            showModal : false
+            showModal : false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
     componentDidMount() {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getFinishedByExaminer"
+            : 'http://localhost:8080/api/appointment/getFinishedByExaminer';
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getFinishedByExaminer', {
-                id : 2,
-                type : 1
+            .post(path, {
+                id : this.state.user.id,
+                type : this.state.user.type
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 this.setState({
@@ -76,10 +84,17 @@ export default class ReviewedClients extends React.Component {
         );
     }
     showAppointments = (client) => {
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getAllFinishedByPatientAndExaminer"
+            : 'http://localhost:8080/api/appointment/getAllFinishedByPatientAndExaminer';
         axios
-            .post(process.env.REACT_APP_BACKEND_ADDRESS ?? 'http://localhost:8080/api/appointment/getAllFinishedByPatientAndExaminer', {
+            .post(path, {
                 patientId : client.patientId,
-                type : 1
+                type : this.state.user.type
+            }, {  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 this.setState({

@@ -2,19 +2,26 @@ import React from 'react';
 import {Button, Form, FormControl, Modal, Navbar} from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
+import PharmacyAdminService from "../../helpers/PharmacyAdminService";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class CurrentPriceLists extends React.Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            userType : 'pharmacyAdmin',
             priceLists : [],
-            mode : "showCurrentPriceLists"
+            mode : "showCurrentPriceLists",
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+            pharmacyId : this.props.pharmacyId
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        // let temp = await PharmacyAdminService.fetchPharmacyId();
+        // this.setState({
+        //     pharmacyId : temp
+        // })
         this.fetchPriceLists();
     }
 
@@ -65,7 +72,12 @@ export default class CurrentPriceLists extends React.Component{
 
     fetchPriceLists = () => {
         axios
-            .get('http://localhost:8080/api/pricelist/getCurrentMedicationPriceListByPharmacy/1') //todo change pharmacyId
+            .get(HelperService.getPath('/api/pricelist/getCurrentMedicationPriceListByPharmacy/' + this.state.pharmacyId), {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
             .then(res => {
                 this.setState({
                     priceLists : res.data
