@@ -6,8 +6,8 @@ import app.service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -37,13 +37,14 @@ public class IngredientControllerImpl implements IngredientController {
     }
 
     @Override
-    @PreAuthorize("hasRole('patient')")
-    @GetMapping
+    @PreAuthorize("hasAnyRole('patient','systemAdmin')")
+    @GetMapping(value="getAll")
     public ResponseEntity<Collection<Ingredient>> read() {
         return new ResponseEntity<>(ingredientService.read(), HttpStatus.OK);
     }
 
     @Override
+    @PreAuthorize("hasRole('systemAdmin')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<Optional<Ingredient>> read(@PathVariable Long id) {
         return new ResponseEntity<>(ingredientService.read(id), HttpStatus.OK);

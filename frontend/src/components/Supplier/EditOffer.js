@@ -2,12 +2,15 @@ import React from "react";
 import DatePicker from "react-datepicker";
 import {Alert, Button, Modal} from "react-bootstrap";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class EditOffer extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            role: this.props.role,
+            Id: this.props.Id,
             modalClose:false,
             medicationOffer:   {
                 cost : 1,
@@ -23,6 +26,8 @@ export default class EditOffer extends React.Component{
             boolButton:true,
             medicationList:[],
             boolMedications:true,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
         }
     }
 
@@ -76,18 +81,22 @@ export default class EditOffer extends React.Component{
 
 
     async sendParams() {
-       // console.log("OFFER")
-        //console.log(this.props.modalOffer)
-        //console.log("OFFER")
-        axios
-            .post('http://localhost:8080/api/medicationOffer/edit', {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medicationOffer/edit"
+            : 'http://localhost:8080/api/medicationOffer/edit';
+        await axios
+            .post(path, {
                 'id':'',
                 'cost' : this.state.medicationOffer.cost,
                 'shippingDate' : this.state.medicationOffer.shippingDate,
                 'status' : 0,
                 'orderId' : this.props.modalOffer.orderId,
                 'offerId' :this.props.modalOffer.offerId,
-                'supplierId': 1
+                'supplierId': this.state.user.id
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
 

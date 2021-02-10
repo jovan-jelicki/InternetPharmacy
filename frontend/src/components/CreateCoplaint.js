@@ -1,10 +1,5 @@
 import React from 'react';
-import {Button, Container, Form, Row} from "react-bootstrap";
-import UnregisteredLayout from "../layout/UnregisteredLayout"
-import PharmacyListing from "../components/pharmacy/PharmacyListing"
-import MedicationListing from "../components/MedicationListing"
-import DateTime from "./DateTime";
-import ScheduleCounsel from "./ScheduleCounsel";
+import {Button, Container, Form, Modal, Row} from "react-bootstrap";
 import PatientLayout from "../layout/PatientLayout";
 import axios from "axios";
 
@@ -13,6 +8,8 @@ export default class CreateCoplaint extends React.Component{
         super(props)
         this.state = {
             dermatologists:[],
+            pharmacists:[],
+            pharmacy:[],
             boolDermatologist:false,
             boolPharmacist:false,
             boolPharmacy:false,
@@ -25,13 +22,29 @@ export default class CreateCoplaint extends React.Component{
                     users: 'Choose complaint type',
                     content: 'Enter content',
             },
+            showModal:false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+
         }
     }
 
     async componentDidMount() {
-        await axios.post("http://localhost:8080/api/appointment/getFinishedForComplaint",{
+        await this.fetchDermatologist();
+        await this.fetchPharmacist();
+        await this.fetchPharmacy();
+    }
+
+    fetchDermatologist(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "api/appointment/getFinishedForComplaint"
+            : 'http://localhost:8080/api/appointment/getFinishedForComplaint';
+        axios.post(path,{
             id: this.state.patient.id,
-            type:'dermatologist' //dermatolog/farmaceut
+            type: 0 //dermatolog/farmaceut
+        },{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.user.jwtToken
+            }
         }).then(res => {
             this.setState({
                 dermatologists : res.data
@@ -39,9 +52,43 @@ export default class CreateCoplaint extends React.Component{
             console.log("Probaj")
             console.log(this.state.dermatologists)
         })
-
-
     }
+
+    fetchPharmacist(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacist/getPharmacistsByPatient/"
+            : 'http://localhost:8080/api/pharmacist/getPharmacistsByPatient/';
+        axios.get(path+this.state.patient.id,{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.user.jwtToken
+            }
+        }) .then(res => {
+                this.setState({
+                    pharmacists : res.data
+                });
+                console.log("Probaj")
+                console.log(this.state.pharmacists)
+            })
+    }
+
+    fetchPharmacy(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getAppointmentsPharmacyForComplaint/"
+            : 'http://localhost:8080/api/appointment/getAppointmentsPharmacyForComplaint/';
+        axios.get(path+this.state.patient.id,{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.user.jwtToken
+            }
+        })
+            .then(res => {
+                this.setState({
+                    pharmacy : res.data
+                });
+                console.log("apoteke")
+                console.log(this.state.pharmacy)
+            })
+    }
+
 
     onTypeChange=(event) => {
         var option = event.target.id
@@ -73,7 +120,7 @@ export default class CreateCoplaint extends React.Component{
         this.validationErrorMessage(event);
     }
 
-    handleDermatologistSelected=(event)=>{
+    handleOptionSelected=(event)=>{
         console.log("DASAO")
         const target = event.target;
         let value = event.target.value;
@@ -82,11 +129,8 @@ export default class CreateCoplaint extends React.Component{
             employeeId:value
         })
         this.state.employeeId=value;
-        console.log(this.state.employeeId)
-        console.log(event);
-
-        //this.validationErrorMessage(event)
     }
+
 
     validateForm = (errors) => {
         let valid = true;
@@ -137,20 +181,28 @@ export default class CreateCoplaint extends React.Component{
         }
     }
 
+    handleModal = () => {
+        this.setState({
+            showModal : !this.state.showModal
+        });
+    }
+
     async sendData() {
-        console.log( this.state.patient.id)
-        console.log( this.state.content)
-        console.log( this.state.employeeId)
+        let type;
+        if(this.state.boolPharmacist) type="pharmacist"
+        else if(this.state.boolDermatologist) type="dermatologist"
+        else type="pharmacy"
         axios
             .post('http://localhost:8080/api/complaints/save', {
                 'id':'',
                 'patient' : this.state.patient,
                 'content' : this.state.content,
-                'type' : 0,
+                'type' : type,
                 'complaineeId' : this.state.employeeId,
+                'active':true
             })
             .then(res => {
-
+                this.handleModal();
             });
 
     }
@@ -177,7 +229,7 @@ export default class CreateCoplaint extends React.Component{
                         {
                         this.state.boolDermatologist && !this.state.boolPharmacist && !this.state.boolPharmacy &&
                         <Form.Control placeholder="Choose dermatologist" as={"select"} value={this.state.dermatologists.employeeId}
-                                      onChange={(e)=>{this.handleDermatologistSelected(e)}}>
+                                      onChange={(e)=>{this.handleOptionSelected(e)}}>
                             <option disabled={true} selected="selected">Choose dermatologist</option>
                             {this.state.dermatologists.map(dermatologist =>
                                 <option key={dermatologist.employeeId}
@@ -188,12 +240,12 @@ export default class CreateCoplaint extends React.Component{
 
                     {
                         !this.state.boolDermatologist && this.state.boolPharmacist && !this.state.boolPharmacy &&
-                        <Form.Control placeholder="Choose pharamacist" as={"select"} value={this.state.dermatologists.id}
-                                      onChange={(e)=>{this.handlePharmacistSelected(e)}}>
+                        <Form.Control placeholder="Choose pharamacist" as={"select"} value={this.state.pharmacists.id}
+                                      onChange={(e)=>{this.handleOptionSelected(e)}}>
                             <option disabled={true} selected="selected">Choose pharamacist</option>
-                            {this.state.dermatologists.map(dermatologist =>
-                                <option key={dermatologist.id}
-                                        value={dermatologist.id}>{dermatologist.firstName} {dermatologist.lastName}</option>
+                            {this.state.pharmacists.map(pharmacist =>
+                                <option key={pharmacist.id}
+                                        value={pharmacist.id}>{pharmacist.firstName} {pharmacist.lastName}</option>
                             )}
 
                         </Form.Control>
@@ -201,18 +253,18 @@ export default class CreateCoplaint extends React.Component{
 
                     {
                         !this.state.boolDermatologist && !this.state.boolPharmacist && this.state.boolPharmacy &&
-                        <Form.Control name="users" placeholder="Choose pharmacy" as={"select"} value={this.state.dermatologists.id}
-                                      onChange={(e)=>{this.handlePharmacySelected(e)}}>
-                            <option name="users" disabled={true} selected="selected">Choose pharmacy</option>
-                            {this.state.dermatologists.map(dermatologist =>
-                                <option name="users" key={dermatologist.id}
-                                        value={dermatologist.id}>{dermatologist.firstName} {dermatologist.lastName}</option>
+                        <Form.Control placeholder="Choose pharmacy" as={"select"} value={this.state.pharmacy.id}
+                                      onChange={(e)=>{this.handleOptionSelected(e)}}>
+                            <option disabled={true} selected="selected">Choose pharmacy</option>
+                            {this.state.pharmacy.map(p =>
+                                <option name="users" key={p.id}
+                                        value={p.id}>{p.name}</option>
                             )}
                         </Form.Control>
                     }
                         {this.state.submitted && this.state.errors.users.length > 0 &&  <span className="text-danger">{this.state.errors.users}</span>}
                     </Form>
-                    <label style={{'marginLeft': '1rem', marginTop: '0.5rem'}}> Pease write your complaint:</label>
+                    <label style={{'marginLeft': '1rem', marginTop: '0.5rem'}}> Please write your complaint:</label>
                         <div className="row" style={{marginTop: '1rem', marginLeft: '2rem'}}>
                                 <div className="col-sm-6 mb-2">
                                     <Form.Control as="textarea" name="content" rows={6} onChange={(e) => {this.handleInputChange(e)}} />
@@ -231,6 +283,27 @@ export default class CreateCoplaint extends React.Component{
                     </div>
 
                 </Container>
+
+                <Modal show={this.state.showModal} onHide={this.handleModal}>
+                    <Modal.Header closeButton style={{'background':'silver'}}>
+                        <Modal.Title>Complaint sent successfully!</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body style={{'background':'silver'}}>
+                        <div className="row" >
+                            <div className="col-md-12">
+                                <div className="card">
+                                    <div className="card-body" style={{padding : '1rem'}}>
+                                        <p className="card-text">
+                                            Thank you for contacting us! We will respond as soon as possible
+                                        </p>
+                                    </div>
+                                </div>
+                                <br/><br/>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+
             </PatientLayout>
         );
     }

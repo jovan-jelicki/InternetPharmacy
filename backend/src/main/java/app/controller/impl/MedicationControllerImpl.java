@@ -1,5 +1,6 @@
 package app.controller.impl;
 
+import app.dto.MedicationGradeDTO;
 import app.dto.MedicationSearchDTO;
 import app.model.medication.Medication;
 import app.service.MedicationService;
@@ -8,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -33,9 +33,14 @@ public class MedicationControllerImpl {
         return new ResponseEntity<>(medicationService.getMedicationByNameIsContaining(medicationName),HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<Collection<Medication>> read() {
         return new ResponseEntity<>(medicationService.read(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "medicationGrades")
+    public ResponseEntity<Collection<MedicationGradeDTO>> readMediactionAndGrades() {
+        return new ResponseEntity<>(medicationService.readMediactionAndGrades(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")

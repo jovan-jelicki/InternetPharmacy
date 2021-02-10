@@ -40,12 +40,12 @@ public class PharmacyControllerImpl {
         return new ResponseEntity<>(pharmacyDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('systemAdmin')")
     @PostMapping(consumes = "application/json", value="save")
     public ResponseEntity<Pharmacy> savePharmacy(@RequestBody PharmacyAdminPharmacyDTO pharmacy) {
         return new ResponseEntity<>(pharmacyService.savePharmacy(pharmacy), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('pharmacyAdmin, patient')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<PharmacyDTO> read(@PathVariable Long id) {
         return new ResponseEntity<>(new PharmacyDTO(pharmacyService.read(id).get(), gradeService.findAverageGradeForEntity(id, GradeType.pharmacy)), HttpStatus.OK);
@@ -122,15 +122,9 @@ public class PharmacyControllerImpl {
 
     @GetMapping(value = "/getPharmacyByMedication/{medicationId}")
     public ResponseEntity<Collection<PharmacyMedicationDTO>> getPharmacyByMedication(@PathVariable Long medicationId) {
+        pharmacyService.getPharmacyByMedication(medicationId);
         return new ResponseEntity<>(pharmacyService.getPharmacyByMedication(medicationId), HttpStatus.OK);
     }
-
-
-    /*@GetMapping(value = "/getPharmacyContainsMedication")
-    public ResponseEntity<Collection<Pharmacy>> getPharmacyMedicationListing(@PathVariable Long pharmacyId) {
-        return new ResponseEntity<>(pharmacyService.getPharmacyMedicationListingDTOs(pharmacyId), HttpStatus.OK);
-    }*/
-
 
     @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(value = "/deleteMedicationFromPharmacy", consumes = "application/json")

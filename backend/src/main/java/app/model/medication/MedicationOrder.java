@@ -23,7 +23,7 @@ public class MedicationOrder {
    @Enumerated(EnumType.ORDINAL)
    private MedicationOrderStatus status;
 
-   @ManyToMany
+   @OneToMany(cascade = CascadeType.ALL)
    private List<MedicationQuantity> medicationQuantity;
 
    @Column(nullable = false, columnDefinition = "boolean default true")

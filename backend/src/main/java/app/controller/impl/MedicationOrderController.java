@@ -29,6 +29,7 @@ public class MedicationOrderController {
         return new ResponseEntity<>(medicationOrderService.read(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('supplier')")
     @GetMapping(value = "/getAllActive")
     public ResponseEntity<Collection<MedicationOrderSupplierDTO>> getAllActive() {
         return new ResponseEntity<>(medicationOrderService.getAllActive(), HttpStatus.OK);

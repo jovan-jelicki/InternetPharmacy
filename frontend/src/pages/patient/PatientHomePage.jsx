@@ -9,9 +9,11 @@ class PatientHomePage extends React.Component {
 
     render() {
         return (
+            <div>
             <PatientLayout>
                 <PharmacyListing/>
             </PatientLayout>
+            </div>
         )
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -117,5 +116,9 @@ public class PharmacistControllerImpl {
         for (Pharmacist pharmacist : pharmacistService.getPharmacistsByPharmacyId(id))
             pharmacistDTOS.add(new PharmacistDTO(pharmacist, gradeService.findAverageGradeForEntity(pharmacist.getId(), GradeType.pharmacist)));
         return new ResponseEntity<>(pharmacistDTOS, HttpStatus.OK);
+    }
+    @GetMapping(value = "getPharmacistsByPatient/{patientId}")
+    public ResponseEntity<Collection<PharmacistDTO>> getPharmacistsPatientAppointments(@PathVariable Long patientId) {
+        return new ResponseEntity<>(pharmacistService.getPharmacistsPatientAppointments(patientId), HttpStatus.OK);
     }
 }

@@ -3,6 +3,7 @@ package app.controller.impl;
 import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.grade.GradeType;
+import app.model.time.Period;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
 import app.service.GradeService;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,9 +49,23 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>("kavali", HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('patient')")
     @PostMapping(consumes = "application/json", value = "/getFinishedForComplaint")
     public ResponseEntity<Collection<AppointmentEmployeeDTO>> getFinishedForComplaint(@RequestBody ExaminerDTO examinerDTO) {
         return new ResponseEntity<>(appointmentService.getFinishedForComplaint(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
+    @PostMapping(consumes = "application/json", value = "/searchFinishedAppointments")
+    public ResponseEntity<Collection<AppointmentFinishedDTO>> searchFinishedAppointments(@RequestBody SearchFinishedAppointments searchFinishedAppointments){
+        Collection<AppointmentFinishedDTO> appointmentListingDTOS = new ArrayList<>();
+        for(AppointmentFinishedDTO appointmentFinishedDTO : appointmentService.getFinishedByExaminer(searchFinishedAppointments.getId(), searchFinishedAppointments.getType())){
+            String fullName = appointmentFinishedDTO.getPatientFirstName() + appointmentFinishedDTO.getPatientLastName();
+            if(fullName.toLowerCase().contains(searchFinishedAppointments.getQuery().toLowerCase().replaceAll("\\s+", "")))
+                appointmentListingDTOS.add(appointmentFinishedDTO);
+        }
+        return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
+
     }
 
     @GetMapping
@@ -67,6 +81,10 @@ public class AppointmentControllerImpl {
     @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Object> save(@RequestBody Appointment entity) {
+        Period period = new Period();
+        period.setPeriodStart(entity.getPeriod().getPeriodStart());
+        period.setPeriodEnd(entity.getPeriod().getPeriodStart().plusHours(1));
+        entity.setPeriod(period);
         boolean ret = appointmentService.createAvailableAppointment(entity);
         if (ret)
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -181,6 +199,12 @@ public class AppointmentControllerImpl {
     @GetMapping(value = "/getAppointmentsYearlyReport/{pharmacyId}")
     public ResponseEntity<Collection<ReportsDTO>> getAppointmentsYearlyReport(@PathVariable Long pharmacyId) {
         return new ResponseEntity(appointmentService.getAppointmentsYearlyReport(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAppointmentsPharmacyForComplaint/{patientId}")
+    public ResponseEntity<Collection<PharmacyNameIdDTO>> getAppointmentsPharmacyForCoomplaint(@PathVariable Long patientId) {
+        Collection<PharmacyNameIdDTO> pharmacy=appointmentService.getAppointmentsPharmacyForComplaint(patientId);
+        return new ResponseEntity(pharmacy, HttpStatus.OK);
     }
 
 }

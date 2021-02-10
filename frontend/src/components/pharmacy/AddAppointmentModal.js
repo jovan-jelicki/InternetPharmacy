@@ -38,8 +38,9 @@ export default class AddAppointmentModal extends React.Component {
                     <label style={{marginRight : 10}}>Select start time of appointment: </label>
                     <TimePicker  name="startShift" disableClock={true}  format="h a" value={this.state.period.periodStart} onChange={this.setPeriodStart}/>
                     <br/>
-                    <label style={{marginRight : 10}}>Select end time of appointment: </label>
-                    <TimePicker  name="endShift" disableClock={true}  format="h a" value={this.state.period.periodEnd} onChange={this.setPeriodEnd}/>
+                    {/*<label style={{marginRight : 10}}>Select end time of appointment: </label>*/}
+                    {/*<TimePicker  name="endShift" disableClock={true}  format="h a" value={this.state.period.periodEnd} onChange={this.setPeriodEnd}/>*/}
+                    <label><span style={{color : 'red'}}>*By default appointment lasts 1 hour.</span></label>
 
                     <hr className="mt-2 mb-3"/>
 
@@ -82,7 +83,6 @@ export default class AddAppointmentModal extends React.Component {
             appointmentStatus : 'available',
             period : {
                 periodStart : fullYear + " " + this.state.period.periodStart + ":00",
-                periodEnd : fullYear + " " + this.state.period.periodEnd + ":00",
             }
         }, {
                 headers: {
