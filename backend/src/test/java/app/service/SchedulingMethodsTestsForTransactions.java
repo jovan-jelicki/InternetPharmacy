@@ -37,7 +37,6 @@ public class SchedulingMethodsTestsForTransactions {
 
     private Appointment[] getTwoSameAppointments(){
         Appointment appointment = new Appointment();
-        appointment.setTherapy(new Therapy());
         appointment.setPharmacy(pharmacyService.read(1l).get());
         appointment.setAppointmentStatus(AppointmentStatus.available);
         appointment.setPatient(patientService.read(0l).get());
@@ -49,7 +48,6 @@ public class SchedulingMethodsTestsForTransactions {
         appointment.setExaminerId(1l);
         appointment.setType(EmployeeType.ROLE_pharmacist);
         Appointment appointment2 = new Appointment();
-        appointment2.setTherapy(new Therapy());
         appointment2.setPharmacy(pharmacyService.read(1l).get());
         appointment2.setAppointmentStatus(AppointmentStatus.available);
         appointment2.setPatient(patientService.read(0l).get());

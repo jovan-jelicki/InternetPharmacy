@@ -16,7 +16,10 @@ import app.service.PharmacistService;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -24,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class MedicationReservationServiceImpl implements MedicationReservationService {
     private final MedicationReservationRepository medicationReservationRepository;
     private final PharmacistService pharmacistService;
@@ -40,6 +44,25 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
         this.pharmacyRepository = pharmacyRepository;
         this.emailService = emailService;
         this.patientService = patientService;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Scheduled(cron = " 0 0 12 * * ?")
+    public void returnMedicationsFromInvalidReservations(){
+        Collection<Pharmacy> pharmacies = pharmacyRepository.findAll();
+        for(Pharmacy p : pharmacies){
+            for(MedicationReservation medicationReservation : p.getMedicationReservation()){
+                MedicationReservationStatus medicationReservationStatus = medicationReservation.getStatus();
+                if(checkMedicationReservationValid(medicationReservation)){
+                    if(medicationReservationStatus == MedicationReservationStatus.requested) {
+                        getMedicationQuantityBack(p, medicationReservation.getMedicationQuantity());
+                        Patient patient = patientService.read(medicationReservation.getPatient().getId()).get();
+                        patient.setPenaltyCount(patient.getPenaltyCount() + 1);
+                        patientService.save(patient);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -68,8 +91,10 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
         List<MedicationReservation> medicationReservationSet = pharmacist.getWorkingHours().getPharmacy().getMedicationReservation();
         try {
             MedicationReservation medicationReservation = medicationReservationSet.stream().filter(m -> m.getId() == getMedicationReservationDTO.getMedicationId()).findFirst().get();
+            MedicationReservationStatus medicationReservationStatus = medicationReservation.getStatus();
             if(!checkMedicationReservationValid(medicationReservation)){
-                getMedicationQuantityBack(pharmacist.getWorkingHours().getPharmacy() , medicationReservation.getMedicationQuantity());
+                if(medicationReservationStatus == MedicationReservationStatus.requested)
+                    getMedicationQuantityBack(pharmacist.getWorkingHours().getPharmacy() , medicationReservation.getMedicationQuantity());
                 return null;
             }
             return medicationReservation;
@@ -102,10 +127,12 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
     }
 
     private boolean checkMedicationReservationValid(MedicationReservation medicationReservation){
-        if(medicationReservation.getStatus() != MedicationReservationStatus.requested || medicationReservation.getPickUpDate().isBefore(LocalDateTime.now().plusHours(24))) {
-            if (medicationReservation.getStatus() != MedicationReservationStatus.successful & medicationReservation.getStatus() != MedicationReservationStatus.canceled)
+        if(medicationReservation.getStatus() != MedicationReservationStatus.requested || medicationReservation.getPickUpDate().isBefore(LocalDateTime.now().plusHours(24)))
+        {
+            if (medicationReservation.getStatus() != MedicationReservationStatus.successful & medicationReservation.getStatus() != MedicationReservationStatus.canceled & medicationReservation.getStatus() != MedicationReservationStatus.denied){
                 medicationReservation.setStatus(MedicationReservationStatus.denied);
                 medicationReservationRepository.save(medicationReservation);
+            }
             return false;
         }
         return true;
