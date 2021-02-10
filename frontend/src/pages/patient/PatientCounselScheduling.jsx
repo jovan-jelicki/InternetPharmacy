@@ -67,8 +67,17 @@ class PatientCounselScheduling extends React.Component {
             }
         })
         .then(res => {
-            this.props.history.push('/scheduled-appointments')
-        });
+            axios
+            .put(HelperService.getPath('/api/email/send'), {
+                'to': 'ilija_brdar@yahoo.com',   
+                'subject':"Counseling scheduled!",
+                'body':'You have successfully scheduled counseling at ' + this.state.dateTime,
+            })
+            .then(res => {
+                this.props.history.push('/scheduled-appointments')
+            });
+        })
+        .catch(e => alert('You have been blocked due to 3 penalties.'));
     }
 
     render() {
