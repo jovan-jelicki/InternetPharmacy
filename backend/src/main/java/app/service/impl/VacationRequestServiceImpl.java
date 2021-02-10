@@ -10,6 +10,7 @@ import app.model.user.User;
 import app.repository.VacationRequestRepository;
 import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,6 +93,9 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     public void confirmVacationRequest(VacationRequestDTO vacationRequestDTO) {
         VacationRequest vacationRequest = this.read(vacationRequestDTO.getId()).get();
 
+        if (!vacationRequestDTO.getVersion().equals(vacationRequest.getVersion()))
+            throw new ObjectOptimisticLockingFailureException("versions do not match", VacationRequest.class);
+
         //check if there are any scheduled pharmacist appointments for that period
         Collection<Appointment> scheduledAppointmentsForVacationRequestPeriod = appointmentService.
                 GetAllScheduledAppointmentsByExaminerIdAfterDate(vacationRequestDTO.getEmployeeId(),vacationRequestDTO.getEmployeeType(), vacationRequestDTO.getPeriod().getPeriodStart())
@@ -118,6 +122,10 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     @Override
     public void declineVacationRequest(VacationRequestDTO vacationRequestDTO) {
         VacationRequest vacationRequest = this.read(vacationRequestDTO.getId()).get();
+
+        if (!vacationRequestDTO.getVersion().equals(vacationRequest.getVersion()))
+            throw new ObjectOptimisticLockingFailureException("versions do not match", VacationRequest.class);
+
         vacationRequest.setVacationRequestStatus(VacationRequestStatus.rejected);
         vacationRequest.setRejectionNote(vacationRequestDTO.getRejectionNote());
         this.save(vacationRequest);

@@ -9,7 +9,10 @@ import app.model.user.PharmacyAdmin;
 import app.repository.MedicationOrderRepository;
 import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class MedicationOrderServiceImpl implements MedicationOrderService {
     private final MedicationOrderRepository medicationOrderRepository;
     private final PharmacyService pharmacyService;
@@ -41,11 +45,15 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean editMedicationOrder(MedicationOrderDTO medicationOrderDTO) {
         MedicationOrder medicationOrder = this.read(medicationOrderDTO.getId()).get();
 
         if (medicationOfferService.getOffersByOrderId(medicationOrder.getId()).size() != 0)
             return false;
+
+        if (!medicationOrderDTO.getMedicationOrderVersion().equals(medicationOrder.getVersion()))
+            throw new ObjectOptimisticLockingFailureException("versions do not match", MedicationOrder.class);
 
         medicationOrder.setDeadline(medicationOrderDTO.getDeadline());
 
@@ -86,6 +94,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
 
 
     @Override
+    @Transactional(readOnly = false)
     public MedicationOrder save(MedicationOrder entity) {
         return medicationOrderRepository.save(entity);
     }
@@ -104,6 +113,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(Long id) {
         Optional<MedicationOrder> medicationOrderOptional = this.read(id);
         if (!medicationOrderOptional.isPresent())
@@ -120,6 +130,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean createNewMedicationOrder(MedicationOrderDTO medicationOrderDTO) {
         PharmacyAdmin pharmacyAdmin = pharmacyAdminService.read(medicationOrderDTO.getPharmacyAdminId()).get();
 
@@ -149,6 +160,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
     public Collection<MedicationOrderDTO> getMedicationOrderByPharmacyAdmin(Long pharmacyAdminId) { return medicationOrderRepository.getMedicationOrderByPharmacyAdmin(pharmacyAdminId);}
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean deleteMedicationOrder(Long orderId) {
         if (medicationOfferService.getOffersByOrderId(orderId).size() != 0)
             return false;

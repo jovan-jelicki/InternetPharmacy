@@ -4,7 +4,6 @@ import app.model.medication.Ingredient;
 import app.model.medication.Medication;
 import app.model.medication.MedicationQuantity;
 import app.model.medication.MedicationType;
-import app.model.pharmacy.Pharmacy;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +22,7 @@ public class PharmacyMedicationListingDTO {
     private Set<Ingredient> ingredients;
     private Set<Medication> alternatives;
     private double grade;
+    private Long medicationQuantityVersion;
 
     public PharmacyMedicationListingDTO() {
     }
@@ -38,6 +38,7 @@ public class PharmacyMedicationListingDTO {
         this.ingredients =  medicationQuantity.getMedication().getIngredient();
         this.alternatives = medicationQuantity.getMedication().getAlternatives();
         this.grade = grade;
+        this.medicationQuantityVersion = medicationQuantity.getVersion();
     }
 
 }

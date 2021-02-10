@@ -5,11 +5,13 @@ import app.model.grade.GradeType;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
+import app.model.time.VacationRequest;
 import app.model.user.EmployeeType;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +57,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Pharmacy savePharmacy(PharmacyAdminPharmacyDTO pharmacyAdminPharmacyDTO) {
         Pharmacy pharmacy = new Pharmacy();
         pharmacy.setName(pharmacyAdminPharmacyDTO.getName());
@@ -195,6 +198,9 @@ public class PharmacyServiceImpl implements PharmacyService {
         MedicationQuantity medicationQuantity = pharmacy.getMedicationQuantity().stream().
                 filter(medicationQuantityPharmacy -> medicationQuantityPharmacy.getId().equals(pharmacyMedicationListingDTO.getMedicationQuantityId()))
                 .findFirst().get();
+
+        if (!medicationQuantity.getVersion().equals(pharmacyMedicationListingDTO.getMedicationQuantityVersion()))
+            throw new ObjectOptimisticLockingFailureException("versions do not match", VacationRequest.class);
 
         medicationQuantity.setQuantity(pharmacyMedicationListingDTO.getQuantity());
 

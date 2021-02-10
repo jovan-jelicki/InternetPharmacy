@@ -10,7 +10,10 @@ import app.service.MedicationOfferService;
 import app.service.MedicationOrderService;
 import app.service.PharmacyService;
 import app.service.SupplierService;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
@@ -19,6 +22,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class MedicationOfferServiceImpl implements MedicationOfferService {
     private final MedicationOfferRepository medicationOfferRepository;
     private final MedicationOrderService medicationOrderService;
@@ -39,6 +43,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public MedicationOffer save(MedicationOffer entity) {
         return medicationOfferRepository.save(entity);
     }
@@ -53,6 +58,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(Long id)  {
         medicationOfferRepository.deleteById(id);
     }
@@ -63,6 +69,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean createNewMedicationOffer(MedicationOfferDTO medicationOfferDTO) {
         MedicationOrder medicationOrder=medicationOrderService.read(medicationOfferDTO.getMedicationOrderId()).get();
 
@@ -83,6 +90,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean editMedicationOffer(MedicationOfferAndOrderDTO medicationOffer) {
         MedicationOffer medOffer=read(medicationOffer.getOfferId()).get();
         medOffer.setCost(medicationOffer.getCost());
@@ -103,6 +111,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         }
         return medicationOfferDTOS;
     }
+
     private void updatePharmacyMedicationQuantity(MedicationOrder medicationOrder) {
         Pharmacy pharmacy = pharmacyService.read(medicationOrder.getPharmacyAdmin().getPharmacy().getId()).get();
         ArrayList<MedicationQuantity> medicationsToAdd = new ArrayList<>();
@@ -135,6 +144,7 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean acceptOffer(MedicationOfferDTO medicationOfferDTO, Long pharmacyAdminId) {
         MedicationOrder medicationOrder = medicationOrderService.read(medicationOfferDTO.getMedicationOrderId()).get();
         if (!medicationOrder.getPharmacyAdmin().getId().equals(pharmacyAdminId))
@@ -144,9 +154,17 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
 //        if (LocalDateTime.now().toLocalDate().isBefore(medicationOrder.getDeadline().toLocalDate()))
 //            return false;
 
+        if (!medicationOrder.getVersion().equals(medicationOfferDTO.getMedicationOrderVersion()))
+            throw new ObjectOptimisticLockingFailureException("versions do not match", MedicationOrder.class);
+
+
         for (MedicationOffer medicationOffer : medicationOfferRepository.getMedicationOffersByMedicationOrder(medicationOfferDTO.getMedicationOrderId())) {
             if (medicationOffer.getId().equals(medicationOfferDTO.getId()) && medicationOffer.getStatus() == MedicationOfferStatus.pending) {
                 medicationOffer.setStatus(MedicationOfferStatus.approved);
+
+                if (!medicationOffer.getVersion().equals(medicationOfferDTO.getMedicationOfferVersion()))
+                    throw new ObjectOptimisticLockingFailureException("versions do not match", MedicationOffer.class);
+
                 this.save(medicationOffer);
 
                 //TODO send confirmation email to supplier

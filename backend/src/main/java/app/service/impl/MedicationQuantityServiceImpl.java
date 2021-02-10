@@ -4,11 +4,14 @@ import app.model.medication.MedicationQuantity;
 import app.repository.MedicationQuantityRepository;
 import app.service.MedicationQuantityService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class MedicationQuantityServiceImpl implements MedicationQuantityService {
     private final MedicationQuantityRepository medicationQuantityRepository;
 
@@ -17,6 +20,7 @@ public class MedicationQuantityServiceImpl implements MedicationQuantityService 
     }
 
     @Override
+    @Transactional(readOnly = false)
     public MedicationQuantity save(MedicationQuantity entity) {
         return medicationQuantityRepository.save(entity);
     }
@@ -32,6 +36,7 @@ public class MedicationQuantityServiceImpl implements MedicationQuantityService 
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(Long id) {
         medicationQuantityRepository.deleteById(id);
     }
