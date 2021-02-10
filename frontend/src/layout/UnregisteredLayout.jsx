@@ -17,6 +17,7 @@ export default class UnregisteredLayout extends React.Component {
                     <Nav className="mr-auto">
                         <Nav.Link href="#pharmacies">Pharmacies</Nav.Link>
                         <Nav.Link href="#medications">Medications</Nav.Link>
+                        <Nav.Link href="#registration">Registration</Nav.Link>
                     </Nav>
                     <Nav>
                     <Login/>

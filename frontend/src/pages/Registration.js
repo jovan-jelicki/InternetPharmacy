@@ -57,6 +57,8 @@ export default class Registration extends React.Component {
     }
 
     async sendParams() {
+        console.log(this.state.user)
+
         axios
             .post('http://localhost:8080/api/patients/save', {
                 'id':'',
@@ -81,9 +83,10 @@ export default class Registration extends React.Component {
             .then(res => {
 
             });
-
     }
+
     async sendMail() {
+
         axios
             .put('http://localhost:8080/api/email/confirm', {
                 'to':"t.kovacevic98@gmail.com",
@@ -93,8 +96,10 @@ export default class Registration extends React.Component {
                 'link':"http://localhost:3000/confirmRegistration"
             })
             .then(res => {
-
-            });
+                alert("POSLAO")
+            }).catch(res=>{
+                alert("NECE DA MOZE")
+        });
     }
 
     confirmForm = (event) => {
@@ -298,10 +303,9 @@ export default class Registration extends React.Component {
 
     render() {
         return (
-
-            <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
+            <div>
                 <div className="container">
-                    <h1 style={({marginTop: '1rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
+                    <h1 id="registration" style={({marginTop: '1rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
                 </div>
                 {
                     this.state.buttonConfirm &&

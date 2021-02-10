@@ -77,8 +77,8 @@ export default class AddNewMedication extends React.Component {
     }
 
     fetchAlternatives(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications/getAll"
-            : 'http://localhost:8080/api/medications/getAll';
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications"
+            : 'http://localhost:8080/api/medications';
         axios.get(path,{
             headers: {
                 'Content-Type': 'application/json',
