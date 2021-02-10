@@ -79,7 +79,11 @@ class PatientReservationsPage extends React.Component {
                 Authorization : 'Bearer ' + this.aut.jwtToken 
             }
         })
-        .then(res => alert('Success'));
+        .then(res => {
+            alert('Success')
+            window.location.reload()
+        })
+        .catch(e => alert('Cannnot cancel 24h prior to pick-up date!'));
     }
 }
 

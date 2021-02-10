@@ -59,8 +59,6 @@ class PharmacyListing extends React.Component {
     }
 
     search({name, location}) {
-        this.aut = JSON.parse(localStorage.getItem('user'))
-
         axios
         .post('http://localhost:8080/api/pharmacy/search', {
             'name' : name,

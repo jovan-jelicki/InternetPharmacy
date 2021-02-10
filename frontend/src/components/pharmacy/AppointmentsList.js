@@ -6,9 +6,10 @@ import moment from "moment";
 import StarRatings from "react-star-ratings";
 import PharmacyAdminService from "../../helpers/PharmacyAdminService";
 import HelperService from "../../helpers/HelperService";
+import { withRouter } from "react-router-dom";
 
 
-export default class AppointmentsList extends React.Component{
+class AppointmentsList extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -92,8 +93,15 @@ export default class AppointmentsList extends React.Component{
                 Authorization : 'Bearer ' + this.state.user.jwtToken
             }
         })
-        .then(res => alert('success'))
+        .then(res => {
+            alert('success')
+            this.props.history.push({
+                pathname: "/scheduled-appointments"
+            });
+        })
     }
 
 
 }
+
+export default withRouter(AppointmentsList)

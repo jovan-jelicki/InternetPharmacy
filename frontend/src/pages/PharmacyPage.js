@@ -217,7 +217,7 @@ export default class PharmacyPage extends React.Component{
     redirectToPharmacyListing = () => {
         sessionStorage.removeItem('pharmacyId');
         this.props.history.push({
-            pathname: "/",
+            pathname: "/patient-home",
         });
     }
 }
