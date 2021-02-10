@@ -4,6 +4,7 @@ import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
 import app.model.medication.Medication;
+import app.model.time.Period;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
@@ -208,28 +209,56 @@ public class AppointmentServiceImpl implements AppointmentService {
         return ret;
     }
 
+    private boolean isOverlapping (app.model.time.Period periodA, Period periodB) {
+        if (periodA.getPeriodStart().isBefore(periodB.getPeriodStart()) && periodA.getPeriodStart().isBefore(periodB.getPeriodEnd())
+                && periodA.getPeriodEnd().isBefore(periodB.getPeriodStart()) && periodA.getPeriodEnd().isBefore(periodB.getPeriodEnd()))
+            return false;
+        else if (periodB.getPeriodStart().isBefore(periodA.getPeriodStart()) && periodB.getPeriodStart().isBefore(periodA.getPeriodEnd())
+                && periodB.getPeriodEnd().isBefore(periodA.getPeriodStart()) && periodB.getPeriodEnd().isBefore(periodA.getPeriodEnd()))
+            return false;
+        else if (periodA.getPeriodStart().isBefore(periodB.getPeriodStart()) && periodA.getPeriodStart().isBefore(periodB.getPeriodEnd())
+                && periodA.getPeriodEnd().equals(periodB.getPeriodStart()) && periodA.getPeriodEnd().isBefore(periodB.getPeriodEnd()))
+            return false;
+        else if (periodB.getPeriodStart().isBefore(periodA.getPeriodStart()) && periodB.getPeriodStart().isBefore(periodA.getPeriodEnd())
+                && periodB.getPeriodEnd().equals(periodA.getPeriodStart()) && periodB.getPeriodEnd().isBefore(periodA.getPeriodEnd()))
+            return false;
+        else
+            return true;
+    }
+
     public boolean validateAppointmentTimeRegardingOtherAppointments(Appointment entity) {
         boolean ret = true;
         for(Appointment appointment : this.getAllAppointmentsByExaminerIdAndType(entity.getExaminerId(), entity.getType())) {
             if (appointment.getPeriod().getPeriodStart().toLocalDate().equals(entity.getPeriod().getPeriodStart().toLocalDate())) {
-                if (appointment.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-                        appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
-                    ret = false;
-                else if (entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
-                        entity.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(appointment.getPeriod().getPeriodEnd().toLocalTime())) //E A A E
-                    ret = false;
-                else if (entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
-                        entity.getPeriod().getPeriodEnd().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodEnd().toLocalTime()) &&
-                        entity.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(appointment.getPeriod().getPeriodStart().toLocalTime())) //E A E A
-                    ret = false;
-                else if (appointment.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
-                        appointment.getPeriod().getPeriodEnd().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodEnd().toLocalTime()) &&
-                        appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodStart().toLocalTime())) //A E A E
-                    ret = false;
+                if (isOverlapping(appointment.getPeriod(), entity.getPeriod()))
+                    return false;
             }
         }
         return ret;
     }
+
+//    public boolean validateAppointmentTimeRegardingOtherAppointments(Appointment entity) {
+//        boolean ret = true;
+//        for(Appointment appointment : this.getAllAppointmentsByExaminerIdAndType(entity.getExaminerId(), entity.getType())) {
+//            if (appointment.getPeriod().getPeriodStart().toLocalDate().equals(entity.getPeriod().getPeriodStart().toLocalDate())) {
+//                if (appointment.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
+//                        appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodEnd().toLocalTime())) //A E E A
+//                    ret = false;
+//                else if (entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
+//                        entity.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(appointment.getPeriod().getPeriodEnd().toLocalTime())) //E A A E
+//                    ret = false;
+//                else if (entity.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodStart().toLocalTime()) &&
+//                        entity.getPeriod().getPeriodEnd().toLocalTime().minusMinutes(1).isBefore(appointment.getPeriod().getPeriodEnd().toLocalTime()) &&
+//                        entity.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(appointment.getPeriod().getPeriodStart().toLocalTime())) //E A E A
+//                    ret = false;
+//                else if (appointment.getPeriod().getPeriodStart().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodStart().toLocalTime()) &&
+//                        appointment.getPeriod().getPeriodEnd().toLocalTime().minusMinutes(1).isBefore(entity.getPeriod().getPeriodEnd().toLocalTime()) &&
+//                        appointment.getPeriod().getPeriodEnd().toLocalTime().plusMinutes(1).isAfter(entity.getPeriod().getPeriodStart().toLocalTime())) //A E A E
+//                    ret = false;
+//            }
+//        }
+//        return ret;
+//    }
 
 
     @Override
