@@ -5,12 +5,15 @@ import app.model.grade.GradeType;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
+import app.model.time.VacationRequest;
 import app.model.user.EmployeeType;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
@@ -20,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class PharmacyServiceImpl implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
@@ -49,6 +52,12 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    public Collection<MedicationQuantity> getPharmacyMedicationQuantity(Pharmacy pharmacy) {
+        return this.read(pharmacy.getId()).get().getMedicationQuantity();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public Pharmacy savePharmacy(PharmacyAdminPharmacyDTO pharmacyAdminPharmacyDTO) {
         Pharmacy pharmacy = new Pharmacy();
         pharmacy.setName(pharmacyAdminPharmacyDTO.getName());
@@ -96,6 +105,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
 
     @Override
+    @Transactional(readOnly = false)
     public Pharmacy save(Pharmacy entity) {
         return pharmacyRepository.save(entity);
     }
@@ -106,6 +116,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional
     public Optional<Pharmacy> read(Long id) {
         return pharmacyRepository.findById(id);
     }
@@ -180,12 +191,16 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean editMedicationQuantity(PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
         Pharmacy pharmacy = this.read(pharmacyMedicationListingDTO.getPharmacyId()).get();
 
         MedicationQuantity medicationQuantity = pharmacy.getMedicationQuantity().stream().
                 filter(medicationQuantityPharmacy -> medicationQuantityPharmacy.getId().equals(pharmacyMedicationListingDTO.getMedicationQuantityId()))
                 .findFirst().get();
+
+        if (!medicationQuantity.getVersion().equals(pharmacyMedicationListingDTO.getMedicationQuantityVersion()))
+            throw new ObjectOptimisticLockingFailureException("versions do not match", VacationRequest.class);
 
         medicationQuantity.setQuantity(pharmacyMedicationListingDTO.getQuantity());
 

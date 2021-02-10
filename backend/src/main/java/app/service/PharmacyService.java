@@ -40,4 +40,6 @@ public interface PharmacyService extends CRUDService<Pharmacy> {
     Pharmacy savePharmacy( PharmacyAdminPharmacyDTO pharmacy);
 
     void setMedicationOffer(MedicationOfferService medicationOfferService);
+
+    Collection<MedicationQuantity> getPharmacyMedicationQuantity(Pharmacy pharmacy);
 }
