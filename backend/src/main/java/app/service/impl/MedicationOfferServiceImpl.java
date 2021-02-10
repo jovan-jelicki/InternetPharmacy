@@ -6,10 +6,8 @@ import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.Supplier;
 import app.repository.MedicationOfferRepository;
-import app.service.MedicationOfferService;
-import app.service.MedicationOrderService;
-import app.service.PharmacyService;
-import app.service.SupplierService;
+import app.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,12 +26,15 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
     private final MedicationOrderService medicationOrderService;
     private final SupplierService supplierService;
     private final PharmacyService pharmacyService;
+    private final EmailService emailService;
 
-    public MedicationOfferServiceImpl(MedicationOfferRepository medicationOfferRepository, MedicationOrderService medicationOrderService, SupplierService supplierService, PharmacyService pharmacyService) {
+    @Autowired
+    public MedicationOfferServiceImpl(MedicationOfferRepository medicationOfferRepository, MedicationOrderService medicationOrderService, SupplierService supplierService, PharmacyService pharmacyService, EmailService emailService) {
         this.medicationOfferRepository = medicationOfferRepository;
         this.medicationOrderService = medicationOrderService;
         this.supplierService = supplierService;
         this.pharmacyService = pharmacyService;
+        this.emailService = emailService;
     }
 
     @PostConstruct
@@ -143,6 +144,24 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         supplierService.save(supplier);
     }
 
+    private void sendConfirmationEmailToSupplier(MedicationOffer medicationOffer, String pharmacyName) {
+        Supplier supplier = supplierService.getSupplierByMedicationOffer(medicationOffer);
+        String emailBody = "Dear " + supplier.getFirstName() + " " + supplier.getLastName() + ", \nwe are pleased to inform you " +
+                "that your offer for pharmacy " + pharmacyName + " has been confirmed."  + "\n" +
+                "\nSincerely, WebPharm.";
+        String email = "david.drvar.bogdanovic@gmail.com";
+        emailService.sendMail(email, "Confirmation mail", emailBody);
+    }
+
+    private void sendRejectionEmailToSupplier(MedicationOffer medicationOffer, String pharmacyName) {
+        Supplier supplier = supplierService.getSupplierByMedicationOffer(medicationOffer);
+        String emailBody = "Dear " + supplier.getFirstName() + " " + supplier.getLastName() + ", \n we are sorry to inform you" +
+                "that your offer for pharmacy " + pharmacyName + " has been rejected."  + "\n" +
+                "\nSincerely, WebPharm.";
+        String email = "david.drvar.bogdanovic@gmail.com";
+        emailService.sendMail(email, "Rejection mail", emailBody);
+    }
+
     @Override
     @Transactional(readOnly = false)
     public Boolean acceptOffer(MedicationOfferDTO medicationOfferDTO, Long pharmacyAdminId) {
@@ -160,20 +179,21 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
 
         for (MedicationOffer medicationOffer : medicationOfferRepository.getMedicationOffersByMedicationOrder(medicationOfferDTO.getMedicationOrderId())) {
             if (medicationOffer.getId().equals(medicationOfferDTO.getId()) && medicationOffer.getStatus() == MedicationOfferStatus.pending) {
-                medicationOffer.setStatus(MedicationOfferStatus.approved);
 
+                medicationOffer.setStatus(MedicationOfferStatus.approved);
                 if (!medicationOffer.getVersion().equals(medicationOfferDTO.getMedicationOfferVersion()))
                     throw new ObjectOptimisticLockingFailureException("versions do not match", MedicationOffer.class);
 
                 this.save(medicationOffer);
 
-                //TODO send confirmation email to supplier
+                sendConfirmationEmailToSupplier(medicationOffer, medicationOrder.getPharmacyAdmin().getPharmacy().getName());
 
                 updatePharmacyMedicationQuantity(medicationOrder);
                 updateSupplierMedicationQuantity(medicationOrder, medicationOffer);
                 continue;
             }
             medicationOffer.setStatus(MedicationOfferStatus.rejected);
+            sendRejectionEmailToSupplier(medicationOffer, medicationOrder.getPharmacyAdmin().getPharmacy().getName());
             this.save(medicationOffer);
         }
         medicationOrder.setStatus(MedicationOrderStatus.processed);
