@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Optional;
 
 @Controller
@@ -54,6 +55,19 @@ public class AppointmentControllerImpl {
     @PostMapping(consumes = "application/json", value = "/getFinishedForComplaint")
     public ResponseEntity<Collection<AppointmentEmployeeDTO>> getFinishedForComplaint(@RequestBody ExaminerDTO examinerDTO) {
         return new ResponseEntity<>(appointmentService.getFinishedForComplaint(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
+    @PostMapping(consumes = "application/json", value = "/searchFinishedAppointments")
+    public ResponseEntity<Collection<AppointmentFinishedDTO>> searchFinishedAppointments(@RequestBody SearchFinishedAppointments searchFinishedAppointments){
+        Collection<AppointmentFinishedDTO> appointmentListingDTOS = new ArrayList<>();
+        for(AppointmentFinishedDTO appointmentFinishedDTO : appointmentService.getFinishedByExaminer(searchFinishedAppointments.getId(), searchFinishedAppointments.getType())){
+            String fullName = appointmentFinishedDTO.getPatientFirstName() + appointmentFinishedDTO.getPatientLastName();
+            if(fullName.toLowerCase().contains(searchFinishedAppointments.getQuery().toLowerCase().replaceAll("\\s+", "")))
+                appointmentListingDTOS.add(appointmentFinishedDTO);
+        }
+        return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
+
     }
 
     @GetMapping

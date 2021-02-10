@@ -6,6 +6,7 @@ import app.dto.PharmacyQRDTO;
 import app.model.grade.GradeType;
 import app.model.medication.*;
 import app.model.pharmacy.Pharmacy;
+import app.model.user.Patient;
 import app.model.user.PharmacyAdmin;
 import app.repository.EPrescriptionRepository;
 import app.service.*;
@@ -62,12 +63,14 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
             }).start();
             return null;
         }
+        Patient patient = patientService.read(makeEPrescriptionDTO.getPrescription().getPatient().getId()).get();
+
+        if(patient.getPenaltyCount() >= 3)
+            return null;
+
         makeEPrescriptionDTO.getPrescription().setDateIssued(LocalDateTime.now());
         makeEPrescriptionDTO.getPrescription().setStatus(EPrescriptionStatus.pending);
         EPrescription ePrescription =  this.save(makeEPrescriptionDTO.getPrescription());
-//        updateMedicationQuantity(makeEPrescriptionDTO.getPrescription().getMedicationQuantity(), pharmacy.getMedicationQuantity());
-//        pharmacy.getPrescriptions().add(ePrescription);
-//        pharmacyService.save(pharmacy);
         return new EPrescriptionSimpleInfoDTO(makeEPrescriptionDTO.getPrescription());
     }
 

@@ -31,7 +31,19 @@ public class Patient extends User {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Promotion> promotions;
 
+    @Version
+    @Column(nullable = false, columnDefinition = "int default 1")
+    private Long version;
+
     public Patient() {
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     public Long getId() {
