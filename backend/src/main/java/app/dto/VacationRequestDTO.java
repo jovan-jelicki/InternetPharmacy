@@ -19,6 +19,7 @@ public class VacationRequestDTO {
     private String rejectionNote;
     private String vacationNote;
     private EmployeeType employeeType;
+    private Long version;
 
     public VacationRequestDTO() {
     }
@@ -34,6 +35,7 @@ public class VacationRequestDTO {
         this.pharmacy.setMedicationQuantity(null);
         this.pharmacy.setMedicationReservation(null);
         this.pharmacy.setPrescriptions(null);
+        this.version = vacationRequest.getVersion();
 
         this.rejectionNote = vacationRequest.getRejectionNote();
         this.vacationNote = vacationRequest.getVacationNote();
@@ -127,5 +129,13 @@ public class VacationRequestDTO {
 
     public void setEmployeeType(EmployeeType employeeType) {
         this.employeeType = employeeType;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

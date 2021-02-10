@@ -3,7 +3,9 @@ package app.service.impl;
 import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
-import app.model.medication.Medication;
+import app.model.medication.*;
+import app.model.pharmacy.LoyaltyProgram;
+import app.model.pharmacy.Pharmacy;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.time.WorkingHours;
@@ -13,6 +15,7 @@ import app.model.user.Patient;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
+import app.service.*;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
 import app.service.PatientService;
@@ -34,18 +37,20 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PharmacyRepository pharmacyRepository;
-
     private final VacationRequestRepository vacationRequestRepository;
     private final PatientService patientService;
     private DermatologistService dermatologistService;
+    private final LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientService patientService ) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientService patientService, LoyaltyProgramService loyaltyProgramService) {
         this.appointmentRepository = appointmentRepository;
         this.pharmacyRepository = pharmacyRepository;
         this.dermatologistService = dermatologistService;
         this.vacationRequestRepository = vacationRequestRepository;
         this.patientService = patientService;
+        this.loyaltyProgramService = loyaltyProgramService;
+
     }
 
     @PostConstruct
@@ -275,8 +280,22 @@ public class AppointmentServiceImpl implements AppointmentService {
             }else
                 throw new IllegalArgumentException("Patient is alergic!!!");
         }
+         setPatientLoyalityScale(appointmentScheduledDTO);
+
         this.save(appointment);
         return true;
+    }
+
+    public void setPatientLoyalityScale(AppointmentScheduledDTO appointmentScheduledDTO){
+        Patient patient=patientService.read(appointmentScheduledDTO.getPatientId()).get();
+        LoyaltyProgram first = loyaltyProgramService.read().iterator().next();
+
+        if(appointmentScheduledDTO.getType()==EmployeeType.ROLE_dermatologist)
+            patient.setLoyaltyCount(patient.getLoyaltyCount()+first.getAppointmentPoints());
+        else
+            patient.setLoyaltyCount(patient.getLoyaltyCount()+first.getConsultingPoints());
+
+        patientService.setPatientCategory(appointmentScheduledDTO.getPatientId());
     }
 
     @Override
@@ -373,29 +392,38 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Collection<AppointmentEmployeeDTO> getFinishedForComplaint(Long id, EmployeeType type) {
         Collection<Appointment>  finishedAppointments=getAllFinishedByPatientAndExaminerType(id,type);
         ArrayList<Long> dermatologsitIds = new ArrayList<>();
-        ArrayList<Long> pharmacistIds = new ArrayList<>();
         ArrayList<AppointmentEmployeeDTO> appointmentEmployeeDTOs = new ArrayList<>();
 
         for(Appointment appointment : finishedAppointments){
             AppointmentEmployeeDTO appointmentEmployeeDTO= new AppointmentEmployeeDTO();
-            if(type.toString()=="dermatologist" && !dermatologsitIds.contains(appointment.getExaminerId())){
+            if(type==EmployeeType.ROLE_dermatologist && !dermatologsitIds.contains(appointment.getExaminerId())){
                 Dermatologist dermatologist=dermatologistService.read(appointment.getExaminerId()).get();
                 appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
                 appointmentEmployeeDTO.setEmployeeFirstName(dermatologist.getFirstName());
                 appointmentEmployeeDTO.setEmployeeLastName(dermatologist.getLastName());
                 appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
-
-                dermatologsitIds.add(appointment.getExaminerId());
-            }/*else if(type.toString()=="pharmacist"  && !pharmacistIds.contains(appointment.getExaminerId())){
-                    Pharmacist pharmacist=pharmacistService.read(appointment.getExaminerId()).get();
-                    appointmentEmployeeDTO.setEmployeeId(appointment.getExaminerId());
-                    appointmentEmployeeDTO.setEmployeeFirstName(pharmacist.getFirstName());
-                    appointmentEmployeeDTO.setEmployeeLastName(pharmacist.getLastName());
-                    appointmentEmployeeDTOs.add(appointmentEmployeeDTO);
-                    pharmacistIds.add(appointment.getExaminerId());
-            }*/
+                    dermatologsitIds.add(appointment.getExaminerId());
+            }
         }
-        return appointmentEmployeeDTOs;
+            return appointmentEmployeeDTOs;
+    }
+
+    @Override
+    public Collection<PharmacyNameIdDTO> getAppointmentsPharmacyForComplaint(Long patientId) {
+        Collection<PharmacyNameIdDTO> pharmacies=new ArrayList<>();
+        ArrayList<Long> pharmacyIds = new ArrayList<>();
+
+        for(Appointment appointment : this.read()){
+            if(appointment.getPatient()!=null){
+                if(appointment.getPatient().getId()==patientId && !pharmacyIds.contains(appointment.getPharmacy().getId())) {
+                    pharmacyIds.add(appointment.getPharmacy().getId());
+                    pharmacies.add(new PharmacyNameIdDTO(appointment.getPharmacy()));
+
+                }
+            }
+        }
+
+        return  pharmacies;
     }
 
     @Override

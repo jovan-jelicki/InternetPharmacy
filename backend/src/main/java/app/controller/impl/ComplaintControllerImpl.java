@@ -7,11 +7,9 @@ import app.model.user.Patient;
 import app.service.ComplaintService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,23 +24,24 @@ public class ComplaintControllerImpl {
         this.complaintService = complaintService;
     }
 
+    @PreAuthorize("hasAnyRole('systemAdmin','patient')")
     @PostMapping(value="/save", consumes = "application/json")
-    public ResponseEntity<Complaint> save(@RequestBody Complaint complaint) {
-        return new ResponseEntity<>(complaintService.save(complaint), HttpStatus.CREATED);
-    }
+    public ResponseEntity<Void> save(@RequestBody Complaint complaint) {
+        complaintService.save(complaint);
+       // return new ResponseEntity<>(complaintService.save(complaint), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
 
+    }
+    @PreAuthorize("hasRole('systemAdmin')")
     @GetMapping
     public ResponseEntity<Collection<ComplaintDTO>> getComplaints() {
         return new ResponseEntity<>(complaintService.getComplaints(), HttpStatus.OK);
-        /*
-        ArrayList<ComplaintDTO> complaintDTOS=new ArrayList<>();
+    }
 
-        for(Complaint complaint :(List<Complaint>) complaintService.read()){
-            complaintDTOS.add(new ComplaintDTO(complaint));
-        }
+    @PreAuthorize("hasRole('systemAdmin')")
+    @GetMapping(value = "/edit/{complaintId}")
+    public ResponseEntity<Boolean> editComplaint(@RequestBody Long complaintId) {
+        return new ResponseEntity<>(complaintService.editComplaint(complaintId), HttpStatus.OK);
 
-        return new ResponseEntity<>(complaintDTOS, HttpStatus.OK);
-
-         */
     }
 }

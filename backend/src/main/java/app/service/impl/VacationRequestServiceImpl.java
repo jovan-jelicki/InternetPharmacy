@@ -10,7 +10,10 @@ import app.model.user.User;
 import app.repository.VacationRequestRepository;
 import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class VacationRequestServiceImpl implements VacationRequestService {
     private final VacationRequestRepository vacationRequestRepository;
     private final DermatologistService dermatologistService;
@@ -36,6 +40,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public VacationRequest save(VacationRequest entity) {
         return vacationRequestRepository.save(entity);
     }
@@ -77,6 +82,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public VacationRequestSendDTO saveVacationRequest(VacationRequestSendDTO entity) {
         VacationRequest vacationRequest = entity.createEntity();
         vacationRequest.setPharmacy(pharmacyService.read(entity.getPharmacy().getId()).get());
@@ -85,8 +91,12 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void confirmVacationRequest(VacationRequestDTO vacationRequestDTO) {
         VacationRequest vacationRequest = this.read(vacationRequestDTO.getId()).get();
+
+        if (!vacationRequestDTO.getVersion().equals(vacationRequest.getVersion()))
+            throw new ObjectOptimisticLockingFailureException("versions do not match", VacationRequest.class);
 
         //check if there are any scheduled pharmacist appointments for that period
         Collection<Appointment> scheduledAppointmentsForVacationRequestPeriod = appointmentService.
@@ -112,8 +122,13 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void declineVacationRequest(VacationRequestDTO vacationRequestDTO) {
         VacationRequest vacationRequest = this.read(vacationRequestDTO.getId()).get();
+
+        if (!vacationRequestDTO.getVersion().equals(vacationRequest.getVersion()))
+            throw new ObjectOptimisticLockingFailureException("versions do not match", VacationRequest.class);
+
         vacationRequest.setVacationRequestStatus(VacationRequestStatus.rejected);
         vacationRequest.setRejectionNote(vacationRequestDTO.getRejectionNote());
         this.save(vacationRequest);

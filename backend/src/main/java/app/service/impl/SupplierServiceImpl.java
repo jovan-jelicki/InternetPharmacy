@@ -3,10 +3,12 @@ package app.service.impl;
 import app.dto.MedicationOfferAndOrderDTO;
 import app.dto.MedicationQuantityDTO;
 import app.dto.MedicationSupplierDTO;
+import app.dto.UserPasswordDTO;
 import app.model.medication.Medication;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOrder;
 import app.model.medication.MedicationQuantity;
+import app.model.user.Dermatologist;
 import app.model.user.Supplier;
 import app.repository.SupplierRepository;
 import app.service.MedicationOrderService;
@@ -100,6 +102,7 @@ public class SupplierServiceImpl implements SupplierService{
     public Collection<Medication> getNonMedicationsBySupplier(Long supplierId) {
         Set<Medication> supplierMedications = new HashSet<>();
         Set<Medication> allMedications = new HashSet<Medication>(medicationService.read());
+
         for (MedicationQuantity medicationQuantity : read(supplierId).get().getMedicationQuantity()){
             supplierMedications.add(medicationQuantity.getMedication());
         }
@@ -163,6 +166,25 @@ public class SupplierServiceImpl implements SupplierService{
 
         return null;
     }
+
+    private void validatePassword(UserPasswordDTO passwordKit, Supplier user) {
+        String password = user.getCredentials().getPassword();
+        if(!password.equals(passwordKit.getOldPassword()))
+            throw new IllegalArgumentException("Wrong password");
+        else if(!passwordKit.getNewPassword().equals(passwordKit.getRepeatedPassword()))
+            throw new IllegalArgumentException("Entered passwords doesn't match");
+    }
+
+    @Override
+    public void changePassword(UserPasswordDTO passwordKit) {
+        Optional<Supplier> _user = supplierRepository.findById(passwordKit.getUserId());
+        Supplier user = _user.get();
+        validatePassword(passwordKit, user);
+        user.getCredentials().setPassword(passwordKit.getNewPassword());
+        user.setApprovedAccount(true);
+        save(user);
+    }
+
 
 
 }

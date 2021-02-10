@@ -20,11 +20,13 @@ public class MedicationOfferControllerImpl {
         this.medicationOfferService = medicationOfferService;
     }
 
+    @PreAuthorize("hasAnyRole('supplier')")
     @PostMapping(consumes = "application/json", value = "/new")
     public ResponseEntity<Boolean> createNewMedicationOffer(@RequestBody MedicationOfferDTO medicationOffer){
         return new ResponseEntity<>(medicationOfferService.createNewMedicationOffer(medicationOffer), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('supplier')")
     @PostMapping(consumes = "application/json", value = "/edit")
     public ResponseEntity<Boolean> editMedicationOffer(@RequestBody MedicationOfferAndOrderDTO medicationOffer){
         return new ResponseEntity<>(medicationOfferService.editMedicationOffer(medicationOffer), HttpStatus.OK);

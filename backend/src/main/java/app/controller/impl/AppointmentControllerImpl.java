@@ -3,6 +3,7 @@ package app.controller.impl;
 import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.grade.GradeType;
+import app.model.pharmacy.Pharmacy;
 import app.service.AppointmentService;
 import app.service.DermatologistService;
 import app.service.GradeService;
@@ -50,6 +51,7 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>("kavali", HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('patient')")
     @PostMapping(consumes = "application/json", value = "/getFinishedForComplaint")
     public ResponseEntity<Collection<AppointmentEmployeeDTO>> getFinishedForComplaint(@RequestBody ExaminerDTO examinerDTO) {
         return new ResponseEntity<>(appointmentService.getFinishedForComplaint(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
@@ -195,6 +197,12 @@ public class AppointmentControllerImpl {
     @GetMapping(value = "/getAppointmentsYearlyReport/{pharmacyId}")
     public ResponseEntity<Collection<ReportsDTO>> getAppointmentsYearlyReport(@PathVariable Long pharmacyId) {
         return new ResponseEntity(appointmentService.getAppointmentsYearlyReport(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAppointmentsPharmacyForComplaint/{patientId}")
+    public ResponseEntity<Collection<PharmacyNameIdDTO>> getAppointmentsPharmacyForCoomplaint(@PathVariable Long patientId) {
+        Collection<PharmacyNameIdDTO> pharmacy=appointmentService.getAppointmentsPharmacyForComplaint(patientId);
+        return new ResponseEntity(pharmacy, HttpStatus.OK);
     }
 
 }

@@ -4,11 +4,14 @@ import {ButtonGroup, Input} from "rsuite";
 import Dropdown from "react-dropdown";
 import axios from "axios";
 import CreateNewOffer from "./CreateNewOffer";
+import HelperService from "../../helpers/HelperService";
 
 export default class MedicationOrdersForSupplier extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
+            role : props.role,
+            Id : props.Id,
             userType : 'pharmacyAdmin',
             medicationOrders : [],
             showModal : false,
@@ -19,13 +22,22 @@ export default class MedicationOrdersForSupplier extends React.Component {
             order:[],
             medicationList:[],
             boolMedications:true,
-
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
     async componentDidMount() {
-        console.log("BLA")
-        await axios
-            .get('http://localhost:8080/api/medicationOrder/getAllActive')
+        await this.fetchOrders();
+        await this.fetchSuppliersMedicationList();
+    }
+    fetchOrders(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medicationOrder/getAllActive"
+            : 'http://localhost:8080/api/medicationOrder/getAllActive';
+         axios
+            .get(path
+                ,{  headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : 'Bearer ' + this.state.user.jwtToken
+                    }})
             .then((res) => {
                 this.setState({
                     medicationOrders : res.data
@@ -35,20 +47,24 @@ export default class MedicationOrdersForSupplier extends React.Component {
             }).catch(
                 console.log("greska")
             )
-
-        await axios
-            .get('http://localhost:8080/api/suppliers/getSuppliersMedicationList/'+1)
-            .then((res) => {
-                this.setState({
-                    medicationList : res.data
-                })
-                console.log("LEkovi koje imam")
-                console.log(this.state.medicationList);
-
-            })
-
     }
 
+    fetchSuppliersMedicationList(){
+         axios.get(HelperService.getPath("/api/suppliers/getSuppliersMedicationList/" + this.state.user.id),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            }).then((res) => {
+            this.setState({
+                medicationList : res.data
+            })
+            console.log("LEkovi koje imam")
+            console.log(this.state.medicationList);
+
+        })
+    }
     checkMedication(){
         let myMedications=this.state.medicationList;
         let orderMedications=this.state.order.medicationQuantity;

@@ -36,13 +36,14 @@ export default class SystemAdminRegistration extends React.Component {
             },
             validForm: false,
             submitted: false,
-
-
+            userLog : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
         }
     }
     async sendParams() {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/systemAdmin/save"
+            : 'http://localhost:8080/api/systemAdmin/save';
         axios
-            .post('http://localhost:8080/api/systemAdmin/save', {
+            .post(path, {
                 'id':'',
                 'firstName' : this.state.user.firstName,
                 'lastName' : this.state.user.lastName,
@@ -63,12 +64,17 @@ export default class SystemAdminRegistration extends React.Component {
                 },
                 'approvedAccount':false
 
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.userLog.jwtToken
+                }
             })
             .then(res => {
                 alert("Successfully registered!");
 
             }).catch(() => {
-            alert("Dermatologist was not registered successfully!")
+            alert("System admin was not registered successfully!")
         })
 
     }

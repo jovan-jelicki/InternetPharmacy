@@ -25,6 +25,9 @@ public class Complaint {
    @Column
    private Long complaineeId;
 
+   @Column(columnDefinition = "boolean default true")
+   private Boolean isActive;
+
    public Complaint() {
    }
 
@@ -67,4 +70,8 @@ public class Complaint {
    public void setComplaineeId(Long complaineeId) {
       this.complaineeId = complaineeId;
    }
+
+   public Boolean getActive() {return isActive;}
+
+   public void setActive(Boolean active) { isActive = active;}
 }

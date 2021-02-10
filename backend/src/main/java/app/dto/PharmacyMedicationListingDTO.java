@@ -22,6 +22,7 @@ public class PharmacyMedicationListingDTO {
     private Set<Ingredient> ingredients;
     private Set<Medication> alternatives;
     private double grade;
+    private Long medicationQuantityVersion;
 
     public PharmacyMedicationListingDTO() {
     }
@@ -37,5 +38,7 @@ public class PharmacyMedicationListingDTO {
         this.ingredients =  medicationQuantity.getMedication().getIngredient();
         this.alternatives = medicationQuantity.getMedication().getAlternatives();
         this.grade = grade;
+        this.medicationQuantityVersion = medicationQuantity.getVersion();
     }
+
 }

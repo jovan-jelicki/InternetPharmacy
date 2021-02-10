@@ -36,12 +36,16 @@ export default class DermatologistRegistration extends React.Component {
                 },
                 validForm: false,
                 submitted: false,
+                user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
         }
     }
 
     async sendParams() {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/save"
+            : 'http://localhost:8080/api/dermatologists/save';
         axios
-            .post('http://localhost:8080/api/dermatologists/save', {
+            .post(path, {
                 'id':'',
                 'firstName' : this.state.dermatologist.firstName,
                 'lastName' : this.state.dermatologist.lastName,
@@ -62,6 +66,11 @@ export default class DermatologistRegistration extends React.Component {
                 },
                 'approvedAccount':false
 
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 alert("Successfully registered!");
