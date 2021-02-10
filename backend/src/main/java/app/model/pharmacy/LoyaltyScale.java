@@ -8,6 +8,9 @@ public class LoyaltyScale {
    @Id
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "loyalty_scale_generator")
    @SequenceGenerator(name="loyalty_scale_generator", sequenceName = "loyalty_scale_seq", allocationSize=50, initialValue = 1000)
+   private Long id;
+
+   @Enumerated(EnumType.ORDINAL)
    private LoyaltyCategory category;
 
    @Column
@@ -58,11 +61,13 @@ public class LoyaltyScale {
       this.discount = discount;
    }
 
-   public Long getVersion() {
-      return version;
+   public Long getId() {
+      return id;
    }
 
-   public void setVersion(Long version) {
-      this.version = version;
-   }
+   public void setId(Long id) {  this.id = id;}
+
+   public Long getVersion() { return version;}
+
+   public void setVersion(Long version) { this.version = version;}
 }

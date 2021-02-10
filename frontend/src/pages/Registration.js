@@ -57,6 +57,8 @@ export default class Registration extends React.Component {
     }
 
     async sendParams() {
+        console.log(this.state.user)
+
         axios
             .post('http://localhost:8080/api/patients/save', {
                 'id':'',
@@ -81,9 +83,10 @@ export default class Registration extends React.Component {
             .then(res => {
 
             });
-
     }
+
     async sendMail() {
+
         axios
             .put('http://localhost:8080/api/email/confirm', {
                 'to':"t.kovacevic98@gmail.com",
@@ -93,8 +96,10 @@ export default class Registration extends React.Component {
                 'link':"http://localhost:3000/confirmRegistration"
             })
             .then(res => {
-
-            });
+                alert("POSLAO")
+            }).catch(res=>{
+                alert("NECE DA MOZE")
+        });
     }
 
     confirmForm = (event) => {
@@ -298,10 +303,9 @@ export default class Registration extends React.Component {
 
     render() {
         return (
-
-            <div className="jumbotron jumbotron-fluid"  style={{ background: 'rgb(232, 244, 248 )', color: 'rgb(0, 92, 230)'}}>
+            <div>
                 <div className="container">
-                    <h1 style={({marginTop: '1rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
+                    <h1 id="registration" style={({marginTop: '1rem', textAlignVertical: "center", textAlign: "center"})} className="display-4">User registration</h1>
                 </div>
                 {
                     this.state.buttonConfirm &&
@@ -311,8 +315,7 @@ export default class Registration extends React.Component {
                     </Alert>
                 }
 
-                    <div className="row" style={{
-                        marginTop: '3rem',
+                    <div className="row" style={{ marginTop: '3rem',
                         marginLeft: '20rem',
                         display: 'flex',
                         justifyContent: 'center',
@@ -328,11 +331,8 @@ export default class Registration extends React.Component {
 
                         </div>
                         <div className="col-sm-3 mb-2">
-                            <input type="text" value={this.state.lastName} name="lastName" onChange={(e) => {
-                                this.handleInputChange(e)
-                            }} className="form-control" placeholder="Last Name"/>
-                            {this.state.submitted && this.state.errors.user.lastName.length > 0 &&
-                            <span className="text-danger">{this.state.errors.user.lastName}</span>}
+                            <input type="text" value={this.state.lastName} name="lastName" onChange={(e) => {this.handleInputChange(e) }} className="form-control" placeholder="Last Name"/>
+                            {this.state.submitted && this.state.errors.user.lastName.length > 0 && <span className="text-danger">{this.state.errors.user.lastName}</span>}
 
                         </div>
                         <div className="col-sm-4">

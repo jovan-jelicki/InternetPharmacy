@@ -1,7 +1,6 @@
 package app.service;
 
 import app.model.appointment.Appointment;
-import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
 import app.repository.AppointmentRepository;
@@ -10,14 +9,8 @@ import app.service.impl.AppointmentServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
-
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +18,14 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AppointmentMethodsTests {
+public class AppointmentServiceTests {
 
     @Mock
     private AppointmentRepository appointmentRepository;
@@ -36,7 +34,7 @@ public class AppointmentMethodsTests {
     private PharmacyRepository pharmacyRepository;
 
     @Mock
-    private Appointment appointment;
+    private Appointment appointmentMock;
 
     @InjectMocks
     private AppointmentServiceImpl appointmentService;
@@ -44,17 +42,17 @@ public class AppointmentMethodsTests {
     @Test
     @Transactional
     public void testSave(){
-        when(appointmentRepository.save(appointment)).thenReturn(appointment);
+        when(appointmentRepository.save(appointmentMock)).thenReturn(appointmentMock);
 
-        Appointment savedAppointment = appointmentRepository.save(this.appointment);
+        Appointment savedAppointment = appointmentRepository.save(this.appointmentMock);
 
-        assertThat(savedAppointment, is(equalTo(this.appointment)));
+        assertThat(savedAppointment, is(equalTo(this.appointmentMock)));
 
     }
 
     @Test
     public void testGetAllAvailableAppointmentsByExaminerIdTypeAfterDate(){
-        when(appointmentRepository.GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(1l, EmployeeType.ROLE_dermatologist, LocalDateTime.of(2021,2,1,12,50))).thenReturn(Arrays.asList(appointment));
+        when(appointmentRepository.GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(1l, EmployeeType.ROLE_dermatologist, LocalDateTime.of(2021,2,1,12,50))).thenReturn(Arrays.asList(appointmentMock));
         Collection<Appointment> appointments = appointmentRepository.GetAllAvailableAppointmentsByExaminerIdTypeAfterDate(1l, EmployeeType.ROLE_dermatologist, LocalDateTime.of(2021,2,1,12,50));
 
         assertThat(1, is(equalTo(appointments.size())));

@@ -1,5 +1,6 @@
 package app.service;
 
+import app.dto.MedicationGradeDTO;
 import app.dto.MedicationSearchDTO;
 import app.model.medication.Medication;
 
@@ -13,5 +14,6 @@ public interface MedicationService extends CRUDService<Medication> {
 
     Medication getMedicationByName(String name);
     Collection<Medication> getMedicationByNameIsContaining(MedicationSearchDTO name);
+    Collection<MedicationGradeDTO> readMediactionAndGrades();
 
 }

@@ -33,11 +33,27 @@ public class PharmacistDermatologistProfileDTO {
         this.contact = user.getContact();
     }
 
+    public PharmacistDermatologistProfileDTO(Supplier user) {
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.email = user.getCredentials().getEmail();
+        this.userType = user.getUserType();
+        this.contact = user.getContact();
+    }
+
     public Dermatologist convertDtoToDermatologist(Dermatologist dermatologist){
         dermatologist.setFirstName(this.firstName);
         dermatologist.setLastName(this.lastName);
         dermatologist.setContact(this.contact);
         return dermatologist;
+    }
+
+    public Supplier convertDtoToSupplier(Supplier supplier){
+        supplier.setFirstName(this.firstName);
+        supplier.setLastName(this.lastName);
+        supplier.setContact(this.contact);
+        return supplier;
     }
 
 

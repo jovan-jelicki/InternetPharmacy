@@ -49,9 +49,23 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>("kavali", HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('patient')")
     @PostMapping(consumes = "application/json", value = "/getFinishedForComplaint")
     public ResponseEntity<Collection<AppointmentEmployeeDTO>> getFinishedForComplaint(@RequestBody ExaminerDTO examinerDTO) {
         return new ResponseEntity<>(appointmentService.getFinishedForComplaint(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('pharmacist, dermatologist')")
+    @PostMapping(consumes = "application/json", value = "/searchFinishedAppointments")
+    public ResponseEntity<Collection<AppointmentFinishedDTO>> searchFinishedAppointments(@RequestBody SearchFinishedAppointments searchFinishedAppointments){
+        Collection<AppointmentFinishedDTO> appointmentListingDTOS = new ArrayList<>();
+        for(AppointmentFinishedDTO appointmentFinishedDTO : appointmentService.getFinishedByExaminer(searchFinishedAppointments.getId(), searchFinishedAppointments.getType())){
+            String fullName = appointmentFinishedDTO.getPatientFirstName() + appointmentFinishedDTO.getPatientLastName();
+            if(fullName.toLowerCase().contains(searchFinishedAppointments.getQuery().toLowerCase().replaceAll("\\s+", "")))
+                appointmentListingDTOS.add(appointmentFinishedDTO);
+        }
+        return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
+
     }
 
     @GetMapping
@@ -185,6 +199,12 @@ public class AppointmentControllerImpl {
     @GetMapping(value = "/getAppointmentsYearlyReport/{pharmacyId}")
     public ResponseEntity<Collection<ReportsDTO>> getAppointmentsYearlyReport(@PathVariable Long pharmacyId) {
         return new ResponseEntity(appointmentService.getAppointmentsYearlyReport(pharmacyId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAppointmentsPharmacyForComplaint/{patientId}")
+    public ResponseEntity<Collection<PharmacyNameIdDTO>> getAppointmentsPharmacyForCoomplaint(@PathVariable Long patientId) {
+        Collection<PharmacyNameIdDTO> pharmacy=appointmentService.getAppointmentsPharmacyForComplaint(patientId);
+        return new ResponseEntity(pharmacy, HttpStatus.OK);
     }
 
 }

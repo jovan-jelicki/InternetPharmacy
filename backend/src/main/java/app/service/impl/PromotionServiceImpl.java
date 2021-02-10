@@ -109,6 +109,8 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionRepository.getCurrentPromotionsByPharmacyAndDate(pharmacyId, date);
     }
 
+
+
     @Override
     public Boolean checkPatientSubscribedToPromotion(Long pharmacyId, Long patientId, Long medicationId) {
         ArrayList<Promotion> promotions = (ArrayList<Promotion>) promotionRepository.getCurrentPromotionsByPharmacyAndDate(pharmacyId, LocalDateTime.now());
@@ -122,18 +124,25 @@ public class PromotionServiceImpl implements PromotionService {
         return false;
     }
 
+    public Boolean checkIfSubscribe(Long promotionId, Long patientId) {
+        Patient patient = patientService.read(patientId).get();
+        for (Promotion promotionPatient : patient.getPromotions()){
+            if (promotionPatient.getId().equals(promotionId)){
+                return true;
+            }
+        }
+        return  false;
+    }
+
     @Override
     public Boolean subscribeToPromotion(Long patientId, Long promotionId) {
         Patient patient = patientService.read(patientId).get();
         Promotion promotion = this.read(promotionId).get();
 
-        //checks if the promotion is still valid
-        if (promotion.getPeriod().getPeriodEnd().isBefore(LocalDateTime.now()))
+        if (this.checkIfSubscribe(promotionId,patientId))// && promotion.getPeriod().getPeriodEnd().isBefore(LocalDateTime.now()))
             return false;
 
         patient.getPromotions().add(promotion);
-
-        //TODO send an email of confirmation to the patient
 
         return patientService.save(patient) != null;
     }
