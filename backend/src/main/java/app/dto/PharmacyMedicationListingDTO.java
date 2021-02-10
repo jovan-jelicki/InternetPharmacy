@@ -4,6 +4,7 @@ import app.model.medication.Ingredient;
 import app.model.medication.Medication;
 import app.model.medication.MedicationQuantity;
 import app.model.medication.MedicationType;
+import app.model.pharmacy.Pharmacy;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,4 +39,5 @@ public class PharmacyMedicationListingDTO {
         this.alternatives = medicationQuantity.getMedication().getAlternatives();
         this.grade = grade;
     }
+
 }

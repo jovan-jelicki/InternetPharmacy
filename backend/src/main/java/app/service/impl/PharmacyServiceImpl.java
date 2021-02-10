@@ -11,6 +11,7 @@ import app.repository.PharmacyRepository;
 import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
@@ -20,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class PharmacyServiceImpl implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
@@ -46,6 +47,11 @@ public class PharmacyServiceImpl implements PharmacyService {
     @Override
     public void setMedicationOffer(MedicationOfferService medicationOfferService) {
         this.medicationOfferService = medicationOfferService;
+    }
+
+    @Override
+    public Collection<MedicationQuantity> getPharmacyMedicationQuantity(Pharmacy pharmacy) {
+        return this.read(pharmacy.getId()).get().getMedicationQuantity();
     }
 
     @Override
@@ -106,6 +112,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional
     public Optional<Pharmacy> read(Long id) {
         return pharmacyRepository.findById(id);
     }
@@ -180,6 +187,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean editMedicationQuantity(PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
         Pharmacy pharmacy = this.read(pharmacyMedicationListingDTO.getPharmacyId()).get();
 

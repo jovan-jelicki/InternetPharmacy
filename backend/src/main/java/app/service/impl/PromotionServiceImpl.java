@@ -87,7 +87,7 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     //jednom mesecno se runnuje - svake srede 50% popusta na ova 3 leka
-    @Scheduled(fixedRate=50000, initialDelay = 5000)
+    @Scheduled(fixedRate=50000, initialDelay = 500000)
     public void createNewPromotionsForAllPharmacies() {
         Period promotionPeriod = new Period(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0), LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).plusDays(7));
         System.out.println("aa");

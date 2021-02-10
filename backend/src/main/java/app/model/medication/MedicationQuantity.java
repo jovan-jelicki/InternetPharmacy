@@ -17,6 +17,10 @@ public class MedicationQuantity {
     @Column
     private int quantity;
 
+    @Version
+    @Column(nullable = false, columnDefinition = "int default 1")
+    private Long version;
+
     public MedicationQuantity() {
     }
 
@@ -57,5 +61,13 @@ public class MedicationQuantity {
         if(this.quantity < quantity)
             throw new IllegalArgumentException("Not enough medicine");
         this.quantity = this.quantity - quantity;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }
