@@ -261,6 +261,7 @@ export default class PharmacyMedications extends React.Component{
     }
 
     submitEditMedication= () => {
+        alert(this.state.medicationForEditing.medicationQuantityVersion);
         console.log(this.state.medicationForEditing);
         if (parseInt(this.state.medicationForEditing.quantity) < 0) {
             alert("Medication quantity cannot be negative.");
@@ -340,6 +341,7 @@ export default class PharmacyMedications extends React.Component{
                 medicationId : medication.medicationId,
                 medicationQuantityId : medication.medicationQuantityId,
                 pharmacyId : medication.pharmacyId,
+                medicationQuantityVersion : medication.medicationQuantityVersion
             },
         });
         this.handleEditModal();

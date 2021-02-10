@@ -82,6 +82,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public VacationRequestSendDTO saveVacationRequest(VacationRequestSendDTO entity) {
         VacationRequest vacationRequest = entity.createEntity();
         vacationRequest.setPharmacy(pharmacyService.read(entity.getPharmacy().getId()).get());
@@ -90,6 +91,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void confirmVacationRequest(VacationRequestDTO vacationRequestDTO) {
         VacationRequest vacationRequest = this.read(vacationRequestDTO.getId()).get();
 
@@ -120,6 +122,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void declineVacationRequest(VacationRequestDTO vacationRequestDTO) {
         VacationRequest vacationRequest = this.read(vacationRequestDTO.getId()).get();
 
