@@ -3,10 +3,7 @@ package app.service;
 import app.dto.*;
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
-import app.model.pharmacy.Pharmacy;
 import app.model.user.EmployeeType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

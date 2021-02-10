@@ -2,7 +2,6 @@ package app.service;
 
 import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentStatus;
-import app.model.appointment.Therapy;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
 import org.junit.Test;

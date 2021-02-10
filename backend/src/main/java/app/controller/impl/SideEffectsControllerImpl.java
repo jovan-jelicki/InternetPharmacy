@@ -1,6 +1,5 @@
 package app.controller.impl;
 
-import app.model.medication.MedicationOrder;
 import app.model.medication.SideEffect;
 import app.service.SideEffectsService;
 import org.springframework.http.HttpStatus;

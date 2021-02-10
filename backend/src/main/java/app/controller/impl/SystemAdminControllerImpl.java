@@ -1,7 +1,6 @@
 package app.controller.impl;
 
 import app.dto.UserPasswordDTO;
-import app.model.user.Patient;
 import app.model.user.SystemAdmin;
 import app.service.SystemAdminService;
 import org.springframework.http.HttpStatus;

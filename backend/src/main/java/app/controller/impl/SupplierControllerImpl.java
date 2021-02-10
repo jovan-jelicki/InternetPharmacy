@@ -1,12 +1,11 @@
 package app.controller.impl;
 
-import app.dto.*;
-import app.model.medication.Medication;
-import app.model.medication.MedicationOffer;
-import app.model.medication.MedicationQuantity;
-
 import app.dto.MedicationOfferAndOrderDTO;
-import app.model.user.Dermatologist;
+import app.dto.MedicationSupplierDTO;
+import app.dto.PharmacistDermatologistProfileDTO;
+import app.dto.UserPasswordDTO;
+import app.model.medication.Medication;
+import app.model.medication.MedicationQuantity;
 import app.model.user.Supplier;
 import app.service.SupplierService;
 import org.springframework.http.HttpStatus;

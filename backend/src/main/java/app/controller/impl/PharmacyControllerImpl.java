@@ -2,7 +2,6 @@ package app.controller.impl;
 
 import app.dto.*;
 import app.model.grade.GradeType;
-import app.model.medication.EPrescription;
 import app.model.pharmacy.Pharmacy;
 import app.service.GradeService;
 import app.service.PharmacyService;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.Collection;

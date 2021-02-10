@@ -5,7 +5,6 @@ import app.dto.UserPasswordDTO;
 import app.model.medication.Ingredient;
 import app.model.medication.Medication;
 import app.model.pharmacy.LoyaltyCategory;
-import app.model.pharmacy.LoyaltyProgram;
 import app.model.pharmacy.LoyaltyScale;
 import app.model.user.Patient;
 import app.repository.PatientRepository;

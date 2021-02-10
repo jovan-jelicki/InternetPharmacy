@@ -1,6 +1,6 @@
 package app.controller.impl;
+
 import app.model.pharmacy.LoyaltyProgram;
-import app.model.pharmacy.LoyaltyScale;
 import app.service.LoyaltyProgramService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

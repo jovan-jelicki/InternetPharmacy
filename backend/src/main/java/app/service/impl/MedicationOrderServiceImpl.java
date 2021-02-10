@@ -61,7 +61,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
         ArrayList<MedicationQuantity> medicationQuantities = new ArrayList<>();
         for (MedicationQuantity medicationQuantity : medicationOrderDTO.getMedicationQuantity()) {
             Medication medication = medicationService.getMedicationByName(medicationQuantity.getMedication().getName());
-            medicationQuantities.add(medicationQuantityService.save(new MedicationQuantity(medication, medicationQuantity.getQuantity())));
+            medicationQuantities.add(new MedicationQuantity(medication, medicationQuantity.getQuantity()));
         }
 
         medicationOrder.setMedicationQuantity(medicationQuantities);
@@ -142,7 +142,7 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
         ArrayList<MedicationQuantity> medicationQuantities = new ArrayList<>();
         for (MedicationQuantity medicationQuantity : medicationOrderDTO.getMedicationQuantity()) {
             Medication medication = medicationService.getMedicationByName(medicationQuantity.getMedication().getName());
-            medicationQuantities.add(medicationQuantityService.save(new MedicationQuantity(medication, medicationQuantity.getQuantity())));
+            medicationQuantities.add(new MedicationQuantity(medication, medicationQuantity.getQuantity()));
         }
 
         medicationOrder.setMedicationQuantity(medicationQuantities);

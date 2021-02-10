@@ -2,8 +2,6 @@ package app.service;
 
 import app.dto.ComplaintDTO;
 import app.model.complaint.Complaint;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Collection;
 

@@ -30,7 +30,7 @@ export class PharmacyDescription extends React.Component{
         // this.setState({
         //     pharmacyId : temp
         // });
-        //this.fetchPharmacy();
+        this.fetchPharmacy();
     }
 
 
@@ -109,20 +109,20 @@ export class PharmacyDescription extends React.Component{
         }
     };
 
-    // fetchPharmacy = async () => {
-    //     await axios.get(HelperService.getPath("/api/pharmacy/" + this.state.pharmacyId),
-    //         {
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 Authorization : 'Bearer ' + this.state.user.jwtToken
-    //             }
-    //         })
-    //         .then((res) => {
-    //             this.setState({
-    //                 pharmacy : res.data
-    //             })
-    //         })
-    // }
+    fetchPharmacy = () => {
+        axios.get(HelperService.getPath("/api/pharmacy/" + this.state.pharmacyId),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization : 'Bearer ' + this.state.user.jwtToken
+                }
+            })
+            .then((res) => {
+                this.setState({
+                    pharmacy : res.data
+                })
+            })
+    }
 }
 
 export default GoogleApiWrapper({
