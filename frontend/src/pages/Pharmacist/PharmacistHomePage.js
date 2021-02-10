@@ -26,7 +26,10 @@ export default class PharmacistHomePage extends React.Component {
     }
 
     componentDidMount() {
-
+        if (this.state.user.type == undefined || this.state.user.type != "ROLE_pharmacist")
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
         const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacist/isAccountApproved/"
             : 'http://localhost:8080/api/pharmacist/isAccountApproved/';
         axios
@@ -72,12 +75,22 @@ export default class PharmacistHomePage extends React.Component {
                         <li className="nav-item">
                             <a className="nav-link " style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' name="medicine" onClick={this.handleChange}>Give medication</a>
                         </li>
+                        <Button onClick={this.logOut}>Log out</Button>
+
                     </ul>
                 </Container>
                 {this.renderNavbar()}
                 {this.showModalDialog()}
             </div>
         );
+    }
+
+
+    logOut = () => {
+        localStorage.removeItem("user");
+        this.props.history.push({
+            pathname: "/"
+        });
     }
 
     showModalDialog = () => {

@@ -46,7 +46,7 @@ export default class ScheduleByDateTime extends React.Component {
                 <Row>
                     <Col  xs={100}>
                         <p> Schedule by date and time : </p>
-                        <DateTimePicker style={{margin : 10}} value={this.state.timeForScheduling} onChange={this.setTimeForNewAppointment}/>
+                        <DateTimePicker style={{margin : 10}} format={"dd:MM:yyyy hh a"} value={this.state.timeForScheduling} onChange={this.setTimeForNewAppointment}/>
                         <Button  style={{ height : 35, float : "right"}} variant="primary" onClick={this.schedule}>Schedule</Button>
                     </Col>
 
