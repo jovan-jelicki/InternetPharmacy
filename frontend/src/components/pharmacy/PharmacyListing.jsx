@@ -6,6 +6,7 @@ import PharmacySorting from './PharmacySorting'
 import axios from 'axios';
 import StarRatings from 'react-star-ratings'
 import helpers from './../../helpers/AuthentificationService'
+import HelperService from './../../helpers/HelperService'
 import { withRouter } from "react-router-dom";
 
 
@@ -26,7 +27,7 @@ class PharmacyListing extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         await axios
-        .get('http://localhost:8080/api/pharmacy' /*{
+        .get(HelperService.getPath('/api/pharmacy') /*{
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -60,7 +61,7 @@ class PharmacyListing extends React.Component {
 
     search({name, location}) {
         axios
-        .post('http://localhost:8080/api/pharmacy/search', {
+        .post(HelperService.getPath('/api/pharmacy/search'), {
             'name' : name,
             'street' : location.street,
             'town' : location.town,

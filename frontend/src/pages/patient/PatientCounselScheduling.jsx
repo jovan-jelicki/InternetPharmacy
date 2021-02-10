@@ -5,7 +5,7 @@ import {Container, Row} from "react-bootstrap";
 import ScheduleCounsel from "../../components/ScheduleCounsel";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
-
+import HelperService from './../../helpers/HelperService'
 
 class PatientCounselScheduling extends React.Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class PatientCounselScheduling extends React.Component {
 
     search(dateTime) {
         axios
-            .post('http://localhost:8080/api/scheduling/search', {
+            .post(HelperService.getPath('/api/scheduling/search'), {
                 'timeSlot' : dateTime,
                 'employeeType' : 'ROLE_pharmacist',
                 'patientId' : this.aut.id
@@ -46,7 +46,7 @@ class PatientCounselScheduling extends React.Component {
 
     schedule(pharmacyId, pharmacistId) {
         axios
-        .post('http://localhost:8080/api/appointment/counseling', {
+        .post(HelperService.getPath('/api/appointment/counseling'), {
             'examinerId' : pharmacistId,
             'type' : 'ROLE_pharmacist',
             'active' : true,
