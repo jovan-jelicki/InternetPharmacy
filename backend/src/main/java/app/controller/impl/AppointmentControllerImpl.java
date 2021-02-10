@@ -50,6 +50,7 @@ public class AppointmentControllerImpl {
         return new ResponseEntity<>("kavali", HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('patient')")
     @PostMapping(consumes = "application/json", value = "/getFinishedForComplaint")
     public ResponseEntity<Collection<AppointmentEmployeeDTO>> getFinishedForComplaint(@RequestBody ExaminerDTO examinerDTO) {
         return new ResponseEntity<>(appointmentService.getFinishedForComplaint(examinerDTO.getId(), examinerDTO.getType()), HttpStatus.OK);

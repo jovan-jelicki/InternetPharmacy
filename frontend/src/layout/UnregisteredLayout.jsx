@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container, Navbar, NavDropdown, Nav } from 'react-bootstrap';
 import Login from "../components/Login";
+import Registration from "../pages/Registration";
 
 export default class UnregisteredLayout extends React.Component {
     constructor(props) {

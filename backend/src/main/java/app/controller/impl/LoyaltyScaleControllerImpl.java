@@ -25,7 +25,7 @@ public class LoyaltyScaleControllerImpl {
     public ResponseEntity<Boolean> save(@RequestBody LoyaltyScale entity) {
         return new ResponseEntity<>(loyaltyScaleService.editLoyaltyScale(entity), HttpStatus.CREATED);
     }
-    
+
     @PreAuthorize("hasRole('systemAdmin')")
     @GetMapping
     public ResponseEntity<Collection<LoyaltyScale>> read() {

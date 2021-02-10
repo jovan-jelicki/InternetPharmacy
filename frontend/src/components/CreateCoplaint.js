@@ -1,10 +1,5 @@
 import React from 'react';
 import {Button, Container, Form, Modal, Row} from "react-bootstrap";
-import UnregisteredLayout from "../layout/UnregisteredLayout"
-import PharmacyListing from "../components/pharmacy/PharmacyListing"
-import MedicationListing from "../components/MedicationListing"
-import DateTime from "./DateTime";
-import ScheduleCounsel from "./ScheduleCounsel";
 import PatientLayout from "../layout/PatientLayout";
 import axios from "axios";
 
@@ -28,6 +23,8 @@ export default class CreateCoplaint extends React.Component{
                     content: 'Enter content',
             },
             showModal:false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+
         }
     }
 
@@ -38,9 +35,16 @@ export default class CreateCoplaint extends React.Component{
     }
 
     fetchDermatologist(){
-        axios.post("http://localhost:8080/api/appointment/getFinishedForComplaint",{
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "api/appointment/getFinishedForComplaint"
+            : 'http://localhost:8080/api/appointment/getFinishedForComplaint';
+        axios.post(path,{
             id: this.state.patient.id,
-            type:'dermatologist' //dermatolog/farmaceut
+            type: 0 //dermatolog/farmaceut
+        },{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.user.jwtToken
+            }
         }).then(res => {
             this.setState({
                 dermatologists : res.data
@@ -51,8 +55,14 @@ export default class CreateCoplaint extends React.Component{
     }
 
     fetchPharmacist(){
-        axios.get("http://localhost:8080/api/pharmacist/getPharmacistsByPatient/"+this.state.patient.id)
-            .then(res => {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacist/getPharmacistsByPatient/"
+            : 'http://localhost:8080/api/pharmacist/getPharmacistsByPatient/';
+        axios.get(path+this.state.patient.id,{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.user.jwtToken
+            }
+        }) .then(res => {
                 this.setState({
                     pharmacists : res.data
                 });
@@ -62,7 +72,14 @@ export default class CreateCoplaint extends React.Component{
     }
 
     fetchPharmacy(){
-        axios.get("http://localhost:8080/api/appointment/getAppointmentsPharmacyForComplaint/"+this.state.patient.id)
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getAppointmentsPharmacyForComplaint/"
+            : 'http://localhost:8080/api/appointment/getAppointmentsPharmacyForComplaint/';
+        axios.get(path+this.state.patient.id,{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.state.user.jwtToken
+            }
+        })
             .then(res => {
                 this.setState({
                     pharmacy : res.data
