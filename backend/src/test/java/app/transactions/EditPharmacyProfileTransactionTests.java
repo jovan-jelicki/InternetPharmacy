@@ -1,6 +1,7 @@
-package app.service;
+package app.transactions;
 
 import app.model.pharmacy.Pharmacy;
+import app.service.PharmacyService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+//Created by David
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class EditPharmacyProfileTests {
+public class EditPharmacyProfileTransactionTests {
 
     @Autowired
     private PharmacyService pharmacyService;

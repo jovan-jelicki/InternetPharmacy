@@ -1,8 +1,12 @@
-package app.service;
+package app.transactions;
 
 import app.model.medication.MedicationQuantity;
 import app.model.pharmacy.Pharmacy;
 import app.repository.PharmacyRepository;
+import app.service.AppointmentService;
+import app.service.CounselingService;
+import app.service.PatientService;
+import app.service.PharmacyService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +26,7 @@ import java.util.concurrent.Future;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class EditMedicationQuantityTests {
+public class EditMedicationQuantityTransactionTests {
 
     @Autowired
     private AppointmentService appointmentService;
