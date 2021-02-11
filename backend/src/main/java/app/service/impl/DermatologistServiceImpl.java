@@ -130,7 +130,6 @@ public class DermatologistServiceImpl implements DermatologistService {
     @Override
     @Transactional(readOnly = false)
     public Dermatologist save(Dermatologist entity) {
-        entity.setApprovedAccount(true);
         return dermatologistRepository.save(entity);
     }
 
