@@ -30,11 +30,11 @@ export default class MedicationOrdersForSupplier extends React.Component {
         await this.fetchSuppliersMedicationList();
     }
     fetchOrders(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medicationOrder/getAllActive"
-            : 'http://localhost:8080/api/medicationOrder/getAllActive';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medicationOrder/getAllActive"
+         //   : 'http://localhost:8080/api/medicationOrder/getAllActive';
          axios
-            .get(path
-                ,{  headers: {
+            .get(HelperService.getPath('/api/medicationOrder/getAllActive'),
+                {  headers: {
                         'Content-Type': 'application/json',
                         Authorization : 'Bearer ' + this.state.user.jwtToken
                     }})

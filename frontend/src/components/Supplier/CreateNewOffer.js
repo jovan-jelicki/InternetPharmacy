@@ -2,6 +2,7 @@ import React from "react";
 import DatePicker from "react-datepicker";
 import {Alert, Button, Modal} from "react-bootstrap";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class CreateNewOffer extends React.Component{
@@ -82,12 +83,8 @@ export default class CreateNewOffer extends React.Component{
     async sendParams() {
         let orderId=this.props.order.id;
 
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medicationOffer/new"
-            : 'http://localhost:8080/api/medicationOffer/new';
-
-
         axios
-            .post(path, {
+            .post(HelperService.getPath( '/api/medicationOffer/new'), {
                 'id':'',
                 'cost' : this.state.medicationOffer.cost,
                 'shippingDate' : this.state.medicationOffer.shippingDate,

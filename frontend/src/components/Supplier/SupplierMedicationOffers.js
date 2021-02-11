@@ -24,7 +24,7 @@ export default class SupplierMedicationOffers extends React.Component{
 
     async componentDidMount() {
         await axios
-            .get(HelperService.getPath("/api/suppliers/getAllBySupplier/" + this.state.user.id), {
+            .get(HelperService.getPath('/api/suppliers/getAllBySupplier/' + this.state.user.id), {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + this.state.user.jwtToken
