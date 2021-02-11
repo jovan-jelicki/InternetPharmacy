@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
@@ -33,6 +34,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.patientService = patientService;
     }
 
+    @Transactional(readOnly = false)
     @Override
     public Complaint save(Complaint entity)  {
         entity.setPatient(patientService.read(entity.getPatient().getId()).get());
@@ -49,6 +51,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintRepository.findById(id);
     }
 
+    @Transactional(readOnly = false)
     @Override
     public void delete(Long id)  {
         complaintRepository.deleteById(id);
@@ -85,11 +88,12 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintDTOS;
     }
 
+    @Transactional(readOnly = false)
     @Override
     public Boolean editComplaint(Long complaintId) {
-         Complaint complaint= this.read(complaintId).get();
-         complaint.setActive(false);
-         this.save(complaint);
-         return true;
+        Complaint complaint= this.read(complaintId).get();
+        complaint.setActive(false);
+        this.save(complaint);
+        return true;
     }
 }
