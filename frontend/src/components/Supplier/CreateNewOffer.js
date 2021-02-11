@@ -30,8 +30,6 @@ export default class CreateNewOffer extends React.Component{
         }
     }
 
-
-
     handleInputChange = (event) => {
         const { name, value } = event.target;
         const medicationOffer = this.state.medicationOffer;

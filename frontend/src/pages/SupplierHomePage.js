@@ -16,7 +16,7 @@ export default class SupplierHomePage extends React.Component {
             },
             role: this.props.role,
             Id: this.props.Id,
-            navbar : "",
+            navbar : "order",
             showContent:"",
             showModal : false,
             oldPw : "",

@@ -29,6 +29,13 @@ export default class QRcode extends React.Component{
         this.cancel = this.cancel.bind(this)
     }
 
+    async componentDidMount() {
+        if (this.state.user.type == undefined || this.state.user.type != "ROLE_patient")
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
+    }
+
     onImageChange = (event)=> {
         var fileReader=new FileReader();
         var fileInput = document.getElementById("file");

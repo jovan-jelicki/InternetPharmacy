@@ -30,6 +30,11 @@ export default class CreateCoplaint extends React.Component{
     }
 
     async componentDidMount() {
+        if (this.state.user.type == undefined || this.state.user.type != "ROLE_patient")
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
+
         await this.fetchDermatologist();
         await this.fetchPharmacist();
         await this.fetchPharmacy();
