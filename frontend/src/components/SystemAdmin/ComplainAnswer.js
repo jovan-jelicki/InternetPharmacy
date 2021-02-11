@@ -10,6 +10,7 @@ export default class ComplainAnswer extends React.Component{
             content:null,
             error:'Please write your message',
             boolEnde:false,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
         }
 
     }
@@ -31,12 +32,36 @@ export default class ComplainAnswer extends React.Component{
     }
 
     async sendMail() {
-        console.log(this.props.complaint.patientEmail)
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/email/send"
+            : 'http://localhost:8080/api/email/send';
         axios
-            .put('http://localhost:8080/api/email/send', {
+            .put(path, {
                 'to': 't.kovacevic98@gmail.com',    //this.props.complaint.patientEmail
                 'subject':"Response to complaint",
                 'body':this.state.content,
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
+            })
+            .then(res => {
+                this.setState({boolEnde:true});
+            });
+
+        this.editComplaint();
+    }
+
+    editComplaint(){
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/complaints/edit/"
+            : 'http://localhost:8080/api/complaints/edit/';
+        console.log(this.props.complaint.complaintId)
+        axios
+            .get(path+this.props.complaint.complaintId,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 this.setState({boolEnde:true});

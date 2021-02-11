@@ -6,8 +6,8 @@ import axios from "axios";
 
 
 export default class PharmacyRegistration extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             pharmacy: {
                 name: '',
@@ -40,21 +40,11 @@ export default class PharmacyRegistration extends React.Component {
                     address: 'Choose address',
                    // pharmacyAdmin: 'Select admin',
                 },
-            }
+            },
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+
         }
     }
-
-    async componentDidMount() {
-        await axios.get("http://localhost:8080/api/pharmacyAdmin").then(res => {
-            this.setState({
-                pharmacyAdmins : res.data
-            });
-        })
-        console.log("nema")
-        console.log(this.state.pharmacyAdmins)
-    }
-
-
 
     handleInputChange = (event) => {
 
@@ -195,6 +185,8 @@ export default class PharmacyRegistration extends React.Component {
     }
 
     async sendParams() {
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy/save"
+            : 'http://localhost:8080/api/pharmacy/save';
         axios
             .post('http://localhost:8080/api/pharmacy/save', {
                 'id':'',
@@ -207,6 +199,11 @@ export default class PharmacyRegistration extends React.Component {
                         'latitude': this.state.pharmacy.address.latitude,
                         'longitude': this.state.pharmacy.address.longitude
                     },
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 alert("Successfully registered!");
@@ -222,10 +219,7 @@ export default class PharmacyRegistration extends React.Component {
         const {selectedOption} = this.state;
 
         return (
-            <Container style={{
-                background: 'rgb(232, 244, 248 )',
-                color: 'rgb(0, 92, 230)',
-            }}>
+            <Container style={{ background: 'rgb(232, 244, 248 )',color: 'rgb(0, 92, 230)', }}>
                 <h3 style={({marginTop: '5rem', textAlignVertical: "center", textAlign: "center"})}>Pharmacy registration</h3>
                 <div className="row"
                      style={{marginTop: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

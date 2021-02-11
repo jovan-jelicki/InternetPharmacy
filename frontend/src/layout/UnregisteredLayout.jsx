@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container, Navbar, NavDropdown, Nav } from 'react-bootstrap';
 import Login from "../components/Login";
+import Registration from "../pages/Registration";
 
 export default class UnregisteredLayout extends React.Component {
     constructor(props) {
@@ -16,6 +17,7 @@ export default class UnregisteredLayout extends React.Component {
                     <Nav className="mr-auto">
                         <Nav.Link href="#pharmacies">Pharmacies</Nav.Link>
                         <Nav.Link href="#medications">Medications</Nav.Link>
+                        <Nav.Link href="#registration">Registration</Nav.Link>
                     </Nav>
                     <Nav>
                     <Login/>

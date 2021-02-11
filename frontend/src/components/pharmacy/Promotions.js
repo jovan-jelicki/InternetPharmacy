@@ -34,13 +34,21 @@ export default class Promotions extends React.Component{
     }
 
     handlePromotion=(promotion)=>{
-        this.checkIfSubscribed(promotion)
+        console.log(promotion)
+        this.subscribeToPromotion(promotion)
+        //this.checkIfSubscribed(promotion)
+    }
 
+    chooseModal=()=>{
         console.log(this.state.isSubscribed)
-        if(this.state.isSubscribed){
-            this.handleModalAlert()
+        let boolState=this.state.isSubscribed
+        if(boolState==false){
+            console.log("DOSAOFALSE")
+           this.handleModalAlert()
         }else {
-            this.subscribeToPromotion(promotion)
+            console.log("DOSAO")
+
+            this.handleModal();
         }
     }
 
@@ -99,12 +107,8 @@ export default class Promotions extends React.Component{
                                 <div className="card">
                                     <div className="card-body" style={{padding : '1rem'}}>
                                         <p className="card-text">
-                                            {this.state.subPromotion.content}
-                                            <br/>
-                                            {'Valid from ' + moment(this.state.subPromotion.periodStart).format("DD.MM.YYYY.").toString() + ' to ' + moment(this.state.subPromotion.periodEnd).format('DD.MM.YYYY').toString()}
-                                            <br/>
-                                            <br/>
-                                            For more information check your profile!
+                                            You are successfully subscribed!
+                                            Please check your profile.
                                         </p>
                                     </div>
                                 </div>
@@ -171,19 +175,11 @@ export default class Promotions extends React.Component{
 
     subscribeToPromotion =  (promotion)=>{
         axios
-            .put(HelperService.getPath('/api/promotion/subscribeToPromotion/'+promotion.pharmacyId+"/"+0+"/"+promotion.id))
+            .put('http://localhost:8080/api/promotion/subscribeToPromotion/'+0+"/"+promotion.id)
             .then(res => {
-
-                this.setState({
-                    subPromotion: {
-                        id: promotion.id,
-                        pharmacyId: promotion.pharmacyId,
-                        content: promotion.content,
-                        periodStart: promotion.periodStart,
-                        periodEnd: promotion.periodEnd
-                    }
-                });
-                this.handleModal();
+                console.log(res.data)
+                this.setState({isSubscribed : res.data})
+                this.chooseModal();
 
             }).catch(() => {
             // alert("Pharmacy was not registered successfully!")

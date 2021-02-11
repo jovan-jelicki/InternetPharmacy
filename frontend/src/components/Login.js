@@ -84,9 +84,13 @@ class Login extends React.Component {
                 'password':this.state.password
             })
             .then(res => {
+                this.state.error = false
+
                 this.setState({
                     user:res.data
                 })
+                this.state.error = false
+
                 this.redirect()
             })
             .catch( res =>
@@ -99,11 +103,10 @@ class Login extends React.Component {
         let type=this.state.user.type
         console.log(type)
         const history = createHashHistory()
-
-
         if(type=="ROLE_patient"){ //ROLE_patient
             localStorage.setItem("user", JSON.stringify(this.state.user));
             this.props.history.push({
+
                 pathname: "/patient-home"
             });
         }else if(type=="ROLE_dermatologist"){ //ROLE_dermatologist

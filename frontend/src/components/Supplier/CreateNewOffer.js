@@ -8,6 +8,8 @@ export default class CreateNewOffer extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            role : props.role,
+            Id : props.Id,
             modalClose:false,
             medicationOffer:   {
                 cost : 1,
@@ -23,13 +25,13 @@ export default class CreateNewOffer extends React.Component{
             boolButton:true,
             medicationList:[],
             boolMedications:true,
+            user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
         }
     }
 
 
 
     handleInputChange = (event) => {
-
         const { name, value } = event.target;
         const medicationOffer = this.state.medicationOffer;
         medicationOffer[name] = value;
@@ -79,16 +81,24 @@ export default class CreateNewOffer extends React.Component{
 
     async sendParams() {
         let orderId=this.props.order.id;
-        console.log("HEH")
-        console.log(this.props.order)
+
+        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medicationOffer/new"
+            : 'http://localhost:8080/api/medicationOffer/new';
+
+
         axios
-            .post('http://localhost:8080/api/medicationOffer/new', {
+            .post(path, {
                 'id':'',
                 'cost' : this.state.medicationOffer.cost,
                 'shippingDate' : this.state.medicationOffer.shippingDate,
                 'status' : 0,
-                'medicationOrderId' : this.props.order.id,
-                'supplierId': 1
+                'supplierId': this.state.user.id,
+                'medicationOrderId' : this.props.order.medicationOrderId,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
 

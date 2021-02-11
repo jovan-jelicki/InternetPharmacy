@@ -6,6 +6,7 @@ import DermatologistsProfilePage from "./DermatologistsProfilePage";
 import DermatologistWorkingHours from "./DermatologistWorkingHours";
 import DermatologistAppointmentStart from "./DermatologistAppointmentStart";
 import axios from "axios";
+import AuthentificationService from "../../helpers/AuthentificationService";
 
 export default class DermatologistHomePage extends React.Component {
     constructor(props) {
@@ -23,6 +24,10 @@ export default class DermatologistHomePage extends React.Component {
     }
 
     componentDidMount() {
+        if (this.state.user.type == undefined || this.state.user.type != "ROLE_dermatologist")
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
 
         const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/isAccountApproved/"
             : 'http://localhost:8080/api/dermatologists/isAccountApproved/';
@@ -65,12 +70,20 @@ export default class DermatologistHomePage extends React.Component {
                     <li className="nav-item">
                         <a className="nav-link " style={{'color' : '#000000', 'font-weight' : 'bold'}} href='#' name="profile" onClick={this.handleChange}>Account</a>
                     </li>
+                    <Button onClick={this.logOut}>Log out</Button>
                 </ul>
                 </Container>
                 {this.renderNavbar()}
                 {this.showModalDialog()}
             </div>
         );
+    }
+
+    logOut = () => {
+        localStorage.removeItem("user");
+        this.props.history.push({
+            pathname: "/"
+        });
     }
     showModalDialog = () => {
         return (

@@ -38,6 +38,8 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Transactional(readOnly = false)
     public Boolean dermatologistSchedulingCreatedAppointment(AppointmentUpdateDTO appointmentUpdateDTO){
         Appointment appointment = appointmentService.read(appointmentUpdateDTO.getAppointmentId()).get();
+        if(appointment.getPatient() != null)
+            return false;
         if(appointmentService.getAllNotFinishedByPatientId(appointmentUpdateDTO.getPatientId())
                 .stream().filter(a -> a.isOverlapping(appointment.getPeriod().getPeriodStart())).findFirst().orElse(null) != null)
             return false;
@@ -66,12 +68,6 @@ public class ExaminationServiceImpl implements ExaminationService {
     public Boolean isExaminationPossible(Appointment appointment) {
         if(appointmentService.getAllNotFinishedByPatientId(appointment.getPatient().getId())
                 .stream().filter(a -> a.isOverlapping(appointment.getPeriod().getPeriodStart())).findFirst().orElse(null) != null)
-            return false;
-        if (!appointmentService.validateAppointmentTimeRegardingWorkingHours(appointment))
-            return false;
-        if (!appointmentService.validateAppointmentTimeRegardingAllWorkingHours(appointment))
-            return false;
-        else if (!appointmentService.validateAppointmentTimeRegardingVacationRequests(appointment))
             return false;
 
         return true;

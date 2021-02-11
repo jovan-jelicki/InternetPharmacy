@@ -121,10 +121,6 @@ public class Pharmacy {
         return dermatologistCost;
     }
 
-    public void setDermatologistConst(int dermatologistCost) {
-        this.dermatologistCost = dermatologistCost;
-    }
-
     public Long getVersion() {
         return version;
     }

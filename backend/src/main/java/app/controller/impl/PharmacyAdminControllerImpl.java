@@ -1,6 +1,7 @@
 package app.controller.impl;
 
 import app.dto.PharmacyAdminDTO;
+import app.dto.PharmacyAdminRegistrationDTO;
 import app.dto.UserPasswordDTO;
 import app.model.pharmacy.Pharmacy;
 import app.model.user.PharmacyAdmin;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,21 +49,29 @@ public class PharmacyAdminControllerImpl {
         return new ResponseEntity<>(new PharmacyAdminDTO(pharmacyAdmin.get()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin','systemAdmin')")
+    @PostMapping(consumes = "application/json", value="/saveAdminPharmacy")
+    public ResponseEntity<Boolean> saveAdmin(@RequestBody PharmacyAdminRegistrationDTO pharmacyAdmin) {
+        return new ResponseEntity<>(this.pharmacyAdminService.saveAdmin(pharmacyAdmin), HttpStatus.CREATED);
+    }
     @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getPharmacyAdminPharmacy/{id}")
     public ResponseEntity<Long> getPharmacyAdminPharmacy(@PathVariable Long id) {
         return new ResponseEntity<>(pharmacyAdminService.getPharmacyByPharmacyAdmin(id).getId(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<PharmacyAdminDTO> save(@RequestBody PharmacyAdmin pharmacyAdmin) {
         return new ResponseEntity<>(new PharmacyAdminDTO(this.pharmacyAdminService.save(pharmacyAdmin)), HttpStatus.CREATED);
+
     }
 
     @PostMapping(consumes = "application/json",value="/save")
     public ResponseEntity<PharmacyAdmin> Admin(@RequestBody PharmacyAdmin pharmacyAdmin) {
         return new ResponseEntity<>(this.pharmacyAdminService.save(pharmacyAdmin), HttpStatus.CREATED);
     }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         Optional<PharmacyAdmin> pharmacyAdmin = this.pharmacyAdminService.read(id);

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,12 +48,14 @@ public class PromotionController {
         return new ResponseEntity<>(promotionService.checkPatientSubscribedToPromotion(pharmacyId, patientId, medicationId), HttpStatus.OK);
     }
 
-    @PutMapping(value = "/subscribeToPromotion/{pharmacyId}/{patientId}/{promotionId}")
+    @PutMapping(value = "/subscribeToPromotion/{patientId}/{promotionId}")
     public ResponseEntity<Boolean> subscribeToPromotion(@PathVariable Long patientId,@PathVariable Long promotionId) {
         if (promotionService.subscribeToPromotion(patientId, promotionId))
             return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(false, HttpStatus.OK);
     }
+
+
     @PutMapping(value = "/unsubscribe/{pharmacyId}/{patientId}")
     @PreAuthorize("hasRole('patient')")
     public ResponseEntity<Boolean> unsubscribe(@PathVariable Long pharmacyId,@PathVariable Long patientId) {

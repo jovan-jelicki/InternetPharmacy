@@ -20,6 +20,7 @@ public class PharmacyDTO {
     private int pharmacistCost;
     private int dermatologistCost;
     private double grade;
+    private Long version;
 
     private List<MedicationQuantity> medicationQuantity;
 
@@ -33,6 +34,7 @@ public class PharmacyDTO {
         this.medicationQuantity = pharmacy.getMedicationQuantity();
         this.pharmacistCost = pharmacy.getPharmacistCost();
         this.dermatologistCost = pharmacy.getDermatologistCost();
+        this.version = pharmacy.getVersion();
     }
 
     public PharmacyDTO(Pharmacy pharmacy, double grade) {
@@ -44,5 +46,6 @@ public class PharmacyDTO {
         this.pharmacistCost = pharmacy.getPharmacistCost();
         this.dermatologistCost = pharmacy.getDermatologistCost();
         this.grade = grade;
+        this.version = pharmacy.getVersion();
     }
 }

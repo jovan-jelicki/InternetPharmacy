@@ -80,7 +80,8 @@ export default class PharmacyEmployees extends React.Component{
                <br/><br/>
                <h1>Dermatologists</h1>
                
-               <Button variant="success" onClick={this.openModalAddDermatologist}>Add dermatologist</Button>
+               <Button variant="success" onClick={this.openModalAddDermatologist}
+                       style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>Add dermatologist</Button>
                <br/><br/>
 
                <Navbar bg="light" expand="lg">
@@ -126,11 +127,7 @@ export default class PharmacyEmployees extends React.Component{
                            <td>{moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === this.state.pharmacyId)[0].period.periodStart).format('hh:mm a')
                            + "  -  " + moment(dermatologist.workingHours.filter(workingHour => workingHour.pharmacy.id === this.state.pharmacyId)[0].period.periodEnd).format('hh:mm a')}</td>
 
-                           <td style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block'} : {display : 'none'}}>
-                               <Button variant="primary" onClick={this.openModalAddDermatologist}>
-                                   Schedule appointment
-                               </Button>
-                           </td >
+
                            <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="warning" onClick={(e) => this.handleModalAddAppointment(dermatologist)}>
                                    Define available appointments
@@ -149,7 +146,7 @@ export default class PharmacyEmployees extends React.Component{
 
                <br/><br/>
                <h1>Pharmacists</h1>
-               <Button variant="success" onClick={this.handleModalCreatePharmacist}>Create pharmacist</Button>
+               <Button variant="success" onClick={this.handleModalCreatePharmacist} style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>Create pharmacist</Button>
                <br/><br/>
                <Navbar bg="light" expand="lg">
                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -193,11 +190,6 @@ export default class PharmacyEmployees extends React.Component{
                            </td>
                            <td>{moment(pharmacist.workingHours.period.periodStart).format('hh:mm a') + "  -  " +
                             moment(pharmacist.workingHours.period.periodEnd).format('hh:mm a')}</td>
-                           <td style={this.state.user.type === 'ROLE_patient' ? {display : 'inline-block'} : {display : 'none'}}>
-                               <Button variant="primary" onClick={this.handleModalAddDermatologist}>
-                                   Schedule counseling
-                               </Button>
-                           </td >
                            <td style={this.state.user.type === 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}}>
                                <Button variant="danger" onClick={() => this.deletePharmacist(pharmacist)}>
                                    Delete pharmacist
