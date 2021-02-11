@@ -43,7 +43,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final VacationRequestRepository vacationRequestRepository;
     private final PatientService patientService;
-    private DermatologistService dermatologistService;
+    private final DermatologistService dermatologistService;
     private final LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
@@ -124,6 +124,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional(readOnly = false)
     public AppointmentCancelled cancelExamination(Long appointmentId) {
         Appointment entity = appointmentRepository.findById(appointmentId).get();
+        Appointment newEntity = new Appointment(entity);
         if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
             return null;
         entity.setAppointmentStatus(AppointmentStatus.cancelled);
@@ -133,6 +134,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         entity.setExaminerId(null);
         save(entity);
         return appointmentCancelledRepository.save(appointmentCancelled);
+        //return save(newEntity);
     }
 
     @Override
@@ -380,7 +382,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId, Long patientId) {
+    public Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacyAndPatient(Long pharmacyId, Long patientId) {
         Collection<Appointment> available = new ArrayList<>();
         Collection<AppointmentCancelled> cancelled = appointmentCancelledRepository.findAllByPatient_IdAndPharmacy_IdAndType(patientId, pharmacyId, EmployeeType.ROLE_dermatologist);
         appointmentRepository
@@ -396,7 +398,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         return available;
     }
 
-
+    @Override
+    public Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId) {
+        return appointmentRepository.getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(LocalDateTime.now(), pharmacyId);
+    }
 
     @Override
     @Transactional(readOnly = false)

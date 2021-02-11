@@ -14,7 +14,7 @@ public interface AppointmentService extends CRUDService<Appointment>{
     Collection<Appointment> getAllFinishedByPatientAndExaminerType(Long patientId, EmployeeType type);
     AppointmentCancelled cancelCounseling(Long appointmentId);
 
-    AppointmentCancelled cancelExamination(Long appointmentId);
+    Appointment cancelExamination(Long appointmentId);
 
     Collection<Appointment> getAllByExaminerAndAppointmentStatus(Long examinerId, EmployeeType type, AppointmentStatus status);
 
@@ -49,8 +49,11 @@ public interface AppointmentService extends CRUDService<Appointment>{
 
     Collection<Appointment> findAppointmentsByPatient_IdAndType(Long id, EmployeeType type);
 
+    Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacyAndPatient(Long pharmacyId, Long patientId);
+
+    Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId);
+
     Boolean patientDidNotShowUp(Long id);
-    Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(Long pharmacyId, Long patientId);
 
     boolean validateAppointmentTimeRegardingWorkingHours(Appointment entity);
      boolean validateAppointmentTimeRegardingAllWorkingHours(Appointment entity);

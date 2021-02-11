@@ -2,9 +2,9 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "engines" : {
-    "npm" : "6.14.5",
-    "node" : "12.18.2"
+  "engines": {
+    "npm": "6.14.5",
+    "node": "12.18.2"
   },
   "dependencies": {
     "@date-io/date-fns": "^2.10.6",

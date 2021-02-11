@@ -69,17 +69,32 @@ class AppointmentsList extends React.Component{
     }
 
     fetchAppointments = () => {
-        axios.get(HelperService.getPath("/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/" + this.state.pharmacyId + '/' + this.state.user.id),
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization : 'Bearer ' + this.state.user.jwtToken
-                }
-            }).then(res => {
-            this.setState({
-                appointments : res.data
-            });
-        })
+    	if(this.state.user.type == 'ROLE_patient') {
+	        axios.get(HelperService.getPath("/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacyAndPatient/" + this.state.pharmacyId + '/' + this.state.user.id),
+	            {
+	                headers: {
+	                    'Content-Type': 'application/json',
+	                    Authorization : 'Bearer ' + this.state.user.jwtToken
+	                }
+	            }).then(res => {
+	            this.setState({
+	                appointments : res.data
+	            });
+	        })
+        }
+        else {
+        	axios.get(HelperService.getPath("/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/" + this.state.pharmacyId),
+	            {
+	                headers: {
+	                    'Content-Type': 'application/json',
+	                    Authorization : 'Bearer ' + this.state.user.jwtToken
+	                }
+	            }).then(res => {
+	            this.setState({
+	                appointments : res.data
+	            });
+	        })
+        }
     }
 
     scheduleAppointment = (id) => {
