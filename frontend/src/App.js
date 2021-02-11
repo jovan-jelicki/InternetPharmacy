@@ -60,7 +60,6 @@ export default class App extends React.Component {
             <Route path="/registration"  component={Registration} role={role}/>
             <Route path="/systemAdmin"  render={(props) => <SystemAdminHomePage {...props} role={role} Id={Id}/> }/>
             <Route path="/supplierHomePage"  render={(props) => <SupplierHomePage {...props} role={role} Id={Id}/> }/>
-            <Route path="/createNew" component={CreateNewOffer} role={role}/>
             <Route path="/confirmRegistration" component={RegistrationConfirmation} role={role}/>
             <Route path="/scheduled-appointments" component={PatientScheduledAppointments} role={role}/>
             <Route path="/scheduled-appointments-history" component={PatientPreviousAppointments} role={role}/>

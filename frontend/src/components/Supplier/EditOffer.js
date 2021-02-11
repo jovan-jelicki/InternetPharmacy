@@ -81,10 +81,10 @@ export default class EditOffer extends React.Component{
 
 
     async sendParams() {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medicationOffer/edit"
-            : 'http://localhost:8080/api/medicationOffer/edit';
+       // const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medicationOffer/edit"
+        //    : 'http://localhost:8080/api/medicationOffer/edit';
         await axios
-            .post(path, {
+            .post(HelperService.getPath('/api/medicationOffer/edit'), {
                 'id':'',
                 'cost' : this.state.medicationOffer.cost,
                 'shippingDate' : this.state.medicationOffer.shippingDate,

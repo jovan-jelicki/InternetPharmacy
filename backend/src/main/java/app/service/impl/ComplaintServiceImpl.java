@@ -9,12 +9,15 @@ import app.model.user.Pharmacist;
 import app.repository.ComplaintRepository;
 import app.service.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
@@ -31,10 +34,9 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.patientService = patientService;
     }
 
+    @Transactional(readOnly = false)
     @Override
-    public Complaint save(Complaint entity)  {
-        return complaintRepository.save(entity);
-    }
+    public Complaint save(Complaint entity)  {  return complaintRepository.save(entity); }
 
     @Override
     public Collection<Complaint> read()  {
@@ -46,6 +48,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintRepository.findById(id);
     }
 
+    @Transactional(readOnly = false)
     @Override
     public void delete(Long id)  {
         complaintRepository.deleteById(id);
@@ -82,6 +85,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintDTOS;
     }
 
+    @Transactional(readOnly = false)
     @Override
     public Boolean editComplaint(Long complaintId) {
          Complaint complaint= this.read(complaintId).get();

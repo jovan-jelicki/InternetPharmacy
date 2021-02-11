@@ -3,6 +3,7 @@ import {Button, Container, FormControl} from "react-bootstrap";
 import "../../App.css";
 import Script from "react-load-script";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
 
 export default class SystemAdminRegistration extends React.Component {
     constructor(props) {
@@ -40,10 +41,10 @@ export default class SystemAdminRegistration extends React.Component {
         }
     }
     async sendParams() {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/systemAdmin/save"
-            : 'http://localhost:8080/api/systemAdmin/save';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/systemAdmin/save"
+        //    : 'http://localhost:8080/api/systemAdmin/save';
         axios
-            .post(path, {
+            .post(HelperService.getPath('/api/systemAdmin/save'), {
                 'id':'',
                 'firstName' : this.state.user.firstName,
                 'lastName' : this.state.user.lastName,
