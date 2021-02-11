@@ -25,7 +25,7 @@ public class InternetPharmacyApplication {
 				registry.addMapping("/**")
 						.allowedMethods("*")
 						.allowedHeaders("*")
-						.allowedOrigins("*");
+						.allowedOrigins("http://localhost:3000", "https://isa-pharmacy-frontend.herokuapp.com");
 			}
 		};
 	}
