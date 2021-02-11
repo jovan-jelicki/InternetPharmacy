@@ -13,6 +13,8 @@ import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 @Service
 public class EPrescriptionServiceImpl implements EPrescriptionService {
     private final EPrescriptionRepository ePrescriptionRepository;
@@ -44,6 +47,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         this.gradeService = gradeService;
     }
 
+    @Transactional(readOnly = false)
     @Override
     public EPrescriptionSimpleInfoDTO reserveEPrescription(MakeEPrescriptionDTO makeEPrescriptionDTO){
         Pharmacy pharmacy = pharmacyService.read(makeEPrescriptionDTO.getPharmacyId()).get();
@@ -91,6 +95,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         }
     }
 
+    @Transactional(readOnly = false)
     public void updateMedicationQuantity(Collection<MedicationQuantity> medicationQuantities, Collection<MedicationQuantity> medicationQuantitiesOfPharmacy){
         for(MedicationQuantity m : medicationQuantities){
             medicationQuantitiesOfPharmacy.forEach(quantity -> {
@@ -100,6 +105,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         }
     }
 
+    @Transactional(readOnly = false)
     @Override
     public EPrescription save(EPrescription entity) {
         return ePrescriptionRepository.save(entity);
@@ -115,6 +121,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         return ePrescriptionRepository.findById(id);
     }
 
+    @Transactional(readOnly = false)
     @Override
     public void delete(Long id) {
         ePrescriptionRepository.deleteById(id);
@@ -124,6 +131,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
     public boolean existsById(Long id) {
         return ePrescriptionRepository.existsById(id);
     }
+
 
     @Override
     public Collection<PharmacyQRDTO> getPharmacyForQR(Long ePrescriptionId) {
@@ -155,7 +163,6 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
 
     @Override
     public Boolean buyMedication(Long pharmacyId, Long prescriptionId) {
-        Collection<PharmacyQRDTO> pharmacyQRDTOS= new ArrayList<>();
         Pharmacy pharmacy= pharmacyService.read(pharmacyId).get();
 
         EPrescription prescription= this.read(prescriptionId).get();
