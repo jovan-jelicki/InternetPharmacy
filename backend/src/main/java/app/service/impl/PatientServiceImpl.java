@@ -115,6 +115,7 @@ public class PatientServiceImpl implements PatientService {
                 save(p);
             }
         });
+    }
 
     @Override
     public Boolean setPatientCategory(Long patientId) {
