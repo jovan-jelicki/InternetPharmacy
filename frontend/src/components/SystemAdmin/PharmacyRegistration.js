@@ -3,6 +3,7 @@ import {Button, Col, Container, Form} from "react-bootstrap";
 import Script from 'react-load-script';
 import Select from "react-select";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class PharmacyRegistration extends React.Component {
@@ -185,10 +186,10 @@ export default class PharmacyRegistration extends React.Component {
     }
 
     async sendParams() {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy/save"
-            : 'http://localhost:8080/api/pharmacy/save';
+       // const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy/save"
+        //    : 'http://localhost:8080/api/pharmacy/save';
         axios
-            .post('http://localhost:8080/api/pharmacy/save', {
+            .post(HelperService.getPath('/api/pharmacy/save'), {
                 'id':'',
                 'name': this.state.pharmacy.name,
                 'description' : this.state.pharmacy.description,

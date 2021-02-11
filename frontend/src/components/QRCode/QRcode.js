@@ -7,6 +7,7 @@ import axios from "axios";
 import StarRatings from "react-star-ratings";
 import PharmacySearch from "../pharmacy/PharmacySearch";
 import PharmacyFilter from "../pharmacy/PharmacyFilter";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class QRcode extends React.Component{
@@ -26,6 +27,13 @@ export default class QRcode extends React.Component{
         this.gradeFilter = this.gradeFilter.bind(this)
         this.search = this.search.bind(this)
         this.cancel = this.cancel.bind(this)
+    }
+
+    async componentDidMount() {
+        if (this.state.user.type == undefined || this.state.user.type != "ROLE_patient")
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
     }
 
     onImageChange = (event)=> {
@@ -79,10 +87,10 @@ export default class QRcode extends React.Component{
     }
 
     async sendData() {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/eprescriptions/getPharmacyForQR/"
-            : 'http://localhost:8080/api/eprescriptions/getPharmacyForQR/';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/eprescriptions/getPharmacyForQR/"
+          //  : 'http://localhost:8080/api/eprescriptions/getPharmacyForQR/';
         axios
-            .get(path+this.state.ePrescription,{
+            .get(HelperService.getPath('/api/eprescriptions/getPharmacyForQR/'+this.state.ePrescription),{
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + this.state.user.jwtToken
@@ -108,7 +116,7 @@ export default class QRcode extends React.Component{
         const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy/search"
             : 'http://localhost:8080/api/pharmacy/search';
         axios
-            .post(path, {
+            .post(HelperService.getPath('/api/pharmacy/search'), {
                 'name' : name,
                 'street' : location.street,
                 'town' : location.town,
@@ -165,7 +173,7 @@ export default class QRcode extends React.Component{
         const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/eprescriptions/buyMedication"
             : 'http://localhost:8080/api/eprescriptions/buyMedication';
         await axios
-            .post(path,{
+            .post(HelperService.getPath('/api/eprescriptions/buyMedication'),{
                 'pharmacyId':0,
                 'prescriptionId':1
         },{

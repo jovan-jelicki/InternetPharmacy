@@ -3,6 +3,7 @@ import axios from "axios";
 import {Button, Col, Nav, Row} from "react-bootstrap";
 import UserInfo from "../UserInfo";
 import ChangePassword from "../ChangePassword";
+import HelperService from "../../helpers/HelperService";
 
 
 export default class SupplierProfile extends React.Component {
@@ -31,8 +32,7 @@ export default class SupplierProfile extends React.Component {
 
     async componentDidMount() {
         await axios
-            .get(process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers"
-                : 'http://localhost:8080/api/suppliers/'  + this.state.user.id,
+            .get(HelperService.getPath('/api/suppliers/'  + this.state.user.id),
                 {  headers: {
                         'Content-Type': 'application/json',
                         Authorization : 'Bearer ' + this.state.user.jwtToken
@@ -97,10 +97,10 @@ export default class SupplierProfile extends React.Component {
     }
 
     changePass = () => {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/pass"
-            : 'http://localhost:8080/api/suppliers/pass';
+     //   const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/pass"
+     //       : 'http://localhost:8080/api/suppliers/pass';
         axios
-            .put(path, {
+            .put(HelperService.getPath('/api/suppliers/pass'), {
                 'userId' : this.state.id,
                 'oldPassword' : this.state.oldPass,
                 'newPassword' : this.state.newPass,
@@ -143,10 +143,10 @@ export default class SupplierProfile extends React.Component {
     }
 
     save = () => {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers"
-            : 'http://localhost:8080/api/suppliers';
+       // const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers"
+        //    : 'http://localhost:8080/api/suppliers';
         axios
-            .put('http://localhost:8080/api/suppliers', {
+            .put(HelperService.getPath('/api/suppliers'), {
                 'id' : this.state.id,
                 'firstName' : this.state.firstName,
                 'lastName' : this.state.lastName,

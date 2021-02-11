@@ -19,7 +19,7 @@ export class SystemAdminHomePage extends React.Component {
                 firstName:'',
                 lastName:'',
             },
-            navbar : "",
+            navbar : "complaint",
             showModal : false,
             oldPw : "",
             newPw : "",

@@ -2,6 +2,7 @@ import React from "react";
 import Script from "react-load-script";
 import {Button, FormControl} from "react-bootstrap";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
 
 export default class SupplierRegistration extends React.Component {
     constructor(props) {
@@ -51,7 +52,7 @@ export default class SupplierRegistration extends React.Component {
         const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/save"
             : 'http://localhost:8080/api/suppliers/save';
         axios
-            .post(path, {
+            .post(HelperService.getPath('/api/suppliers/save'), {
                 'id':'',
                 'firstName' : this.state.supplier.firstName,
                 'lastName' : this.state.supplier.lastName,
