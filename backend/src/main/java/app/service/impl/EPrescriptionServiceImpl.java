@@ -75,6 +75,7 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         if(patient.getPenaltyCount() >= 3)
             return null;
 
+        makeEPrescriptionDTO.getPrescription().setPatient(patientService.read(makeEPrescriptionDTO.getPrescription().getPatient().getId()).get());
         makeEPrescriptionDTO.getPrescription().setDateIssued(LocalDateTime.now());
         makeEPrescriptionDTO.getPrescription().setStatus(EPrescriptionStatus.pending);
         EPrescription ePrescription =  this.save(makeEPrescriptionDTO.getPrescription());

@@ -26,17 +26,15 @@ public class MedicationOrderServiceImpl implements MedicationOrderService {
     private final PharmacyService pharmacyService;
     private final PharmacyAdminService pharmacyAdminService;
     private final MedicationService medicationService;
-    private final MedicationQuantityService medicationQuantityService;
     private MedicationOfferService medicationOfferService;
 
 
     @Autowired
-    public MedicationOrderServiceImpl(MedicationOrderRepository medicationOrderRepository, PharmacyService pharmacyService, PharmacyAdminService pharmacyAdminService, MedicationService medicationService, MedicationQuantityService medicationQuantityService) {
+    public MedicationOrderServiceImpl(MedicationOrderRepository medicationOrderRepository, PharmacyService pharmacyService, PharmacyAdminService pharmacyAdminService, MedicationService medicationService ) {
         this.medicationOrderRepository = medicationOrderRepository;
         this.pharmacyService = pharmacyService;
         this.pharmacyAdminService = pharmacyAdminService;
         this.medicationService = medicationService;
-        this.medicationQuantityService = medicationQuantityService;
     }
 
     @Override

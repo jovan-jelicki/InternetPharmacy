@@ -14,7 +14,7 @@ public class Supplier extends User {
     @SequenceGenerator(name="supplier_generator", sequenceName = "supplier_seq", allocationSize=50, initialValue = 1000)
     private Long id;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MedicationQuantity> medicationQuantity;
 
     @OneToMany

@@ -10,7 +10,6 @@ import app.model.medication.MedicationQuantity;
 import app.model.user.Supplier;
 import app.repository.SupplierRepository;
 import app.service.MedicationOrderService;
-import app.service.MedicationQuantityService;
 import app.service.MedicationService;
 import app.service.SupplierService;
 import org.springframework.stereotype.Service;
@@ -23,13 +22,11 @@ public class SupplierServiceImpl implements SupplierService{
     private SupplierRepository supplierRepository;
     private final MedicationOrderService medicationOrderService;
     private  final MedicationService medicationService;
-    private final MedicationQuantityService medicationQuantityService;
 
-    public SupplierServiceImpl(SupplierRepository supplierRepository, MedicationOrderService medicationOrderService, MedicationService medicationService, MedicationQuantityService medicationQuantityService) {
+    public SupplierServiceImpl(SupplierRepository supplierRepository, MedicationOrderService medicationOrderService, MedicationService medicationService) {
         this.supplierRepository = supplierRepository;
         this.medicationOrderService = medicationOrderService;
         this.medicationService = medicationService;
-        this.medicationQuantityService = medicationQuantityService;
     }
 
     @Override
@@ -117,10 +114,7 @@ public class SupplierServiceImpl implements SupplierService{
                 .collect(Collectors.toList()).size() != 0)
             return false;
 
-        MedicationQuantity medicationQuantity=new MedicationQuantity(medication,medicationSupplierDTO.getQuantity());
-
-        medicationQuantityService.save(medicationQuantity);
-        supplier.getMedicationQuantity().add(medicationQuantity);
+        supplier.getMedicationQuantity().add(new MedicationQuantity(medication,medicationSupplierDTO.getQuantity()));
 
         this.save(supplier);
 
@@ -130,17 +124,15 @@ public class SupplierServiceImpl implements SupplierService{
 
     @Override
     public Boolean editSuppliersMedicationQuantity(MedicationSupplierDTO medicationSupplierDTO) {
-        MedicationQuantity medicationQuantity=medicationQuantityService.read(medicationSupplierDTO.getMedicationQuantityId()).get();
-        int quantity=medicationSupplierDTO.getQuantity();
-        if(quantity<=0){
-            medicationQuantityService.delete(medicationSupplierDTO.getMedicationQuantityId());
-            return null;
+        Supplier supplier=this.read(medicationSupplierDTO.getSupplierId()).get();
+
+        for(MedicationQuantity medicationQuantity : supplier.getMedicationQuantity()){
+            if(medicationQuantity.getId()==medicationSupplierDTO.getMedicationQuantityId()){
+                medicationQuantity.setQuantity(medicationSupplierDTO.getQuantity());
+            }
         }
-        medicationQuantity.setQuantity(quantity);
-        medicationQuantityService.save(medicationQuantity);
 
-
-         return  medicationQuantityService.save(medicationQuantity)!=null;
+         return  this.save(supplier)!=null;
     }
 
     @Override
