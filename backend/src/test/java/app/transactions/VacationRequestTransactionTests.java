@@ -1,6 +1,8 @@
-package app.service;
+package app.transactions;
 
-import app.model.pharmacy.Pharmacy;
+import app.model.time.VacationRequest;
+import app.model.time.VacationRequestStatus;
+import app.service.VacationRequestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +16,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+//Created by David
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class EditPharmacyProfileTests {
+public class VacationRequestTransactionTests {
 
     @Autowired
-    private PharmacyService pharmacyService;
+    private VacationRequestService vacationRequestService;
 
 
-
-    //Test u kojem pokusavamo da imitiramo 2 korisnika koja su u isto vreme pokusala da zakazu pregled kod farmaceuta
-    //Rezultat je da ce jedan korisnik uspesno zakazati, a drugi dobiti poruku da je dati termin zakazan.
     @Rollback(true)
     @Test(expected = ObjectOptimisticLockingFailureException.class)
-    public void editPharmacyProfile() throws Throwable {
+    public void vacationRequestEditing() throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         final Boolean[] res1 = new Boolean[1];
         final Boolean[] res2 = new Boolean[1];
@@ -38,12 +38,12 @@ public class EditPharmacyProfileTests {
             @Transactional
             public void run() {
                 System.out.println("Startovan Thread 1");
-                Pharmacy pharmacy = pharmacyService.read(2L).get();
+                VacationRequest vacationRequest = vacationRequestService.read(1L).get();
                 try { Thread.sleep(3000); } catch (InterruptedException e) {}
 
-                pharmacy.setPharmacistCost(3000);
+                vacationRequest.setVacationRequestStatus(VacationRequestStatus.approved);
 
-                res1[0] = pharmacyService.save(pharmacy) != null;
+                res1[0] = vacationRequestService.save(vacationRequest) != null;
             }
         });
         Future<?> future2 = executor.submit(new Runnable() {
@@ -52,10 +52,11 @@ public class EditPharmacyProfileTests {
             @Transactional
             public void run() {
                 System.out.println("Startovan Thread 2");
-                Pharmacy pharmacy = pharmacyService.read(2L).get();
-                pharmacy.setPharmacistCost(1000);
+                VacationRequest vacationRequest = vacationRequestService.read(1L).get();
 
-                res2[0] = pharmacyService.save(pharmacy) != null;
+                vacationRequest.setVacationRequestStatus(VacationRequestStatus.rejected);
+
+                res2[0] = vacationRequestService.save(vacationRequest) != null;
             }
         });
         try {
