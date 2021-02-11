@@ -2,7 +2,6 @@ package app.dto;
 
 import app.model.medication.*;
 
-import javax.persistence.*;
 import java.util.Set;
 
 public class MedicationGradeDTO {

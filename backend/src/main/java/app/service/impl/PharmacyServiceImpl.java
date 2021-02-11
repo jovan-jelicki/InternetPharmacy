@@ -15,6 +15,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -117,6 +118,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(Long id) {
         pharmacyRepository.deleteById(id);
     }
@@ -149,6 +151,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean addNewMedication(AddMedicationToPharmacyDTO addMedicationToPharmacyDTO) {
         Pharmacy pharmacy = this.read(addMedicationToPharmacyDTO.getPharmacyId()).get();
         //circular dependency
@@ -203,6 +206,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     // izbrisem aspirin, dodam aspirin pa pokusam opet da izbrisem
     @Override
+    @Transactional(readOnly = false)
     public Boolean deleteMedicationFromPharmacy(PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
         Pharmacy pharmacy = this.read(pharmacyMedicationListingDTO.getPharmacyId()).get();
 
@@ -378,7 +382,8 @@ public class PharmacyServiceImpl implements PharmacyService {
             income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.ROLE_pharmacist)
                     .size() * pharmacy.getPharmacistCost();
 
-            ArrayList<MedicationReservation> medicationReservations = (ArrayList<MedicationReservation>) pharmacy.getMedicationReservation().stream().filter(medicationReservation -> medicationReservation.getPickUpDate().toLocalDate().isEqual(dayStart.toLocalDate()))
+            ArrayList<MedicationReservation> medicationReservations = (ArrayList<MedicationReservation>) pharmacy.getMedicationReservation().stream()
+                    .filter(medicationReservation -> medicationReservation.getPickUpDate().toLocalDate().isEqual(dayStart.toLocalDate()))
                     .collect(Collectors.toList());
             for (MedicationReservation medicationReservation : medicationReservations) {
                 double medicationPrice = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId, medicationReservation.getMedicationQuantity().getMedication().getId(), dayEnd);
@@ -386,6 +391,18 @@ public class PharmacyServiceImpl implements PharmacyService {
                     income += medicationReservation.getMedicationQuantity().getQuantity() * medicationPrice / 2;
                 income += medicationReservation.getMedicationQuantity().getQuantity() * medicationPrice;
             }
+
+
+            ArrayList<EPrescription> ePrescriptions = (ArrayList<EPrescription>) pharmacy.getPrescriptions().stream()
+                    .filter(prescription -> prescription.getDateIssued().toLocalDate().isEqual(dayStart.toLocalDate()) && prescription.getStatus() == EPrescriptionStatus.successful)
+                    .collect(Collectors.toList());
+            for (EPrescription ePrescription : ePrescriptions) {
+                for (MedicationQuantity medicationQuantity : ePrescription.getMedicationQuantity()) {
+                    double medicationPrice = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId, medicationQuantity.getMedication().getId(), dayEnd);
+                    income += medicationPrice * medicationQuantity.getQuantity();
+                }
+            }
+
 
             for (MedicationOffer medicationOffer : medicationOfferService.getApprovedMedicationOffersByPharmacyAndPeriod(pharmacyId, dayStart, dayEnd))
                 expense += medicationOffer.getCost();

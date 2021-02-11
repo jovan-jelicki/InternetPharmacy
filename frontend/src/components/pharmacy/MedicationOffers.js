@@ -45,7 +45,7 @@ export default class MedicationOffers extends React.Component {
                                         <br/>
                                         Status : {this.state.medicationOrder.status}
                                         <br/>
-                                        Shipping deadline : {moment(this.state.medicationOrder.deadLine).format("DD.MM.YYYY")}
+                                        Shipping deadline : {moment(this.state.medicationOrder.deadline).format("DD.MM.YYYY")}
                                         <br/>
                                         <br/>
                                         Medications

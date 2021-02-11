@@ -5,7 +5,6 @@ import app.dto.UserPasswordDTO;
 import app.model.medication.Ingredient;
 import app.model.medication.Medication;
 import app.model.user.Patient;
-import app.model.user.SystemAdmin;
 
 import java.util.Collection;
 

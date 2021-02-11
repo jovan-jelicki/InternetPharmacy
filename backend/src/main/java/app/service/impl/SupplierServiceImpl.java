@@ -1,14 +1,12 @@
 package app.service.impl;
 
 import app.dto.MedicationOfferAndOrderDTO;
-import app.dto.MedicationQuantityDTO;
 import app.dto.MedicationSupplierDTO;
 import app.dto.UserPasswordDTO;
 import app.model.medication.Medication;
 import app.model.medication.MedicationOffer;
 import app.model.medication.MedicationOrder;
 import app.model.medication.MedicationQuantity;
-import app.model.user.Dermatologist;
 import app.model.user.Supplier;
 import app.repository.SupplierRepository;
 import app.service.MedicationOrderService;

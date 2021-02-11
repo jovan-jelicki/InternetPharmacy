@@ -1,7 +1,7 @@
 package app.service.impl;
+
 import app.model.pharmacy.LoyaltyProgram;
 import app.repository.LoyaltyProgramRepository;
-import app.repository.LoyaltyScaleRepository;
 import app.service.LoyaltyProgramService;
 import org.springframework.stereotype.Service;
 

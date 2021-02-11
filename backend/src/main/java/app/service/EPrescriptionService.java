@@ -4,8 +4,6 @@ import app.dto.EPrescriptionSimpleInfoDTO;
 import app.dto.MakeEPrescriptionDTO;
 import app.dto.PharmacyQRDTO;
 import app.model.medication.EPrescription;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collection;
 

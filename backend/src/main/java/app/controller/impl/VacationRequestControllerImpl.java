@@ -10,6 +10,7 @@ import app.service.VacationRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -90,7 +91,12 @@ public class VacationRequestControllerImpl implements VacationRequestController 
     public ResponseEntity<Object> confirmVacationRequest(@RequestBody VacationRequestDTO vacationRequestDTO) {
         if(!vacationRequestService.existsById(vacationRequestDTO.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        vacationRequestService.confirmVacationRequest(vacationRequestDTO);
+        try {
+            vacationRequestService.confirmVacationRequest(vacationRequestDTO);
+        }
+        catch (ObjectOptimisticLockingFailureException ex) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         if (vacationRequestService.read(vacationRequestDTO.getId()).get().getVacationRequestStatus() == VacationRequestStatus.requested)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -101,7 +107,14 @@ public class VacationRequestControllerImpl implements VacationRequestController 
     public ResponseEntity<Object> update(@RequestBody VacationRequestDTO vacationRequestDTO) {
         if(!vacationRequestService.existsById(vacationRequestDTO.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        vacationRequestService.declineVacationRequest(vacationRequestDTO);
+        try {
+            vacationRequestService.declineVacationRequest(vacationRequestDTO);
+        }
+        catch (ObjectOptimisticLockingFailureException ex) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        if (vacationRequestService.read(vacationRequestDTO.getId()).get().getVacationRequestStatus() == VacationRequestStatus.requested)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

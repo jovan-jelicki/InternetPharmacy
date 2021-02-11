@@ -20,11 +20,6 @@ export default class SystemAdminVacationRequestListing extends React.Component{
     }
 
     async componentDidMount() {
-      /*  let temp = await PharmacyAdminService.fetchPharmacyId();
-        this.setState({
-            pharmacyId : temp
-        })
-        */
         this.fetchVacationRequests();
     }
 
@@ -83,7 +78,7 @@ export default class SystemAdminVacationRequestListing extends React.Component{
 
 
 
-                    <Modal show={this.state.showModal} onHide={this.handleModal}>
+                    <Modal backdrop="static" show={this.state.showModal} onHide={this.handleModal}>
                         <Modal.Header closeButton>
                             <Modal.Title>Modal heading</Modal.Title>
                         </Modal.Header>
@@ -118,6 +113,11 @@ export default class SystemAdminVacationRequestListing extends React.Component{
     }
 
     rejectRequest = () => {
+        if (this.state.modalVacationRequest.rejectionNote === "" || this.state.modalVacationRequest.rejectionNote === null
+            || this.state.modalVacationRequest.rejectionNote === undefined) {
+            alert("Rejection note cannot be empty!");
+            return;
+        }
         axios.put(HelperService.getPath("/api/vacationRequest/rejectVacationRequest/"), this.state.modalVacationRequest, {
             headers: {
                 'Content-Type': 'application/json',

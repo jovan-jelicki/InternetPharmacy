@@ -4,8 +4,6 @@ import app.dto.PharmacistDTO;
 import app.dto.PharmacyNameIdDTO;
 import app.dto.UserPasswordDTO;
 import app.model.user.Pharmacist;
-import app.model.user.SystemAdmin;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Collection;
 

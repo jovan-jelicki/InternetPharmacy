@@ -1,7 +1,6 @@
 package app.service.impl;
 
 import app.dto.UserPasswordDTO;
-import app.model.user.Supplier;
 import app.model.user.SystemAdmin;
 import app.repository.SystemAdminRepository;
 import app.service.SystemAdminService;
