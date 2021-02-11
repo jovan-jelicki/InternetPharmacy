@@ -9,6 +9,11 @@ public class MakeMedicationReservationDTO {
     public MakeMedicationReservationDTO() {
     }
 
+    public MakeMedicationReservationDTO(MedicationReservation medicationReservation, Long pharmacyId) {
+        this.medicationReservation = medicationReservation;
+        this.pharmacyId = pharmacyId;
+    }
+
     public MedicationReservation getMedicationReservation() {
         return medicationReservation;
     }

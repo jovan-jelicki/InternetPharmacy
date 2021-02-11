@@ -14,7 +14,7 @@ public interface AppointmentService extends CRUDService<Appointment>{
     Collection<Appointment> getAllFinishedByPatientAndExaminerType(Long patientId, EmployeeType type);
     AppointmentCancelled cancelCounseling(Long appointmentId);
 
-    Appointment cancelExamination(Long appointmentId);
+    AppointmentCancelled cancelExamination(Long appointmentId);
 
     Collection<Appointment> getAllByExaminerAndAppointmentStatus(Long examinerId, EmployeeType type, AppointmentStatus status);
 

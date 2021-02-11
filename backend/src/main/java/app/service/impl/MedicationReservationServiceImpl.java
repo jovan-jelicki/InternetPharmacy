@@ -143,11 +143,11 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
     }
 
     @Override
+    @Transactional
     public MedicationReservation reserve(MakeMedicationReservationDTO entity) {
         Optional<Pharmacy> pharmacy = pharmacyRepository.findById(entity.getPharmacyId());
 //        if(pharmacy.isEmpty())
 //            throw new IllegalArgumentException("Pharmacy Id does not exist");
-        //proveri stanje u apoteci pre rezervisanja leka
         MedicationReservation medicationReservation = entity.getMedicationReservation();
         Patient patient = patientService.read(medicationReservation.getPatient().getId()).get();
         if(patient.getPenaltyCount() >= 3)
@@ -162,6 +162,7 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
     }
 
     @Override
+    @Transactional
     public boolean cancel(Long reservationId) {
         MedicationReservation medicationReservation = medicationReservationRepository.findById(reservationId).get();
         if(medicationReservation.getPickUpDate().minusHours(24).isBefore(LocalDateTime.now()))
