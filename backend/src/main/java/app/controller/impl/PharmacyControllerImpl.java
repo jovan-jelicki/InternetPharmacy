@@ -9,6 +9,7 @@ import app.util.DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -113,7 +114,14 @@ public class PharmacyControllerImpl {
     public ResponseEntity<Boolean> editMedicationQuantity(@RequestBody PharmacyMedicationListingDTO pharmacyMedicationListingDTO) {
         if(!pharmacyService.existsById(pharmacyMedicationListingDTO.getPharmacyId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        if (pharmacyService.editMedicationQuantity(pharmacyMedicationListingDTO))
+        boolean result;
+        try {
+            result = pharmacyService.editMedicationQuantity(pharmacyMedicationListingDTO);
+        }
+        catch (ObjectOptimisticLockingFailureException ex) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        if (result)
             return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
