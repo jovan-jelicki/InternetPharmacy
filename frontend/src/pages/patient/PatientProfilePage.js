@@ -6,6 +6,7 @@ import AddAllergy from "../../components/AddAllergy";
 import ChangePassword from "../../components/ChangePassword";
 import axios from "axios"
 import PatientLayout from "../../layout/PatientLayout";
+import HelperService from '../../helpers/HelperService'
 
 export default class PatientProfilePage extends React.Component {
     constructor(props) {
@@ -31,7 +32,7 @@ export default class PatientProfilePage extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
         console.log(this.user)
         await axios
-            .get('http://localhost:8080/api/patients/' + this.aut.id, {
+            .get(HelperService.getPath('/api/patients/' + this.aut.id), {
                 headers : {
                     'Content-Type' : 'application/json',
                     Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -97,7 +98,7 @@ export default class PatientProfilePage extends React.Component {
 
     changePass = () => {
         axios
-        .put('http://localhost:8080/api/patients/pass', {
+        .put(HelperService.getPath('/api/patients/pass'), {
             'userId' : this.state.id,
             'oldPassword' : this.state.oldPass,
             'newPassword' : this.state.newPass,
@@ -159,7 +160,7 @@ export default class PatientProfilePage extends React.Component {
 
     save = () => {
         axios
-        .put('http://localhost:8080/api/patients', {
+        .put(HelperService.getPath('/api/patients'), {
             'id' : this.state.id,
             'firstName' : this.state.firstName,
             'lastName' : this.state.lastName,

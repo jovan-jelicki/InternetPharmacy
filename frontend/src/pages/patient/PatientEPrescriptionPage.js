@@ -3,6 +3,7 @@ import PatientLayout from '../../layout/PatientLayout'
 import EPrescriptionSort from './../../components/EPrescriptionSort'
 import {Col, Card, Row, Table, Accordion} from "react-bootstrap";
 import axios from 'axios'
+import HelperService from './../../helpers/HelperService'
 
 class PatientEPrescriptionPage extends React.Component {
     constructor(props) {
@@ -17,7 +18,7 @@ class PatientEPrescriptionPage extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         axios
-        .get('http://localhost:8080/api/eprescriptions/patient/' + this.aut.id, {
+        .get(HelperService.getPath('/api/eprescriptions/patient/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 

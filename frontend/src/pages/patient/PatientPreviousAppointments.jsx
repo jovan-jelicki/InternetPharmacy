@@ -4,6 +4,7 @@ import { Row } from 'react-bootstrap'
 import PatientLayout from '../../layout/PatientLayout'
 import AppointmentListing from '../../components/AppointmentListing'
 import AppointmentSorting from '../../components/AppointmentSorting'
+import HelperService from '../../helpers/HelperService'
 
 class PatientPreviousAppointments extends React.Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class PatientPreviousAppointments extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         axios
-        .get('http://localhost:8080/api/scheduling/counseling-previous/' + this.aut.id, {
+        .get(HelperService.getPath('/api/scheduling/counseling-previous/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -32,7 +33,7 @@ class PatientPreviousAppointments extends React.Component {
         })
 
         axios
-        .get('http://localhost:8080/api/scheduling/examination-previous/' + this.aut.id, {
+        .get(HelperService.getPath('/api/scheduling/examination-previous/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 

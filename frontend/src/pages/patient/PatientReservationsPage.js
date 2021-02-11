@@ -2,6 +2,7 @@ import React from 'react'
 import PatientLayout from '../../layout/PatientLayout'
 import {Col, Card, Row, Table, Button} from "react-bootstrap";
 import axios from 'axios'
+import HelperService from './../../helpers/HelperService'
 
 class PatientReservationsPage extends React.Component {
     constructor(props) {
@@ -15,7 +16,7 @@ class PatientReservationsPage extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         axios
-        .get('http://localhost:8080/api/medicationReservation/patient/' + this.aut.id, {
+        .get(HelperService.getPath('/api/medicationReservation/patient/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -73,13 +74,17 @@ class PatientReservationsPage extends React.Component {
 
     cancel = (id) => {
         axios
-        .put('http://localhost:8080/api/medicationReservation/cancel/' + id, {}, {
+        .put(HelperService.getPath('/api/medicationReservation/cancel/' + id), {}, {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
             }
         })
-        .then(res => alert('Success'));
+        .then(res => {
+            alert('Success')
+            window.location.reload()
+        })
+        .catch(e => alert('Cannnot cancel 24h prior to pick-up date!'));
     }
 }
 

@@ -2,6 +2,7 @@ package app.service.impl;
 
 import app.dto.*;
 import app.model.appointment.Appointment;
+import app.model.appointment.AppointmentCancelled;
 import app.model.appointment.AppointmentStatus;
 import app.model.medication.Medication;
 import app.model.pharmacy.LoyaltyProgram;
@@ -12,6 +13,7 @@ import app.model.time.WorkingHours;
 import app.model.user.Dermatologist;
 import app.model.user.EmployeeType;
 import app.model.user.Patient;
+import app.repository.AppointmentCancelledRepository;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
@@ -37,15 +39,18 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PharmacyRepository pharmacyRepository;
+    private final AppointmentCancelledRepository appointmentCancelledRepository;
+
     private final VacationRequestRepository vacationRequestRepository;
     private final PatientService patientService;
-    private DermatologistService dermatologistService;
+    private final DermatologistService dermatologistService;
     private final LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientService patientService, LoyaltyProgramService loyaltyProgramService) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, AppointmentCancelledRepository appointmentCancelledRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientService patientService, LoyaltyProgramService loyaltyProgramService) {
         this.appointmentRepository = appointmentRepository;
         this.pharmacyRepository = pharmacyRepository;
+        this.appointmentCancelledRepository = appointmentCancelledRepository;
         this.dermatologistService = dermatologistService;
         this.vacationRequestRepository = vacationRequestRepository;
         this.patientService = patientService;
@@ -77,6 +82,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         Optional<Patient> patient = patientService.read(appointmentDTO.getPatientId());
 //        if(patient.isEmpty())
 //            throw new IllegalArgumentException("Patient does not exits");
+        if(patient.get().getPenaltyCount() >= 3)
+            throw new IllegalArgumentException("Patient is blocked");
         appointment.get().setPatient(patient.get());
         appointmentRepository.save(appointment.get());
     }
@@ -85,7 +92,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional(readOnly = false)
     public Appointment scheduleCounseling(Appointment entity) {
         LocalDateTime start = entity.getPeriod().getPeriodStart();
-        entity.setPatient(patientService.read(entity.getPatient().getId()).get());
+        Patient patient = patientService.read(entity.getPatient().getId()).get();
+        if(patient.getPenaltyCount() >= 3)
+           return null;
+        entity.setPatient(patient);
         entity.getPeriod().setPeriodEnd(start.plusHours(1));
         return save(entity);
     }
@@ -97,28 +107,34 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional(readOnly = false)
-    public Appointment cancelCounseling(Long appointmentId) {
+    public AppointmentCancelled cancelCounseling(Long appointmentId) {
         Appointment entity = appointmentRepository.findById(appointmentId).get();
         if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
             return null;
         entity.setAppointmentStatus(AppointmentStatus.cancelled);
-        entity.setActive(false);
         entity.setPatient(patientService.read(entity.getPatient().getId()).get());
-        return save(entity);
+        AppointmentCancelled appointmentCancelled = new AppointmentCancelled(entity);
+        entity.setActive(false);
+        entity.setExaminerId(null);
+        save(entity);
+        return appointmentCancelledRepository.save(appointmentCancelled);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public Appointment cancelExamination(Long appointmentId) {
+    public AppointmentCancelled cancelExamination(Long appointmentId) {
         Appointment entity = appointmentRepository.findById(appointmentId).get();
         Appointment newEntity = new Appointment(entity);
         if(entity.getPeriod().getPeriodStart().minusHours(24).isBefore(LocalDateTime.now()))
             return null;
         entity.setAppointmentStatus(AppointmentStatus.cancelled);
-        entity.setActive(false);
         entity.setPatient(patientService.read(entity.getPatient().getId()).get());
+        AppointmentCancelled appointmentCancelled = new AppointmentCancelled(entity);
+        entity.setActive(false);
+        entity.setExaminerId(null);
         save(entity);
-        return save(newEntity);
+        return appointmentCancelledRepository.save(appointmentCancelled);
+        //return save(newEntity);
     }
 
     @Override
@@ -363,6 +379,23 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Collection<Appointment> findCancelledByPatientIdAndType(Long id, EmployeeType type) {
         return appointmentRepository.findCancelledByPatientIdAndType(id, type);
+    }
+
+    @Override
+    public Collection<Appointment> getAllAvailableUpcomingDermatologistAppointmentsByPharmacyAndPatient(Long pharmacyId, Long patientId) {
+        Collection<Appointment> available = new ArrayList<>();
+        Collection<AppointmentCancelled> cancelled = appointmentCancelledRepository.findAllByPatient_IdAndPharmacy_IdAndType(patientId, pharmacyId, EmployeeType.ROLE_dermatologist);
+        appointmentRepository
+                .getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(LocalDateTime.now(), pharmacyId)
+                .forEach(a -> {
+                    boolean overlaps = false;
+                    overlaps = cancelled
+                            .stream()
+                            .anyMatch(ca -> ca.isOverlapping(a.getPeriod().getPeriodStart()));
+                    if(!overlaps)
+                        available.add(a);
+                });
+        return available;
     }
 
     @Override

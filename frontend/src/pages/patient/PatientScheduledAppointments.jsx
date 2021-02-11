@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Row } from 'react-bootstrap'
 import PatientLayout from '../../layout/PatientLayout'
 import AppointmentListing from '../../components/AppointmentListing'
+import HelperService from '../../helpers/HelperService'
 
 class PatientScheduledAppointments extends React.Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class PatientScheduledAppointments extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         axios
-        .get('http://localhost:8080/api/scheduling/counseling-upcoming/' + this.aut.id, {
+        .get(HelperService.getPath('/api/scheduling/counseling-upcoming/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -32,7 +33,7 @@ class PatientScheduledAppointments extends React.Component {
         })
 
         axios
-        .get('http://localhost:8080/api/scheduling/examination-upcoming/' + this.aut.id, {
+        .get(HelperService.getPath('/api/scheduling/examination-upcoming/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -47,7 +48,7 @@ class PatientScheduledAppointments extends React.Component {
 
     cancel(id) {
         axios
-        .put('http://localhost:8080/api/appointment/cancel-counseling/' + id, {}, {
+        .put(HelperService.getPath('/api/appointment/cancel-counseling/' + id), {}, {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -64,7 +65,7 @@ class PatientScheduledAppointments extends React.Component {
 
     cancelExamination(id) {
         axios
-        .put('http://localhost:8080/api/appointment/cancel-examination/' + id, {}, {
+        .put(HelperService.getPath('/api/appointment/cancel-examination/' + id), {}, {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 

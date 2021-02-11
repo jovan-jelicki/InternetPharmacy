@@ -52,8 +52,14 @@ public class PharmacyControllerImpl {
     }
 
     @PostMapping(value = "/search")
-    public ResponseEntity<Collection<Pharmacy>> search(@RequestBody PharmacySearchDTO pharmacySearchDTO) {
-        return new ResponseEntity<>(pharmacyService.searchByNameAndAddress(pharmacySearchDTO), HttpStatus.OK);
+    public ResponseEntity<Collection<PharmacyDTO>> search(@RequestBody PharmacySearchDTO pharmacySearchDTO) {
+        ArrayList<PharmacyDTO> pharmacyDTOS = new ArrayList<>();
+        for (Pharmacy pharmacy : pharmacyService.searchByNameAndAddress(pharmacySearchDTO)) {
+            PharmacyDTO pharmacyDTO = new PharmacyDTO(pharmacy);
+            pharmacyDTO.setGrade(gradeService.findAverageGradeForEntity(pharmacy.getId(), GradeType.pharmacy));
+            pharmacyDTOS.add(pharmacyDTO);
+        }
+        return new ResponseEntity<>(pharmacyDTOS, HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json")

@@ -172,7 +172,21 @@ public class AppointmentControllerImpl {
         return new ResponseEntity(appointmentService.patientDidNotShowUp(id), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('pharmacyAdmin, patient')")
+    @PreAuthorize("hasAnyRole('patient')")
+    @GetMapping(value = "/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/{phId}/{ptId}")
+    public ResponseEntity<Collection<AppointmentListingDTO>> getAllAvailableUpcomingDermatologistAppointmentsByPharmacyAndPatient(@PathVariable("phId") Long phId, @PathVariable("ptId") Long ptId){
+        ArrayList<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();
+        for (Appointment appointment : appointmentService.getAllAvailableUpcomingDermatologistAppointmentsByPharmacyAndPatient(phId, ptId)) {
+            AppointmentListingDTO appointmentListingDTO = new AppointmentListingDTO(appointment);
+            appointmentListingDTO.setDermatologistFirstName(dermatologistService.read(appointment.getExaminerId()).get().getFirstName());
+            appointmentListingDTO.setDermatologistGrade(gradeService.findAverageGradeForEntity(appointment.getExaminerId(), GradeType.dermatologist));
+            appointmentListingDTO.setDermatologistLastName(dermatologistService.read(appointment.getExaminerId()).get().getLastName());
+            appointmentListingDTOS.add(appointmentListingDTO);
+        }
+        return new ResponseEntity<>(appointmentListingDTOS, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @GetMapping(value = "/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/{id}")
     public ResponseEntity<Collection<AppointmentListingDTO>> getAllAvailableUpcomingDermatologistAppointmentsByPharmacy(@PathVariable Long id){
         ArrayList<AppointmentListingDTO> appointmentListingDTOS = new ArrayList<>();

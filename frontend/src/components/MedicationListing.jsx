@@ -5,6 +5,7 @@ import MedicationSearch from "./MedicationSearch";
 import MedicationSpecification from "./MedicationSpecification";
 import MedicationPharmacy from "./MedicationPharmacy";
 import MedicationFilter from "./MedicationFilter";
+import HelperService from './../helpers/HelperService'
 import StarRatings from "react-star-ratings";
 
 export default class MedicationListing extends React.Component {
@@ -23,7 +24,7 @@ export default class MedicationListing extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         await axios
-        .get('http://localhost:8080/api/medications'/*, {
+        .get(HelperService.getPath('/api/medications')/*, {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -49,9 +50,9 @@ export default class MedicationListing extends React.Component {
 
     search({name}) {
         axios
-            .post('http://localhost:8080/api/medications/search'/*, {
+            .post(HelperService.getPath('/api/medications/search'), {
                 'name' : name,
-            }, {
+            }/*, {
                 headers : {
                     'Content-Type' : 'application/json',
                     Authorization : 'Bearer ' + this.aut.jwtToken 
