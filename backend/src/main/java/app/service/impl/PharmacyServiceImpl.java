@@ -382,7 +382,8 @@ public class PharmacyServiceImpl implements PharmacyService {
             income += appointmentRepository.getSuccessfulAppointmentCountByPeriodAndEmployeeTypeAndPharmacy(dayStart, dayEnd, pharmacyId, EmployeeType.ROLE_pharmacist)
                     .size() * pharmacy.getPharmacistCost();
 
-            ArrayList<MedicationReservation> medicationReservations = (ArrayList<MedicationReservation>) pharmacy.getMedicationReservation().stream().filter(medicationReservation -> medicationReservation.getPickUpDate().toLocalDate().isEqual(dayStart.toLocalDate()))
+            ArrayList<MedicationReservation> medicationReservations = (ArrayList<MedicationReservation>) pharmacy.getMedicationReservation().stream()
+                    .filter(medicationReservation -> medicationReservation.getPickUpDate().toLocalDate().isEqual(dayStart.toLocalDate()))
                     .collect(Collectors.toList());
             for (MedicationReservation medicationReservation : medicationReservations) {
                 double medicationPrice = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId, medicationReservation.getMedicationQuantity().getMedication().getId(), dayEnd);
@@ -390,6 +391,18 @@ public class PharmacyServiceImpl implements PharmacyService {
                     income += medicationReservation.getMedicationQuantity().getQuantity() * medicationPrice / 2;
                 income += medicationReservation.getMedicationQuantity().getQuantity() * medicationPrice;
             }
+
+
+            ArrayList<EPrescription> ePrescriptions = (ArrayList<EPrescription>) pharmacy.getPrescriptions().stream()
+                    .filter(prescription -> prescription.getDateIssued().toLocalDate().isEqual(dayStart.toLocalDate()) && prescription.getStatus() == EPrescriptionStatus.successful)
+                    .collect(Collectors.toList());
+            for (EPrescription ePrescription : ePrescriptions) {
+                for (MedicationQuantity medicationQuantity : ePrescription.getMedicationQuantity()) {
+                    double medicationPrice = medicationPriceListService.GetMedicationPriceInPharmacyByDate(pharmacyId, medicationQuantity.getMedication().getId(), dayEnd);
+                    income += medicationPrice * medicationQuantity.getQuantity();
+                }
+            }
+
 
             for (MedicationOffer medicationOffer : medicationOfferService.getApprovedMedicationOffersByPharmacyAndPeriod(pharmacyId, dayStart, dayEnd))
                 expense += medicationOffer.getCost();
