@@ -282,7 +282,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     @Override
-    @Transactional(readOnly = false, isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly = false, isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Boolean createAvailableAppointment(Appointment entity) {
         //proveriti da li ima zakazane u tom periodu
         //proveriti da li je na godisnjem
