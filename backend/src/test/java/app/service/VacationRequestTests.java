@@ -56,23 +56,6 @@ public class VacationRequestTests {
     private VacationRequestServiceImpl vacationRequestService;
 
 
-
-
-
-
-    private void fillData() {
-        Pharmacy pharmacy = new Pharmacy();
-        pharmacy.setId(1L);
-
-        VacationRequest vacationRequest = new VacationRequest();
-        vacationRequest.setId(1L);
-        vacationRequest.setEmployeeId(3L);
-        Period period = new Period(LocalDateTime.of(2021,2,14,12,0), LocalDateTime.of(2021,2,27,13,0) );
-        vacationRequest.setPeriod(period);
-        vacationRequest.setPharmacy(pharmacy);
-        vacationRequest.setEmployeeType(EmployeeType.ROLE_dermatologist);
-    }
-
     @Test
     @Transactional
     public void testConfirmVacationRequest(){
@@ -104,10 +87,6 @@ public class VacationRequestTests {
 
         doReturn(appointments).when(appointmentService).GetAllScheduledAppointmentsByExaminerIdAfterDate(vacationRequestDTO.getEmployeeId(),vacationRequestDTO.getEmployeeType(), vacationRequestDTO.getPeriod().getPeriodStart());
 
-//        when(appointmentService.
-//                GetAllScheduledAppointmentsByExaminerIdAfterDate(vacationRequestDTO.getEmployeeId(),vacationRequestDTO.getEmployeeType(), vacationRequestDTO.getPeriod().getPeriodStart()))
-//                .thenReturn(appointments);
-
         assertThat(confirmVacationRequest(vacationRequestDTO), is(equalTo(false)));
     }
 
@@ -125,7 +104,7 @@ public class VacationRequestTests {
 
     }
 
-    public boolean confirmVacationRequest(VacationRequestDTO vacationRequestDTO) {
+    private boolean confirmVacationRequest(VacationRequestDTO vacationRequestDTO) {
         VacationRequest vacationRequest = vacationRequestService.read(vacationRequestDTO.getId()).get();
 
         if (!vacationRequestDTO.getVersion().equals(vacationRequest.getVersion()))
