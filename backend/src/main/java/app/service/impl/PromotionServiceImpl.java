@@ -135,7 +135,7 @@ public class PromotionServiceImpl implements PromotionService {
 
             Promotion promotion = new Promotion(promotionPeriod, generatePromotionContent(medicationsOnPromotion), medicationsOnPromotion, pharmacy);
 
-            notifyUsers(promotion);
+            //notifyUsers(promotion); TODO delete comment for the final version
 
             promotionRepository.save(promotion);
         }
