@@ -5,7 +5,7 @@ import {Container, Row} from "react-bootstrap";
 import ScheduleCounsel from "../../components/ScheduleCounsel";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
-
+import HelperService from './../../helpers/HelperService'
 
 class PatientCounselScheduling extends React.Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class PatientCounselScheduling extends React.Component {
 
     search(dateTime) {
         axios
-            .post('http://localhost:8080/api/scheduling/search', {
+            .post(HelperService.getPath('/api/scheduling/search'), {
                 'timeSlot' : dateTime,
                 'employeeType' : 'ROLE_pharmacist',
                 'patientId' : this.aut.id
@@ -46,7 +46,7 @@ class PatientCounselScheduling extends React.Component {
 
     schedule(pharmacyId, pharmacistId) {
         axios
-        .post('http://localhost:8080/api/appointment/counseling', {
+        .post(HelperService.getPath('/api/appointment/counseling'), {
             'examinerId' : pharmacistId,
             'type' : 'ROLE_pharmacist',
             'active' : true,
@@ -67,8 +67,17 @@ class PatientCounselScheduling extends React.Component {
             }
         })
         .then(res => {
-            this.props.history.push('/scheduled-appointments')
-        });
+            axios
+            .put(HelperService.getPath('/api/email/send'), {
+                'to': 'ilija_brdar@yahoo.com',   
+                'subject':"Counseling scheduled!",
+                'body':'You have successfully scheduled counseling at ' + this.state.dateTime,
+            })
+            .then(res => {
+                this.props.history.push('/scheduled-appointments')
+            });
+        })
+        .catch(e => alert('You have been blocked due to 3 penalties.'));
     }
 
     render() {

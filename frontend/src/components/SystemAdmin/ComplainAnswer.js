@@ -1,6 +1,8 @@
 import React from 'react';
 import {Button, Form, Modal} from "react-bootstrap";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
+
 
 export default class ComplainAnswer extends React.Component{
     constructor(props) {
@@ -32,10 +34,10 @@ export default class ComplainAnswer extends React.Component{
     }
 
     async sendMail() {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/email/send"
-            : 'http://localhost:8080/api/email/send';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/email/send"
+        //    : 'http://localhost:8080/api/email/send';
         axios
-            .put(path, {
+            .put(HelperService.getPath('/api/email/send'), {
                 'to': 't.kovacevic98@gmail.com',    //this.props.complaint.patientEmail
                 'subject':"Response to complaint",
                 'body':this.state.content,
@@ -53,11 +55,9 @@ export default class ComplainAnswer extends React.Component{
     }
 
     editComplaint(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/complaints/edit/"
-            : 'http://localhost:8080/api/complaints/edit/';
         console.log(this.props.complaint.complaintId)
         axios
-            .get(path+this.props.complaint.complaintId,{
+            .get(HelperService.getPath('/api/complaints/edit/'+this.props.complaint.complaintId),{
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + this.state.user.jwtToken

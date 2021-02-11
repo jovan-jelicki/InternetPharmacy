@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Container, Form, Modal, Row} from "react-bootstrap";
 import PatientLayout from "../layout/PatientLayout";
 import axios from "axios";
+import HelperService from "../helpers/HelperService";
 
 export default class CreateCoplaint extends React.Component{
     constructor(props) {
@@ -29,15 +30,20 @@ export default class CreateCoplaint extends React.Component{
     }
 
     async componentDidMount() {
+        if (this.state.user.type == undefined || this.state.user.type != "ROLE_patient")
+            this.props.history.push({
+                pathname: "/unauthorized"
+            });
+
         await this.fetchDermatologist();
         await this.fetchPharmacist();
         await this.fetchPharmacy();
     }
 
     fetchDermatologist(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "api/appointment/getFinishedForComplaint"
-            : 'http://localhost:8080/api/appointment/getFinishedForComplaint';
-        axios.post(path,{
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "api/appointment/getFinishedForComplaint"
+          //  : 'http://localhost:8080/api/appointment/getFinishedForComplaint';
+        axios.post(HelperService.getPath('/api/appointment/getFinishedForComplaint'),{
             id: this.state.patient.id,
             type: 0 //dermatolog/farmaceut
         },{
@@ -55,9 +61,9 @@ export default class CreateCoplaint extends React.Component{
     }
 
     fetchPharmacist(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacist/getPharmacistsByPatient/"
-            : 'http://localhost:8080/api/pharmacist/getPharmacistsByPatient/';
-        axios.get(path+this.state.patient.id,{
+       //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacist/getPharmacistsByPatient/"
+        //    : 'http://localhost:8080/api/pharmacist/getPharmacistsByPatient/';
+        axios.get(HelperService.getPath('/api/pharmacist/getPharmacistsByPatient/'+this.state.patient.id),{
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + this.state.user.jwtToken
@@ -72,9 +78,9 @@ export default class CreateCoplaint extends React.Component{
     }
 
     fetchPharmacy(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getAppointmentsPharmacyForComplaint/"
-            : 'http://localhost:8080/api/appointment/getAppointmentsPharmacyForComplaint/';
-        axios.get(path+this.state.patient.id,{
+       // const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/appointment/getAppointmentsPharmacyForComplaint/"
+       //     : 'http://localhost:8080/api/appointment/getAppointmentsPharmacyForComplaint/';
+        axios.get(HelperService.getPath('/api/appointment/getAppointmentsPharmacyForComplaint/'+this.state.patient.id),{
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + this.state.user.jwtToken
@@ -188,18 +194,32 @@ export default class CreateCoplaint extends React.Component{
     }
 
     async sendData() {
+
+        console.log(this.state.user.id)
         let type;
         if(this.state.boolPharmacist) type="pharmacist"
         else if(this.state.boolDermatologist) type="dermatologist"
         else type="pharmacy"
+        console.log("BLAAAAAAAAAAAAAAAAAAAA")
+        console.log(this.state.patient)
+        console.log(this.state.content)
+        console.log(this.state.employeeId)
+
         axios
-            .post('http://localhost:8080/api/complaints/save', {
+            .post(HelperService.getPath('/api/complaints/save'), {
                 'id':'',
-                'patient' : this.state.patient,
+                'patient' :{
+                    id:this.state.user.id,
+                },
                 'content' : this.state.content,
                 'type' : type,
                 'complaineeId' : this.state.employeeId,
                 'active':true
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.state.user.jwtToken
+                }
             })
             .then(res => {
                 this.handleModal();

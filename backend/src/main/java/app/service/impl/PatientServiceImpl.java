@@ -11,6 +11,7 @@ import app.repository.PatientRepository;
 import app.service.LoyaltyScaleService;
 import app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +37,6 @@ public class PatientServiceImpl implements PatientService {
     @Transactional(readOnly = false)
     public void changePassword(UserPasswordDTO passwordKit) {
         Optional<Patient> _user = patientRepository.findById(passwordKit.getUserId());
-//        if(_user.isEmpty())
-//            throw new NullPointerException("User not found");
         Patient user = _user.get();
         validatePassword(passwordKit, user);
         user.getCredentials().setPassword(passwordKit.getNewPassword());
@@ -106,6 +105,16 @@ public class PatientServiceImpl implements PatientService {
         return pharmacies;
     }
 
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void resetPenalties() {
+        patientRepository.findAll().forEach(p -> {
+            if(p.getPenaltyCount() != 0) {
+                p.setPenaltyCount(0);
+                save(p);
+            }
+        });
+    }
+
     @Override
     public Boolean setPatientCategory(Long patientId) {
        Patient patient=this.read(patientId).get();
@@ -128,7 +137,6 @@ public class PatientServiceImpl implements PatientService {
             this.save(patient);
         }
        return true;
-
     }
 
 }

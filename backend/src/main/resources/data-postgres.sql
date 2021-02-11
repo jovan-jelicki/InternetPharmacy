@@ -27,11 +27,11 @@ INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (6, 2);
 INSERT INTO patient_allergies (patient_id, allergies_id) VALUES (6, 1);
 
 INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description, pharmacist_cost, dermatologist_cost) VALUES
-                     (0, 'Pfizer', 'USA', 41, 87, 'Fifth Ave', 'Chicago', 'Pfizer Inc. is an American multinational pharmaceutical corporation. Pfizer is one of the world''s largest pharmaceutical companies, and was ranked 64th on the 2020 Fortune 500 list of the largest U.S. corporations by total revenue, at $51.75 billion',2000,1400);
+                     (0, 'Pfizer', 'United States', 41, 87, 'Fifth Ave', 'Chicago', 'Pfizer Inc. is an American multinational pharmaceutical corporation. Pfizer is one of the world''s largest pharmaceutical companies, and was ranked 64th on the 2020 Fortune 500 list of the largest U.S. corporations by total revenue, at $51.75 billion',2000,1400);
 INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description, pharmacist_cost, dermatologist_cost) VALUES
-                     (1, 'Moderna', 'USA', 42, 71, 'Sixth Ave', 'Boston', 'Moderna is an American pharmaceutical and biotechnology company based in Cambridge, Massachusetts. It focuses on drug discovery, drug development, and vaccine technologies based exclusively on messenger RNA (mRNA).',3999,2999);
+                     (1, 'Moderna', 'United States', 42, 71, 'Sixth Ave', 'Boston', 'Moderna is an American pharmaceutical and biotechnology company based in Cambridge, Massachusetts. It focuses on drug discovery, drug development, and vaccine technologies based exclusively on messenger RNA (mRNA).',3999,2999);
 INSERT INTO pharmacy (id, name, country, latitude, longitude, street, town, description, pharmacist_cost, dermatologist_cost) VALUES
-                     (2, 'AstraZeneca', 'GB', 51, 0, 'First Ave', 'London', 'AstraZeneca plc is a British-Swedish multinational pharmaceutical and biopharmaceutical company with its headquarters in Cambridge, England. AstraZeneca has a portfolio of products for major disease areas including cancer, cardiovascular, gastrointestinal, infection, respiratory and inflammation.',5000,4000);
+                     (2, 'AstraZeneca', 'United Kingdom', 51, 0, 'First Ave', 'London', 'AstraZeneca plc is a British-Swedish multinational pharmaceutical and biopharmaceutical company with its headquarters in Cambridge, England. AstraZeneca has a portfolio of products for major disease areas including cancer, cardiovascular, gastrointestinal, infection, respiratory and inflammation.',5000,4000);
 
 INSERT INTO pharmacy (id, country, latitude, longitude, street, town, description, name, pharmacist_cost, dermatologist_cost) VALUES
                      (4, 'Portugal', 43,3,'Sui gue peauqe', 'Lisbon', 'All purpose pharmacy!', 'Suei Mei',1400,3000);
@@ -332,6 +332,10 @@ insert into appointment (id,  examiner_id, appointment_status,  patient_id, peri
 values (8,2, 0, 6, '2021-03-01 14:00:00', '2021-03-01 13:00:00', 0, null,null,1, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
 values (9,2 ,0, 0, '2021-01-01 16:00:00', '2021-01-01 15:00:00', 0, null,null,1, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (150,3 ,0, 0, '2021-10-01 12:00:00', '2021-10-01 11:00:00', 0, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (151,3 ,0, null, '2021-11-01 12:00:00', '2021-11-01 11:00:00', 0, null,null,0, true);
 
 
 -- NE DIRAJ MI OVO NI SLUCAJNO, TREBA MI ZA DUGOROCNI REPORT!!!!!  Potpis : David!!!

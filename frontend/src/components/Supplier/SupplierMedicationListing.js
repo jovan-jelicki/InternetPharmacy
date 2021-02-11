@@ -28,11 +28,11 @@ export default class SupplierMedicationListing extends React.Component{
         this.fetchSuppliersMedicationListing()
     }
     fetchNonMedicationListing=()=>{
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/getNonMedicationsBySupplier/"
-            : 'http://localhost:8080/api/suppliers/getNonMedicationsBySupplier/';
+       // const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/getNonMedicationsBySupplier/"
+        //    : 'http://localhost:8080/api/suppliers/getNonMedicationsBySupplier/';
 
          axios
-            .get(path+this.state.user.id,{
+            .get(HelperService.getPath('/api/suppliers/getNonMedicationsBySupplier/'+this.state.user.id),{
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + this.state.user.jwtToken
@@ -45,9 +45,9 @@ export default class SupplierMedicationListing extends React.Component{
     }
 
     fetchSuppliersMedicationListing=()=>{
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/getSuppliersMedicationList/"
-            : 'http://localhost:8080/api/suppliers/getSuppliersMedicationList/';
-         axios.get(path+this.state.user.id,
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/getSuppliersMedicationList/"
+         //   : 'http://localhost:8080/api/suppliers/getSuppliersMedicationList/';
+         axios.get(HelperService.getPath('/api/suppliers/getSuppliersMedicationList/'+this.state.user.id),
         {
             headers: {
                 'Content-Type': 'application/json',
@@ -93,10 +93,9 @@ export default class SupplierMedicationListing extends React.Component{
     }
 
     submitAddMedication = () => {
-
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/addNewMedication"
-            : 'http://localhost:8080/api/suppliers/addNewMedication';
-        axios.put(path,{
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/addNewMedication"
+          //  : 'http://localhost:8080/api/suppliers/addNewMedication';
+        axios.put(HelperService.getPath('/api/suppliers/addNewMedication'),{
                 supplierId:this.state.user.id,
                 medicationId:this.state.medicationId,
                 quantity:this.state.quantity,
@@ -120,7 +119,8 @@ export default class SupplierMedicationListing extends React.Component{
     submitEditMedication=()=>{
         const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/edit"
             : 'http://localhost:8080/api/suppliers/edit';
-        axios.post(path, {
+        axios.post(HelperService.getPath('/api/suppliers/edit'),
+            {
             supplierId:1,
             quantity:this.state.changedQuantity,
             medicationQuantityId:this.state.quantityId
@@ -144,10 +144,10 @@ export default class SupplierMedicationListing extends React.Component{
         let isBoss = window.confirm('Are you sure you want to delete ' + medicationQuantity.medication.name + ' from your medications list?');
         if (isBoss) {
             console.log(medicationQuantity);
-            const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/deleteMedicationQuantity"
-                : 'http://localhost:8080/api/suppliers/deleteMedicationQuantity';
+            //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/suppliers/deleteMedicationQuantity"
+             //   : 'http://localhost:8080/api/suppliers/deleteMedicationQuantity';
 
-            axios.put(path, {
+            axios.put(HelperService.getPath('/api/suppliers/deleteMedicationQuantity'), {
                 "medicationQuantityId":medicationQuantity.id,
                 "supplierId":1
             },{

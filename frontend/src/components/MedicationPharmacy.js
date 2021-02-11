@@ -5,6 +5,7 @@ import MedicationSearch from "./MedicationSearch";
 import DateTimePicker from 'react-datetime-picker';
 import NumericInput from 'react-numeric-input';
 import helpers from "./../helpers/AuthentificationService"
+import HelperService from './../helpers/HelperService'
 
 
 class MedicationPharmacy extends React.Component {
@@ -25,7 +26,7 @@ class MedicationPharmacy extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         await axios
-            .get('http://localhost:8080/api/pharmacy/getPharmacyByMedication/' + this.props.medication.id /*, {
+            .get(HelperService.getPath('/api/pharmacy/getPharmacyByMedication/' + this.props.medication.id) /*, {
                 headers : {
                     'Content-Type' : 'application/json',
                     Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -146,7 +147,7 @@ class MedicationPharmacy extends React.Component {
     reserve = () => {
         const {selectedPharmacy, quantity, pickUpDate} = this.state
         axios
-        .put('http://localhost:8080/api/medicationReservation/reserve', {
+        .put(HelperService.getPath('/api/medicationReservation/reserve'), {
             'pharmacyId' : selectedPharmacy.id,
             'medicationReservation' : {
                 'discounted' : this.state.isDiscounted,
@@ -183,8 +184,8 @@ class MedicationPharmacy extends React.Component {
     }
 
     checkIfPatientHasPromotion = () => { //todo change patient id dynamically
-        const path = "http://localhost:8080/api/promotion/checkPatientSubscribedToPromotion/" +
-            this.state.selectedPharmacy.id + "/" + this.aut.id + "/" + this.props.medication.id;
+        const path = HelperService.getPath("/api/promotion/checkPatientSubscribedToPromotion/" +
+            this.state.selectedPharmacy.id + "/" + this.aut.id + "/" + this.props.medication.id);
         axios.get(path, {
             headers : {
                 'Content-Type' : 'application/json',

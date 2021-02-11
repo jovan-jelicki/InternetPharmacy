@@ -121,7 +121,7 @@ public class PromotionServiceImpl implements PromotionService {
 
     //jednom mesecno se runnuje - svake srede 50% popusta na ova 3 leka
     //TODO change this for the final version
-    @Scheduled(fixedRate=500000, initialDelay = 50)
+    @Scheduled(cron = "0 15 10 ? * FRI")
     @Transactional(readOnly = false)
     public void createNewPromotionsForAllPharmacies() {
         Period promotionPeriod = new Period(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0), LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).plusDays(7));

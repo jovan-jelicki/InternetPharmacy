@@ -124,6 +124,12 @@ export default class VacationRequest extends React.Component {
             minutes = "0" + minutes;
         let fullYearEnd = periodEnd.getFullYear() + "-" + month + "-" + day  + " " + hours + ":" + minutes + ":00";
 
+        let pharmacy = {};
+        if(this.state.user.type == "ROLE_dermatologist"){
+            pharmacy =  this.state.pharmacies.filter(p => p.name == this.state.pharmacy)[0];
+        }else {
+            pharmacy = this.state.pharmacy;
+        }
         const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/vacationRequest/saveDto"
             : 'http://localhost:8080/api/vacationRequest/saveDto';
         axios
@@ -132,7 +138,7 @@ export default class VacationRequest extends React.Component {
                     periodStart: fullYearStart,
                     periodEnd: fullYearEnd
                 },
-                'pharmacy' : this.state.pharmacy,
+                'pharmacy' : pharmacy,
                 'employeeType' : this.state.user.type,
                 'employeeId' : this.state.user.id,
                 'vacationNote' : this.state.vacationNote,

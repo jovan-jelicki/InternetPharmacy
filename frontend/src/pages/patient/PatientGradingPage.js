@@ -3,6 +3,7 @@ import PatientLayout from '../../layout/PatientLayout'
 import GradingSegment from '../../components/GradingSegment'
 import { Row } from 'react-bootstrap'
 import axios from 'axios'
+import HelperService from './../../helpers/HelperService'
 
 class PatientGradingPage extends React.Component {
     constructor(props) {
@@ -20,7 +21,7 @@ class PatientGradingPage extends React.Component {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
         axios
-        .get('http://localhost:8080/api/grades/dermatologists/' + this.aut.id, {
+        .get(HelperService.getPath('/api/grades/dermatologists/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -34,7 +35,7 @@ class PatientGradingPage extends React.Component {
         })
 
         axios
-        .get('http://localhost:8080/api/grades/pharmacist/' + this.aut.id, {
+        .get(HelperService.getPath('/api/grades/pharmacist/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -47,7 +48,7 @@ class PatientGradingPage extends React.Component {
         })
 
         axios
-        .get('http://localhost:8080/api/grades/medication/' + this.aut.id, {
+        .get(HelperService.getPath('/api/grades/medication/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -60,7 +61,7 @@ class PatientGradingPage extends React.Component {
         })
 
         axios
-        .get('http://localhost:8080/api/grades/pharmacy/' + this.aut.id, {
+        .get(HelperService.getPath('/api/grades/pharmacy/' + this.aut.id), {
             headers : {
                 'Content-Type' : 'application/json',
                 Authorization : 'Bearer ' + this.aut.jwtToken 
@@ -81,7 +82,7 @@ class PatientGradingPage extends React.Component {
             gradedId = entity.gradedId
 
         axios
-        .post('http://localhost:8080/api/grades', {
+        .post(HelperService.getPath('/api/grades'), {
             'id' : entity.gradeId,
             'gradedId' : gradedId,
             'gradeType' : entity.type,

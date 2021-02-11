@@ -2,12 +2,14 @@ package app.service.impl;
 
 import app.dto.AppointmentSearchDTO;
 import app.model.appointment.Appointment;
+import app.model.appointment.AppointmentCancelled;
 import app.model.appointment.AppointmentStatus;
 import app.model.time.Period;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
 import app.model.user.EmployeeType;
 import app.model.user.Pharmacist;
+import app.repository.AppointmentCancelledRepository;
 import app.repository.VacationRequestRepository;
 import app.service.AppointmentService;
 import app.service.CounselingService;
@@ -31,14 +33,16 @@ public class CounselingServiceImpl implements CounselingService {
     private final PharmacistService pharmacistService;
     private final VacationRequestRepository vacationRequestRepository;
     private final PatientService patientService;
+    private final AppointmentCancelledRepository appointmentCancelledRepository;
 
     @Autowired
     public CounselingServiceImpl(PatientService patientService, AppointmentService appointmentService, PharmacistService pharmacistService,
-                                 VacationRequestRepository vacationRequestRepository) {
+                                 VacationRequestRepository vacationRequestRepository, AppointmentCancelledRepository appointmentCancelledRepository) {
         this.appointmentService = appointmentService;
         this.patientService = patientService;
         this.pharmacistService = pharmacistService;
         this.vacationRequestRepository = vacationRequestRepository;
+        this.appointmentCancelledRepository = appointmentCancelledRepository;
     }
 
 
@@ -88,8 +92,11 @@ public class CounselingServiceImpl implements CounselingService {
     public Collection<Appointment> findPreviousByPatientId(Long patientId) {
         Collection<Appointment> appointments = appointmentService
                 .findAppointmentsByPatient_IdAndType(patientId, EmployeeType.ROLE_pharmacist);
-        Collection<Appointment> cancelled = appointmentService
-                .findCancelledByPatientIdAndType(patientId, EmployeeType.ROLE_pharmacist);
+        Collection<Appointment> cancelled = appointmentCancelledRepository
+                .findAllByPatient_IdAndType(patientId, EmployeeType.ROLE_pharmacist)
+                .stream()
+                .map(Appointment::new)
+                .collect(Collectors.toList());
         Collection<Appointment> all = appointments
                                         .stream()
                                         .filter(a -> a.getPeriod().getPeriodStart().isBefore(LocalDateTime.now()))
@@ -134,8 +141,8 @@ public class CounselingServiceImpl implements CounselingService {
 
     private Set<Pharmacist> findUnavailableCanceled(LocalDateTime dateTime, Long patientId) {
         Set<Pharmacist> unavailable = new HashSet<>();
-        Collection<Appointment> scheduledCancelled = appointmentService
-                .findCancelledByPatientIdAndType(patientId, EmployeeType.ROLE_pharmacist);
+        Collection<AppointmentCancelled> scheduledCancelled = appointmentCancelledRepository
+                .findAllByPatient_IdAndType(patientId, EmployeeType.ROLE_pharmacist);
         scheduledCancelled.forEach(a -> {
             Pharmacist pharmacist = pharmacistService.read(a.getExaminerId()).get();
             if(a.isOverlapping(dateTime)) {
