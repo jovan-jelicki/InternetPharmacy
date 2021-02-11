@@ -17,6 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+//Created by David
+//the test doesnt work because of lazy exception, save to delete
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional

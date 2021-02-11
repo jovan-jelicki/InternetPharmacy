@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+//Created by David
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
@@ -24,9 +25,6 @@ public class VacationRequestTests {
     private VacationRequestService vacationRequestService;
 
 
-
-    //Test u kojem pokusavamo da imitiramo 2 korisnika koja su u isto vreme pokusala da zakazu pregled kod farmaceuta
-    //Rezultat je da ce jedan korisnik uspesno zakazati, a drugi dobiti poruku da je dati termin zakazan.
     @Rollback(true)
     @Test(expected = ObjectOptimisticLockingFailureException.class)
     public void vacationRequestEditing() throws Throwable {
