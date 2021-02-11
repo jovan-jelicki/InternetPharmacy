@@ -36,6 +36,7 @@ public class MedicationOfferDTO {
         this.cost = medicationOffer.getCost();
         this.shippingDate = medicationOffer.getShippingDate();
         this.status = medicationOffer.getStatus();
+        this.medicationOrderId = medicationOffer.getMedicationOrder().getId();
         this.supplierId = supplier.getId();
         this.supplierFirstName = supplier.getFirstName();
         this.supplierLastName = supplier.getLastName();
