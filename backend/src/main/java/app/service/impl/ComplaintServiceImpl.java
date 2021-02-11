@@ -32,9 +32,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public Complaint save(Complaint entity)  {
-        return complaintRepository.save(entity);
-    }
+    public Complaint save(Complaint entity)  {  return complaintRepository.save(entity); }
 
     @Override
     public Collection<Complaint> read()  {

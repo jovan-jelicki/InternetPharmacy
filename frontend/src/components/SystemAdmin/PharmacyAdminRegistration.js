@@ -4,6 +4,7 @@ import "../../App.css";
 import Script from "react-load-script";
 import axios from "axios";
 import Dropdown from "react-dropdown";
+import HelperService from "../../helpers/HelperService";
 
 export default class PharmacyAdminRegistration extends React.Component {
     constructor(props) {
@@ -54,10 +55,10 @@ export default class PharmacyAdminRegistration extends React.Component {
     }
 
     fetchPharmacy(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy"
-            : 'http://localhost:8080/api/pharmacy';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacy"
+          //  : 'http://localhost:8080/api/pharmacy';
 
-         axios.get(path,{
+         axios.get(HelperService.getPath('/api/pharmacy'),{
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + this.state.localUser.jwtToken
@@ -70,11 +71,11 @@ export default class PharmacyAdminRegistration extends React.Component {
         console.log(this.state.pharmacys)    }
 
     async sendParams() {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacyAdmin/saveAdminPharmacy"
-            : 'http://localhost:8080/api/pharmacyAdmin/saveAdminPharmacy';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/pharmacyAdmin/saveAdminPharmacy"
+        //    : 'http://localhost:8080/api/pharmacyAdmin/saveAdminPharmacy';
 
         axios
-            .post(path, {
+            .post(HelperService.getPath('/api/pharmacyAdmin/saveAdminPharmacy'), {
                 'id':'',
                 'firstName' : this.state.user.firstName,
                 'lastName' : this.state.user.lastName,

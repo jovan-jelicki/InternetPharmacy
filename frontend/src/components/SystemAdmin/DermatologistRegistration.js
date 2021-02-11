@@ -2,6 +2,7 @@ import React from "react";
 import {Button, Container, FormControl} from "react-bootstrap";
 import Script from "react-load-script";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
 
 export default class DermatologistRegistration extends React.Component {
     constructor(props) {
@@ -45,7 +46,7 @@ export default class DermatologistRegistration extends React.Component {
         const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/dermatologists/save"
             : 'http://localhost:8080/api/dermatologists/save';
         axios
-            .post(path, {
+            .post(HelperService.getPath('/api/dermatologists/save'), {
                 'id':'',
                 'firstName' : this.state.dermatologist.firstName,
                 'lastName' : this.state.dermatologist.lastName,

@@ -3,6 +3,7 @@ import axios from "axios";
 import {Button, Form, Modal, Row, Table} from "react-bootstrap";
 import CreateNewOffer from "../Supplier/CreateNewOffer";
 import ComplainAnswer from "./ComplainAnswer";
+import HelperService from "../../helpers/HelperService";
 
 export default class Complaints extends React.Component {
     constructor(props) {
@@ -21,10 +22,10 @@ export default class Complaints extends React.Component {
     }
 
     async fetchComplaints(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/complaints"
-            : 'http://localhost:8080/api/complaints';
+       // const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/complaints"
+         //   : 'http://localhost:8080/api/complaints';
         await axios
-            .get(path,{
+            .get(HelperService.getPath('/api/complaints'),{
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + this.state.user.jwtToken

@@ -2,6 +2,7 @@ import React from "react";
 import Script from "react-load-script";
 import {Button, Form, FormControl, Row} from "react-bootstrap";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
 
 export default class AddNewMedication extends React.Component {
     constructor(props) {
@@ -62,9 +63,9 @@ export default class AddNewMedication extends React.Component {
     }
 
     fetchIngredients(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/ingredients/getAll"
-            : 'http://localhost:8080/api/ingredients/getAll';
-         axios.get(path,{
+       // const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/ingredients/getAll"
+       //     : 'http://localhost:8080/api/ingredients/getAll';
+         axios.get(HelperService.getPath('/api/ingredients/getAll'),{
              headers: {
                  'Content-Type': 'application/json',
                  Authorization: 'Bearer ' + this.state.user.jwtToken
@@ -77,9 +78,9 @@ export default class AddNewMedication extends React.Component {
     }
 
     fetchAlternatives(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications"
-            : 'http://localhost:8080/api/medications';
-        axios.get(path,{
+     //   const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications"
+      //      : 'http://localhost:8080/api/medications';
+        axios.get(HelperService.getPath('/api/medications'),{
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + this.state.user.jwtToken
@@ -91,9 +92,9 @@ export default class AddNewMedication extends React.Component {
         })
     }
     fetchSideEffects(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/sideEffects/getAll"
-            : 'http://localhost:8080/api/sideEffects/getAll';
-        axios.get(path,{
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/sideEffects/getAll"
+        //    : 'http://localhost:8080/api/sideEffects/getAll';
+        axios.get(HelperService.getPath('/api/sideEffects/getAll'),{
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + this.state.user.jwtToken
@@ -106,10 +107,10 @@ export default class AddNewMedication extends React.Component {
     }
 
     async sendParams() {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications"
-            : 'http://localhost:8080/api/medications';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/medications"
+        //    : 'http://localhost:8080/api/medications';
         axios
-            .post(path, {
+            .post(HelperService.getPath('/api/medications'), {
                 'id':'',
                 'name': this.state.medication.name,
                 'dose' :this.state.medication.dose,

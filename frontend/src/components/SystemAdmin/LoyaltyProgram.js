@@ -1,6 +1,8 @@
 import React from "react";
 import {Button, Col, Container, Form, FormControl} from "react-bootstrap";
 import axios from "axios";
+import HelperService from "../../helpers/HelperService";
+
 
 export default class LoyaltyProgram extends React.Component {
     constructor() {
@@ -42,10 +44,10 @@ export default class LoyaltyProgram extends React.Component {
     }
 
     fetchLoyaltyScales(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyScale/"
-            : 'http://localhost:8080/api/loyaltyScale/';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyScale/"
+         //   : 'http://localhost:8080/api/loyaltyScale/';
         axios
-            .get(path,{
+            .get(HelperService.getPath('/api/loyaltyScale'),{
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + this.state.user.jwtToken
@@ -83,10 +85,10 @@ export default class LoyaltyProgram extends React.Component {
 
 
     fetchLoyaltyProgram(){
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyProgram/"
-            : 'http://localhost:8080/api/loyaltyProgram/';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyProgram/"
+          //  : 'http://localhost:8080/api/loyaltyProgram';
         axios
-            .get(path,{
+            .get(HelperService.getPath('/api/loyaltyProgram'),{
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + this.state.user.jwtToken
@@ -102,10 +104,10 @@ export default class LoyaltyProgram extends React.Component {
     }
 
     async sendData() {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyScale/save"
-            : 'http://localhost:8080/api/loyaltyScale/save';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyScale/save"
+          //  : 'http://localhost:8080/api/loyaltyScale/save';
         axios
-            .post(path, {
+            .post(HelperService.getPath('/api/loyaltyScale/save'), {
                 'category': this.state.loyalty.category,
                 'minPoints': this.state.loyalty.minPoints,
                 'maxPoints' : this.state.loyalty.maxPoints,
@@ -125,10 +127,10 @@ export default class LoyaltyProgram extends React.Component {
     }
 
     async sendProgram() {
-        const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyProgram/save"
-            : 'http://localhost:8080/api/loyaltyProgram/save';
+        //const path = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS + "/api/loyaltyProgram/save"
+         //   : 'http://localhost:8080/api/loyaltyProgram/save';
         axios
-            .post(path, {
+            .post(HelperService.getPath('/api/loyaltyProgram/save'), {
                 'appointmentPoints': this.state.program.appointmentPoints,
                 'consultingPoints': this.state.program.consultingPoints,
             },{

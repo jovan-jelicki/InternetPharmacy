@@ -24,12 +24,16 @@ public class ComplaintControllerImpl {
         this.complaintService = complaintService;
     }
 
-    @PreAuthorize("hasAnyRole('systemAdmin','patient')")
+    @PreAuthorize("hasAnyRole('patient,systemAdmin')")
     @PostMapping(value="/save", consumes = "application/json")
     public ResponseEntity<Void> save(@RequestBody Complaint complaint) {
-        complaintService.save(complaint);
-       // return new ResponseEntity<>(complaintService.save(complaint), HttpStatus.CREATED);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            complaintService.save(complaint);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
     }
     @PreAuthorize("hasRole('systemAdmin')")
@@ -40,7 +44,7 @@ public class ComplaintControllerImpl {
 
     @PreAuthorize("hasRole('systemAdmin')")
     @GetMapping(value = "/edit/{complaintId}")
-    public ResponseEntity<Boolean> editComplaint(@RequestBody Long complaintId) {
+    public ResponseEntity<Boolean> editComplaint(@PathVariable Long complaintId) {
         return new ResponseEntity<>(complaintService.editComplaint(complaintId), HttpStatus.OK);
 
     }

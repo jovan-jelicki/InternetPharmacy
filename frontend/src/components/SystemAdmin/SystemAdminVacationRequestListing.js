@@ -16,15 +16,15 @@ export default class SystemAdminVacationRequestListing extends React.Component{
                 rejectionNote:""
             },
             user : !!localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-            pharmacyId : -1
         }
     }
 
     async componentDidMount() {
-        let temp = await PharmacyAdminService.fetchPharmacyId();
+      /*  let temp = await PharmacyAdminService.fetchPharmacyId();
         this.setState({
             pharmacyId : temp
         })
+        */
         this.fetchVacationRequests();
     }
 
