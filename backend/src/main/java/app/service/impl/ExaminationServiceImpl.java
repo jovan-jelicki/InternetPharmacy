@@ -43,8 +43,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         if(appointmentService.getAllNotFinishedByPatientId(appointmentUpdateDTO.getPatientId())
                 .stream().filter(a -> a.isOverlapping(appointment.getPeriod().getPeriodStart())).findFirst().orElse(null) != null)
             return false;
-        Patient patient = patientService.read(appointmentUpdateDTO.getPatientId()).get();
-        appointment.setPatient(patient);
+        appointment.setPatient(patientService.read(appointmentUpdateDTO.getPatientId()).get());
         appointmentService.save(appointment);
         return true;
     }

@@ -332,6 +332,10 @@ insert into appointment (id,  examiner_id, appointment_status,  patient_id, peri
 values (8,2, 0, 6, '2021-03-01 14:00:00', '2021-03-01 13:00:00', 0, null,null,1, true);
 insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
 values (9,2 ,0, 0, '2021-01-01 16:00:00', '2021-01-01 15:00:00', 0, null,null,1, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (150,3 ,0, 0, '2021-10-01 12:00:00', '2021-10-01 11:00:00', 0, null,null,0, true);
+insert into appointment (id,  examiner_id, appointment_status,  patient_id, period_end, period_start, pharmacy_id, report, therapy_id, type, is_active)
+values (151,3 ,0, null, '2021-11-01 12:00:00', '2021-11-01 11:00:00', 0, null,null,0, true);
 
 
 -- NE DIRAJ MI OVO NI SLUCAJNO, TREBA MI ZA DUGOROCNI REPORT!!!!!  Potpis : David!!!
