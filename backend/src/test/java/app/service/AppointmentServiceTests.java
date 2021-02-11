@@ -1,11 +1,14 @@
 package app.service;
 
 import app.model.appointment.Appointment;
+import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
+import app.model.user.Patient;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.service.impl.AppointmentServiceImpl;
+import io.jsonwebtoken.lang.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -32,6 +36,9 @@ public class AppointmentServiceTests {
 
     @Mock
     private PharmacyRepository pharmacyRepository;
+
+    @Mock
+    private PatientService patientService;
 
     @Mock
     private Appointment appointmentMock;
@@ -76,6 +83,50 @@ public class AppointmentServiceTests {
         verifyNoMoreInteractions(appointmentRepository);
     }
 
+    @Test
+    public void scheduleCounselingTest_NoPenalties() {
+        Appointment appointment = new Appointment();
+        Period period = new Period();
+        period.setPeriodStart(LocalDateTime.of(2021, 5, 6, 10, 0, 0));
+        period.setPeriodEnd(LocalDateTime.of(2021, 5, 6, 11, 0, 0));
+        appointment.setPeriod(period);
+        Patient patient0 = new Patient();
+        patient0.setId(0l);
+        patient0.setPenaltyCount(0);
+        Pharmacy pharmacy0 = new Pharmacy();
+        pharmacy0.setId(0l);
+        appointment.setPharmacy(pharmacy0);
+        appointment.setPatient(patient0);
+        when(patientService.read(0l)).thenReturn(Optional.of(patient0));
+        when(pharmacyRepository.findById(0l)).thenReturn(Optional.of(pharmacy0));
+        when(appointmentRepository.save(appointment)).thenReturn(appointment);
 
+        Appointment actual = appointmentService.scheduleCounseling(appointment);
+
+        Assert.notNull(actual);
+    }
+
+    @Test
+    public void scheduleCounselingTest_WithPenalties() {
+        Appointment appointment = new Appointment();
+        Period period = new Period();
+        period.setPeriodStart(LocalDateTime.of(2021, 5, 6, 10, 0, 0));
+        period.setPeriodEnd(LocalDateTime.of(2021, 5, 6, 11, 0, 0));
+        appointment.setPeriod(period);
+        Patient patient0 = new Patient();
+        patient0.setId(0l);
+        patient0.setPenaltyCount(3);
+        Pharmacy pharmacy0 = new Pharmacy();
+        pharmacy0.setId(0l);
+        appointment.setPharmacy(pharmacy0);
+        appointment.setPatient(patient0);
+        when(patientService.read(0l)).thenReturn(Optional.of(patient0));
+        when(pharmacyRepository.findById(0l)).thenReturn(Optional.of(pharmacy0));
+        when(appointmentRepository.save(appointment)).thenReturn(appointment);
+
+        Appointment actual = appointmentService.scheduleCounseling(appointment);
+
+        Assert.isNull(actual);
+    }
 
 }

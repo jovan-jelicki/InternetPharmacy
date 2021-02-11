@@ -118,6 +118,7 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
         return medicationReservationRepository.findAllByPatient_Id(patientId);
     }
 
+    @Transactional(readOnly = false)
     private void getMedicationQuantityBack(Pharmacy pharmacy, MedicationQuantity medicationQuantity) {
         pharmacy.getMedicationQuantity().forEach(quantity -> {
             if(medicationQuantity.getMedication().getId() == quantity.getMedication().getId())
@@ -143,7 +144,7 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public MedicationReservation reserve(MakeMedicationReservationDTO entity) {
         Optional<Pharmacy> pharmacy = pharmacyRepository.findById(entity.getPharmacyId());
 //        if(pharmacy.isEmpty())
@@ -162,7 +163,7 @@ public class MedicationReservationServiceImpl implements MedicationReservationSe
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public boolean cancel(Long reservationId) {
         MedicationReservation medicationReservation = medicationReservationRepository.findById(reservationId).get();
         if(medicationReservation.getPickUpDate().minusHours(24).isBefore(LocalDateTime.now()))
