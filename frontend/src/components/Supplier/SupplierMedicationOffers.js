@@ -23,23 +23,27 @@ export default class SupplierMedicationOffers extends React.Component{
     }
 
     async componentDidMount() {
-        await axios
-            .get(HelperService.getPath('/api/suppliers/getAllBySupplier/' + this.state.user.id), {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + this.state.user.jwtToken
-                }
-            })
-            .then((res) => {
-                this.setState({
-                    medicationOffers : res.data
-                })
-                console.log("USEO")
-                console.log(this.state.medicationOffers);
-            })
-        this.offersBackup = [...this.state.medicationOffers]
+        await  this.fetchOrders();
+    }
 
-        console.log(this.state.medicationOffers[0].deadline)
+     fetchOrders(){
+         axios
+             .get(HelperService.getPath('/api/suppliers/getAllBySupplier/' + this.state.user.id), {
+                 headers: {
+                     'Content-Type': 'application/json',
+                     Authorization: 'Bearer ' + this.state.user.jwtToken
+                 }
+             })
+             .then((res) => {
+                 this.setState({
+                     medicationOffers : res.data
+                 })
+                 console.log("USEO")
+                 console.log(this.state.medicationOffers);
+             })
+         this.offersBackup = [...this.state.medicationOffers]
+
+        // console.log(this.state.medicationOffers[0].deadline)
     }
 
     checkTime=(deadline)=>{
@@ -198,9 +202,11 @@ export default class SupplierMedicationOffers extends React.Component{
         console.log(this.state.modalOffer)
         this.checkTime(this.state.modalOffer.deadline)
     }
+
     closeModal=()=>{
         this.setState({
             showModal : !this.state.showModal
         });
+        this.fetchOrders();
     }
 }

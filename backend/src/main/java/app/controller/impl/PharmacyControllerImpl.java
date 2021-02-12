@@ -41,7 +41,7 @@ public class PharmacyControllerImpl {
     }
 
     @PreAuthorize("hasRole('systemAdmin')")
-    @PostMapping(consumes = "application/json", value="save")
+    @PostMapping(consumes = "application/json", value="/save")
     public ResponseEntity<Pharmacy> savePharmacy(@RequestBody PharmacyAdminPharmacyDTO pharmacy) {
         return new ResponseEntity<>(pharmacyService.savePharmacy(pharmacy), HttpStatus.OK);
     }

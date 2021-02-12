@@ -91,18 +91,27 @@ public class DermatologistControllerTest {
     @Test
     @WithMockUser(roles = "pharmacyAdmin")
     public void testAddDermatologistToPharmacy() throws Exception {
-        long pharmacyId = 1L;
-
         DermatologistDTO dto = new DermatologistDTO();
         dto.setId(4L);
         dto.setFirstName("Agate");
         dto.setLastName("Fendi");
+        Contact contact = new Contact();
+        contact.setPhoneNumber("+3816954845");
+        Address address = new Address();
+        address.setStreet("temp");
+        address.setTown("temp");
+        address.setCountry("SRB");
+        address.setLatitude(49D);
+        address.setLongitude(19D);
+        contact.setAddress(address);
+        dto.setContact(contact);
+        dto.setGrade(3);
 
         WorkingHours workingHours = new WorkingHours();
         Pharmacy pharmacy = new Pharmacy();
         pharmacy.setId(1L);
         workingHours.setPharmacy(pharmacy);
-        Period period = new Period(LocalDateTime.of(2021,2,14,12,0), LocalDateTime.of(2021,2,27,18,0) );
+        Period period = new Period(LocalDateTime.of(2017,1,13,12,0), LocalDateTime.of(2017,1,13,18,0) );
         workingHours.setPeriod(period);
 
         ArrayList<WorkingHours> workingHoursArrayList = new ArrayList<>();
@@ -113,8 +122,8 @@ public class DermatologistControllerTest {
 
         String json = TestUtil.json(dto);
 
-        mockMvc.perform(put(URL_PREFIX + "/addDermatologistToPharmacy/" + pharmacyId, json))
-                .andExpect(status().isOk())
+        mockMvc.perform(put(URL_PREFIX + "/addDermatologistToPharmacy").contentType(contentType).content(json))
+                .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(content().string(""));
     }

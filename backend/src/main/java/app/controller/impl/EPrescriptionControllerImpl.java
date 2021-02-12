@@ -49,6 +49,7 @@ public class EPrescriptionControllerImpl {
         Collection<PharmacyQRDTO> pharmacyQRDTOS=ePrescriptionService.getPharmacyForQR(ePrescriptionId);
         return new ResponseEntity(pharmacyQRDTOS, HttpStatus.OK);
     }
+
     @PreAuthorize("hasRole('patient')")
     @PostMapping(value = "/buyMedication")
     public ResponseEntity<Boolean> buyMedication(@RequestBody PharmacyPrescriptionDTO pharmacyPrescriptionDTO) {
@@ -58,5 +59,4 @@ public class EPrescriptionControllerImpl {
             return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
 }

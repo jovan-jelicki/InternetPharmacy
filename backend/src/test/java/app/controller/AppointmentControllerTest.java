@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,6 +75,14 @@ public class AppointmentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists());
 
+    }
+
+    @Test
+    @WithMockUser(roles = "pharmacyAdmin")
+    public void testGetAppointmentsYearlyReport() throws Exception {
+        mockMvc.perform(get(URL_PREFIX + "/getAppointmentsYearlyReport/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[*].chartName").value(hasItem("2017")));
 
     }
 }

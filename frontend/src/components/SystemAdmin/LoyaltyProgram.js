@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Container, Form, FormControl} from "react-bootstrap";
+import {Alert, Button, Col, Container, Form, FormControl} from "react-bootstrap";
 import axios from "axios";
 import HelperService from "../../helpers/HelperService";
 
@@ -203,7 +203,10 @@ export default class LoyaltyProgram extends React.Component {
 
     checkValues(){
         let valid = true;
-        if(this.state.loyalty.maxPoints <= this.state.loyalty.minPoints){
+        alert(this.state.loyalty.maxPoints +"bla"+ this.state.loyalty.minPoints)
+        let maxBr=Number(this.state.loyalty.maxPoints)
+        let minBr=Number(this.state.loyalty.minPoints)
+        if( maxBr<= minBr){
             valid=false;
             alert("Please check min and max value of points.")
         }
@@ -315,6 +318,7 @@ export default class LoyaltyProgram extends React.Component {
                     <h3 style={({ textAlignVertical: "center", textAlign: "center"})}>Edit loyalty scale for users</h3>
                 </div>
 
+
                 <div className="row" style={{marginTop: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <label className="col-sm-2 col-form-label">Choose category</label>
                     <div className="col-sm-3 mb-2">
@@ -329,7 +333,7 @@ export default class LoyaltyProgram extends React.Component {
                 <div className="row" style={{marginTop: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <label className="col-sm-2 col-form-label">Enter min points</label>
                     <div className="col-sm-3 mb-2">
-                        <input type="number" value={this.state.loyalty.minPoints} id="minPoints" name="minPoints" onChange={(e) => { this.handleInputChange(e)}} className="form-control" placeholder="Min points"/>
+                        <input type="number" min="0" value={this.state.loyalty.minPoints} id="minPoints" name="minPoints" onChange={(e) => { this.handleInputChange(e)}} className="form-control" placeholder="Min points"/>
                         {this.state.submitted && this.state.errors.loyalty.minPoints> 0 && <span className="text-danger">{this.state.errors.loyalty.minPoints}</span>}
                     </div>
                 </div>
@@ -337,7 +341,7 @@ export default class LoyaltyProgram extends React.Component {
                      style={{marginTop: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <label className="col-sm-2 col-form-label">Enter max points</label>
                     <div className="col-sm-3 mb-2">
-                        <input type="number"  min={0} value={this.state.loyalty.maxPoints} id="maxPoints" name="maxPoints" onChange={(e) => { this.handleInputChange(e)}} className="form-control" placeholder="Max points"/>
+                        <input type="number" min="0" value={this.state.loyalty.maxPoints} id="maxPoints" name="maxPoints" onChange={(e) => { this.handleInputChange(e)}} className="form-control" placeholder="Max points"/>
                         {this.state.submitted && this.state.errors.loyalty.maxPoints> 0 && <span className="text-danger">{this.state.errors.loyalty.maxPoints}</span>}
                     </div>
                 </div>
@@ -345,9 +349,14 @@ export default class LoyaltyProgram extends React.Component {
                      style={{marginTop: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <label className="col-sm-2 col-form-label">Enter discount</label>
                     <div className="col-sm-3 mb-2">
-                        <input type="number" value={this.state.loyalty.discount} id="discount" name="discount" onChange={(e) => { this.handleInputChange(e)}} className="form-control" placeholder="Discount"/>
+                        <input type="number" min="0" max="100" value={this.state.loyalty.discount} id="discount" name="discount" onChange={(e) => { this.handleInputChange(e)}} className="form-control" placeholder="Discount"/>
                         {this.state.submitted && this.state.errors.loyalty.discount> 0 && <span className="text-danger">{this.state.errors.loyalty.discount}</span>}
                     </div>
+                </div>
+                <div style={({ marginLeft:850, marginBottom:30, height:20, width:500})}>
+                    <Alert variant='success' show={true}  style={({textAlignVertical: "center", textAlign: "center"})}>
+                        Be careful to define consecutive category points!
+                    </Alert>
                 </div>
                 <div className="row"
                      style={{margin: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
@@ -388,6 +397,7 @@ export default class LoyaltyProgram extends React.Component {
                             <Button variant="primary" onClick={this.submitProgramForm}>Define</Button>
                         </div>
                     </div>
+
                 </div>
             </div>
         );

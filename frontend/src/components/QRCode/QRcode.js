@@ -192,6 +192,8 @@ export default class QRcode extends React.Component{
         this.setState({
             showModal : !this.state.showModal
         });
+        window.location.reload();
+
     }
 
 render() {
@@ -241,14 +243,12 @@ render() {
                         <div>
                             <img style={{height: 300, width: 300, marginLeft: '1rem', marginBottom: 10}}
                                  src={this.state.image}/>
-                            {this.state.pharmacies.length != 0 &&
                              <div>
                                < PharmacySearch search={this.search} cancel={this.cancel}/>
                                 <PharmacyFilter gradeFilter={this.gradeFilter}/>
                                 <Button onClick={this.sortByGrade} style={{height : 40, marginRight:10}}  type="button" className="btn btn-secondary"> Sort by grade</Button>
                                 <Button onClick={this.sortByPrice} style={{height : 40}}  type="button" className="btn btn-secondary"> Sort by price</Button>
-                                </div>
-                            }</div>
+                                </div></div>
                     }
                     {this.state.pharmacies.length != 0 ?
                             <Row className={'mt-4'}>
