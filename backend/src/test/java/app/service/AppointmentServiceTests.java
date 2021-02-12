@@ -2,10 +2,7 @@ package app.service;
 
 import app.dto.EventDTO;
 import app.model.appointment.Appointment;
-<<<<<<< HEAD
-=======
 import app.model.appointment.AppointmentStatus;
->>>>>>> develop
 import app.model.pharmacy.Pharmacy;
 import app.model.time.Period;
 import app.model.user.EmployeeType;
