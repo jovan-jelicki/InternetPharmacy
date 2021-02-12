@@ -94,10 +94,11 @@ public class  MedicationReservationControllerImpl implements MedicationReservati
 
     @PutMapping(value = "/reserve", consumes = "application/json")
     @PreAuthorize("hasRole('patient')")
-    public ResponseEntity<Void> reserve(@RequestBody MakeMedicationReservationDTO entity) {
+    public ResponseEntity<Long> reserve(@RequestBody MakeMedicationReservationDTO entity) {
         try {
-            if(medicationReservationService.reserve(entity) != null)
-                return new ResponseEntity<>(HttpStatus.CREATED);
+            MedicationReservation medicationReservation = medicationReservationService.reserve(entity);
+            if(medicationReservation != null)
+                return new ResponseEntity<>(medicationReservation.getId(), HttpStatus.CREATED);
             else
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -1,5 +1,6 @@
 import React from 'react'
 import {Accordion, Card, Col, ListGroup, Row, Button} from "react-bootstrap";
+import StarRatings from 'react-star-ratings'
 
 export default class ScheduleCounsel extends React.Component {
     constructor(props) {
@@ -18,14 +19,26 @@ export default class ScheduleCounsel extends React.Component {
             const address = pharmacy.address.street + ', ' + pharmacy.address.town + ', ' + pharmacy.address.country
             const pharmacists = this.props.pharmacists.filter(p => p.pharmacyDTO.id === pharmacy.id)
                 .map((pharmacist, index) => {
+                console.log(pharmacist)
                 let pharmacistPlain = pharmacist.pharmacistPlainDTO
                 return(
                     <ListGroup.Item key={index}>
                         <Row>
                             <Col xs={4}>{pharmacistPlain.firstName + ' ' + pharmacistPlain.lastName}</Col>
-                            <Col xs={{span : 2, offset : 5}}>
+                            
+                            <Col xs={{span : 2, offset : 2}}>
                                 <Button variant={'success'} onClick={() => this.schedule(pharmacy.id, pharmacistPlain.id)}>Schedule</Button>
                             </Col>
+                        </Row>
+                        <Row>
+                        <Col xs={12}>
+                                <StarRatings
+                                    starDimension={'20px'}
+                                    rating={pharmacist.grade}
+                                    starRatedColor='yellow'
+                                    numberOfStars={5}
+                                />
+                                </Col>
                         </Row>
                     </ListGroup.Item>
                 )

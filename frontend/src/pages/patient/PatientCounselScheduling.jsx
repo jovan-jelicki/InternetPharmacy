@@ -41,12 +41,18 @@ class PatientCounselScheduling extends React.Component {
                 }
             })
             .then(res => {
+                console.log(res.data)
                 this.setState({
-                    'pharmacies' : [...new Set(res.data.map(x => x.pharmacyDTO))],
+                    //'pharmacies' : [...new Set(res.data.map(x => x.pharmacyDTO))],
+                    'pharmacies' : this.removeDuplicates([...res.data.map(x => x.pharmacyDTO)]),
                     'pharmacists' : res.data,
                     'dateTime' : dateTime
                 })
             })
+    }
+
+    removeDuplicates = (arr) => {
+        return arr.filter((v, i, a) => a.findIndex(t => t.id == v.id) === i)
     }
 
     schedule(pharmacyId, pharmacistId) {

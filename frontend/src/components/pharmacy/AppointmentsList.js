@@ -110,9 +110,19 @@ class AppointmentsList extends React.Component{
             }
         })
         .then(res => {
-            alert('success')
-            this.props.history.push({
-                pathname: "/scheduled-appointments"
+            axios
+            .put(HelperService.getPath('/api/email/send'), {
+                'to': 'ilija_brdar@yahoo.com',   
+                'subject':"Examination scheduled!",
+                'body':'You have successfully scheduled dermatologist examination!',
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.aut.jwtToken
+                }
+            })
+            .then(res => {
+                this.props.history.push('/scheduled-appointments')
             });
         })
     }
