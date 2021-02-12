@@ -30,6 +30,13 @@ export default class PatientProfilePage extends React.Component {
 
     async componentDidMount() {
         this.aut = JSON.parse(localStorage.getItem('user'))
+
+        if (this.aut == null || this.aut.type != 'ROLE_patient') {
+            let path = process.env.REACT_APP_BACKEND_ADDRESS ? 'https://isa-pharmacy-frontend.herokuapp.com/unauthorized'
+                : 'http://localhost:3000/unauthorized';
+            window.location.replace(path);
+        }
+        
         console.log(this.user)
         await axios
             .get(HelperService.getPath('/api/patients/' + this.aut.id), {

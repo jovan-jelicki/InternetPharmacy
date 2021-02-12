@@ -15,6 +15,12 @@ class PatientReservationsPage extends React.Component {
     componentDidMount() {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
+        if (this.aut == null || this.aut.type != 'ROLE_patient') {
+            let path = process.env.REACT_APP_BACKEND_ADDRESS ? 'https://isa-pharmacy-frontend.herokuapp.com/unauthorized'
+                : 'http://localhost:3000/unauthorized';
+            window.location.replace(path);
+        }
+
         axios
         .get(HelperService.getPath('/api/medicationReservation/patient/' + this.aut.id), {
             headers : {

@@ -27,12 +27,6 @@ import java.util.concurrent.Future;
 public class MedicationReservationTest {
 
     @Autowired
-    private PatientService patientService;
-
-    @Autowired
-    private PharmacistService pharmacistService;
-
-    @Autowired
     private MedicationService medicationService;
 
     @Autowired
@@ -40,7 +34,7 @@ public class MedicationReservationTest {
 
     @Rollback(true)
     @Test(expected = ObjectOptimisticLockingFailureException.class)
-    public void createReservations() throws Throwable {
+    public void createReservationsTransactions() throws Throwable {
         MedicationReservation medicationReservation1 = new MedicationReservation();
         medicationReservation1.setStatus(MedicationReservationStatus.requested);
         Patient patient1 = new Patient();
