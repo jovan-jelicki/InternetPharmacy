@@ -108,7 +108,7 @@ public class MedicationPriceListServiceImpl implements MedicationPriceListServic
     @Override
     public Boolean createNewPriceList(MedicationPriceListDTO medicationPriceListDTO) {
         Pharmacy pharmacy = pharmacyService.read(medicationPriceListDTO.getPharmacyId()).get();
-        Medication medication = pharmacy.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId()==medicationPriceListDTO.getMedicationId()).findFirst().get().getMedication();
+        Medication medication = pharmacy.getMedicationQuantity().stream().filter(medicationQuantity -> medicationQuantity.getMedication().getId().equals(medicationPriceListDTO.getMedicationId())).findFirst().get().getMedication();
         MedicationPriceList medicationPriceList = new MedicationPriceList(medication, medicationPriceListDTO.getCost(), medicationPriceListDTO.getPeriod(), pharmacy);
 
 
