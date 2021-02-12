@@ -122,7 +122,7 @@ public class DermatologistControllerTest {
         String json = TestUtil.json(dto);
 
         mockMvc.perform(put(URL_PREFIX + "/addDermatologistToPharmacy").contentType(contentType).content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(content().string(""));
     }
