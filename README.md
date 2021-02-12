@@ -21,7 +21,7 @@ HerokuAppBackend: https://isa-pharmacy-backend.herokuapp.com/
 
 ### Backend
 
-1. Install Meaven and configure it as a environmental variable
+1. Install Meaven and configure it as an environmental variable
 2. Clone this project
 3. Inside your commad prompt navigate to the backend folder
 4. execute mvn spring-boot:run
