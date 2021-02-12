@@ -36,7 +36,10 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Transactional(readOnly = false)
     @Override
-    public Complaint save(Complaint entity)  {  return complaintRepository.save(entity); }
+    public Complaint save(Complaint entity)  {
+        entity.setPatient(patientService.read(entity.getPatient().getId()).get());
+        return complaintRepository.save(entity);
+    }
 
     @Override
     public Collection<Complaint> read()  {
@@ -88,9 +91,9 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Transactional(readOnly = false)
     @Override
     public Boolean editComplaint(Long complaintId) {
-         Complaint complaint= this.read(complaintId).get();
-         complaint.setActive(false);
-         this.save(complaint);
-         return true;
+        Complaint complaint= this.read(complaintId).get();
+        complaint.setActive(false);
+        this.save(complaint);
+        return true;
     }
 }

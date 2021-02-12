@@ -194,6 +194,8 @@ export default class CreateCoplaint extends React.Component{
     }
 
     async sendData() {
+
+        console.log(this.state.user.id)
         let type;
         if(this.state.boolPharmacist) type="pharmacist"
         else if(this.state.boolDermatologist) type="dermatologist"
@@ -206,7 +208,9 @@ export default class CreateCoplaint extends React.Component{
         axios
             .post(HelperService.getPath('/api/complaints/save'), {
                 'id':'',
-                'patient' : this.state.patient,
+                'patient' :{
+                    id:this.state.user.id,
+                },
                 'content' : this.state.content,
                 'type' : type,
                 'complaineeId' : this.state.employeeId,
