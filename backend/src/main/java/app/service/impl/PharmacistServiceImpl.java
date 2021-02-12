@@ -44,8 +44,6 @@ public class PharmacistServiceImpl implements PharmacistService {
         save(user);
     }
 
-
-
     private void validatePassword(UserPasswordDTO passwordKit, Pharmacist user) {
         String password = user.getCredentials().getPassword();
         if(!password.equals(passwordKit.getOldPassword()))
@@ -57,7 +55,6 @@ public class PharmacistServiceImpl implements PharmacistService {
     @Override
     public Pharmacist save(Pharmacist entity) {
         entity.getWorkingHours().setPharmacy(pharmacyRepository.findById(entity.getWorkingHours().getPharmacy().getId()).get());
-        entity.setApprovedAccount(true);
         return pharmacistRepository.save(entity);
     }
 

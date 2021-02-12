@@ -200,10 +200,7 @@ export default class CreateCoplaint extends React.Component{
         if(this.state.boolPharmacist) type="pharmacist"
         else if(this.state.boolDermatologist) type="dermatologist"
         else type="pharmacy"
-        console.log("BLAAAAAAAAAAAAAAAAAAAA")
-        console.log(this.state.patient)
-        console.log(this.state.content)
-        console.log(this.state.employeeId)
+
 
         axios
             .post(HelperService.getPath('/api/complaints/save'), {
