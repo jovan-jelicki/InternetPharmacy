@@ -69,8 +69,9 @@ class AppointmentsList extends React.Component{
     }
 
     fetchAppointments = () => {
+    	console.log(this.state.user.type)
     	if(this.state.user.type == 'ROLE_patient') {
-	        axios.get(HelperService.getPath("/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacyAndPatient/" + this.state.pharmacyId + '/' + this.state.user.id),
+	        axios.get(HelperService.getPath("/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/" + this.state.pharmacyId + '/' + this.state.user.id),
 	            {
 	                headers: {
 	                    'Content-Type': 'application/json',
