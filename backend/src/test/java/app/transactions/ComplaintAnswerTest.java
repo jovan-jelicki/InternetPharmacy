@@ -1,6 +1,7 @@
-package app.service;
+package app.transactions;
 
 import app.model.complaint.Complaint;
+import app.service.ComplaintService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
