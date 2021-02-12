@@ -5,7 +5,9 @@ import app.model.appointment.Appointment;
 import app.model.appointment.AppointmentCancelled;
 import app.model.appointment.AppointmentStatus;
 import app.model.medication.Medication;
+import app.model.pharmacy.LoyaltyCategory;
 import app.model.pharmacy.LoyaltyProgram;
+import app.model.pharmacy.LoyaltyScale;
 import app.model.time.Period;
 import app.model.time.VacationRequest;
 import app.model.time.VacationRequestStatus;
@@ -17,10 +19,7 @@ import app.repository.AppointmentCancelledRepository;
 import app.repository.AppointmentRepository;
 import app.repository.PharmacyRepository;
 import app.repository.VacationRequestRepository;
-import app.service.AppointmentService;
-import app.service.DermatologistService;
-import app.service.LoyaltyProgramService;
-import app.service.PatientService;
+import app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -45,9 +44,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final PatientService patientService;
     private final DermatologistService dermatologistService;
     private final LoyaltyProgramService loyaltyProgramService;
+    private final LoyaltyScaleService loyaltyScaleService;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, AppointmentCancelledRepository appointmentCancelledRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientService patientService, LoyaltyProgramService loyaltyProgramService) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PharmacyRepository pharmacyRepository, AppointmentCancelledRepository appointmentCancelledRepository, DermatologistService dermatologistService, VacationRequestRepository vacationRequestRepository, PatientService patientService, LoyaltyProgramService loyaltyProgramService, LoyaltyScaleService loyaltyScaleService) {
         this.appointmentRepository = appointmentRepository;
         this.pharmacyRepository = pharmacyRepository;
         this.appointmentCancelledRepository = appointmentCancelledRepository;
@@ -56,6 +56,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.patientService = patientService;
         this.loyaltyProgramService = loyaltyProgramService;
 
+        this.loyaltyScaleService = loyaltyScaleService;
     }
 
     @PostConstruct
@@ -95,6 +96,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         Patient patient = patientService.read(entity.getPatient().getId()).get();
         if(patient.getPenaltyCount() >= 3)
            return null;
+
+        for(LoyaltyScale loyaltyScale : loyaltyScaleService.read()){
+            if(patient.getLoyaltyCategory()== loyaltyScale.getCategory()){
+                entity.getPharmacy().setPharmacistCost(entity.getPharmacy().getPharmacistCost() - ((int)loyaltyScale.getDiscount()/100)*(entity.getPharmacy().getPharmacistCost()));
+                break;
+           }
+        }
+
         entity.setPatient(patient);
         entity.getPeriod().setPeriodEnd(start.plusHours(1));
         return save(entity);
@@ -339,6 +348,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         else
             patient.setLoyaltyCount(patient.getLoyaltyCount()+first.getConsultingPoints());
 
+        patientService.save(patient);
         patientService.setPatientCategory(appointmentScheduledDTO.getPatientId());
     }
 
