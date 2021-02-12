@@ -83,7 +83,11 @@ public class SupplierControllerImpl {
     @PreAuthorize("hasRole('supplier')")
     @PutMapping(value = "/deleteMedicationQuantity", consumes = "application/json")
     public ResponseEntity<Boolean> deleteMedicationQuantity(@RequestBody MedicationSupplierDTO   medicationSupplierDTO) {
-        return new ResponseEntity<>(supplierService.deleteMedicationQuantity(medicationSupplierDTO), HttpStatus.OK);
+        if(!supplierService.existsById(medicationSupplierDTO.getSupplierId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (supplierService.deleteMedicationQuantity(medicationSupplierDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PreAuthorize("hasRole('supplier')")
