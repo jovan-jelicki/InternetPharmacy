@@ -191,6 +191,7 @@ export default class CreateCoplaint extends React.Component{
         this.setState({
             showModal : !this.state.showModal
         });
+
     }
 
     async sendData() {
