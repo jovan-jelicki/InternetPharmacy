@@ -55,7 +55,7 @@ public class PharmacyControllerTest {
 
         String json = TestUtil.json(dto);
 
-        mockMvc.perform(put(URL_PREFIX + "/deleteMedicationFromPharmacy", json))
+        mockMvc.perform(put(URL_PREFIX + "/deleteMedicationFromPharmacy").contentType(contentType).content(json))
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(content().string(""));

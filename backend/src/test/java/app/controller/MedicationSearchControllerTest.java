@@ -1,8 +1,7 @@
 package app.controller;
 
-
-import app.dto.MedicationPriceListDTO;
-import app.model.time.Period;
+import app.dto.MedicationSearchDTO;
+import app.dto.MedicationSupplierDTO;
 import app.util.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +18,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,11 +28,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class MedicationPriceListControllerTest {
+public class MedicationSearchControllerTest {
 
-    private static final String URL_PREFIX = "/api/pricelist";
+    private static final String URL_PREFIX = "/api/medications";
 
-    private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
+    private MediaType contentType = new MediaType(org.springframework.http.MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
     private MockMvc mockMvc;
@@ -47,22 +46,15 @@ public class MedicationPriceListControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "pharmacyAdmin")
-    public void testNewPriceList() throws Exception {
-        MedicationPriceListDTO dto = new MedicationPriceListDTO();
-        dto.setMedicationId(1L);
-        dto.setPharmacyId(1L);
-        dto.setCost(999);
-        Period period = new Period(LocalDateTime.of(2021,6,14,12,0), LocalDateTime.of(2021,8,27,12,0) );
-        dto.setPeriod(period);
-        dto.setMedicationName("Aspirin");
+    @WithMockUser(roles = "systemAdmin")
+    public void testMedicationSearch() throws Exception {
+        MedicationSearchDTO medicationSearchDTO=new MedicationSearchDTO();
+        medicationSearchDTO.setName("Brufen");
 
-        String json = TestUtil.json(dto);
+        String json = TestUtil.json(medicationSearchDTO);
 
-        mockMvc.perform(put(URL_PREFIX + "/newPriceList").contentType(contentType).content(json))
-                .andExpect(status().isBadRequest())
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(content().string(""));
+        mockMvc.perform(post(URL_PREFIX + "/search").contentType(contentType).content(json))
+                .andExpect(status().isOk());
     }
 
 }

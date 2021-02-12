@@ -1,8 +1,8 @@
 package app.controller;
 
 
-import app.dto.MedicationPriceListDTO;
-import app.model.time.Period;
+import app.dto.PharmacyAdminPharmacyDTO;
+import app.model.user.Address;
 import app.util.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,26 +14,22 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class MedicationPriceListControllerTest {
+public class PharmacyRegistrationControllerTest {
+    private static final String URL_PREFIX = "/api/pharmacy";
 
-    private static final String URL_PREFIX = "/api/pricelist";
-
-    private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
+    private MediaType contentType = new MediaType(org.springframework.http.MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
     private MockMvc mockMvc;
@@ -45,24 +41,35 @@ public class MedicationPriceListControllerTest {
     public void set() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
     }
+    private String name;
+    private String description;
+    private Address address;
+    private Long pharmacyAdminId;
+
 
     @Test
-    @WithMockUser(roles = "pharmacyAdmin")
-    public void testNewPriceList() throws Exception {
-        MedicationPriceListDTO dto = new MedicationPriceListDTO();
-        dto.setMedicationId(1L);
-        dto.setPharmacyId(1L);
-        dto.setCost(999);
-        Period period = new Period(LocalDateTime.of(2021,6,14,12,0), LocalDateTime.of(2021,8,27,12,0) );
-        dto.setPeriod(period);
-        dto.setMedicationName("Aspirin");
+    @WithMockUser(roles = "systemAdmin")
+    public void pharmacyRegistrationTest() throws Exception {
+        Address address=new Address();
+        address.setLongitude(40.0);
+        address.setLatitude(21.1);
+        address.setTown("Beograd");
+        address.setCountry("Srbija");
+        address.setStreet("Kisacka 5");
 
-        String json = TestUtil.json(dto);
+        PharmacyAdminPharmacyDTO  pharmacyAdminPharmacyDTO=new PharmacyAdminPharmacyDTO();
+        pharmacyAdminPharmacyDTO.setName("Milena");
+        pharmacyAdminPharmacyDTO.setDescription("Najbolje za najbolje");
+        pharmacyAdminPharmacyDTO.setPharmacyAdminId(1L);
+        pharmacyAdminPharmacyDTO.setAddress(address);
 
-        mockMvc.perform(put(URL_PREFIX + "/newPriceList").contentType(contentType).content(json))
-                .andExpect(status().isBadRequest())
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(content().string(""));
+        String json = TestUtil.json(pharmacyAdminPharmacyDTO);
+
+
+        mockMvc.perform(post(URL_PREFIX + "/save").contentType(contentType).content(json))
+                .andExpect(status().isOk());
     }
+
+
 
 }

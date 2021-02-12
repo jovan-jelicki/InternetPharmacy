@@ -23,7 +23,6 @@ public class LoyaltyScaleServiceImpl implements LoyaltyScaleService {
     @Transactional(readOnly = false)
     @Override
     public LoyaltyScale save(LoyaltyScale entity)  {
-
         return loyaltyScaleRepository.save(entity);
     }
 
