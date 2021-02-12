@@ -45,7 +45,7 @@ public class LogInTest {
     public void testUserLogin(){
 
         Credentials credentials= new Credentials();
-        credentials.setEmail("blabla@gmail.com");
+        credentials.setEmail("maremare@gmail.com");
         credentials.setPassword("blabla");
 
         LoginDTO loginDTO=new LoginDTO();
@@ -118,9 +118,9 @@ public class LogInTest {
         when(pharmacistService.findByEmailAndPassword(pharmacist.getCredentials().getEmail(), pharmacist.getCredentials().getPassword())).thenReturn(pharmacist);
         when(systemAdminService.findByEmailAndPassword(systemAdmin.getCredentials().getEmail(), systemAdmin.getCredentials().getPassword())).thenReturn(systemAdmin);
         when(supplierService.findByEmailAndPassword(supplier.getCredentials().getEmail(), supplier.getCredentials().getPassword())).thenReturn(supplier);
-        when(pharmacyAdminService.findByEmailAndPassword(pharmacyAdmin.getCredentials().getEmail(), pharmacyAdmin.getCredentials().getPassword())).thenReturn(pharmacyAdmin);
+//        when(pharmacyAdminService.findByEmailAndPassword(pharmacyAdmin.getCredentials().getEmail(), pharmacyAdmin.getCredentials().getPassword())).thenReturn(pharmacyAdmin);
 
-        assertThat(getUserForLogIn(loginDTO), is(equalTo(null)));
+        assertThat(getUserForLogIn(loginDTO), is(equalTo(loginReturnDTO)));
     }
 
     private LoginReturnDTO getUserForLogIn(LoginDTO loginDTO) {
