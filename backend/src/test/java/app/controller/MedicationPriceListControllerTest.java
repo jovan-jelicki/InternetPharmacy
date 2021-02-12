@@ -53,13 +53,13 @@ public class MedicationPriceListControllerTest {
         dto.setMedicationId(1L);
         dto.setPharmacyId(1L);
         dto.setCost(999);
-        Period period = new Period(LocalDateTime.of(2021,6,14,12,0), LocalDateTime.of(2021,8,27,18,0) );
+        Period period = new Period(LocalDateTime.of(2021,6,14,12,0), LocalDateTime.of(2021,8,27,12,0) );
         dto.setPeriod(period);
         dto.setMedicationName("Aspirin");
 
         String json = TestUtil.json(dto);
 
-        mockMvc.perform(put(URL_PREFIX + "/newPriceList", json))
+        mockMvc.perform(put(URL_PREFIX + "/newPriceList").contentType(contentType).content(json))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(content().string(""));
