@@ -59,7 +59,7 @@ class AppointmentsList extends React.Component{
                                     numberOfStars={5}
                                 />
                             </td>
-                            <td><Button variant={'outline-dark'} onClick={() => this.scheduleAppointment(appointment.id)}>Schedule</Button></td>
+                            <td><Button variant={'outline-dark'} style={this.state.user.type !== 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}} onClick={() => this.scheduleAppointment(appointment.id)}>Schedule</Button></td>
                         </tr>
                     ))}
                     </tbody>

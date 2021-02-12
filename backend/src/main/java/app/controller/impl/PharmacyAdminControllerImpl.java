@@ -86,14 +86,14 @@ public class PharmacyAdminControllerImpl {
 
     @PreAuthorize("hasAnyRole('pharmacyAdmin')")
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<PharmacyAdmin> update(@RequestBody PharmacyAdmin entity) {
+    public ResponseEntity<PharmacyAdminDTO> update(@RequestBody PharmacyAdmin entity) {
         if(!pharmacyAdminService.existsById(entity.getId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         entity.getCredentials().setPassword(pharmacyAdminService.read(entity.getId()).get().getCredentials().getPassword());
         PharmacyAdmin e2 = pharmacyAdminService.read(entity.getId()).get();
         Pharmacy ew = e2.getPharmacy();
         entity.setPharmacy(pharmacyAdminService.read(entity.getId()).get().getPharmacy());
-        return new ResponseEntity<>(pharmacyAdminService.save(entity), HttpStatus.CREATED);
+        return new ResponseEntity<>(new PharmacyAdminDTO(pharmacyAdminService.save(entity)), HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('pharmacyAdmin')")
