@@ -75,7 +75,8 @@ public class DermatologistControllerTest {
        PharmacistDermatologistProfileDTO pharmacistDermatologistProfileDTO = getData();
        String json = TestUtil.json(pharmacistDermatologistProfileDTO);
        mockMvc.perform(put(URL_PREFIX ).contentType(contentType).content(json))
-               .andExpect(status().isCreated());
+               .andExpect(status().isCreated())
+               .andExpect(jsonPath("$.lastName").value("Periiiic"));
     }
 
     @WithMockUser(roles = "pharmacyAdmin")
