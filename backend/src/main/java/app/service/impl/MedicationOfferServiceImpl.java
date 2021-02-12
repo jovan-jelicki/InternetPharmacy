@@ -169,9 +169,9 @@ public class MedicationOfferServiceImpl implements MedicationOfferService {
         if (!medicationOrder.getPharmacyAdmin().getId().equals(pharmacyAdminId))
             return false;
 
-        //TODO uncomment this for final version
-//        if (LocalDateTime.now().toLocalDate().isBefore(medicationOrder.getDeadline().toLocalDate()))
-//            return false;
+
+        if (LocalDateTime.now().toLocalDate().isBefore(medicationOrder.getDeadline().toLocalDate()))
+            return false;
 
         if (!medicationOrder.getVersion().equals(medicationOfferDTO.getMedicationOrderVersion()))
             throw new ObjectOptimisticLockingFailureException("versions do not match", MedicationOrder.class);

@@ -44,10 +44,7 @@ public class EditMedicationQuantityTransactionTests {
     private PharmacyRepository pharmacyRepository;
 
 
-    //Test u kojem pokusavamo da imitiramo 2 korisnika koja su u isto vreme pokusala da zakazu pregled kod farmaceuta
-    //Rezultat je da ce jedan korisnik uspesno zakazati, a drugi dobiti poruku da je dati termin zakazan.
     @Rollback(true)
-
     @Test(expected = ObjectOptimisticLockingFailureException.class)
     public void medicationQuantityEditing() throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -104,13 +101,4 @@ public class EditMedicationQuantityTransactionTests {
         }
         executor.shutdown();
     }
-
 }
-
-//    Pharmacy pharmacy = pharmacyService.read(0L).get();
-//    PharmacyMedicationListingDTO dto = new PharmacyMedicationListingDTO();
-//                dto.setPharmacyId(pharmacy.getId());
-//                        dto.setMedicationId(0L);
-//                        dto.setMedicationQuantityId(2L);
-//                        dto.setQuantity(500);
-//                        res1[0] = pharmacyService.editMedicationQuantity(dto);
