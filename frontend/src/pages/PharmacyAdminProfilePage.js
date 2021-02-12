@@ -271,7 +271,8 @@ export default class PharmacyAdminProfilePage extends React.Component {
                         'town' : this.state.town,
                         'country' : this.state.country
                     }
-                }
+                },
+                'approvedAccount' : true
             }, {
                 headers: {
                     'Content-Type': 'application/json',
