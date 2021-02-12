@@ -21,6 +21,11 @@ class PatientCounselScheduling extends React.Component {
 
     componentDidMount() {
         this.aut = JSON.parse(localStorage.getItem('user'))
+        if (this.aut == null || this.aut.type != 'ROLE_patient') {
+            let path = process.env.REACT_APP_BACKEND_ADDRESS ? 'https://isa-pharmacy-frontend.herokuapp.com/unauthorized'
+                : 'http://localhost:3000/unauthorized';
+            window.location.replace(path);
+        }
     }
 
     search(dateTime) {
@@ -72,6 +77,11 @@ class PatientCounselScheduling extends React.Component {
                 'to': 'ilija_brdar@yahoo.com',   
                 'subject':"Counseling scheduled!",
                 'body':'You have successfully scheduled counseling at ' + this.state.dateTime,
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.aut.jwtToken
+                }
             })
             .then(res => {
                 this.props.history.push('/scheduled-appointments')
@@ -81,6 +91,8 @@ class PatientCounselScheduling extends React.Component {
     }
 
     render() {
+
+
         return (
             <PatientLayout>
                 <Container fluid>
