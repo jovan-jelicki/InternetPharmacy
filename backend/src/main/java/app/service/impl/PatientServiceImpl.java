@@ -116,6 +116,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Boolean setPatientCategory(Long patientId) {
        Patient patient=this.read(patientId).get();
        int patientLoyaltyCount=patient.getLoyaltyCount();

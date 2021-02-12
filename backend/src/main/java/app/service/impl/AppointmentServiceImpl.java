@@ -339,6 +339,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         else
             patient.setLoyaltyCount(patient.getLoyaltyCount()+first.getConsultingPoints());
 
+        patientService.save(patient);
         patientService.setPatientCategory(appointmentScheduledDTO.getPatientId());
     }
 

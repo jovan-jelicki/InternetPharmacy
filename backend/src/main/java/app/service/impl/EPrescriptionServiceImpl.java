@@ -133,7 +133,6 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         return ePrescriptionRepository.existsById(id);
     }
 
-
     @Override
     public Collection<PharmacyQRDTO> getPharmacyForQR(Long ePrescriptionId) {
         Collection<PharmacyQRDTO> pharmacyQRDTOS= new ArrayList<>();
@@ -162,19 +161,23 @@ public class EPrescriptionServiceImpl implements EPrescriptionService {
         return pharmacyQRDTOS;
     }
 
+    @Transactional(readOnly = false)
     @Override
     public Boolean buyMedication(Long pharmacyId, Long prescriptionId) {
         Pharmacy pharmacy= pharmacyService.read(pharmacyId).get();
-
         EPrescription prescription= this.read(prescriptionId).get();
+        Patient patient=patientService.read(prescription.getPatient().getId()).get();
 
             for(MedicationQuantity pharmacyQuantity : pharmacy.getMedicationQuantity()) {
                 for (MedicationQuantity medicationQuantity : prescription.getMedicationQuantity()) {
                     if (pharmacyQuantity.getMedication().getId()==medicationQuantity.getMedication().getId() && pharmacyQuantity.getQuantity()>medicationQuantity.getQuantity()){
                         pharmacyQuantity.setQuantity(pharmacyQuantity.getQuantity()-medicationQuantity.getQuantity());
+                        patient.setLoyaltyCount(patient.getLoyaltyCount()+medicationQuantity.getMedication().getLoyaltyPoints()*medicationQuantity.getQuantity());
                     }
                 }
             }
+        patientService.save(patient);
+        patientService.setPatientCategory(patient.getId());
         return pharmacyService.save(pharmacy)!=null;
     }
 }
