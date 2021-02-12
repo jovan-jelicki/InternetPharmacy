@@ -481,18 +481,33 @@ values (1, 4);
 
 insert into patient_promotions(patient_id, promotions_id) values (0,1);
 
--- SELECT MAX(id) FROM appointment;
---
--- SELECT nextval('bookmarks_id_seq');
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (0, '2021-04-01', 0, 0);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (1, '2021-04-02', 0, 1);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (2, '2021-04-03', 0, 2);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (3, '2021-04-04', 0, 0);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (4, '2021-04-05', 0, 1);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (5, '2021-04-06', 0, 2);
+
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (6, '2021-04-01', 0, 0);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (7, '2021-04-02', 0, 0);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (8, '2021-04-03', 0, 0);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (9, '2021-04-04', 0, 0);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (10, '2021-04-05', 0, 0);
+INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (11, '2021-04-06', 0, 0);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (36, 2, 0);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (37, 1, 1);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (38, 2, 2);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (39, 2, 0);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (40, 2, 0);
+INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (41, 1, 0);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (6, 36);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (7, 37);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (8, 38);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (9, 39);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (10, 40);
+INSERT INTO eprescription_medication_quantity(eprescription_id, medication_quantity_id) VALUES (11, 41);
 
 
--- AKO NEKO PROMENI PICKU CU MU POLOMITI!!!!!!
-INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (0, '2021-03-01', 0, 0);
-INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (1, '2021-03-02', 0, 1);
-INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (2, '2021-03-03', 0, 2);
-INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (3, '2021-03-04', 0, 0);
-INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (4, '2021-03-05', 0, 1);
-INSERT INTO eprescription(id, date_issued, patient_id, status) VALUES (5, '2021-03-06', 0, 2);
 
 INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (30, 5, 0);
 INSERT INTO medication_quantity (id, quantity, medication_id) VALUES (31, 1, 1);
