@@ -1,6 +1,7 @@
 package app.dto;
 
 import app.model.medication.Ingredient;
+import app.model.pharmacy.LoyaltyCategory;
 import app.model.pharmacy.Promotion;
 import app.model.user.Contact;
 import app.model.user.Patient;
@@ -20,6 +21,8 @@ public class PatientDTO {
     private Contact contact;
     private List<Ingredient> allergies;
     private int penaltyCount;
+    private int loyaltyCount;
+    private LoyaltyCategory loyaltyCategory;
 
     public PatientDTO() {}
 
@@ -31,6 +34,8 @@ public class PatientDTO {
         this.contact = patient.getContact();
         this.allergies = patient.getAllergies();
         this.penaltyCount = patient.getPenaltyCount();
+        this.loyaltyCount = patient.getLoyaltyCount();
+        this.loyaltyCategory = patient.getLoyaltyCategory();
     }
 
     public void merge(Patient patient) {
@@ -38,6 +43,9 @@ public class PatientDTO {
         patient.setLastName(lastName);
         patient.setContact(contact);
         patient.setAllergies(allergies);
+        patient.setPenaltyCount(penaltyCount);
+        patient.setLoyaltyCategory(loyaltyCategory);
+        patient.setLoyaltyCount(loyaltyCount);
     }
 
     public Long getId() {
@@ -94,5 +102,21 @@ public class PatientDTO {
 
     public void setPenaltyCount(int penaltyCount) {
         this.penaltyCount = penaltyCount;
+    }
+
+    public int getLoyaltyCount() {
+        return loyaltyCount;
+    }
+
+    public void setLoyaltyCount(int loyaltyCount) {
+        this.loyaltyCount = loyaltyCount;
+    }
+
+    public LoyaltyCategory getLoyaltyCategory() {
+        return loyaltyCategory;
+    }
+
+    public void setLoyaltyCategory(LoyaltyCategory loyaltyCategory) {
+        this.loyaltyCategory = loyaltyCategory;
     }
 }

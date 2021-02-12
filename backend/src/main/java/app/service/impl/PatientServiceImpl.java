@@ -106,6 +106,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Scheduled(cron = "0 0 0 1 * ?")
+    @Transactional(readOnly = false)
     public void resetPenalties() {
         patientRepository.findAll().forEach(p -> {
             if(p.getPenaltyCount() != 0) {

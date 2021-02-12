@@ -13,6 +13,8 @@ public class UserPasswordDTO {
         this.repeatedPassword = repeatedPassword;
     }
 
+    public UserPasswordDTO() {}
+
     public Long getUserId() {
         return userId;
     }
