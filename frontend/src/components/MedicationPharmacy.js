@@ -167,7 +167,23 @@ class MedicationPharmacy extends React.Component {
                 Authorization : 'Bearer ' + this.aut.jwtToken 
             }
         }).
-        then(res => alert('SUCCESS'))
+        then(res => {
+            axios
+            .put(HelperService.getPath('/api/email/send'), {
+                'to': 'ilija_brdar@yahoo.com',   
+                'subject':"Medication reserved!",
+                'body':'You have successfully reserved medication. Present this ID to your pharmacist: ' + res.data
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.aut.jwtToken
+                }
+            })
+            .then(res => {
+                alert('success')
+            });
+        })
+        .catch(e => alert('Error: Not enough medication.'))
     }
 
     getDate = () => {

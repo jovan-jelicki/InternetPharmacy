@@ -51,7 +51,7 @@ public class SchedulingControllerImpl {
                 pharmacy.setGrade(gradeService.findAverageGradeForEntity(pharmacy.getId(), GradeType.pharmacy));
                 PharmacistPlainDTO pharmacist = counselingSearchDTO.getPharmacistPlainDTO();
                 pharmacist.setGrade(gradeService.findAverageGradeForEntity(pharmacist.getId(), GradeType.pharmacist));
-                available.add(new CounselingSearchDTO(p));
+                available.add(counselingSearchDTO);
             });
             return new ResponseEntity<>(available, HttpStatus.OK);
         } else

@@ -69,8 +69,9 @@ class AppointmentsList extends React.Component{
     }
 
     fetchAppointments = () => {
+    	console.log(this.state.user.type)
     	if(this.state.user.type == 'ROLE_patient') {
-	        axios.get(HelperService.getPath("/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacyAndPatient/" + this.state.pharmacyId + '/' + this.state.user.id),
+	        axios.get(HelperService.getPath("/api/appointment/getAllAvailableUpcomingDermatologistAppointmentsByPharmacy/" + this.state.pharmacyId + '/' + this.state.user.id),
 	            {
 	                headers: {
 	                    'Content-Type': 'application/json',
@@ -109,9 +110,19 @@ class AppointmentsList extends React.Component{
             }
         })
         .then(res => {
-            alert('success')
-            this.props.history.push({
-                pathname: "/scheduled-appointments"
+            axios
+            .put(HelperService.getPath('/api/email/send'), {
+                'to': 'ilija_brdar@yahoo.com',   
+                'subject':"Examination scheduled!",
+                'body':'You have successfully scheduled dermatologist examination!',
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.aut.jwtToken
+                }
+            })
+            .then(res => {
+                this.props.history.push('/scheduled-appointments')
             });
         })
     }
