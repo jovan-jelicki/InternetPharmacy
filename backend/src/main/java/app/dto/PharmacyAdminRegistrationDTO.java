@@ -15,6 +15,8 @@ public class PharmacyAdminRegistrationDTO {
     private boolean approvedAccount;
     private Long pharmacyId;
 
+    public PharmacyAdminRegistrationDTO(){}
+
     public PharmacyAdminRegistrationDTO(Long id, String firstName, String lastName, UserType userType, Credentials credentials, Contact contact, boolean approvedAccount, Long pharmacyId) {
         this.id = id;
         this.firstName = firstName;

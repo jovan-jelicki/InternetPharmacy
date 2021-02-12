@@ -71,8 +71,8 @@ public class DermatologistTests {
 
         when(dermatologistService.save(dermatologist)).thenReturn(dermatologist);
         when(dermatologistService.read(dermatologistDTO.getId())).thenReturn(java.util.Optional.of(dermatologist));
-
         assertThat(addDermatologistToPharmacy(dermatologistDTO), is(equalTo(true)));
+
     }
 
     private List<WorkingHours> generateWorkingHours() {

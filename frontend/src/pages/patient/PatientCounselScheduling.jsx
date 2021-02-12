@@ -21,6 +21,11 @@ class PatientCounselScheduling extends React.Component {
 
     componentDidMount() {
         this.aut = JSON.parse(localStorage.getItem('user'))
+        if (this.aut == null || this.aut.type != 'ROLE_patient') {
+            let path = process.env.REACT_APP_BACKEND_ADDRESS ? 'https://isa-pharmacy-frontend.herokuapp.com/unauthorized'
+                : 'http://localhost:3000/unauthorized';
+            window.location.replace(path);
+        }
     }
 
     search(dateTime) {
@@ -36,12 +41,18 @@ class PatientCounselScheduling extends React.Component {
                 }
             })
             .then(res => {
+                console.log(res.data)
                 this.setState({
-                    'pharmacies' : [...new Set(res.data.map(x => x.pharmacyDTO))],
+                    //'pharmacies' : [...new Set(res.data.map(x => x.pharmacyDTO))],
+                    'pharmacies' : this.removeDuplicates([...res.data.map(x => x.pharmacyDTO)]),
                     'pharmacists' : res.data,
                     'dateTime' : dateTime
                 })
             })
+    }
+
+    removeDuplicates = (arr) => {
+        return arr.filter((v, i, a) => a.findIndex(t => t.id == v.id) === i)
     }
 
     schedule(pharmacyId, pharmacistId) {
@@ -72,6 +83,11 @@ class PatientCounselScheduling extends React.Component {
                 'to': 'ilija_brdar@yahoo.com',   
                 'subject':"Counseling scheduled!",
                 'body':'You have successfully scheduled counseling at ' + this.state.dateTime,
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.aut.jwtToken
+                }
             })
             .then(res => {
                 this.props.history.push('/scheduled-appointments')
@@ -81,6 +97,8 @@ class PatientCounselScheduling extends React.Component {
     }
 
     render() {
+
+
         return (
             <PatientLayout>
                 <Container fluid>
