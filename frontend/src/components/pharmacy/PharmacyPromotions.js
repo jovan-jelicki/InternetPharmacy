@@ -21,18 +21,21 @@ export default class PharmacyPromotions extends React.Component {
     async componentDidMount() {
         this.aut = JSON.parse(localStorage.getItem('user'))
 
-        await axios
-        .get(HelperService.getPath('/api/patients/promotion-pharmacies/' + this.aut.id), {
-            headers : {
-                'Content-Type' : 'application/json',
-                Authorization : 'Bearer ' + this.aut.jwtToken 
-            }
-        })
-        .then((res) => {
-            this.setState({
-                pharmacies : res.data
+        await this.fetchPromotions();
+    }
+    fetchPromotions(){
+        axios
+            .get(HelperService.getPath('/api/patients/promotion-pharmacies/' + this.aut.id), {
+                headers : {
+                    'Content-Type' : 'application/json',
+                    Authorization : 'Bearer ' + this.aut.jwtToken
+                }
             })
-        })
+            .then((res) => {
+                this.setState({
+                    pharmacies : res.data
+                })
+            })
 
         this.pharmaciesBackup = [...this.state.pharmacies]
     }
@@ -81,6 +84,7 @@ export default class PharmacyPromotions extends React.Component {
             })
             .then((res) => {
                 alert("successfully unsubscribed")
+                this.fetchPromotions();
             })
     }
 
