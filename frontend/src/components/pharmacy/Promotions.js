@@ -85,7 +85,7 @@ export default class Promotions extends React.Component{
                                                 {'Valid from ' + moment(promotion.period.periodStart).format("DD.MM.YYYY.").toString() + ' to ' + moment(promotion.period.periodEnd).format('DD.MM.YYYY').toString()}
                                             </p>
                                             <p>
-                                                <Button variant={"success"}  onClick={() => this.handlePromotion(promotion)} >Subscribe</Button>
+                                                <Button variant={"success"} style={this.state.user.type !== 'ROLE_pharmacyAdmin' ? {display : 'inline-block'} : {display : 'none'}} onClick={() => this.handlePromotion(promotion)} >Subscribe</Button>
                                             </p>
                                         </div>
                                     </div>
