@@ -81,18 +81,8 @@ public class SupplierMedicationListingTest {
         when(medicationService.read(medicationSupplierDTO.getMedicationId())).thenReturn(java.util.Optional.of(medication1));
         when(supplierService.save(supplier)).thenReturn(supplier);
 
-        assertThat(editSuppliersMedicationQuantity(medicationSupplierDTO), is(equalTo(true)));
+        assertThat(supplierService.editSuppliersMedicationQuantity(medicationSupplierDTO), is(equalTo(true)));
     }
 
-    private Boolean editSuppliersMedicationQuantity(MedicationSupplierDTO medicationSupplierDTO) {
-        Supplier supplier=supplierService.read(medicationSupplierDTO.getSupplierId()).get();
 
-        for(MedicationQuantity medicationQuantity : supplier.getMedicationQuantity()){
-            if(medicationQuantity.getId()==medicationSupplierDTO.getMedicationQuantityId()){
-                medicationQuantity.setQuantity(medicationSupplierDTO.getQuantity());
-            }
-        }
-
-        return  supplierService.save(supplier)!=null;
-    }
 }

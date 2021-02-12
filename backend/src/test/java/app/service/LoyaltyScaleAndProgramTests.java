@@ -3,9 +3,13 @@ package app.service;
 import app.model.pharmacy.LoyaltyCategory;
 import app.model.pharmacy.LoyaltyProgram;
 import app.model.pharmacy.LoyaltyScale;
+import app.repository.LoyaltyProgramRepository;
+import app.repository.LoyaltyScaleRepository;
 import app.service.impl.LoyaltyProgramServiceImpl;
+import app.service.impl.LoyaltyScaleServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,11 +26,17 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class LoyaltyScaleAndProgramTests {
 
-    @Mock
-    private LoyaltyScaleService loyaltyScaleService;
+    @InjectMocks
+    private LoyaltyScaleServiceImpl loyaltyScaleService;
+
+    @InjectMocks
+    private LoyaltyProgramServiceImpl loyaltyProgramService;
 
     @Mock
-    private LoyaltyProgramService loyaltyProgramService;
+    private LoyaltyScaleRepository loyaltyScaleRepository;
+
+    @Mock
+    private LoyaltyProgramRepository loyaltyProgramRepository;
 
     @Test
     public void editLoyaltyProgramTest(){
@@ -46,22 +56,10 @@ public class LoyaltyScaleAndProgramTests {
 
         when(loyaltyProgramService.read()).thenReturn(loyaltyPrograms);
         when(loyaltyProgramService.save(loyaltyProgram1)).thenReturn(loyaltyProgram1);
-        assertThat(saveProgram(loyaltyProgram1), is(equalTo(true)));
+        assertThat(loyaltyProgramService.saveProgram(loyaltyProgram1), is(equalTo(true)));
 
     }
 
-    public Boolean saveProgram(LoyaltyProgram entity) {
-        if(loyaltyProgramService.read().size()!=0) {
-            for (LoyaltyProgram loyaltyProgram : loyaltyProgramService.read()) {
-                loyaltyProgram.setAppointmentPoints(entity.getAppointmentPoints());
-                loyaltyProgram.setConsultingPoints(entity.getConsultingPoints());
-                loyaltyProgramService.save(loyaltyProgram);
-            }
-        }else{
-            loyaltyProgramService.save(entity);
-        }
-        return true;
-    }
 
     @Test
     public void editLoyaltyScaleTest(){
@@ -101,22 +99,9 @@ public class LoyaltyScaleAndProgramTests {
 
         when(loyaltyScaleService.read()).thenReturn(loyaltyScales);
         when(loyaltyScaleService.save(loyaltyScaleEdit)).thenReturn(loyaltyScaleEdit);
-        assertThat(editLoyaltyScale(loyaltyScaleEdit), is(equalTo(true)));
+        assertThat(loyaltyScaleService.editLoyaltyScale(loyaltyScaleEdit), is(equalTo(true)));
 
     }
 
-    public Boolean editLoyaltyScale(LoyaltyScale entity){
-        LoyaltyScale  loyalty=new LoyaltyScale();
-        for(LoyaltyScale loyaltyScale : loyaltyScaleService.read()){
-            if(loyaltyScale.getCategory()==entity.getCategory()){
-                loyaltyScale.setMaxPoints(entity.getMaxPoints());
-                loyaltyScale.setMinPoints(entity.getMinPoints());
-                loyaltyScale.setDiscount(entity.getDiscount());
-                loyaltyScale.setVersion(1L);
-                loyalty=loyaltyScale;
-                break;
-            }
-        }
-        return true;
-    }
+
 }

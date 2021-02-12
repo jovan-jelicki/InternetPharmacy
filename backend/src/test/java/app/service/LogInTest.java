@@ -6,6 +6,7 @@ import app.model.user.*;
 import app.repository.*;
 import app.service.impl.*;
 import org.checkerframework.checker.units.qual.C;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,17 +40,17 @@ public class LogInTest {
     @Mock
     DermatologistRepository dermatologistRepository;
 
-    @InjectMocks
+    @Mock
     PatientServiceImpl patientService;
-    @InjectMocks
+    @Mock
     PharmacistServiceImpl pharmacistService;
-    @InjectMocks
+    @Mock
     PharmacyAdminServiceImpl pharmacyAdminService;
-    @InjectMocks
+    @Mock
     DermatologistServiceImpl dermatologistService;
-    @InjectMocks
+    @Mock
     SystemAdminServiceImpl systemAdminService;
-    @InjectMocks
+    @Mock
     SupplierServiceImpl supplierService;
     @InjectMocks
     FilterUserDetailsService filterUserDetailsService;
@@ -119,10 +120,9 @@ public class LogInTest {
         pharmacyAdmin.setId(0L);
         pharmacyAdmin.setFirstName("Marko");
         pharmacyAdmin.setLastName("Petric");
-        supplier.setCredentials(pharmacyAdminCredentials);
+        pharmacyAdmin.setCredentials(pharmacyAdminCredentials);
 
         LoginReturnDTO loginReturnDTO = new LoginReturnDTO();
-        loginReturnDTO.setType(UserType.ROLE_patient);
         loginReturnDTO.setId(0L);
         loginReturnDTO.setEmail("maremare@gmail.com");
 
@@ -131,9 +131,17 @@ public class LogInTest {
         when(pharmacistRepository.findByEmailAndPassword(pharmacist.getCredentials().getEmail(), pharmacist.getCredentials().getPassword())).thenReturn(pharmacist);
         when(systemAdminRepository.findByEmailAndPassword(systemAdmin.getCredentials().getEmail(), systemAdmin.getCredentials().getPassword())).thenReturn(systemAdmin);
         when(supplierRepository.findByEmailAndPassword(supplier.getCredentials().getEmail(), supplier.getCredentials().getPassword())).thenReturn(supplier);
-        //   when(pharmacyAdminRepository.findByEmailAndPassword(pharmacyAdmin.getCredentials().getEmail(), pharmacyAdmin.getCredentials().getPassword())).thenReturn(pharmacyAdmin);
+        when(pharmacyAdminRepository.findByEmailAndPassword(pharmacyAdmin.getCredentials().getEmail(), pharmacyAdmin.getCredentials().getPassword())).thenReturn(pharmacyAdmin);
 
-        assertThat(filterUserDetailsService.getUserForLogIn(loginDTO), is(equalTo(loginReturnDTO)));
+        when(patientService.findByEmailAndPassword(patient.getCredentials().getEmail(), patient.getCredentials().getPassword())).thenReturn(patient);
+        when(dermatologistService.findByEmailAndPassword(dermatologist.getCredentials().getEmail(), dermatologist.getCredentials().getPassword())).thenReturn(dermatologist);
+        when(pharmacistService.findByEmailAndPassword(pharmacist.getCredentials().getEmail(), pharmacist.getCredentials().getPassword())).thenReturn(pharmacist);
+        when(systemAdminService.findByEmailAndPassword(systemAdmin.getCredentials().getEmail(), systemAdmin.getCredentials().getPassword())).thenReturn(systemAdmin);
+        when(supplierService.findByEmailAndPassword(supplier.getCredentials().getEmail(), supplier.getCredentials().getPassword())).thenReturn(supplier);
+        when(pharmacyAdminService.findByEmailAndPassword(pharmacyAdmin.getCredentials().getEmail(), pharmacyAdmin.getCredentials().getPassword())).thenReturn(pharmacyAdmin);
 
+        Assert.assertEquals(filterUserDetailsService.getUserForLogIn(loginDTO).getId(), loginReturnDTO.getId());
+        Assert.assertEquals(filterUserDetailsService.getUserForLogIn(loginDTO).getType(), loginReturnDTO.getType());
+        Assert.assertEquals(filterUserDetailsService.getUserForLogIn(loginDTO).getEmail(), loginReturnDTO.getEmail());
     }
 }

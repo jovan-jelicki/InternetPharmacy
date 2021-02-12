@@ -3,8 +3,10 @@ package app.service;
 import app.dto.MedicationOfferAndOrderDTO;
 import app.model.medication.*;
 import app.repository.*;
+import app.service.impl.MedicationOfferServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,8 +25,11 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class SupplierOffersTest {
 
+    @InjectMocks
+    private MedicationOfferServiceImpl medicationOfferService;
+
     @Mock
-    private MedicationOfferService medicationOfferService;
+    private MedicationOfferRepository medicationOfferRepository;
 
     @Test
     public void editMedicationOffer(){
@@ -68,16 +73,9 @@ public class SupplierOffersTest {
         when(medicationOfferService.read(medicationOfferAndOrderDTO.getOfferId())).thenReturn(java.util.Optional.of(medicationOffer));
         when(medicationOfferService.save(medicationOffer)).thenReturn(medicationOffer);
 
-        assertThat(editMedicationOffer(medicationOfferAndOrderDTO), is(equalTo(true)));
+        assertThat(medicationOfferService.editMedicationOffer(medicationOfferAndOrderDTO), is(equalTo(true)));
 
     }
 
-    private Boolean editMedicationOffer(MedicationOfferAndOrderDTO medicationOfferAndOrderDTO) {
-        MedicationOffer medOffer=medicationOfferService.read(medicationOfferAndOrderDTO.getOfferId()).get();
-        medOffer.setCost(medicationOfferAndOrderDTO.getCost());
-        medOffer.setShippingDate(medicationOfferAndOrderDTO.getShippingDate());
-        medicationOfferService.save(medOffer);
 
-        return medOffer!=null;
-    }
 }

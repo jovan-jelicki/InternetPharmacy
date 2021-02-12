@@ -6,9 +6,15 @@ import app.model.pharmacy.Pharmacy;
 import app.model.user.*;
 import app.repository.DermatologistRepository;
 import app.repository.MedicationRepository;
+import app.repository.PharmacyAdminRepository;
+import app.service.impl.DermatologistServiceImpl;
+import app.service.impl.MedicationServiceImpl;
+import app.service.impl.PharmacyAdminServiceImpl;
+import app.service.impl.PharmacyServiceImpl;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.parameters.P;
@@ -31,19 +37,14 @@ import static org.mockito.Mockito.when;
 public class RegistrationsTest {
 
     @Mock
-    MedicationService medicationService;
-
-    @Mock
     MedicationRepository medicationRepository;
 
     @Mock
     DermatologistRepository dermatologistRepository;
 
-    @Mock
-    PharmacyAdminService pharmacyAdminService;
+    @InjectMocks
+    DermatologistServiceImpl dermatologistService;
 
-    @Mock
-    PharmacyService pharmacyService;
 
     @Test
     public void testAddNewMedication(){
@@ -83,59 +84,11 @@ public class RegistrationsTest {
         medication.setLoyaltyPoints(55);
 
         when(medicationRepository.save(medication)).thenReturn(medication);
-        assertThat(save(medication), is(equalTo(medication)));
+        assertThat(medicationRepository.save(medication), is(equalTo(medication)));
 
     }
-    private Medication save(Medication entity) {
-        return medicationRepository.save(entity);
-    }
 
 
-    @Test
-    public void testPharmacyAdminRegistration(){
-        Credentials credentials=new Credentials();
-        credentials.setEmail("mare123@gmail.com");
-        credentials.setPassword("maremare");
-
-        Address address=new Address();
-        address.setLatitude(40.0);
-        address.setLongitude(20.0);
-        address.setCountry("Serbia");
-        address.setStreet("Misarska 8");
-        address.setTown("Novi Sad");
-
-        Contact contact=new Contact();
-        contact.setAddress(address);
-        contact.setPhoneNumber("066/98958552");
-
-        PharmacyAdminRegistrationDTO pharmacyAdminRegistrationDTO=new PharmacyAdminRegistrationDTO();
-        pharmacyAdminRegistrationDTO.setFirstName("Marko");
-        pharmacyAdminRegistrationDTO.setLastName("Jovkovic");
-        pharmacyAdminRegistrationDTO.setUserType(UserType.ROLE_pharmacyAdmin);
-        pharmacyAdminRegistrationDTO.setContact(contact);
-        pharmacyAdminRegistrationDTO.setCredentials(credentials);
-        pharmacyAdminRegistrationDTO.setPharmacyId(0L);
-        PharmacyAdmin pharmacyAdmin = new PharmacyAdmin();
-        Pharmacy pharmacy=new Pharmacy();
-
-        when(pharmacyService.read(pharmacyAdminRegistrationDTO.getPharmacyId())).thenReturn(java.util.Optional.of(pharmacy));
-        when(pharmacyAdminService.save(pharmacyAdmin)).thenReturn(pharmacyAdmin);
-
-       assertThat(saveAdmin(pharmacyAdminRegistrationDTO), is(equalTo(true)));
-    }
-
-    public Boolean saveAdmin(PharmacyAdminRegistrationDTO pharmacyAdminDTO) {
-        PharmacyAdmin pharmacyAdmin = new PharmacyAdmin();
-        pharmacyAdmin.setFirstName(pharmacyAdminDTO.getFirstName());
-        pharmacyAdmin.setLastName(pharmacyAdminDTO.getLastName());
-        pharmacyAdmin.setUserType(pharmacyAdminDTO.getUserType());
-        pharmacyAdmin.setCredentials(pharmacyAdminDTO.getCredentials());
-        pharmacyAdmin.setContact(pharmacyAdminDTO.getContact());
-        pharmacyAdmin.setPharmacy(pharmacyService.read(pharmacyAdminDTO.getPharmacyId()).get());
-        pharmacyAdminService.save(pharmacyAdmin);
-
-        return true;
-    }
     @Test
     public void testDermatologistRegistration(){
         Credentials credentials=new Credentials();
@@ -161,11 +114,8 @@ public class RegistrationsTest {
         dermatologist.setCredentials(credentials);
 
         when(dermatologistRepository.save(dermatologist)).thenReturn(dermatologist);
-        assertThat(save(dermatologist), is(equalTo(dermatologist)));
+        assertThat(dermatologistService.save(dermatologist), is(equalTo(dermatologist)));
 
     }
 
-    public Dermatologist save(Dermatologist entity) {
-        return dermatologistRepository.save(entity);
-    }
 }
